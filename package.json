@@ -1,0 +1,15 @@
+{
+    "name": "ricettario-tools",
+    "version": "1.0.0",
+    "description": "CLI per creare ricette: scraping + AI rewriting + HTML generation",
+    "type": "module",
+    "scripts": {
+        "crea": "node crea-ricetta.js"
+    },
+    "dependencies": {
+        "@anthropic-ai/sdk": "^0.39.0",
+        "cheerio": "^1.0.0",
+        "dotenv": "^16.4.7",
+        "slugify": "^1.6.6"
+    }
+}
