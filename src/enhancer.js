@@ -105,12 +105,30 @@ export async function enhanceRecipe(rawRecipe) {
   // ── Step 1: Cerca fonti reali per cross-reference ──
   let realSourcesText = '';
   let sourcesFound = 0;
-  const recipeName = rawRecipe.title || 'ricetta';
+
+  // Estrai il nome ricetta per la ricerca fonti (3 strategie di fallback)
+  let recipeName = rawRecipe.title;
+  if (!recipeName || recipeName === 'ricetta' || recipeName.length < 3) {
+    // Fallback 1: Estrai dal slug della URL sorgente (es. "pizza-napoletana" → "Pizza Napoletana")
+    if (rawRecipe.sourceUrl) {
+      const urlSlug = rawRecipe.sourceUrl.replace(/\/+$/, '').split('/').pop();
+      if (urlSlug && urlSlug.length > 2) {
+        recipeName = urlSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      }
+    }
+  }
+  if (!recipeName || recipeName === 'ricetta' || recipeName.length < 3) {
+    // Fallback 2: Prima riga non vuota del testo grezzo
+    const firstLine = (rawRecipe.ingredients?.[0] || rawRecipe.steps?.[0] || '').substring(0, 60);
+    recipeName = firstLine || 'ricetta italiana';
+  }
+  // Prefissa "ricetta" per migliorare la ricerca
+  const searchQuery = recipeName.toLowerCase().includes('ricetta') ? recipeName : `ricetta ${recipeName}`;
 
   try {
     const { searchRealSources, scrapeRecipePage } = await import('./validator.js');
-    console.log(`🔍 Cerco fonti reali per "${recipeName}" per arricchire la generazione...`);
-    const sources = await searchRealSources(recipeName);
+    console.log(`🔍 Cerco fonti reali per "${searchQuery}" per arricchire la generazione...`);
+    const sources = await searchRealSources(searchQuery);
     console.log(`📡 Trovate ${sources.length} fonti, scraping...`);
 
     const scrapedData = [];
