@@ -90,12 +90,84 @@ NOTE IMPORTANTI:
 - "baking" è obbligatorio per Pane e Pizza, opzionale per Pasta (cottura in acqua bollente).`;
 
 /**
- * Riscrive una ricetta con Claude
+ * Riscrive una ricetta con Claude, arricchita da fonti reali
+ * 
+ * Pipeline PRO:
+ *   1. Cerca fonti reali via SerpAPI (GialloZafferano, forum, mulini)
+ *   2. Scrappa ingredienti e proporzioni dalle fonti trovate
+ *   3. Passa i dati scrappati + fonti reali a Claude
+ *   4. Claude genera con contesto completo, senza inventare
+ * 
  * @param {object} rawRecipe - Dati scrappati dal modulo scraper
  * @returns {Promise<object>} Ricetta enhanced in formato JSON strutturato
  */
 export async function enhanceRecipe(rawRecipe) {
-  log.info('Claude sta riscrivendo la ricetta...');
+  // ── Step 1: Cerca fonti reali per cross-reference ──
+  let realSourcesText = '';
+  let sourcesFound = 0;
+  const recipeName = rawRecipe.title || 'ricetta';
+
+  try {
+    const { searchRealSources, scrapeRecipePage } = await import('./validator.js');
+    console.log(`🔍 Cerco fonti reali per "${recipeName}" per arricchire la generazione...`);
+    const sources = await searchRealSources(recipeName);
+    console.log(`📡 Trovate ${sources.length} fonti, scraping...`);
+
+    const scrapedData = [];
+    for (const source of sources) {
+      try {
+        process.stdout.write(`   🌐 ${source.domain}... `);
+        const data = await scrapeRecipePage(source.url);
+        if (data && data.ingredients?.length > 0) {
+          scrapedData.push({ ...data, domain: source.domain, title: source.title });
+          console.log(`✅ ${data.ingredients.length} ingredienti (${data.source})`);
+        } else {
+          console.log('❌ nessun dato utile');
+        }
+      } catch {
+        console.log('❌ errore');
+      }
+      await new Promise(r => setTimeout(r, 400));
+    }
+
+    sourcesFound = scrapedData.length;
+
+    if (scrapedData.length > 0) {
+      realSourcesText = '\n\n══════ DATI REALI DA FONTI AUTOREVOLI ══════\n';
+      realSourcesText += 'USA QUESTI DATI come riferimento per ingredienti, proporzioni e tecniche.\n';
+      realSourcesText += 'NON inventare dati tecnici (forza W, temperature, tempi) se le fonti li specificano.\n\n';
+
+      for (const [i, src] of scrapedData.entries()) {
+        realSourcesText += `── FONTE ${i + 1}: ${src.domain} ──\n`;
+        if (src.ingredients.length > 0) {
+          realSourcesText += `   Ingredienti:\n`;
+          src.ingredients.forEach(ing => { realSourcesText += `   - ${ing}\n`; });
+        }
+        if (src.prepTime) realSourcesText += `   Tempo prep: ${src.prepTime}\n`;
+        if (src.cookTime) realSourcesText += `   Tempo cottura: ${src.cookTime}\n`;
+        if (src.steps?.length > 0) {
+          realSourcesText += `   Procedimento:\n`;
+          src.steps.slice(0, 6).forEach((step, j) => {
+            realSourcesText += `   ${j + 1}. ${step.substring(0, 200)}\n`;
+          });
+        }
+        realSourcesText += '\n';
+      }
+    }
+  } catch (err) {
+    console.log(`⚠️  Ricerca fonti non riuscita: ${err.message}`);
+    console.log('   Procedo con i soli dati scrappati...');
+  }
+
+  // ── Step 2: Genera con Claude usando dati scrappati + fonti reali ──
+  const sourceLabel = sourcesFound > 0
+    ? `(arricchita con ${sourcesFound} fonti reali)`
+    : '(senza fonti reali aggiuntive)';
+  log.info(`Claude sta riscrivendo la ricetta ${sourceLabel}...`);
+
+  const dataDirective = sourcesFound > 0
+    ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali autorevoli. DEVI basare i dati tecnici (forza farina W, temperature impasto, temperature acqua per setup spirale vs mano, tempi, proporzioni) sui dati reali sotto. Per gli ingredienti che cambiano tra setup (es. acqua ghiacciata per spirale vs tiepida per mano), compila il campo setupNote.`
+    : `Non ho trovato fonti reali. Basati sui dati scrappati e sulla tua conoscenza, ma sii conservativo.`;
 
   const userPrompt = `Ecco i dati grezzi di una ricetta scrappata da ${rawRecipe.sourceUrl || 'fonte web'}:
 
@@ -113,7 +185,10 @@ TEMPO PREPARAZIONE: ${rawRecipe.prepTime || 'non specificato'}
 TEMPO COTTURA: ${rawRecipe.cookTime || 'non specificato'}
 CATEGORIA: ${rawRecipe.category || 'non specificata'}
 
-Trasforma questa ricetta nel formato JSON tecnico del Ricettario. Migliora, integra e rendi tutto professionale. Se la ricetta originale manca di dettagli tecnici (forza farina, temperature, tempi precisi), aggiungili basandoti sulla tua competenza.`;
+${dataDirective}
+${realSourcesText}
+
+Trasforma questa ricetta nel formato JSON tecnico del Ricettario. I dati tecnici devono riflettere le fonti reali quando disponibili.`;
 
   const text = await callClaude({
     system: SYSTEM_PROMPT,
@@ -121,7 +196,8 @@ Trasforma questa ricetta nel formato JSON tecnico del Ricettario. Migliora, inte
   });
 
   const recipe = parseClaudeJson(text);
-  log.success(`Ricetta "${recipe.title}" elaborata con successo`);
+  recipe._sourcesUsed = sourcesFound;
+  log.success(`Ricetta "${recipe.title}" elaborata con successo ${sourceLabel}`);
   return recipe;
 }
 
