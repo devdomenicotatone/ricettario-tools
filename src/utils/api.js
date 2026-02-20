@@ -95,52 +95,76 @@ export function parseClaudeJson(text) {
         return JSON.parse(text);
     } catch { /* continua */ }
 
-    // 2. Strippa markdown fences
+    // 2. Strippa markdown fences (```json ... ``` in qualsiasi posizione)
     let cleaned = text
-        .replace(/^```(?:json)?\s*/gm, '')
-        .replace(/^```\s*$/gm, '')
+        .replace(/```json\s*/gi, '')
+        .replace(/```\s*/g, '')
         .trim();
 
     try {
         return JSON.parse(cleaned);
     } catch { /* continua */ }
 
-    // 3. Rimuovi commenti JS
-    cleaned = cleaned
-        .replace(/\/\*[\s\S]*?\*\//g, '')           // /* block comments */
-        .replace(/([^\\:"]|^)\/\/.*$/gm, '$1')     // // line comments
-        .trim();
+    // 3. Fix virgole trailing (es. [1, 2,] → [1, 2])
+    let fixed = cleaned.replace(/,\s*([\]}])/g, '$1');
 
     try {
-        return JSON.parse(cleaned);
+        return JSON.parse(fixed);
     } catch { /* continua */ }
 
-    // 4. Fix virgole trailing (es. [1, 2,] → [1, 2])
-    cleaned = cleaned
-        .replace(/,\s*([\]}])/g, '$1');
-
-    try {
-        return JSON.parse(cleaned);
-    } catch { /* continua */ }
-
-    // 5. Ultimo resort: estrai primo oggetto o array
-    const objMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (objMatch) {
+    // 4. Estrai primo oggetto JSON bilanciato (gestisce nested objects)
+    const extracted = extractBalancedJson(cleaned);
+    if (extracted) {
         try {
-            const fixed = objMatch[0].replace(/,\s*([\]}])/g, '$1');
-            return JSON.parse(fixed);
+            return JSON.parse(extracted);
         } catch { /* continua */ }
-    }
 
-    const arrMatch = cleaned.match(/\[[\s\S]*\]/);
-    if (arrMatch) {
+        // 4b. Prova con fix trailing commas sull'estratto
+        const fixedExtracted = extracted.replace(/,\s*([\]}])/g, '$1');
         try {
-            const fixed = arrMatch[0].replace(/,\s*([\]}])/g, '$1');
-            return JSON.parse(fixed);
+            return JSON.parse(fixedExtracted);
         } catch { /* continua */ }
     }
 
     throw new Error(`Impossibile parsare JSON dalla risposta Claude: ${text.substring(0, 200)}...`);
+}
+
+/**
+ * Estrae il primo oggetto JSON bilanciato da una stringa mixed
+ * Tiene conto di stringhe (per non contare { e } dentro "...")
+ */
+function extractBalancedJson(text) {
+    const start = text.indexOf('{');
+    if (start === -1) return null;
+
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = start; i < text.length; i++) {
+        const ch = text[i];
+
+        if (escape) {
+            escape = false;
+            continue;
+        }
+        if (ch === '\\') {
+            escape = true;
+            continue;
+        }
+        if (ch === '"') {
+            inString = !inString;
+            continue;
+        }
+        if (inString) continue;
+
+        if (ch === '{') depth++;
+        if (ch === '}') depth--;
+        if (depth === 0) {
+            return text.substring(start, i + 1);
+        }
+    }
+    return null;
 }
 
 function sleep(ms) {
