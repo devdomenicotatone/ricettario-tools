@@ -13,6 +13,7 @@ const recipeDirs = {
     pizza: { emoji: '🍕', label: 'Pizza', order: 3 },
     lievitati: { emoji: '🥐', label: 'Lievitati', order: 4 },
     focaccia: { emoji: '🫓', label: 'Focaccia', order: 5 },
+    dolci: { emoji: '🍪', label: 'Dolci', order: 6 },
 };
 
 const recipes = [];
