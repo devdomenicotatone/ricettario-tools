@@ -158,6 +158,8 @@ export function generateHtml(recipe) {
                 <span class="breadcrumb__separator">›</span>
                 <a href="../../index.html#ricette">Ricette</a>
                 <span class="breadcrumb__separator">›</span>
+                <a href="./">${r.category || 'Pane'}</a>
+                <span class="breadcrumb__separator">›</span>
                 <span>${r.title}</span>
             </nav>
 
