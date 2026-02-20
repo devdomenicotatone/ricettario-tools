@@ -8,6 +8,13 @@
  */
 function ingredientRow({ name, note, grams }) {
     const noteHtml = note ? ` <span class="ingredient-note">${note}</span>` : '';
+    // Se grams è null/undefined → riga header sezione (es. "BIGA", "IMPASTO FINALE")
+    if (grams == null) {
+        return `                            <tr class="ingredient-section-header">
+                                <td><strong>${name}</strong>${noteHtml}</td>
+                                <td class="ingredient-qty"></td>
+                            </tr>`;
+    }
     return `                            <tr>
                                 <td>${name}${noteHtml}</td>
                                 <td class="ingredient-qty" data-base="${grams}">${grams}g</td>

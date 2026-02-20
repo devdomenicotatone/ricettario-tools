@@ -3,11 +3,13 @@
  * 
  * Features:
  *   - Retry con exponential backoff (3 tentativi)
- *   - Parsing JSON tollerante (strippa fences, commenti, virgole trailing)
+ *   - Parsing JSON tollerante (strippa fences, trailing commas, balanced extract)
+ *   - Auto-configurazione max_tokens per modello (nessun hardcoding necessario)
  *   - Funzione unificata callClaude() per tutti i moduli
  */
 
 import Anthropic from '@anthropic-ai/sdk';
+import { writeFileSync } from 'fs';
 import { log } from './logger.js';
 
 const client = new Anthropic();
@@ -19,11 +21,34 @@ const DEFAULT_RETRY = {
 };
 
 /**
+ * Massimo output tokens per modello Claude.
+ * Quando maxTokens non è specificato dal chiamante, si usa il max del modello.
+ * Non ha impatto sui costi: Anthropic fattura solo i token effettivamente generati.
+ * 
+ * Ref: https://docs.anthropic.com/en/docs/about-claude/models
+ */
+const MODEL_MAX_TOKENS = {
+    // Claude 4.6
+    'claude-opus-4-6-20260201': 128000,
+    'claude-sonnet-4-6-20260220': 64000,
+    // Claude 4.5
+    'claude-opus-4-5-20250918': 64000,
+    'claude-sonnet-4-5-20250929': 64000,
+    // Claude 4
+    'claude-sonnet-4-20250514': 64000,
+    'claude-opus-4-20250514': 64000,
+    // Alias latest
+    'claude-sonnet-4-5-latest': 64000,
+    'claude-opus-4-5-latest': 64000,
+};
+const DEFAULT_MAX_TOKENS = 64000;  // Safe fallback per modelli non in mappa
+
+/**
  * Chiama Claude API con retry automatico e exponential backoff
  *
  * @param {object} options
  * @param {string} options.model - Modello Claude (default: claude-sonnet-4-5-20250929)
- * @param {number} options.maxTokens - Max tokens risposta (default: 4096)
+ * @param {number} [options.maxTokens] - Max tokens risposta (default: max del modello)
  * @param {string} [options.system] - System prompt
  * @param {Array} options.messages - Array messaggi [{role, content}]
  * @param {object} [options.retry] - Config retry (maxAttempts, baseDelayMs)
@@ -31,16 +56,18 @@ const DEFAULT_RETRY = {
  */
 export async function callClaude({
     model = 'claude-sonnet-4-5-20250929',
-    maxTokens = 4096,
+    maxTokens,
     system,
     messages,
     retry = DEFAULT_RETRY,
 }) {
+    // Auto-configura maxTokens dal modello se non specificato
+    const resolvedMaxTokens = maxTokens || MODEL_MAX_TOKENS[model] || DEFAULT_MAX_TOKENS;
     const { maxAttempts, baseDelayMs, maxDelayMs } = { ...DEFAULT_RETRY, ...retry };
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
-            const params = { model, max_tokens: maxTokens, messages };
+            const params = { model, max_tokens: resolvedMaxTokens, messages };
             if (system) params.system = system;
 
             const message = await client.messages.create(params);
@@ -90,10 +117,12 @@ function isRetryableError(err) {
  * @throws {Error} Se nessuna strategia funziona
  */
 export function parseClaudeJson(text) {
+    let lastError = null;
+
     // 1. Tenta parse diretto
     try {
         return JSON.parse(text);
-    } catch { /* continua */ }
+    } catch (e) { lastError = e; }
 
     // 2. Strippa markdown fences (```json ... ``` in qualsiasi posizione)
     let cleaned = text
@@ -103,30 +132,37 @@ export function parseClaudeJson(text) {
 
     try {
         return JSON.parse(cleaned);
-    } catch { /* continua */ }
+    } catch (e) { lastError = e; }
 
     // 3. Fix virgole trailing (es. [1, 2,] → [1, 2])
     let fixed = cleaned.replace(/,\s*([\]}])/g, '$1');
 
     try {
         return JSON.parse(fixed);
-    } catch { /* continua */ }
+    } catch (e) { lastError = e; }
 
     // 4. Estrai primo oggetto JSON bilanciato (gestisce nested objects)
     const extracted = extractBalancedJson(cleaned);
     if (extracted) {
         try {
             return JSON.parse(extracted);
-        } catch { /* continua */ }
+        } catch (e) { lastError = e; }
 
         // 4b. Prova con fix trailing commas sull'estratto
         const fixedExtracted = extracted.replace(/,\s*([\]}])/g, '$1');
         try {
             return JSON.parse(fixedExtracted);
-        } catch { /* continua */ }
+        } catch (e) { lastError = e; }
     }
 
-    throw new Error(`Impossibile parsare JSON dalla risposta Claude: ${text.substring(0, 200)}...`);
+    // Debug: salva la risposta su file per analisi post-mortem
+    try {
+        writeFileSync('debug-failed-response.txt', text, 'utf-8');
+        log.warn('Risposta Claude salvata in debug-failed-response.txt per diagnosi');
+    } catch { /* ignore */ }
+
+    const parseMsg = lastError ? ` (JSON.parse: ${lastError.message})` : '';
+    throw new Error(`Impossibile parsare JSON dalla risposta Claude${parseMsg}: ${text.substring(0, 200)}...`);
 }
 
 /**
