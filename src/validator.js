@@ -7,6 +7,7 @@
 
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { resolve, basename } from 'path';
+import { callClaude, parseClaudeJson } from './utils/api.js';
 
 // ── Configurazione ──────────────────────────────────────────────────
 
@@ -332,7 +333,7 @@ export async function scrapeRecipePage(url) {
         if (!res.ok) return null;
 
         const html = await res.text();
-        const data = extractRecipeData(html, url);
+        const data = await extractRecipeData(html, url);
 
         // Se ha trovato ingredienti, usa questi dati
         if (data && data.ingredients?.length > 0) {
@@ -365,7 +366,7 @@ export async function scrapeRecipePage(url) {
             await page.waitForSelector('h1', { timeout: 5000 }).catch(() => { });
 
             const html = await page.content();
-            const data = extractRecipeData(html, url);
+            const data = await extractRecipeData(html, url);
 
             if (data && data.ingredients?.length > 0) {
                 data.source = (data.source || 'html') + '+stealth';
@@ -383,9 +384,9 @@ export async function scrapeRecipePage(url) {
 
 /**
  * Estrae dati ricetta da HTML
- * Prima cerca JSON-LD (Schema.org/Recipe), poi fallback regex
+ * Prima cerca JSON-LD (Schema.org/Recipe), poi fallback Claude AI
  */
-export function extractRecipeData(html, sourceUrl) {
+export async function extractRecipeData(html, sourceUrl) {
     // ── Tentativo 1: JSON-LD Schema.org/Recipe ──
     const jsonLdData = extractJsonLd(html);
     if (jsonLdData) {
@@ -396,12 +397,63 @@ export function extractRecipeData(html, sourceUrl) {
         };
     }
 
-    // ── Tentativo 2: Fallback regex su HTML raw ──
-    return {
-        source: 'html-regex',
-        url: sourceUrl,
-        ...extractFromHtml(html),
-    };
+    // ── Tentativo 2: Claude AI estrae ingredienti da testo grezzo ──
+    const plainText = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&[a-z]+;/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .substring(0, 3000); // Limita per costi/velocità
+
+    if (plainText.length < 50) {
+        return { source: 'empty', url: sourceUrl, name: '', ingredients: [] };
+    }
+
+    try {
+        const result = await extractWithClaude(plainText, sourceUrl);
+        return {
+            source: 'claude-ai',
+            url: sourceUrl,
+            ...result,
+        };
+    } catch {
+        // Se Claude fallisce, ritorna vuoto
+        return { source: 'failed', url: sourceUrl, name: '', ingredients: [] };
+    }
+}
+
+/**
+ * Estrae ingredienti da testo grezzo usando Claude AI
+ * Funziona con qualsiasi formato: forum, blog, articoli, tabelle, testo narrativo
+ */
+async function extractWithClaude(plainText, sourceUrl) {
+    const response = await callClaude({
+        model: 'claude-sonnet-4-5-20250929',
+        maxTokens: 1024,
+        system: `Sei un estrattore di ingredienti da ricette. Ricevi testo grezzo da una pagina web e devi estrarre SOLO la lista ingredienti.
+Rispondi ESCLUSIVAMENTE con un JSON valido nel formato:
+{"name": "Nome Ricetta", "ingredients": ["500g farina", "300ml acqua", ...], "servings": "4", "prepTime": "30min"}
+Se non trovi ingredienti, rispondi: {"name": "", "ingredients": []}
+NON aggiungere testo, spiegazioni o commenti. SOLO il JSON.`,
+        messages: [{
+            role: 'user',
+            content: `Estrai gli ingredienti da questo testo di una pagina web (${sourceUrl}):\n\n${plainText}`
+        }],
+    });
+
+    const parsed = parseClaudeJson(response);
+
+    // Normalizza ingredienti
+    if (parsed.ingredients && Array.isArray(parsed.ingredients)) {
+        parsed.ingredients = parsed.ingredients.map(i =>
+            typeof i === 'string' ? i.trim() : (i.text || i.name || String(i)).trim()
+        ).filter(i => i.length > 0);
+    } else {
+        parsed.ingredients = [];
+    }
+
+    return parsed;
 }
 
 /**
