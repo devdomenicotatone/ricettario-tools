@@ -20,7 +20,11 @@ export async function genera(args) {
     if (args.url) {
         // Mode A: Scraping + Enhancement
         const rawData = await scrapeRecipe(args.url);
-        log.info(`Estratti: ${rawData.ingredients.length} ingredienti, ${rawData.steps.length} step`);
+        if (rawData.steps.length) {
+            log.info(`Estratti: ${rawData.ingredients.length} ingredienti, ${rawData.steps.length} step`);
+        } else {
+            log.info(`Estratte ${rawData.ingredients.length} righe di testo grezzo (Claude farà il parsing)`);
+        }
         enhancedRecipe = await enhanceRecipe(rawData);
     } else {
         // Mode B: Generazione da zero

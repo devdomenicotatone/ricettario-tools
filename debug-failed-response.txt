@@ -1,0 +1,162 @@
+```json
+{
+  "title": "Pane Pugliese con Biga",
+  "slug": "pane-pugliese-biga",
+  "emoji": "🍞",
+  "description": "Pagnotta pugliese tradizionale con prefermento a biga, crosta croccante color ambra e mollica alveolata e soffice. Perfetto con olio EVO e pomodoro.",
+  "subtitle": "Ricetta tradizionale con biga a 12-14 ore, lievitazione controllata e cottura su pietra",
+  "category": "Pane",
+  "hydration": 62.7,
+  "targetTemp": "24-26°C",
+  "fermentation": "~18h totali (12-14h biga + 3h puntata + 1h appretto)",
+  "totalFlour": 300,
+  "ingredients": [
+    {
+      "name": "Farina Tipo 00",
+      "note": "(W 280-320, per biga e impasto finale)",
+      "grams": 250
+    },
+    {
+      "name": "Semola di Grano Duro Rimacinata",
+      "note": "(per corpo e colorazione dorata)",
+      "grams": 50
+    },
+    {
+      "name": "Acqua",
+      "note": "(temperatura ambiente 18-20°C, per biga)",
+      "grams": 150
+    },
+    {
+      "name": "Acqua",
+      "note": "(temperatura ambiente, per impasto finale)",
+      "grams": 38
+    },
+    {
+      "name": "Lievito di Birra Fresco",
+      "note": "(per biga)",
+      "grams": 2.5
+    },
+    {
+      "name": "Lievito di Birra Fresco",
+      "note": "(per rinfresco impasto finale)",
+      "grams": 1
+    },
+    {
+      "name": "Miele",
+      "note": "(nutrimento lieviti e colorazione)",
+      "grams": 5
+    },
+    {
+      "name": "Sale Fino",
+      "note": "(aggiunto a fine impastamento)",
+      "grams": 5
+    }
+  ],
+  "suspensions": [],
+  "stepsSpiral": [
+    {
+      "title": "Preparazione Biga (12-14h prima)",
+      "text": "Inserire nella ciotola dell'impastatrice 250g di farina 00 setacciata e 2,5g di lievito fresco sbriciolato. Miscelare a velocità 1 per 2 minuti per amalgamare bene farina e lievito. Aggiungere 150g di acqua a filo con impastatrice in movimento a velocità 1. Impastare per 3-4 minuti totali fino a ottenere un panetto ruvido e asciutto (idratazione 60%). La biga deve risultare dura e compatta, non liscia. Trasferire in ciotola capiente leggermente unta d'olio, formare una palla, coprire con pellicola a contatto e far maturare a 18-20°C per 12-14 ore. La biga è pronta quando avrà triplicato il volume e presenterà crepe superficiali."
+    },
+    {
+      "title": "Impasto Finale",
+      "text": "Riprendere la biga matura, sbriciolarla grossolanamente e inserirla nella ciotola dell'impastatrice. Aggiungere 50g di semola rimacinata, 5g di miele e 1g di lievito fresco. Avviare a velocità 1 e incorporare 38g di acqua a temperatura ambiente a filo (2-3 minuti). Quando l'impasto inizia a incordarsi, aggiungere 5g di sale e passare a velocità 2 per 4-5 minuti. L'impasto finale deve essere liscio, elastico e lucido, con temperatura di 24-26°C. Formare una palla tesa con pieghe dall'esterno verso il centro, capovolgere con chiusura sotto."
+    },
+    {
+      "title": "Puntata (Prima Lievitazione)",
+      "text": "Trasferire la palla in ciotola leggermente unta, coprire con pellicola e far lievitare in ambiente caldo (26-27°C, forno spento con luce accesa) per 2,5-3 ore o fino a triplicazione del volume. Per verificare: premere leggermente con un dito, l'impronta deve risalire lentamente. L'impasto deve essere gonfio, soffice e ricco di bolle in superficie."
+    },
+    {
+      "title": "Formatura (Pirlatura)",
+      "text": "Rovesciare l'impasto su spianatoia leggermente infarinata con semola. Degasare delicatamente premendo con i polpastrelli per creare un rettangolo irregolare (20x15cm circa). Eseguire pieghe a libro: portare i lembi laterali verso il centro, poi ripiegare la parte superiore verso il basso. Arrotolare su se stesso con pressione progressiva per chiudere bene la saldatura. Roteare il panetto con movimenti circolari delle mani a coppa per creare tensione superficiale e una palla perfetta. La chiusura deve essere ben sigillata sotto."
+    },
+    {
+      "title": "Appretto (Lievitazione Finale)",
+      "text": "Adagiare la pagnotta su tagliere o asse infarinata con semola, coprire con ciotola capovolta o campana per torte e lassciare lievitare 50-60 minuti a temperatura ambiente (22-24°C). Il pane è pronto quando al tocco risulta soffice e leggermente elastico. Nel frattempo preriscaldare il forno a 240°C statico per 45 minuti con teglia pesante o pietra refrattaria all'interno."
+    },
+    {
+      "title": "Scarificatura e Cottura",
+      "text": "Con un coltello a lama affilata o lametta da panificazione, incidere la superficie con una croce profonda (1-1,5cm di profondità), con movimenti decisi e senza esitazioni. I tagli permettono l'espansione controllata del pane ed evitano crepe casuali. Trasferire rapidamente la pagnotta sulla teglia rovente con l'aiuto di una pala o tarocco. Spruzzare acqua sulle pareti del forno (3-4 nebulizzazioni) per creare vapore. Infornare, abbassare immediatamente a 220°C e cuocere per 45-50 minuti fino a doratura ambrata uniforme. Sfornare e far raffreddare su griglia per almeno 1 ora prima di tagliare."
+    }
+  ],
+  "stepsHand": [
+    {
+      "title": "Preparazione Biga (12-14h prima)",
+      "text": "In ciotola ampia versare 250g di farina 00 setacciata. Aggiungere 2,5g di lievito fresco sbriciolato finemente. Con la punta delle dita, sfregare farina e lievito per 2-3 minuti fino a completa amalgamazione (la miscela deve sembrare sabbia fine). Versare 150g di acqua a temperatura ambiente e iniziare a impastare raccogliendo gli ingredienti dal basso verso l'alto. Impastare per 5-7 minuti fino a ottenere un panetto ruvido, asciutto e compatto (non deve essere liscio). Formare una palla irregolare, adagiarla in ciotola leggermente unta, coprire con pellicola aderente e far maturare a 18-20°C per 12-14 ore. La biga è pronta quando triplica di volume e presenta crepe superficiali."
+    },
+    {
+      "title": "Impasto Finale",
+      "text": "Riprendere la biga matura e sbriciolarla grossolanamente in una ciotola capiente. Aggiungere 50g di semola rimacinata, 5g di miele, 1g di lievito fresco sbriciolato e iniziare a impastare. Incorporare 38g di acqua a temperatura ambiente poco alla volta, continuando a impastare energicamente per 8-10 minuti. Quando l'impasto è omogeneo, aggiungere 5g di sale e impastare altri 5-7 minuti. Trasferire su spianatoia e lavorare con tecnica slap and fold: sollevare l'impasto, sbatterlo sul piano e ripiegarlo su se stesso per 5 minuti. L'impasto deve diventare liscio, elastico e lucido (temperatura 24-26°C). Formare una palla tesa con pieghe verso il centro."
+    },
+    {
+      "title": "Puntata (Prima Lievitazione)",
+      "text": "Trasferire la palla in ciotola leggermente unta, coprire con pellicola e far lievitare in ambiente caldo (26-27°C, forno spento con luce accesa o vicino a termosifone) per 2,5-3 ore fino a triplicazione. L'impasto deve risultare gonfio, morbido e ricco di alveoli visibili in superficie. Test di lievitazione: premere con un dito, l'impronta deve risalire molto lentamente."
+    },
+    {
+      "title": "Formatura (Pirlatura a Mano)",
+      "text": "Rovesciare delicatamente l'impasto su spianatoia infarinata con semola, evitando di sgonfiarlo troppo. Con i polpastrelli, stendere delicatamente per formare un rettangolo irregolare (20x15cm). Eseguire pieghe a libro: portare i lati lunghi verso il centro sovrapponendoli leggermente, poi ripiegare la parte alta verso il basso. Arrotolare dalla parte ripiegata verso di sé, sigillando bene la chiusura con la base del palmo. Con entrambe le mani a coppa, eseguire movimenti circolari decisi sul piano infarinato per creare tensione superficiale e ottenere una palla perfetta. La chiusura deve restare sotto, ben sigillata."
+    },
+    {
+      "title": "Appretto (Lievitazione Finale)",
+      "text": "Adagiare la pagnotta su tagliere o asse abbondantemente infarinata con semola, con chiusura sotto. Coprire con ciotola capovolta o canovaccio umido e lasciar lievitare 50-60 minuti a temperatura ambiente (22-24°C). Il pane è pronto quando al tocco risulta soffice, elastico e l'impronta del dito risale lentamente. Nel frattempo, preriscaldare il forno a 240°C statico per 45 minuti con teglia pesante o pietra refrattaria posizionata nel ripiano centrale."
+    },
+    {
+      "title": "Scarificatura e Cottura",
+      "text": "Con lametta da panificazione o coltello affilatissimo, eseguire un taglio a croce profondo (1-1,5cm) sulla superficie, con movimenti rapidi e decisi a 45° rispetto al piano. I tagli devono intersecarsi al centro. Trasferire velocemente la pagnotta sulla teglia rovente usando una pala o asse infarinata, facendo scivolare con movimento deciso. Spruzzare abbondante acqua sulle pareti del forno (4-5 nebulizzazioni) per creare vapore iniziale. Chiudere lo sportello, abbassare immediatamente la temperatura a 220°C e cuocere per 45-50 minuti. Il pane è pronto quando la crosta è dorata color ambra e suona 'vuoto' se battuto sul fondo. Sfornare e raffreddare su griglia per almeno 1 ora prima di affettare."
+    }
+  ],
+  "flourTable": [
+    {
+      "type": "Farina Tipo 00",
+      "w": "280-320",
+      "brands": "Molino Caputo Rinforzata, Molino Dallagiovanna Oro, Le 5 Stagioni Panettone, Molino Spadoni Manitoba"
+    },
+    {
+      "type": "Semola Rimacinata",
+      "w": "N/A",
+      "brands": "Caputo Semola Rimacinata, Molino Grassi, Divella Semola Rimacinata, De Cecco"
+    }
+  ],
+  "baking": {
+    "temperature": "220°C (dopo preriscaldo a 240°C)",
+    "time": "45-50 minuti",
+    "tips": [
+      "Preriscaldare forno + pietra refrattaria o teglia pesante per almeno 45 minuti a 240°C",
+      "Creare vapore abbondante nei primi 10 minuti nebulizzando acqua sulle pareti del forno",
+      "Abbassare temperatura a 220°C dopo infornamento per cottura uniforme",
+      "Il pane è cotto quando la crosta è color ambra scuro e suona vuoto se battuto sul fondo",
+      "Raffreddare completamente su griglia prima di tagliare (minimo 1h) per stabilizzare la mollica"
+    ]
+  },
+  "glossary": [
+    {
+      "term": "Biga",
+      "definition": "Prefermento solido italiano con idratazione 45-60%, maturato 12-18h per sviluppare aromi complessi, acidità lattica e migliorare alveolatura e conservabilità del pane"
+    },
+    {
+      "term": "Incordatura",
+      "definition": "Fase dell'impastamento in cui il glutine inizia a strutturarsi creando una maglia elastica, visibile quando l'impasto inizia ad avvolgersi attorno al gancio o a staccarsi dalle pareti"
+    },
+    {
+      "term": "Puntata",
+      "definition": "Prima lievitazione dell'impasto in massa, dopo l'impastamento e prima della formatura. Permette lo sviluppo di volume, forza e aromi"
+    },
+    {
+      "term": "Pirlatura",
+      "definition": "Tecnica di formatura per creare tensione superficiale nella pagnotta, eseguita con movimenti circolari delle mani a coppa sul piano di lavoro, fondamentale per una lievitazione uniforme"
+    },
+    {
+      "term": "Appretto",
+      "definition": "Lievitazione finale dopo la formatura, che permette al pane di raggiungere il volume definitivo prima della cottura. Più breve e delicata della puntata"
+    },
+    {
+      "term": "Slap and Fold",
+      "definition": "Tecnica di impastamento manuale che consiste nel sollevare l'impasto, sbatterlo energicamente sul piano e ripiegarlo su se stesso per sviluppare la maglia glutinica"
+    },
+    {
+      "term": "Scarificatura",
+      "definition": "Incisioni decorative e funzionali praticate sulla superficie del pane prima della cottura, che permettono l'espansione controllata e prevengono crepe casuali"
+    },
+    {
+      "term": "Semola Rimacinata",
+      "definition": "Semola di grano duro macinata più finemente della semola normale, colore giallo dorato, conferisce struttura, sapore intenso e colorazione caratteristica ai prodotti da f

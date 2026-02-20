@@ -1,0 +1,174 @@
+```json
+{
+  "title": "Pane Pugliese con Biga",
+  "slug": "pane-pugliese-biga",
+  "emoji": "🍞",
+  "description": "Pagnotta tradizionale pugliese con biga di 12-14h: crosta croccante dorata, mollica soffice e alveolata. Perfetto per bruschette e accompagnamenti.",
+  "subtitle": "Lievitato tradizionale con prefermento a lunga maturazione",
+  "category": "Pane",
+  "hydration": 63,
+  "targetTemp": "24-26°C",
+  "fermentation": "~18h totali (biga 12-14h + puntata 3h + appretto 1h)",
+  "totalFlour": 300,
+  "ingredients": [
+    {
+      "name": "Farina Tipo 00 Media-Alta Forza",
+      "note": "(W 280-320, per struttura e tenuta biga)",
+      "grams": 250
+    },
+    {
+      "name": "Semola Rimacinata di Grano Duro",
+      "note": "(per crosta croccante e sapore)",
+      "grams": 50
+    },
+    {
+      "name": "Acqua Temperatura Ambiente",
+      "note": "(20-22°C, totale per biga + impasto)",
+      "grams": 188
+    },
+    {
+      "name": "Lievito di Birra Fresco",
+      "note": "(totale: 2,5g biga + 1g impasto)",
+      "grams": 3.5
+    },
+    {
+      "name": "Miele",
+      "note": "(nutrimento lieviti, colore crosta)",
+      "grams": 5
+    },
+    {
+      "name": "Sale Marino Fino",
+      "note": "(1,67% su farina totale)",
+      "grams": 5
+    }
+  ],
+  "suspensions": [],
+  "stepsSpiral": [
+    {
+      "title": "Preparazione Biga (12-14h prima)",
+      "text": "In ciotola impastatrice: 250g farina 00 + 2,5g lievito fresco sbriciolato. Impastare 2-3 min V1 amalgamando. Aggiungere 150g acqua a filo, continuare V1 per 4-5 min fino a ottenere un panetto ruvido e compatto (non liscio). Formare palla, trasferire in ciotola capiente oleata leggermente. Coprire con pellicola e far maturare a 18-20°C per 12-14h. La biga sarà triplicata, con superficie crepata e odore vinoso-fruttato."
+    },
+    {
+      "title": "Rinfresco Biga + Impasto Finale",
+      "text": "Riprendere la biga matura, spezzettarla grossolanamente in ciotola impastatrice. Aggiungere: 50g semola rimacinata + 5g miele + 1g lievito fresco sbriciolato. Avviare V1, versare 38g acqua a filo in 2-3 min. Quando l'impasto inizia a incordarsi (circa 5 min V1), aggiungere 5g sale. Continuare V1 per altri 3-4 min, poi passare V2 per 2-3 min fino a impasto liscio, elastico e che si stacca dalla ciotola. Temperatura finale: 24-26°C. Formare palla con piega a libro, trasferire in contenitore oleato."
+    },
+    {
+      "title": "Puntata (Prima Lievitazione)",
+      "text": "Coprire con pellicola e far lievitare in ambiente caldo (26-27°C: forno spento con luce accesa) per 3 ore o fino a triplicare il volume. L'impasto dovrà essere gonfio, elastico, con bolle evidenti in superficie."
+    },
+    {
+      "title": "Pirlatura e Formatura",
+      "text": "Rovesciare delicatamente l'impasto su piano leggermente infarinato con semola. Sgonfiare con i polpastrelli formando un rettangolo (circa 20x15 cm). Eseguire pieghe a portafoglio: lembi laterali al centro, poi lembo superiore verso il basso, arrotolare avvolgendo l'impasto su se stesso. Chiudere bene le giunture pizzicando. Formare palla tesa con movimento rotatorio sul piano, creando tensione superficiale. Adagiare su tagliere/carta forno infarinata con semola, coprire con ciotola capovolta o canovaccio."
+    },
+    {
+      "title": "Appretto (Seconda Lievitazione)",
+      "text": "Lasciar lievitare a temperatura ambiente (22-24°C) per 1 ora. La pagnotta dovrà aumentare di circa il 50% in volume, risultare soffice al tatto ma non troppo gonfia (test del dito: pressione leggera si riassorbe lentamente)."
+    }
+  ],
+  "stepsHand": [
+    {
+      "title": "Preparazione Biga (12-14h prima)",
+      "text": "In ciotola capiente: 250g farina 00 + 2,5g lievito fresco sbriciolato. Mescolare con le dita (tipo sabbiatura) per 2-3 min. Aggiungere 150g acqua a temperatura ambiente a filo, impastare raccogliendo ingredienti fino a formare panetto ruvido e compatto (non deve essere liscio, la biga resta ruvida). Formare palla, adagiare in ciotola oleata leggermente, coprire con pellicola. Maturare 12-14h a 18-20°C. La biga sarà triplicata, superficie crepata, odore vinoso."
+    },
+    {
+      "title": "Rinfresco Biga + Impasto Finale",
+      "text": "Spezzettare la biga matura in ciotola. Aggiungere: 50g semola rimacinata + 5g miele + 1g lievito fresco + 38g acqua. Impastare energicamente con le mani per 8-10 min amalgamando tutti gli ingredienti. Quando l'impasto inizia a essere coeso, aggiungere 5g sale e continuare a impastare. Eseguire 50-60 slap & fold sul piano: sollevare l'impasto, sbatterlo sul piano piegandolo su se stesso. L'impasto diventerà liscio, elastico e inizierà a non attaccarsi più. Temperatura finale: 24-26°C. Formare palla tesa, trasferire in ciotola oleata."
+    },
+    {
+      "title": "Puntata (Prima Lievitazione)",
+      "text": "Coprire con pellicola e far lievitare in ambiente caldo (26-27°C: forno spento con luce accesa) per 3 ore o fino a triplicare il volume. Ogni ora eseguire 1 serie di stretch & fold (facoltativo): allungare delicatamente i lembi dell'impasto e ripiegarli al centro (4 pieghe a croce). Rinforza la maglia glutinica."
+    },
+    {
+      "title": "Pirlatura e Formatura",
+      "text": "Rovesciare delicatamente su piano infarinato con semola. Sgonfiare con i polpastrelli formando rettangolo 20x15 cm. Pieghe a portafoglio: lembi laterali al centro, poi lembo superiore verso basso, arrotolare avvolgendo su se stesso. Chiudere giunture pizzicando. Formare palla tesa: mani a coppa, movimenti circolari sul piano creando tensione superficiale (la superficie deve risultare liscia e tesa). Adagiare su tagliere/carta forno infarinata con semola, coprire con ciotola capovolta."
+    },
+    {
+      "title": "Appretto (Seconda Lievitazione)",
+      "text": "Lasciar lievitare a temperatura ambiente (22-24°C) per 1 ora. La pagnotta aumenterà del 50% circa. Test del dito: pressione leggera si riassorbe lentamente = pronto per cottura."
+    }
+  ],
+  "flourTable": [
+    {
+      "type": "Farina 00 Media-Alta Forza",
+      "w": "280-320",
+      "brands": "Caputo Cuoco (W300), Molino Spadoni Chef (W300), Le 5 Stagioni Manitoba (W350)"
+    },
+    {
+      "type": "Semola Rimacinata Grano Duro",
+      "w": "N/A",
+      "brands": "Caputo Semola Rimacinata, Molino Grassi Semola, Divella Semola Rimacinata"
+    }
+  ],
+  "baking": {
+    "temperature": "220°C statico",
+    "time": "50 minuti",
+    "tips": [
+      "Preriscaldare forno + teglia in metallo per 45-60 min a 220°C (teglia rovente = fondo croccante)",
+      "Incidere croce profonda (1-1,5 cm) con lama affilata prima di infornare: aiuta espansione e previene crepe casuali",
+      "Trasferire pagnotta su teglia calda usando carta forno o pala infarinata (attenzione a non scottarsi)",
+      "Primi 15 min: nebulizzare 3-4 spruzzi d'acqua sulle pareti forno (vapore = crosta lucida e croccante)",
+      "Ultimi 10 min: aprire forno 1-2 min per far uscire umidità residua = crosta extra croccante",
+      "A fine cottura: battere il fondo, deve suonare vuoto. Lasciar raffreddare su griglia almeno 2h prima di tagliare"
+    ]
+  },
+  "glossary": [
+    {
+      "term": "Biga",
+      "definition": "Prefermento solido italiano (50% idratazione) con farina, acqua e poco lievito (1% su farina). Matura 12-24h a 18-20°C, conferisce sapore complesso, alveolatura e conservabilità."
+    },
+    {
+      "term": "Incordatura",
+      "definition": "Fase dell'impasto in cui il glutine inizia a formare una rete elastica: l'impasto diventa liscio, si avvolge attorno al gancio/mano e si stacca dalle pareti."
+    },
+    {
+      "term": "Puntata",
+      "definition": "Prima lievitazione in massa dopo l'impasto, prima della formatura. Fondamentale per sviluppo aromi e struttura."
+    },
+    {
+      "term": "Pirlatura",
+      "definition": "Tecnica di formatura per creare tensione superficiale: palla di impasto ruotata sul piano con movimenti circolari, mani a coppa, per ottenere superficie liscia e tesa."
+    },
+    {
+      "term": "Appretto",
+      "definition": "Seconda lievitazione dopo la formatura. L'impasto già formato lievita nella sua forma finale prima della cottura."
+    },
+    {
+      "term": "Slap & Fold",
+      "definition": "Tecnica manuale di impasto: sollevare la massa, sbatterla sul piano piegandola su se stessa. Sviluppa glutine per impasti molto idratati o con prefermenti."
+    },
+    {
+      "term": "Stretch & Fold",
+      "definition": "Pieghe delicate durante la puntata: allungare un lembo di impasto e ripiegarlo al centro (4 pieghe a croce). Rinforza maglia glutinica senza sgonfiare."
+    },
+    {
+      "term": "Maglia Glutinica",
+      "definition": "Rete tridimensionale di glutine che intrappola gas della fermentazione, conferendo elasticità, estensibilità e struttura all'impasto."
+    },
+    {
+      "term": "Pieghe a Portafoglio",
+      "definition": "Tecnica di formatura: stendere impasto a rettangolo, ripiegare lembi laterali verso centro, poi lembo superiore verso basso, arrotolare. Crea stratificazione e tensione."
+    }
+  ],
+  "alert": "⚠️ NON aggiungere il sale insieme agli altri ingredienti all'inizio: il sale inibisce l'attività del lievito e rallenta l'idratazione della farina. Aggiungerlo SOLO quando l'impasto è già incordato (dopo 5-6 min di impasto). NON saltare la fase di biga: è quella che conferisce sapore, profumo e conservabilità al pane pugliese tradizionale (il pane si conserva morbido 3-4 giorni). NON incidere la croce troppo superficiale: tagli da 1-1,5 cm di profondità sono necessari per permettere all'impasto di espandersi correttamente in forno senza creparsi in punti casuali.",
+  "proTips": [
+    "Per una biga ancora più aromatica: riduci il lievito a 2g e aumenta la maturazione a 16-18h a 16-18°C (frigo cantina). Otterrai note più acidule e complesse.",
+    "Trucco pizzaiolo per crosta extra croccante: 5 min prima di fine cottura, alza la temperatura a 240°C e posiziona la teglia a 10 cm dalla resistenza superiore. Monitora: la crosta si dorerà intensamente.",
+    "Per mollica più alveolata: durante la puntata esegui 2-3 serie di stretch & fold ogni 45-60 min. Rinforza la struttura senza aggiungere farina, favorendo bolle grandi e irregolari tipiche del pane artigianale."
+  ],
+  "imageKeywords": [
+    "pane pugliese crosta dorata",
+    "apulian bread cross cut",
+    "puglia sourdough loaf crumb",
+    "italian rustic bread semolina",
+    "pane tradizionale pugliese alveolatura"
+  ],
+  "tags": [
+    "pane tradizionale",
+    "biga",
+    "semola",
+    "lievitazione lunga",
+    "crosta croccante",
+    "cucina pugliese"
+  ]
+}
+```
