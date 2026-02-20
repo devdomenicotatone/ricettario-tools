@@ -51,7 +51,7 @@ function showHelp() {
 ═══════════════════════════════════════════
 
 Comandi:
-  --url <url>                Scraping + AI rewriting da URL
+  --url <url>                Scraping + AI rewriting da URL (virgola per batch)
   --nome <nome>              Genera ricetta da zero con AI
   --scopri <query>           Cerca ricette su Google e genera
   --valida                   Valida tutte le ricette (SerpAPI cross-check)
@@ -138,7 +138,43 @@ async function main() {
 
     // Mode A/B: URL o generazione da zero
     const { genera } = await import('./src/commands/genera.js');
-    await genera(args);
+
+    // Batch: supporto URL multipli separati da virgola
+    if (args.url && args.url.includes(',')) {
+        const urls = args.url.split(',').map(u => u.trim()).filter(Boolean);
+        log.header(`BATCH SEQUENZIALE — ${urls.length} ricette`);
+
+        const results = [];
+        for (let i = 0; i < urls.length; i++) {
+            log.header(`RICETTA ${i + 1}/${urls.length}`);
+            log.info(`URL: ${urls[i]}`);
+
+            const batchArgs = { ...args, url: urls[i] };
+            try {
+                await genera(batchArgs);
+                results.push({ url: urls[i], status: '✅' });
+            } catch (err) {
+                log.error(`Errore ricetta ${i + 1}: ${err.message}`);
+                results.push({ url: urls[i], status: '❌', error: err.message });
+            }
+
+            // Pausa tra ricette per evitare rate limit
+            if (i < urls.length - 1) {
+                log.info('Pausa 5s prima della prossima ricetta...');
+                await new Promise(r => setTimeout(r, 5000));
+            }
+        }
+
+        // Riepilogo finale
+        log.header('RIEPILOGO BATCH');
+        results.forEach((r, i) => {
+            console.log(`  ${r.status} ${i + 1}. ${r.url}${r.error ? ` — ${r.error}` : ''}`);
+        });
+        const ok = results.filter(r => r.status === '✅').length;
+        log.info(`${ok}/${results.length} ricette generate con successo`);
+    } else {
+        await genera(args);
+    }
 }
 
 main().catch(err => {
