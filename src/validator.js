@@ -298,10 +298,12 @@ function getDomainScore(domain) {
 
 /**
  * Scarica e parsa una pagina di ricetta
+ * Strategia a 2 livelli: fetch + fallback browser headless
  * @param {string} url - URL della pagina
  * @returns {Promise<Object|null>} Dati estratti o null
  */
 export async function scrapeRecipePage(url) {
+    // ── Livello 1: fetch classico ──
     try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), SCRAPE_TIMEOUT);
@@ -319,11 +321,45 @@ export async function scrapeRecipePage(url) {
         if (!res.ok) return null;
 
         const html = await res.text();
-        return extractRecipeData(html, url);
-    } catch (err) {
-        // Timeout, rete, etc.
-        return null;
+        const data = extractRecipeData(html, url);
+
+        // Se ha trovato ingredienti, usa questi dati
+        if (data && data.ingredients?.length > 0) {
+            return data;
+        }
+    } catch {
+        // Timeout, rete, etc. — provo con browser
     }
+
+    // ── Livello 2: fallback browser headless (siti client-side) ──
+    try {
+        const puppeteer = await import('puppeteer');
+        const browser = await puppeteer.default.launch({
+            headless: 'new',
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
+
+        try {
+            const page = await browser.newPage();
+            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36');
+            await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
+            await page.waitForSelector('h1', { timeout: 5000 }).catch(() => { });
+
+            const html = await page.content();
+            const data = extractRecipeData(html, url);
+
+            if (data && data.ingredients?.length > 0) {
+                data.source = (data.source || 'html') + '+browser';
+                return data;
+            }
+        } finally {
+            await browser.close();
+        }
+    } catch {
+        // Browser non disponibile o errore — silenzioso
+    }
+
+    return null;
 }
 
 /**
