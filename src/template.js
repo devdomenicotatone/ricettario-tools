@@ -67,7 +67,7 @@ export function generateHtml(recipe) {
     const totalGrams = r.ingredients
         .filter(ing => isFlour(ing.name))
         .reduce((sum, ing) => sum + (ing.grams || 0), 0);
-    const totalKg = Math.max(0.5, Math.round((totalGrams / 1000) * 2) / 2); // Arrotonda a 0.5kg
+    const totalKg = Math.round((totalGrams / 1000) * 10) / 10; // Valore reale, arrotondato a 1 decimale
 
     // Setup dinamico basato sulla categoria
     const isPasta = (r.category || '').toLowerCase() === 'pasta';
@@ -219,7 +219,7 @@ export function generateHtml(recipe) {
                                     aria-label="Diminuisci dosi">−</button>
                                 <div class="dose-calculator__input-wrapper">
                                     <input type="number" class="dose-calculator__input" id="dose-input" value="${totalKg}"
-                                        min="0.5" max="5" step="0.5" data-base-total="${totalGrams}" aria-label="Kg di farina">
+                                        min="${totalKg}" max="5" step="${totalKg}" data-base-total="${totalGrams}" aria-label="Kg di farina">
                                     <span class="dose-calculator__unit">kg</span>
                                 </div>
                                 <button class="dose-calculator__btn" id="dose-increase"
