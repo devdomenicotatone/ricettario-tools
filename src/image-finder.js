@@ -256,18 +256,60 @@ async function searchWikimedia(query, limit = 10) {
 //  SCORING & RICERCA INTELLIGENTE
 // ══════════════════════════════════════════════════════════
 
+// Keywords food che DEVONO essere presenti nella descrizione per validare l'immagine
+const FOOD_KEYWORDS = [
+    // EN
+    'food', 'dish', 'recipe', 'baked', 'baking', 'bread', 'pastry', 'dough', 'cake',
+    'cookie', 'cookies', 'pie', 'tart', 'dessert', 'sweet', 'pizza', 'pasta', 'flour',
+    'kitchen', 'cooking', 'chef', 'plate', 'bowl', 'table', 'meal', 'homemade',
+    'delicious', 'fresh', 'oven', 'biscuit', 'croissant', 'brioche', 'panettone',
+    'chocolate', 'cream', 'butter', 'egg', 'sugar', 'almond', 'walnut', 'nut',
+    'ciabatta', 'focaccia', 'rustic', 'artisan', 'sourdough', 'yeast', 'slice',
+    'loaf', 'crust', 'golden', 'warm', 'appetizing', 'garnish', 'served',
+    // IT
+    'cibo', 'ricetta', 'dolce', 'pane', 'forno', 'cucina', 'piatto', 'impasto',
+    'lievitato', 'cornetto', 'cantuccini', 'biscotti', 'torta', 'farina',
+];
+
+// Keywords NON-FOOD che causano penalita severa
+const NON_FOOD_KEYWORDS = [
+    'landscape', 'mountain', 'cannon', 'military', 'memorial', 'war', 'monument',
+    'building', 'architecture', 'sign', 'signpost', 'road', 'street', 'car', 'vehicle',
+    'beach', 'ocean', 'sea', 'lake', 'river', 'forest', 'tree', 'flower', 'garden',
+    'people', 'portrait', 'fashion', 'model', 'wedding', 'office', 'computer',
+    'skyline', 'city', 'aerial', 'drone', 'sunset', 'sunrise', 'night', 'stadium',
+    'sport', 'soccer', 'football', 'basketball', 'gym', 'fitness', 'yoga',
+    'cat', 'dog', 'animal', 'pet', 'bird', 'horse', 'aquarium',
+    'beans', 'lentils', 'market', 'spices', 'raw ingredient',
+];
+
 /**
  * Calcola un punteggio di pertinenza per l'immagine
+ * GATE: l'immagine DEVE essere food-related
  */
 function scoreImage(image, keywords) {
     let score = 0;
-    const titleLower = (image.title || '').toLowerCase();
-    const descLower = (image.description || '').toLowerCase();
+    const textToCheck = `${image.title || ''} ${image.description || ''}`.toLowerCase();
 
+    // ── GATE 1: L'immagine DEVE contenere almeno una keyword food ──
+    const isFoodRelated = FOOD_KEYWORDS.some(fw => textToCheck.includes(fw));
+    if (!isFoodRelated) {
+        score -= 100; // Penalita drammatica per immagini non-food
+    }
+
+    // ── GATE 2: Penalizza fortemente immagini esplicitamente non-food ──
+    for (const nfk of NON_FOOD_KEYWORDS) {
+        if (textToCheck.includes(nfk)) score -= 50;
+    }
+
+    // ── Match con keywords ricetta (titolo + descrizione) ──
     for (const kw of keywords) {
         const kwLower = kw.toLowerCase();
-        if (titleLower.includes(kwLower)) score += 10;
-        if (descLower.includes(kwLower)) score += 5;
+        // Match parole singole per evitare false positive
+        const words = kwLower.split(/\s+/);
+        for (const word of words) {
+            if (word.length > 2 && textToCheck.includes(word)) score += 8;
+        }
     }
 
     // Bonus per immagini orizzontali (meglio per card e hero)
@@ -276,10 +318,10 @@ function scoreImage(image, keywords) {
     // Bonus per alta risoluzione
     if (image.width >= 1200) score += 2;
 
-    // Penalità per immagini troppo piccole
+    // Penalita per immagini troppo piccole
     if (image.width < 800) score -= 2;
 
-    // Penalità per nomi generici tipo "IMG_" o "DSC_"
+    // Penalita per nomi generici tipo "IMG_" o "DSC_"
     if (/^(IMG|DSC|P\d|DSCN)/i.test(image.title)) score -= 3;
 
     return score;
@@ -387,14 +429,14 @@ export async function findRecipeImage(recipeName, category = '', aiKeywords = []
                 bestImage._query = query;
             }
 
-            // Se abbiamo un buon risultato, non servono altre query per questo provider
-            if (bestImage && bestImage.score >= 10) break;
+            // Se abbiamo un buon risultato food-related, non servono altre query
+            if (bestImage && bestImage.score >= 15) break;
 
             await sleep(300);
         }
 
-        // Se abbiamo trovato un'immagine buona, non servono altri provider
-        if (bestImage && bestImage.score >= 5) {
+        // Se abbiamo trovato un'immagine buona e food-related, non servono altri provider
+        if (bestImage && bestImage.score >= 8) {
             console.log(`\n   ✨ Trovata con ${provider.name}!`);
             break;
         }
