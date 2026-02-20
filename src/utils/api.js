@@ -70,7 +70,10 @@ export async function callClaude({
             const params = { model, max_tokens: resolvedMaxTokens, messages };
             if (system) params.system = system;
 
-            const message = await client.messages.create(params);
+            // Usa streaming + finalMessage() per evitare timeout HTTP con max_tokens alti
+            // Ref: https://docs.anthropic.com/en/api/messages-streaming
+            const stream = client.messages.stream(params);
+            const message = await stream.finalMessage();
             return message.content[0].text.trim();
         } catch (err) {
             const isRetryable = isRetryableError(err);
