@@ -342,17 +342,25 @@ export async function scrapeRecipePage(url) {
         // Timeout, rete, etc. — provo con browser
     }
 
-    // ── Livello 2: fallback browser headless (siti client-side) ──
+    // ── Livello 2: fallback browser headless STEALTH (anti-bot bypass) ──
     try {
-        const puppeteer = await import('puppeteer');
-        const browser = await puppeteer.default.launch({
+        const puppeteerExtra = await import('puppeteer-extra');
+        const StealthPlugin = await import('puppeteer-extra-plugin-stealth');
+        puppeteerExtra.default.use(StealthPlugin.default());
+
+        const browser = await puppeteerExtra.default.launch({
             headless: 'new',
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-blink-features=AutomationControlled',
+                '--disable-infobars',
+            ],
         });
 
         try {
             const page = await browser.newPage();
-            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36');
+            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
             await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
             await page.waitForSelector('h1', { timeout: 5000 }).catch(() => { });
 
@@ -360,7 +368,7 @@ export async function scrapeRecipePage(url) {
             const data = extractRecipeData(html, url);
 
             if (data && data.ingredients?.length > 0) {
-                data.source = (data.source || 'html') + '+browser';
+                data.source = (data.source || 'html') + '+stealth';
                 return data;
             }
         } finally {

@@ -103,10 +103,18 @@ function extractFromSelectors($) {
  */
 async function fetchWithBrowser(url) {
     console.log('🌐 Avvio browser headless per scraping client-side...');
-    const puppeteer = await import('puppeteer');
-    const browser = await puppeteer.default.launch({
+    const puppeteerExtra = await import('puppeteer-extra');
+    const StealthPlugin = await import('puppeteer-extra-plugin-stealth');
+    puppeteerExtra.default.use(StealthPlugin.default());
+
+    const browser = await puppeteerExtra.default.launch({
         headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-blink-features=AutomationControlled',
+            '--disable-infobars',
+        ],
     });
 
     try {
