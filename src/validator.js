@@ -91,6 +91,14 @@ const AUTHORITATIVE_DOMAINS = [...FORUM_DOMAINS, ...RECIPE_DOMAINS];
 const MAX_SOURCES = 10;
 const SCRAPE_TIMEOUT = 10000; // 10 secondi
 
+// Domini inutili da IGNORARE (walled gardens, social, niente dati ricetta)
+const BLOCKED_DOMAINS = [
+    'facebook.com', 'instagram.com', 'youtube.com', 'tiktok.com',
+    'twitter.com', 'x.com', 'pinterest.com', 'linkedin.com',
+    'amazon.com', 'amazon.it', 'ebay.it', 'ebay.com',
+    'google.com', 'google.it',
+];
+
 // ── 1. Ricerca fonti reali via SerpAPI (4x Google Search: IT+EN) ────
 
 /**
@@ -125,14 +133,15 @@ export async function searchRealSources(recipeName) {
         serpSearch(keys[keys.length > 1 ? 1 : 0], q4),
     ]);
 
-    // Merge e deduplica per URL
+    // Merge, deduplica per URL, e filtra domini inutili
     const seen = new Set();
     const allResults = [];
     for (const r of [...r1, ...r2, ...r3, ...r4]) {
-        if (!seen.has(r.url)) {
-            seen.add(r.url);
-            allResults.push(r);
-        }
+        if (seen.has(r.url)) continue;
+        // Ignora social e walled gardens (mai dati utili)
+        if (BLOCKED_DOMAINS.some(d => r.domain.includes(d))) continue;
+        seen.add(r.url);
+        allResults.push(r);
     }
 
     // Ranking per dominio autorevole
