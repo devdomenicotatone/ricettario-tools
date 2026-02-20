@@ -477,13 +477,22 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
     const ext = 'jpg';
 
     const slug = recipe.slug || recipe.title.toLowerCase().replace(/\s+/g, '-');
-    const localPath = resolve(ricettarioPath, 'images', 'ricette', `${slug}.${ext}`);
+
+    // Mappa categoria → sottocartella
+    const categoryFolders = {
+        Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta',
+        Lievitati: 'lievitati', Focaccia: 'pane',
+    };
+    const category = recipe.category || 'pane';
+    const catFolder = categoryFolders[category] || category.toLowerCase();
+
+    const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.${ext}`);
 
     try {
         await downloadImage(image.url, localPath);
 
-        const relativePath = `../../images/ricette/${slug}.${ext}`;
-        const homeRelativePath = `images/ricette/${slug}.${ext}`;
+        const relativePath = `../../images/ricette/${catFolder}/${slug}.${ext}`;
+        const homeRelativePath = `images/ricette/${catFolder}/${slug}.${ext}`;
 
         return {
             localPath,
