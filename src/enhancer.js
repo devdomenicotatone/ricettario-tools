@@ -30,6 +30,10 @@ REGOLE:
     - Tempo di cottura specifico
     - Suggerimenti: pietra refrattaria, vapore, posizione teglia, come riconoscere la cottura perfetta
 14. Le temperature dei forni devono SEMPRE essere per forni casalinghi (max 280°C). MAI suggerire temperature superiori.
+15. INGREDIENTI DINAMICI PER SETUP: Se un ingrediente ha caratteristiche diverse a seconda del setup (spirale vs mano), usa il campo opzionale "setupNote". Esempi:
+    - Acqua: spirale → "ghiacciata 2-4°C" / mano → "20-22°C, in 3 riprese"
+    - Lievito: dosi diverse se impasto più lungo a mano
+    Il campo "note" classico deve contenere la nota del setup PRIMARIO (spirale/estrusore). "setupNote" serve per le VARIAZIONI.
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
 {
@@ -44,7 +48,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "fermentation": "~24h",
   "totalFlour": 1000,
   "ingredients": [
-    { "name": "Nome Ingrediente", "note": "(nota tecnica opzionale)", "grams": 600 }
+    { "name": "Nome Ingrediente", "note": "(nota tecnica setup primario)", "grams": 600, "setupNote": { "spirale": "ghiacciata 2-4°C", "mano": "20-22°C, in 3 riprese" } }
   ],
   "suspensions": [
     { "name": "Nome Sospensione", "note": "(nota)", "grams": 160 }

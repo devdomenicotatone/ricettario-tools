@@ -4,10 +4,22 @@
  */
 
 /**
- * Genera una riga ingrediente con data-base
+ * Genera una riga ingrediente con data-base e setupNote dinamiche
  */
-function ingredientRow({ name, note, grams }) {
-    const noteHtml = note ? ` <span class="ingredient-note">${note}</span>` : '';
+function ingredientRow({ name, note, grams, setupNote }) {
+    // Costruisci nota HTML con data attributes per setup dinamico
+    let noteHtml = '';
+    if (setupNote && typeof setupNote === 'object') {
+        const dataAttrs = Object.entries(setupNote)
+            .map(([setup, text]) => `data-setup-note-${setup}="(${text})"`)
+            .join(' ');
+        // Nota iniziale = setup primario (spirale/estrusore)
+        const primaryNote = setupNote.spirale || setupNote.estrusore || note || '';
+        noteHtml = ` <span class="ingredient-note" ${dataAttrs}>(${primaryNote})</span>`;
+    } else if (note) {
+        noteHtml = ` <span class="ingredient-note">${note}</span>`;
+    }
+
     // Se grams è null/undefined → riga header sezione (es. "BIGA", "IMPASTO FINALE")
     if (grams == null) {
         return `                            <tr class="ingredient-section-header">

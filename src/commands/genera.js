@@ -9,6 +9,7 @@ import { enhanceRecipe, generateRecipe } from '../enhancer.js';
 import { generateHtml } from '../template.js';
 import { injectCard } from '../injector.js';
 import { findAndDownloadImage } from '../image-finder.js';
+import { validateRecipe, generateReport } from '../validator.js';
 import { log } from '../utils/logger.js';
 
 /**
@@ -33,6 +34,31 @@ export async function genera(args) {
             tipo: args.tipo,
             note: args.note,
         });
+    }
+
+    // ── Cross-check con fonti reali (skippabile con --no-validate) ──
+    if (args['no-validate'] !== true) {
+        log.header('CROSS-CHECK FONTI REALI');
+        try {
+            const { comparison, report } = await validateRecipe(enhancedRecipe);
+            const emoji = comparison.score >= 80 ? '🟢' : comparison.score >= 60 ? '🟡' : '🔴';
+            log.info(`${emoji} Punteggio: ${comparison.score}/100`);
+            log.info(`Fonti analizzate: ${comparison.sourcesAnalyzed || 0}`);
+            if (comparison.discrepancies?.length > 0) {
+                log.warn('Discrepanze trovate:');
+                comparison.discrepancies.forEach(d => {
+                    log.warn(`  ⚠️  ${d}`);
+                });
+            }
+            if (comparison.matches?.length > 0) {
+                log.info(`✅ Conferme: ${comparison.matches.length} ingredienti confermati`);
+            }
+            // Salva report
+            enhancedRecipe._validation = { score: comparison.score, report };
+        } catch (err) {
+            log.warn(`Cross-check non riuscito: ${err.message}`);
+            log.info('Procedo senza validazione.');
+        }
     }
 
     // Genera HTML
@@ -76,6 +102,13 @@ export async function genera(args) {
     // Salva il file HTML (rigenera con immagine)
     const finalHtml = generateHtml(enhancedRecipe);
     writeFileSync(outputFile, finalHtml, 'utf-8');
+
+    // Salva report validazione accanto all'HTML
+    if (enhancedRecipe._validation?.report) {
+        const reportFile = outputFile.replace('.html', '.validazione.md');
+        writeFileSync(reportFile, enhancedRecipe._validation.report, 'utf-8');
+        log.info(`📋 Report validazione: ${reportFile}`);
+    }
 
     log.header('RICETTA GENERATA');
     log.info(`Titolo: ${enhancedRecipe.title}`);
