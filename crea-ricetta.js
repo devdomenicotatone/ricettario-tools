@@ -57,6 +57,7 @@ Comandi:
   --valida                   Valida tutte le ricette (SerpAPI cross-check)
   --verifica                 Verifica qualità con Claude AI
   --verifica-ricetta <path>  Verifica singola ricetta
+  --sync-cards               Ricostruisce recipes.json da tutte le ricette HTML
   --trascrivi-philips        Trascrivi PDF Philips Serie 7000
   --trascrivi-immagini       Trascrivi immagini PNG in HTML
   --aggiorna-immagini        Scarica immagini multi-provider
@@ -85,7 +86,7 @@ async function main() {
     // Help
     if (!args.url && !args.nome && !args.scopri && !args.valida &&
         !args.verifica && !args['verifica-ricetta'] && !args['trascrivi-philips'] &&
-        !args['trascrivi-immagini'] && !args['aggiorna-immagini']) {
+        !args['trascrivi-immagini'] && !args['aggiorna-immagini'] && !args['sync-cards']) {
         showHelp();
         process.exit(0);
     }
@@ -97,6 +98,12 @@ async function main() {
     if (args['aggiorna-immagini']) {
         const { aggiornaImmagini } = await import('./src/commands/immagini.js');
         await aggiornaImmagini(args);
+        process.exit(0);
+    }
+
+    if (args['sync-cards']) {
+        const { syncCards } = await import('./src/commands/sync-cards.js');
+        await syncCards(args);
         process.exit(0);
     }
 

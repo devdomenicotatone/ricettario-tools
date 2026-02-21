@@ -4,6 +4,17 @@
  */
 
 /**
+ * Sanitizza testo libero per HTML valido.
+ * Escapa i `<` che non fanno parte di tag HTML reali (es. "W < 160", "<0.1mm")
+ * per prevenire errori parse5 di Vite (invalid-first-character-of-tag-name).
+ */
+function sanitizeText(text) {
+    if (!text || typeof text !== 'string') return text || '';
+    // Escapa < seguito da: numero, spazio+numero, lettera non-tag
+    // Ma NON escapa < seguito da tag HTML validi (a, p, br, span, strong, div, etc.)
+    return text.replace(/<(?!\/|[a-zA-Z][a-zA-Z0-9]*[\s>]|!--|!DOCTYPE)/g, '&lt;');
+}
+/**
  * Genera una riga ingrediente con data-base e setupNote dinamiche
  */
 function ingredientRow({ name, note, grams, setupNote }) {
@@ -38,8 +49,8 @@ function ingredientRow({ name, note, grams, setupNote }) {
  */
 function stepItem({ title, text }) {
     return `                            <li>
-                                <strong>${title}</strong>
-                                <p>${text}</p>
+                                <strong>${sanitizeText(title)}</strong>
+                                <p>${sanitizeText(text)}</p>
                             </li>`;
 }
 
@@ -288,7 +299,7 @@ ${secondarySteps}
                         </ol>
 ${r.proTips?.[1] ? `
                         <div class="pro-tip-box" style="margin-top: 16px;">
-                            <p><strong>💡 PRO TIP:</strong> ${r.proTips[1]}</p>
+                            <p><strong>💡 PRO TIP:</strong> ${sanitizeText(r.proTips[1])}</p>
                         </div>` : ''}
                     </div>` : ''}
 ${hasCondiment ? `
@@ -338,7 +349,7 @@ ${flourRows}
                 <span class="alert__icon">🚫</span>
                 <div class="alert__content">
                     <strong>ALERT PROFESSIONALE</strong>
-                    <p>${r.alert}</p>
+                    <p>${sanitizeText(r.alert)}</p>
                 </div>
             </div>
 ${r.baking ? `
@@ -357,7 +368,7 @@ ${r.baking ? `
                     </div>
                 </div>
 ${r.baking.tips?.length > 0 ? `                <ul class="baking-tips" style="list-style: none; padding: 0;">
-${r.baking.tips.map(t => `                    <li style="padding: 6px 0; border-bottom: 1px solid var(--border-subtle);">💡 ${t}</li>`).join('\n')}
+${r.baking.tips.map(t => `                    <li style="padding: 6px 0; border-bottom: 1px solid var(--border-subtle);">💡 ${sanitizeText(t)}</li>`).join('\n')}
                 </ul>` : ''}
             </div>` : ''}
 ${r.glossary?.length > 0 ? `
@@ -368,8 +379,8 @@ ${r.glossary?.length > 0 ? `
                     Glossario
                 </h2>
                 <dl class="glossary-list" style="margin: 0; padding: 0;">
-${r.glossary.map(g => `                    <dt style="font-weight: 600; color: var(--color-text); margin-top: 12px;">${g.term}</dt>
-                    <dd style="margin: 4px 0 0 0; color: var(--color-text-secondary); font-size: 0.92rem;">${g.definition}</dd>`).join('\n')}
+${r.glossary.map(g => `                    <dt style="font-weight: 600; color: var(--color-text); margin-top: 12px;">${sanitizeText(g.term)}</dt>
+                    <dd style="margin: 4px 0 0 0; color: var(--color-text-secondary); font-size: 0.92rem;">${sanitizeText(g.definition)}</dd>`).join('\n')}
                 </dl>
             </div>` : ''}
 

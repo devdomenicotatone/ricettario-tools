@@ -107,3 +107,13 @@ for (const r of results) {
 }
 const success = results.filter(r => r.status === '✅').length;
 console.log(`\n✅ ${success}/${RECIPES.length} ricette rigenerate con successo`);
+
+// ── Step 3: Sync recipes.json ──
+console.log(`\n${'═'.repeat(60)}`);
+console.log('🔄 SYNC CARDS — Ricostruzione recipes.json');
+console.log(`${'═'.repeat(60)}\n`);
+try {
+    execSync('node crea-ricetta.js --sync-cards', { stdio: 'inherit', timeout: 30000 });
+} catch (err) {
+    console.error(`❌ Errore sync-cards: ${err.message}`);
+}
