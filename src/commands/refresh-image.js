@@ -17,6 +17,7 @@ import { resolve, dirname } from 'path';
 import { log } from '../utils/logger.js';
 import { findRecipeImage, downloadImage, buildAttribution } from '../image-finder.js';
 import { CATEGORY_FOLDERS } from '../publisher.js';
+import { generateHtml } from '../template.js';
 
 /**
  * Carica e pulisce l'index persistente delle immagini
@@ -47,7 +48,7 @@ export async function refreshImage(args) {
         args.output || process.env.RICETTARIO_PATH || '../Ricettario'
     );
 
-    // ── Trova il JSON della ricetta cercando in tutte le categorie ──
+    // ── Trova il JSON della ricetta ──
     let jsonFile = null;
     let category = null;
 
@@ -73,31 +74,27 @@ export async function refreshImage(args) {
 
     if (!jsonFile) {
         log.error(`JSON non trovato per slug "${slug}" in nessuna categoria.`);
-        log.info('Categorie cercate: ' + Object.values(CATEGORY_FOLDERS).join(', '));
         process.exit(1);
     }
 
     log.info(`📄 Trovato: ${jsonFile}`);
 
-    // ── Carica il JSON della ricetta ──
     const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
     recipe.slug = slug;
     recipe.category = category;
 
-    // ── Salva l'URL vecchia PRIMA di eliminarla (per escluderla dalla ricerca) ──
+    // ── Salva vecchia URL per escluderla ──
     const catFolder = CATEGORY_FOLDERS[category] || category.toLowerCase();
     const oldImagePath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
     const oldUrl = recipe._originalImageUrl || '';
     const excludeUrls = new Set();
     if (oldUrl) excludeUrls.add(oldUrl);
 
-    // ── Elimina immagine vecchia ──
     if (existsSync(oldImagePath)) {
         unlinkSync(oldImagePath);
         log.info(`🗑️  Immagine vecchia eliminata: ${oldImagePath}`);
     }
 
-    // Pulisci index persistente
     if (oldUrl) cleanImageIndex(oldUrl);
 
     // ── Cerca nuova immagine (escludendo la vecchia URL) ──
@@ -143,10 +140,15 @@ export async function refreshImage(args) {
 
     writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
 
-    log.header('IMMAGINE AGGIORNATA');
+    // ── Rigenera HTML automaticamente ──
+    const htmlFile = jsonFile.replace('.json', '.html');
+    const html = generateHtml(recipe);
+    writeFileSync(htmlFile, html, 'utf-8');
+
+    log.header('IMMAGINE AGGIORNATA + HTML RIGENERATO');
     log.info(`📸 Nuova immagine: ${localPath}`);
     log.info(`🔗 URL: ${image.url}`);
-    log.info(`💾 JSON aggiornato: ${jsonFile}`);
-    log.info('');
-    log.info('Per aggiornare anche l\'HTML: node crea-ricetta.js --rigenera ' + jsonFile);
+    log.info(`💾 JSON: ${jsonFile}`);
+    log.info(`📄 HTML: ${htmlFile}`);
 }
+
