@@ -7,11 +7,32 @@
  *   3. Pixabay  (grande catalogo, 100 req/min)
  *   4. Wikimedia Commons (fallback, no API key)
  * 
- * Deduplicazione: Set di URL già usati per evitare immagini identiche
+ * Deduplicazione:
+ *   - Per sessione: Set di URL già usati
+ *   - Persistente: data/used-images.json (URL→slug)
+ *   - Per slug: non scarica se file già esiste su disco
  */
 
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
+
+// ── Index persistente immagini già usate ──
+const IMAGE_INDEX_FILE = resolve(process.cwd(), 'data', 'used-images.json');
+
+function loadImageIndex() {
+    try {
+        if (existsSync(IMAGE_INDEX_FILE)) {
+            return JSON.parse(readFileSync(IMAGE_INDEX_FILE, 'utf-8'));
+        }
+    } catch {}
+    return {}; // { url: slug }
+}
+
+function saveImageIndex(index) {
+    const dir = dirname(IMAGE_INDEX_FILE);
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    writeFileSync(IMAGE_INDEX_FILE, JSON.stringify(index, null, 2), 'utf-8');
+}
 
 const MIN_WIDTH = 600;
 const MIN_HEIGHT = 400;
@@ -53,6 +74,16 @@ const TRANSLATIONS = {
     'margherita': 'margherita pizza basil mozzarella',
     'teglia': 'roman pizza al taglio',
 };
+
+// ── Keywords regionali/geografiche per query più specifiche ──
+const REGIONAL_KEYWORDS = [
+    'barese', 'genovese', 'napoletana', 'napoletano', 'romana', 'romano',
+    'siciliana', 'siciliano', 'pugliese', 'toscana', 'toscano', 'piemontese',
+    'ligure', 'calabrese', 'sarda', 'sardo', 'veneta', 'veneto', 'milanese',
+    'emiliana', 'emiliano', 'romagnola', 'romagnolo', 'marchigiana', 'marchigiano',
+    'campana', 'campano', 'friulana', 'friulano', 'abruzzese', 'lucana', 'lucano',
+    'classica', 'classico', 'tradizionale', 'antica', 'antico',
+];
 
 // ══════════════════════════════════════════════════════════
 //  PROVIDER 1: PEXELS
@@ -336,6 +367,9 @@ function buildSearchQueries(recipeName, category, aiKeywords) {
     const STOPWORDS = ['di', 'del', 'della', 'delle', 'dei', 'al', 'alla', 'alle', 'con', 'in', 'per', 'tipo'];
     const significantWords = nameWords.filter(w => !STOPWORDS.includes(w) && w.length > 2);
 
+    // Estrai parole regionali/geografiche dal titolo
+    const regionalWord = nameWords.find(w => REGIONAL_KEYWORDS.includes(w)) || '';
+
     const queries = [];
 
     // 1. Keywords AI (più specifiche)
@@ -343,13 +377,21 @@ function buildSearchQueries(recipeName, category, aiKeywords) {
         queries.push(...aiKeywords.slice(0, 2));
     }
 
-    // 2. Traduzione diretta della prima parola significativa
+    // 2. Query regionale specifica (es. "focaccia genovese" o "pizza napoletana")
+    if (regionalWord) {
+        const mainFood = significantWords.find(w => w !== regionalWord) || significantWords[0];
+        const translated = TRANSLATIONS[mainFood] || mainFood;
+        queries.push(`${translated} ${regionalWord} traditional`);
+        queries.push(`${mainFood} ${regionalWord}`);
+    }
+
+    // 3. Traduzione diretta della prima parola significativa
     const mainWord = significantWords[0] || nameWords[0];
     if (TRANSLATIONS[mainWord]) {
         queries.push(TRANSLATIONS[mainWord]);
     }
 
-    // 3. Combinazione delle prime 2 parole significative tradotte
+    // 4. Combinazione delle prime 2 parole significative tradotte
     if (significantWords.length >= 2) {
         const translated = significantWords.slice(0, 2)
             .map(w => TRANSLATIONS[w] || w)
@@ -357,11 +399,11 @@ function buildSearchQueries(recipeName, category, aiKeywords) {
         queries.push(`${translated} homemade`);
     }
 
-    // 4. Nome completo semplificato + "italian"
+    // 5. Nome completo semplificato + "italian"
     const simpleName = significantWords.slice(0, 3).join(' ');
     queries.push(`${simpleName} italian homemade`);
 
-    // 5. Categoria come ultima risorsa
+    // 6. Categoria come ultima risorsa
     if (category) {
         const catLower = category.toLowerCase();
         const enCat = TRANSLATIONS[catLower] || catLower;
@@ -506,32 +548,45 @@ export function buildAttribution(image) {
  * Flusso completo: cerca + scarica + restituisce dati immagine
  */
 export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = new Set()) {
+    const ext = 'jpg';
+    const slug = recipe.slug || recipe.title.toLowerCase().replace(/\s+/g, '-');
+
+    // Mappa categoria → sottocartella (unica sorgente di verità: publisher.js)
+    const categoryFolders = {
+        Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta',
+        Lievitati: 'lievitati', Focaccia: 'focaccia', Dolci: 'dolci',
+    };
+    const category = recipe.category || 'pane';
+    const catFolder = categoryFolders[category] || category.toLowerCase();
+    const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.${ext}`);
+
+    // ── Blocklist per slug: se il file esiste già, skippa ──
+    if (existsSync(localPath)) {
+        console.log(`\n📸 Immagine già presente per "${slug}", skip ricerca.`);
+        const relativePath = `../../images/ricette/${catFolder}/${slug}.${ext}`;
+        const homeRelativePath = `images/ricette/${catFolder}/${slug}.${ext}`;
+        return { localPath, relativePath, homeRelativePath, url: '', attribution: '📷 Immagine esistente', license: '', author: '', provider: '' };
+    }
+
+    // ── Carica index persistente e mergia con usedUrls di sessione ──
+    const imageIndex = loadImageIndex();
+    const persistentUrls = new Set([...usedUrls, ...Object.keys(imageIndex)]);
+
     const image = await findRecipeImage(
         recipe.title,
         recipe.category,
         recipe.imageKeywords || [],
-        usedUrls
+        persistentUrls
     );
 
     if (!image) return null;
 
-    // Forza sempre .jpg per compatibilità con gli HTML esistenti
-    const ext = 'jpg';
-
-    const slug = recipe.slug || recipe.title.toLowerCase().replace(/\s+/g, '-');
-
-    // Mappa categoria → sottocartella
-    const categoryFolders = {
-        Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta',
-        Lievitati: 'lievitati', Focaccia: 'pane',
-    };
-    const category = recipe.category || 'pane';
-    const catFolder = categoryFolders[category] || category.toLowerCase();
-
-    const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.${ext}`);
-
     try {
         await downloadImage(image.url, localPath);
+
+        // ── Salva nell'index persistente ──
+        imageIndex[image.url] = slug;
+        saveImageIndex(imageIndex);
 
         const relativePath = `../../images/ricette/${catFolder}/${slug}.${ext}`;
         const homeRelativePath = `images/ricette/${catFolder}/${slug}.${ext}`;
