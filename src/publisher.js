@@ -7,7 +7,7 @@
  * Usato da: genera.js, testo.js, rigenera.js
  */
 
-import { writeFileSync, mkdirSync, existsSync, unlinkSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { exec } from 'child_process';
 import { createInterface } from 'readline';
@@ -63,8 +63,9 @@ function openInBrowser(filePath) {
     return new Promise((res) => {
         let cmd;
         if (process.platform === 'win32') {
-            // Usa explorer.exe — gestisce meglio spazi e path lunghi su Windows/PowerShell
-            cmd = `explorer.exe "${filePath}"`;
+            // cmd.exe /c start apre il file con l'app predefinita (browser per .html)
+            // Funziona correttamente anche se lanciato da PowerShell
+            cmd = `cmd.exe /c start "" "${filePath}"`;
         } else if (process.platform === 'darwin') {
             cmd = `open "${filePath}"`;
         } else {
@@ -247,14 +248,12 @@ export async function publishRecipe(recipe, args, options = {}) {
         );
 
         if (!confirmed) {
-            log.warn('🚫 Pubblicazione annullata dall\'utente.');
-            // Rimuovi i file generati
-            try { unlinkSync(outputFile); } catch {}
-            try { unlinkSync(jsonFile); } catch {}
-            const reportFile = outputFile.replace('.html', '.validazione.md');
-            try { unlinkSync(reportFile); } catch {}
-            log.info('File generati rimossi.');
-            return { outputFile: null, jsonFile: null };
+            log.warn('⏸️  Inject homepage saltato.');
+            log.info(`I file sono stati mantenuti:`);
+            log.info(`  HTML: ${outputFile}`);
+            log.info(`  JSON: ${jsonFile}`);
+            log.info('Per pubblicare dopo: node crea-ricetta.js --sync-cards');
+            return { outputFile, jsonFile };
         }
 
         log.info('✅ Confermato! Procedo con l\'integrazione...');
