@@ -1,5 +1,5 @@
 /**
- * REFRESH IMAGE — Rigenera l'immagine di copertina di una ricetta
+ * REFRESH IMAGE — Rigenera l'immagine di copertina con selettore visuale
  *
  * Uso:
  *   node crea-ricetta.js --refresh-image focaccia-genovese-classica
@@ -7,33 +7,18 @@
  *
  * Flusso:
  *   1. Trova il JSON della ricetta tramite slug
- *   2. Elimina l'immagine vecchia dal disco e dall'index persistente
- *   3. Cerca una nuova immagine via image-finder
- *   4. Aggiorna il JSON con il nuovo path
+ *   2. Cerca immagini su TUTTI i provider (Pexels, Unsplash, Pixabay, Wikimedia)
+ *   3. Apre l'Image Picker nel browser — l'utente sceglie visualmente
+ *   4. Scarica l'immagine selezionata, aggiorna JSON e rigenera HTML
  */
 
 import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve } from 'path';
 import { log } from '../utils/logger.js';
-import { findRecipeImage, downloadImage, buildAttribution } from '../image-finder.js';
+import { searchAllProviders, downloadImage, buildAttribution } from '../image-finder.js';
 import { CATEGORY_FOLDERS } from '../publisher.js';
 import { generateHtml } from '../template.js';
-
-/**
- * Carica e pulisce l'index persistente delle immagini
- */
-function cleanImageIndex(urlToRemove) {
-    const indexFile = resolve(process.cwd(), 'data', 'used-images.json');
-    if (!existsSync(indexFile)) return;
-    try {
-        const index = JSON.parse(readFileSync(indexFile, 'utf-8'));
-        if (urlToRemove && index[urlToRemove]) {
-            delete index[urlToRemove];
-            writeFileSync(indexFile, JSON.stringify(index, null, 2), 'utf-8');
-            log.info(`🗑️  Rimossa dall'index persistente: ${urlToRemove}`);
-        }
-    } catch {}
-}
+import { startImagePicker } from '../image-picker.js';
 
 export async function refreshImage(args) {
     const slug = args['refresh-image'];
@@ -83,38 +68,46 @@ export async function refreshImage(args) {
     recipe.slug = slug;
     recipe.category = category;
 
-    // ── Salva vecchia URL per escluderla ──
     const catFolder = CATEGORY_FOLDERS[category] || category.toLowerCase();
-    const oldImagePath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
     const oldUrl = recipe._originalImageUrl || '';
-    const excludeUrls = new Set();
-    if (oldUrl) excludeUrls.add(oldUrl);
 
-    if (existsSync(oldImagePath)) {
-        unlinkSync(oldImagePath);
-        log.info(`🗑️  Immagine vecchia eliminata: ${oldImagePath}`);
-    }
-
-    if (oldUrl) cleanImageIndex(oldUrl);
-
-    // ── Cerca nuova immagine (escludendo la vecchia URL) ──
-    log.header('RICERCA NUOVA IMMAGINE');
-    const image = await findRecipeImage(
+    // ── Cerca su TUTTI i provider ──
+    log.header('RICERCA IMMAGINI — TUTTI I PROVIDER');
+    const providerResults = await searchAllProviders(
         recipe.title,
         recipe.category,
-        recipe.imageKeywords || [],
-        excludeUrls
+        recipe.imageKeywords || []
     );
 
-    if (!image) {
-        log.warn('Nessuna nuova immagine trovata.');
+    const totalImages = providerResults.reduce((s, p) => s + p.images.length, 0);
+    if (totalImages === 0) {
+        log.warn('Nessuna immagine trovata su nessun provider.');
         return;
     }
 
-    // ── Scarica ──
+    log.info(`📊 Totale: ${totalImages} immagini da ${providerResults.filter(p => p.images.length > 0).length} provider`);
+
+    // ── Apri Image Picker nel browser ──
+    log.header('IMAGE PICKER');
+    log.info('🖼️  Apro il selettore visuale nel browser...');
+    log.info('   Seleziona l\'immagine che preferisci, poi conferma.');
+
+    const selectedImage = await startImagePicker(recipe.title, providerResults);
+
+    log.info(`✅ Selezionata: "${(selectedImage.title || '').substring(0, 60)}"`);
+    log.info(`   ${selectedImage.width}×${selectedImage.height} — ${selectedImage.provider}`);
+
+    // ── Elimina immagine vecchia ──
+    const oldImagePath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
+    if (existsSync(oldImagePath)) {
+        unlinkSync(oldImagePath);
+    }
+
+    // ── Scarica nuova immagine ──
     const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
     try {
-        await downloadImage(image.url, localPath);
+        await downloadImage(selectedImage.url, localPath);
+        log.info(`💾 Scaricata: ${localPath}`);
     } catch (err) {
         log.error(`Download fallito: ${err.message}`);
         return;
@@ -124,13 +117,16 @@ export async function refreshImage(args) {
     const indexFile = resolve(process.cwd(), 'data', 'used-images.json');
     let index = {};
     try { if (existsSync(indexFile)) index = JSON.parse(readFileSync(indexFile, 'utf-8')); } catch {}
-    index[image.url] = slug;
+    // Rimuovi vecchia URL
+    if (oldUrl && index[oldUrl]) delete index[oldUrl];
+    // Aggiungi nuova
+    index[selectedImage.url] = slug;
     writeFileSync(indexFile, JSON.stringify(index, null, 2), 'utf-8');
 
     // ── Aggiorna JSON ──
     recipe.image = `images/ricette/${catFolder}/${slug}.jpg`;
-    recipe.imageAttribution = buildAttribution(image);
-    recipe._originalImageUrl = image.url;
+    recipe.imageAttribution = buildAttribution(selectedImage);
+    recipe._originalImageUrl = selectedImage.url;
 
     const persistentJson = { ...recipe };
     delete persistentJson._validation;
@@ -145,10 +141,13 @@ export async function refreshImage(args) {
     const html = generateHtml(recipe);
     writeFileSync(htmlFile, html, 'utf-8');
 
-    log.header('IMMAGINE AGGIORNATA + HTML RIGENERATO');
-    log.info(`📸 Nuova immagine: ${localPath}`);
-    log.info(`🔗 URL: ${image.url}`);
+    // ── Aggiorna recipes.json (card homepage + categoria) ──
+    const { syncCards } = await import('./sync-cards.js');
+    await syncCards({ output: args.output });
+
+    log.header('✅ COMPLETATO');
+    log.info(`📸 Immagine: ${localPath}`);
     log.info(`💾 JSON: ${jsonFile}`);
     log.info(`📄 HTML: ${htmlFile}`);
+    log.info(`🔄 recipes.json aggiornato`);
 }
-

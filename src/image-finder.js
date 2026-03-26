@@ -498,6 +498,56 @@ export async function findRecipeImage(recipeName, category = '', aiKeywords = []
 }
 
 /**
+ * Cerca immagini su TUTTI i provider e restituisce risultati raggruppati.
+ * Non fa early-exit — interroga ogni provider con ogni query.
+ * Usata dall'Image Picker UI per dare scelta visuale all'utente.
+ *
+ * @returns {Promise<Array<{provider, emoji, images}>>}
+ */
+export async function searchAllProviders(recipeName, category = '', aiKeywords = []) {
+    const queries = buildSearchQueries(recipeName, category, aiKeywords);
+    const allKeywords = [recipeName.toLowerCase(), ...(aiKeywords.map(k => k.toLowerCase()))];
+
+    const providers = [
+        { name: 'Pexels', fn: searchPexels, emoji: '🟣' },
+        { name: 'Unsplash', fn: searchUnsplash, emoji: '⬛' },
+        { name: 'Pixabay', fn: searchPixabay, emoji: '🟢' },
+        { name: 'Wikimedia', fn: searchWikimedia, emoji: '🌐' },
+    ];
+
+    const grouped = [];
+
+    for (const provider of providers) {
+        console.log(`   ${provider.emoji} Cerco su ${provider.name}...`);
+        const seen = new Set();
+        const providerImages = [];
+
+        for (const query of queries) {
+            const results = await provider.fn(query, 20);
+            for (const img of results) {
+                if (seen.has(img.url)) continue;
+                seen.add(img.url);
+                img.score = scoreImage(img, allKeywords);
+                img.provider = provider.name;
+                if (img.score > -50) providerImages.push(img); // Solo food-related
+            }
+            await sleep(300);
+        }
+
+        providerImages.sort((a, b) => b.score - a.score);
+        grouped.push({
+            provider: provider.name,
+            emoji: provider.emoji,
+            images: providerImages.slice(0, 30), // Max 30 per provider
+        });
+        console.log(`     ✅ ${providerImages.length} immagini trovate`);
+    }
+
+    return grouped;
+}
+
+
+/**
  * Scarica un'immagine in locale
  */
 export async function downloadImage(imageUrl, destPath) {
