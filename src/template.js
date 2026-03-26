@@ -34,8 +34,7 @@ function ingredientRow({ name, note, grams, setupNote }) {
     // Se grams è null/undefined → riga header sezione (es. "BIGA", "IMPASTO FINALE")
     if (grams == null) {
         return `                            <tr class="ingredient-section-header">
-                                <td><strong>${name}</strong>${noteHtml}</td>
-                                <td class="ingredient-qty"></td>
+                                <td colspan="2"><strong>${name}</strong>${noteHtml}</td>
                             </tr>`;
     }
     return `                            <tr>
@@ -242,7 +241,7 @@ export function generateHtml(recipe) {
                                     aria-label="Diminuisci dosi">−</button>
                                 <div class="dose-calculator__input-wrapper">
                                     <input type="number" class="dose-calculator__input" id="dose-input" value="${totalKg}"
-                                        min="${totalKg}" max="5" step="${totalKg}" data-base-total="${totalGrams}" aria-label="Kg di farina">
+                                        min="0.1" max="${Math.round(totalKg * 3 * 10) / 10}" step="any" data-base-total="${totalGrams}" aria-label="Kg di farina">
                                     <span class="dose-calculator__unit">kg</span>
                                 </div>
                                 <button class="dose-calculator__btn" id="dose-increase"
