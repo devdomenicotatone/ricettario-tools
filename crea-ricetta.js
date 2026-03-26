@@ -63,6 +63,7 @@ Comandi:
   --rigenera <file.json>     Rigenera HTML da JSON (senza API)
   --rigenera --tutte         Rigenera tutte le ricette da JSON
   --sync-cards               Ricostruisce recipes.json da tutte le ricette HTML
+  --refresh-image <slug>     Rigenera solo l'immagine di copertina
   --trascrivi-philips        Trascrivi PDF Philips Serie 7000
   --trascrivi-immagini       Trascrivi immagini PNG in HTML
   --aggiorna-immagini        Scarica immagini multi-provider
@@ -92,7 +93,8 @@ async function main() {
     // Help
     if (!args.url && !args.nome && !args.testo && !args.rigenera && !args.scopri && !args.valida &&
         !args.verifica && !args['verifica-ricetta'] && !args['trascrivi-philips'] &&
-        !args['trascrivi-immagini'] && !args['aggiorna-immagini'] && !args['sync-cards']) {
+        !args['trascrivi-immagini'] && !args['aggiorna-immagini'] && !args['sync-cards'] &&
+        !args['refresh-image']) {
         showHelp();
         process.exit(0);
     }
@@ -110,6 +112,12 @@ async function main() {
     if (args['sync-cards']) {
         const { syncCards } = await import('./src/commands/sync-cards.js');
         await syncCards(args);
+        process.exit(0);
+    }
+
+    if (args['refresh-image']) {
+        const { refreshImage } = await import('./src/commands/refresh-image.js');
+        await refreshImage(args);
         process.exit(0);
     }
 
