@@ -6,6 +6,7 @@
  * Uso:
  *   node crea-ricetta.js --url "https://giallozafferano.it/ricetta/Focaccia.html"
  *   node crea-ricetta.js --nome "Focaccia Barese" --idratazione 80
+ *   node crea-ricetta.js --testo ricetta.txt
  *   node crea-ricetta.js --scopri "focaccia pugliese" --quante 3
  *   node crea-ricetta.js --valida
  *   node crea-ricetta.js --verifica
@@ -53,6 +54,7 @@ function showHelp() {
 Comandi:
   --url <url>                Scraping + AI rewriting da URL (virgola per batch)
   --nome <nome>              Genera ricetta da zero con AI
+  --testo <file.txt>         Inserisci ricetta da testo libero (appunti, note)
   --scopri <query>           Cerca ricette su Google e genera
   --valida                   Valida tutte le ricette (SerpAPI cross-check)
   --verifica                 Verifica qualità con Claude AI
@@ -84,7 +86,7 @@ async function main() {
     const args = parseArgs();
 
     // Help
-    if (!args.url && !args.nome && !args.scopri && !args.valida &&
+    if (!args.url && !args.nome && !args.testo && !args.scopri && !args.valida &&
         !args.verifica && !args['verifica-ricetta'] && !args['trascrivi-philips'] &&
         !args['trascrivi-immagini'] && !args['aggiorna-immagini'] && !args['sync-cards']) {
         showHelp();
@@ -111,6 +113,12 @@ async function main() {
     if (!process.env.ANTHROPIC_API_KEY) {
         log.error('ANTHROPIC_API_KEY non trovata. Copia .env.example in .env e inserisci la tua chiave.');
         process.exit(1);
+    }
+
+    if (args.testo) {
+        const { testo } = await import('./src/commands/testo.js');
+        await testo(args);
+        process.exit(0);
     }
 
     if (args.valida) {

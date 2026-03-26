@@ -423,3 +423,218 @@ REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
     return [];
   }
 }
+
+/**
+ * Estrae ricette da TESTO OCR (pre-estratto da Surya) — molto più economico di Vision
+ * @param {Array<{filename: string, folder: string, text: string}>} pages - Pagine OCR
+ * @returns {Promise<Array>} Array di ricette strutturate
+ */
+export async function extractRecipesFromText(pages) {
+  // Componi il testo — le pagine overlap sono marcate come CONTESTO
+  const pagesText = pages.map((p, i) => {
+    const label = p.isOverlap ? '[CONTESTO - già inviata nel batch precedente]' : '';
+    return `═══ PAGINA ${i + 1} (${p.filename}) ${label} ═══\n${p.text}`;
+  }).join('\n\n');
+
+  const prompt = `Sei un estrattore di ricette dal ricettario UFFICIALE Philips Pasta Maker.
+
+⚠️ ATTENZIONE CRITICA — TESTO MULTILINGUA:
+Queste pagine contengono fino a 4 LINGUE AFFIANCATE (Italiano, English, Deutsch, Ελληνικά, Français).
+Le righe delle diverse lingue sono INTERCALATE nel testo OCR, NON separate.
+Ogni ricetta appare tradotta in tutte le lingue SULLO STESSO BLOCCO DI TESTO.
+DEVI estrarre SOLO ED ESCLUSIVAMENTE il contenuto ITALIANO. Ignora completamente tutto ciò che è in altre lingue.
+
+⚠️ ATTENZIONE — STRUTTURA TIPICA DI OGNI RICETTA NEL LIBRO:
+Ogni ricetta nel libro Philips segue SEMPRE questo schema:
+  1. TITOLO DELLA RICETTA (es. "Spaghetti con salsa di pomodoro")
+  2. SEZIONE "Per l'impasto" → lista ingredienti per la pasta (farine, acqua, uova)
+  3. SEZIONE "Esecuzione" → istruzioni per il Pasta Maker (trafila, programma, estrusione)
+  4. SEZIONE "Per la salsa/condimento" (opzionale) → lista ingredienti del condimento
+  5. SEZIONE "Preparazione" (opzionale) → istruzioni per cuocere il condimento
+
+REGOLA FONDAMENTALE: ogni ingrediente che estrai DEVE apparire ESPLICITAMENTE nel testo italiano della ricetta.
+NON inventare ingredienti. NON combinare ingredienti da ricette diverse.
+NON aggiungere ingredienti da fonti esterne. NON arricchire le dosi.
+Se una dose non è chiara nel testo, scrivi 0 nei grammi e "q.b." nella note.
+
+Struttura JSON di ritorno (array di oggetti):
+[
+  {
+    "title": "Maccheroni al farro",
+    "slug": "maccheroni-al-farro-philips",
+    "emoji": "🍝",
+    "description": "Breve descrizione dalla ricetta originale",
+    "subtitle": "Trafila: Maccheroni",
+    "category": "Pasta",
+    "hydration": 35,
+    "targetTemp": "Ambiente",
+    "fermentation": "Nessuna",
+    "totalFlour": 500,
+    "ingredients": [
+      { "name": "Farina di semola", "note": "per l'impasto", "grams": 500 },
+      { "name": "Pomodori", "note": "per la salsa", "grams": 300 }
+    ],
+    "stepsExtruder": [
+      { "title": "Setup Macchina", "text": "Montare la trafila Maccheroni." },
+      { "title": "Impasto ed Estrusione", "text": "Versare le farine nella vasca..." }
+    ],
+    "stepsHand": [],
+    "stepsCondiment": [
+      { "title": "Preparazione Condimento", "text": "Istruzioni esatte dal libro..." }
+    ],
+    "flourTable": [],
+    "baking": null,
+    "glossary": [],
+    "alert": "Usa sempre liquidi misurati per non sforzare l'estrusore",
+    "proTips": ["Tip sulla trafilatura"],
+    "imageKeywords": ["pasta fresca", "keyword descrittivo"],
+    "tags": ["Pasta fatta in casa", "Philips Pasta Maker"]
+  }
+]
+
+REGOLE:
+1. Category = sempre "Pasta". Lo slug DEVE finire con "-philips".
+2. INGREDIENTI: estrai SOLO quelli scritti esplicitamente nel testo italiano. Per l'impasto: farine + liquidi. Per la salsa: solo se indicata. Idratazione = (liquidi / farine × 100), minimo 30%.
+3. Usa SEMPRE "stepsExtruder" con nel primo step quale trafila usare.
+4. Se c'è un condimento/salsa nel testo, mettilo in "stepsCondiment". Copia le istruzioni FEDELMENTE dal libro.
+5. Se NON ci sono ricette nel testo, restituisci SOLO [].
+6. CORREGGI solo errori OCR evidenti (es. "5OOg" → 500g, "tarlila" → "trafila").
+7. LINGUE: trascrivi SOLO italiano. Se non c'è italiano, traduci dalla prima lingua disponibile.
+8. DEDUPLICAZIONE: pagine marcate [CONTESTO] servono solo per completare ricette dal batch precedente. Non estrarre ricette che iniziano lì.
+9. RISPONDI SOLO con un JSON ARRAY valido. Niente markdown, niente note, SOLO [ e ].
+10. NON INVENTARE NULLA. Ogni dato deve provenire dal testo. Se un'informazione manca, omettila o usa valori vuoti.
+
+TESTI OCR ESTRATTI:
+${pagesText}`;
+
+  log.info(`Claude sta analizzando ${pages.length} pagine di testo OCR...`);
+
+  const text = await callClaude({
+    maxTokens: 8192,
+    messages: [
+      { role: 'user', content: prompt },
+      { role: 'assistant', content: '[' }
+    ],
+  });
+
+  const fullText = '[' + text;
+
+  try {
+    return parseClaudeJson(fullText);
+  } catch (e) {
+    log.warn(`Claude non ha restituito JSON valido. Errore: ${e.message}`);
+    log.debug(`Testo parziale: ${fullText.substring(0, 200)}`);
+    return [];
+  }
+}
+
+/**
+ * Struttura una ricetta da TESTO LIBERO (appunti, copia-incolla, note personali)
+ * usando Claude AI per adattarla al formato del Ricettario.
+ *
+ * A differenza di enhanceRecipe() (che parte da dati scrappati strutturati),
+ * questa funzione accetta testo completamente destrutturato.
+ *
+ * @param {string} rawText - Testo libero della ricetta
+ * @param {object} options - Opzioni aggiuntive (tipo, note)
+ * @returns {Promise<object>} Ricetta strutturata in formato JSON
+ */
+export async function enhanceFromText(rawText, options = {}) {
+  log.info('Claude sta strutturando la ricetta dal testo libero...');
+
+  // ── Step 1 (opzionale): Cerca fonti reali per arricchire ──
+  let realSourcesText = '';
+  let sourcesFound = 0;
+
+  // Estrai un possibile nome ricetta dalla prima riga significativa
+  const firstLine = rawText.split('\n').find(l => l.trim().length > 3)?.trim() || '';
+  const recipeName = firstLine.replace(/^[🍕🥖🍝🥐🍪🫓#*\-—]+\s*/, '').replace(/["']/g, '').substring(0, 60);
+
+  if (recipeName.length > 3) {
+    try {
+      const { searchRealSources, scrapeRecipePage } = await import('./validator.js');
+      const searchQuery = recipeName.toLowerCase().includes('ricetta') ? recipeName : `ricetta ${recipeName}`;
+      console.log(`🔍 Cerco fonti reali per "${searchQuery}" per arricchire la strutturazione...`);
+      const sources = await searchRealSources(searchQuery);
+      console.log(`📡 Trovate ${sources.length} fonti, scraping...`);
+
+      const scrapedData = [];
+      for (const source of sources.slice(0, 5)) {
+        try {
+          process.stdout.write(`   🌐 ${source.domain}... `);
+          const data = await scrapeRecipePage(source.url);
+          if (data && data.ingredients?.length > 0) {
+            scrapedData.push({ ...data, domain: source.domain, title: source.title });
+            console.log(`✅ ${data.ingredients.length} ingredienti (${data.source})`);
+          } else {
+            console.log('❌ nessun dato utile');
+          }
+        } catch {
+          console.log('❌ errore');
+        }
+        await new Promise(r => setTimeout(r, 400));
+      }
+
+      sourcesFound = scrapedData.length;
+
+      if (scrapedData.length > 0) {
+        realSourcesText = '\n\n══════ DATI REALI DA FONTI AUTOREVOLI (per confronto) ══════\n';
+        realSourcesText += 'Usa questi dati SOLO come RIFERIMENTO per validare proporzioni e tecniche.\n';
+        realSourcesText += 'La ricetta dell\'utente ha PRIORITÀ ASSOLUTA — non modificare dosi e ingredienti.\n\n';
+
+        for (const [i, src] of scrapedData.entries()) {
+          realSourcesText += `── FONTE ${i + 1}: ${src.domain} ──\n`;
+          if (src.ingredients.length > 0) {
+            realSourcesText += `   Ingredienti:\n`;
+            src.ingredients.forEach(ing => { realSourcesText += `   - ${ing}\n`; });
+          }
+          if (src.steps?.length > 0) {
+            realSourcesText += `   Procedimento:\n`;
+            src.steps.slice(0, 4).forEach((step, j) => {
+              realSourcesText += `   ${j + 1}. ${step.substring(0, 150)}\n`;
+            });
+          }
+          realSourcesText += '\n';
+        }
+      }
+    } catch (err) {
+      console.log(`⚠️  Ricerca fonti non riuscita: ${err.message}`);
+      console.log('   Procedo con il solo testo dell\'utente...');
+    }
+  }
+
+  // ── Step 2: Claude struttura il testo ──
+  const sourceLabel = sourcesFound > 0
+    ? `(con ${sourcesFound} fonti di riferimento)`
+    : '(senza fonti aggiuntive)';
+  log.info(`Claude sta strutturando la ricetta ${sourceLabel}...`);
+
+  const userPrompt = `L'utente ha inserito questa ricetta in formato TESTO LIBERO (appunti personali, note, copia-incolla).
+Il tuo compito è STRUTTURARLA nel formato JSON del Ricettario, SENZA modificare dosi e ingredienti dell'utente.
+
+⚠️ REGOLA FONDAMENTALE: Le dosi, le temperature, i tempi e gli ingredienti dell'utente hanno PRIORITÀ ASSOLUTA.
+NON modificarli. NON "correggere" le proporzioni. Rispetta fedelmente la ricetta fornita.
+Puoi AGGIUNGERE: glossario, proTips, flourTable, alert, imageKeywords — basandoti sulla tua esperienza e sulle fonti reali.
+
+${options.tipo ? `Categoria suggerita dall'utente: ${options.tipo}` : ''}
+${options.note ? `Note aggiuntive: ${options.note}` : ''}
+
+══════ TESTO RICETTA DELL'UTENTE ══════
+${rawText}
+══════ FINE TESTO ══════
+${realSourcesText}
+
+Trasforma il testo in un JSON strutturato. Le dosi DEVONO essere fedeli al testo originale.
+Aggiungi glossario tecnico, proTips, flourTable e alert basandoti sulla tua esperienza.`;
+
+  const text = await callClaude({
+    system: SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: userPrompt }],
+  });
+
+  const recipe = parseClaudeJson(text);
+  recipe._sourcesUsed = sourcesFound;
+  recipe._inputMode = 'testo-libero';
+  log.success(`Ricetta "${recipe.title}" strutturata con successo ${sourceLabel}`);
+  return recipe;
+}

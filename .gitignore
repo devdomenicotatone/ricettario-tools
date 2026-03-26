@@ -1,2 +1,15 @@
 node_modules/
 .env
+
+# Dati OCR (generati localmente, troppo pesanti)
+data/ocr-results.json
+data/ocr-test.json
+
+# File di debug
+debug-*.txt
+debug-*.json
+temp_*.html
+
+# Editor
+.vscode/
+*.swp
