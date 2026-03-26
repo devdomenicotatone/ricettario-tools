@@ -55,26 +55,48 @@ export function resolveOutputPaths(recipe, args) {
 }
 
 /**
- * Apre un file nel browser predefinito (cross-platform).
- * Ritorna una Promise che risolve dopo l'apertura + un breve delay
- * per dare tempo al browser di caricare il file.
+ * Apre la preview nel browser via dev server Vite.
+ * Se il server non risponde, fallback a file://
  */
-function openInBrowser(filePath) {
-    return new Promise((res) => {
-        let cmd;
-        if (process.platform === 'win32') {
-            // cmd.exe /c start apre il file con l'app predefinita (browser per .html)
-            // Funziona correttamente anche se lanciato da PowerShell
-            cmd = `cmd.exe /c start "" "${filePath}"`;
-        } else if (process.platform === 'darwin') {
-            cmd = `open "${filePath}"`;
-        } else {
-            cmd = `xdg-open "${filePath}"`;
+function openInBrowser(outputFile, ricettarioPath) {
+    return new Promise(async (res) => {
+        // Calcola path relativo da ricettarioPath (es. ricette/focaccia/focaccia-barese.html)
+        const relative = outputFile
+            .replace(ricettarioPath, '')
+            .replace(/\\/g, '/')
+            .replace(/^\//, '');
+
+        // Prova le porte comuni di Vite
+        const ports = [5173, 5174, 5175];
+        let serverUrl = null;
+
+        for (const port of ports) {
+            try {
+                const resp = await fetch(`http://localhost:${port}/Ricettario/`, { signal: AbortSignal.timeout(1000) });
+                if (resp.ok) {
+                    serverUrl = `http://localhost:${port}/Ricettario/${relative}`;
+                    break;
+                }
+            } catch {}
         }
+
+        const url = serverUrl || outputFile;
+        if (!serverUrl) {
+            log.warn('Dev server non trovato. Apro file:// (senza CSS).');
+            log.info('Avvia prima: cd ../Ricettario && npm run dev');
+        }
+
+        const cmd = process.platform === 'win32'
+            ? `cmd.exe /c start "" "${url}"`
+            : process.platform === 'darwin'
+                ? `open "${url}"`
+                : `xdg-open "${url}"`;
+
         exec(cmd, (err) => {
             if (err) log.warn(`Impossibile aprire il browser: ${err.message}`);
         });
-        // Attendi 2s per dare tempo al browser di aprire il file
+
+        // Attendi 2s per dare tempo al browser
         setTimeout(res, 2000);
     });
 }
@@ -152,7 +174,15 @@ export async function publishRecipe(recipe, args, options = {}) {
         source = '',
     } = options;
 
-    const { ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args);
+    let { ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args);
+
+    // ── Forza categoria da --tipo se specificata dall'utente ──
+    if (args.tipo && recipe.category !== args.tipo) {
+        log.warn(`Claude ha classificato come "${recipe.category}", forzato a "${args.tipo}" (da --tipo)`);
+        recipe.category = args.tipo;
+        // Ricalcola paths con la categoria corretta
+        ({ ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args));
+    }
 
     // ── Step 1: Cross-check con fonti reali ──
     if (!skipValidation) {
@@ -241,7 +271,7 @@ export async function publishRecipe(recipe, args, options = {}) {
         showPreviewSummary(recipe);
 
         log.info('🌐 Apertura preview nel browser...');
-        await openInBrowser(outputFile);
+        await openInBrowser(outputFile, ricettarioPath);
 
         const confirmed = await askConfirmation(
             '  ❓ Pubblicare questa ricetta nella homepage? (s/n): '
