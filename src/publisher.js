@@ -2,13 +2,15 @@
  * PUBLISHER — Pipeline unificata di pubblicazione ricette
  *
  * Centralizza tutti i passaggi post-Claude:
- *   JSON persistente → Validazione → Immagine → HTML → Inject homepage
+ *   JSON persistente → Validazione → Immagine → HTML → [Preview] → Inject homepage
  *
  * Usato da: genera.js, testo.js, rigenera.js
  */
 
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
+import { exec } from 'child_process';
+import { createInterface } from 'readline';
 import { generateHtml } from './template.js';
 import { injectCard } from './injector.js';
 import { findAndDownloadImage } from './image-finder.js';
@@ -50,6 +52,71 @@ export function resolveOutputPaths(recipe, args) {
     }
 
     return { ricettarioPath, outputDir, outputFile, jsonFile };
+}
+
+/**
+ * Apre un file nel browser predefinito (cross-platform)
+ */
+function openInBrowser(filePath) {
+    const cmd = process.platform === 'win32' ? `start "" "${filePath}"`
+        : process.platform === 'darwin' ? `open "${filePath}"`
+        : `xdg-open "${filePath}"`;
+    exec(cmd, (err) => {
+        if (err) log.warn(`Impossibile aprire il browser: ${err.message}`);
+    });
+}
+
+/**
+ * Chiede conferma all'utente via stdin
+ * @returns {Promise<boolean>}
+ */
+function askConfirmation(question) {
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            rl.close();
+            resolve(answer.trim().toLowerCase().startsWith('s') || answer.trim().toLowerCase() === 'y');
+        });
+    });
+}
+
+/**
+ * Mostra un riepilogo formattato della ricetta per preview CLI
+ */
+function showPreviewSummary(recipe) {
+    const sep = '─'.repeat(50);
+    console.log('');
+    console.log(`  ${sep}`);
+    console.log(`  📋  ANTEPRIMA RICETTA`);
+    console.log(`  ${sep}`);
+    console.log(`  📌 Titolo:       ${recipe.title}`);
+    console.log(`  🏷️  Categoria:    ${recipe.category}`);
+    if (recipe.hydration) console.log(`  💧 Idratazione:  ${recipe.hydration}%`);
+    if (recipe.targetTemp) console.log(`  🌡️  Temperatura:  ${recipe.targetTemp}`);
+    if (recipe.fermentation) console.log(`  ⏱️  Lievitazione: ${recipe.fermentation}`);
+    console.log(`  🧂 Ingredienti:  ${recipe.ingredients?.length || 0}`);
+    if (recipe.suspensions?.length) console.log(`  🥜 Sospensioni:  ${recipe.suspensions.length}`);
+    if (recipe.stepsSpiral) console.log(`  🌀 Step spirale: ${recipe.stepsSpiral.length}`);
+    if (recipe.stepsHand) console.log(`  ✋ Step a mano:  ${recipe.stepsHand.length}`);
+    if (recipe.image) console.log(`  🖼️  Immagine:     ✅`);
+    else console.log(`  🖼️  Immagine:     ❌ nessuna`);
+    if (recipe._validation?.score) {
+        const s = recipe._validation.score;
+        const e = s >= 80 ? '🟢' : s >= 60 ? '🟡' : '🔴';
+        console.log(`  ${e} Validazione:  ${s}%`);
+    }
+    console.log(`  ${sep}`);
+
+    // Lista ingredienti compatta
+    console.log(`\n  🧾 Ingredienti:`);
+    for (const ing of recipe.ingredients || []) {
+        if (ing.grams != null) {
+            console.log(`     ${ing.grams}g — ${ing.name}${ing.note ? ` ${ing.note}` : ''}`);
+        } else {
+            console.log(`     ── ${ing.name} ──`);
+        }
+    }
+    console.log('');
 }
 
 /**
@@ -113,7 +180,6 @@ export async function publishRecipe(recipe, args, options = {}) {
 
     // ── Step 3: Salva JSON intermedio ──
     if (!skipJson) {
-        // Rimuovi campi interni (_) per il JSON persistente
         const persistentJson = { ...recipe };
         delete persistentJson._validation;
         delete persistentJson._imageData;
@@ -157,6 +223,31 @@ export async function publishRecipe(recipe, args, options = {}) {
     log.info(`HTML: ${outputFile}`);
     if (!skipJson) log.info(`JSON: ${jsonFile}`);
 
+    // ── Step 5b: PREVIEW (se --preview è attivo) ──
+    if (args.preview) {
+        showPreviewSummary(recipe);
+
+        log.info('🌐 Apertura preview nel browser...');
+        openInBrowser(outputFile);
+
+        const confirmed = await askConfirmation(
+            '  ❓ Pubblicare questa ricetta nella homepage? (s/n): '
+        );
+
+        if (!confirmed) {
+            log.warn('🚫 Pubblicazione annullata dall\'utente.');
+            // Rimuovi i file generati
+            try { unlinkSync(outputFile); } catch {}
+            try { unlinkSync(jsonFile); } catch {}
+            const reportFile = outputFile.replace('.html', '.validazione.md');
+            try { unlinkSync(reportFile); } catch {}
+            log.info('File generati rimossi.');
+            return { outputFile: null, jsonFile: null };
+        }
+
+        log.info('✅ Confermato! Procedo con l\'integrazione...');
+    }
+
     // ── Step 6: Inject nella homepage ──
     if (args['no-inject'] !== true) {
         log.header('INTEGRAZIONE HOMEPAGE');
@@ -175,3 +266,4 @@ export async function publishRecipe(recipe, args, options = {}) {
 
     return { outputFile, jsonFile };
 }
+

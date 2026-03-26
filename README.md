@@ -270,6 +270,7 @@ Questi flag funzionano con **tutti** i comandi:
 
 | Flag | Descrizione |
 |------|-------------|
+| `--preview` | Anteprima: mostra riepilogo + apre browser, conferma (s/n) prima di pubblicare |
 | `--dry-run` | Mostra il JSON generato senza scrivere file |
 | `--verbose` / `-v` | Output dettagliato (mostra debug) |
 | `--quiet` / `-q` | Output minimale (solo errori) |

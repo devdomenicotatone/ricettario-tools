@@ -75,6 +75,7 @@ Opzioni:
   --output <path>     Percorso output custom
 
 Flag:
+  --preview           Anteprima: mostra riepilogo + apre browser, conferma prima di pubblicare
   --dry-run           Mostra JSON senza scrivere file
   --verbose, -v       Output dettagliato
   --quiet, -q         Output minimale
