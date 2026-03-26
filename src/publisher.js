@@ -1,0 +1,177 @@
+/**
+ * PUBLISHER — Pipeline unificata di pubblicazione ricette
+ *
+ * Centralizza tutti i passaggi post-Claude:
+ *   JSON persistente → Validazione → Immagine → HTML → Inject homepage
+ *
+ * Usato da: genera.js, testo.js, rigenera.js
+ */
+
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
+import { resolve } from 'path';
+import { generateHtml } from './template.js';
+import { injectCard } from './injector.js';
+import { findAndDownloadImage } from './image-finder.js';
+import { validateRecipe } from './validator.js';
+import { log } from './utils/logger.js';
+
+/**
+ * Mappa categorie → sottocartelle (unica sorgente di verità)
+ */
+export const CATEGORY_FOLDERS = {
+    Pane: 'pane',
+    Pizza: 'pizza',
+    Pasta: 'pasta',
+    Lievitati: 'lievitati',
+    Focaccia: 'focaccia',
+    Dolci: 'dolci',
+};
+
+/**
+ * Risolve il percorso di output per una ricetta
+ * @returns {{ ricettarioPath, outputDir, outputFile, jsonFile }}
+ */
+export function resolveOutputPaths(recipe, args) {
+    const ricettarioPath = resolve(
+        process.cwd(),
+        args.output || process.env.RICETTARIO_PATH || '../Ricettario'
+    );
+    const category = recipe.category || args.tipo || 'Pane';
+    const subfolder = CATEGORY_FOLDERS[category] || category.toLowerCase();
+    const slug = recipe.slug || recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    recipe.slug = slug;
+
+    const outputDir = resolve(ricettarioPath, 'ricette', subfolder);
+    const outputFile = resolve(outputDir, `${slug}.html`);
+    const jsonFile = resolve(outputDir, `${slug}.json`);
+
+    if (!existsSync(outputDir)) {
+        mkdirSync(outputDir, { recursive: true });
+    }
+
+    return { ricettarioPath, outputDir, outputFile, jsonFile };
+}
+
+/**
+ * Pipeline completa di pubblicazione di una ricetta.
+ *
+ * @param {object} recipe - JSON strutturato (da enhancer, testo, o file .json)
+ * @param {object} args - Argomenti CLI
+ * @param {object} options - Opzioni aggiuntive
+ * @param {boolean} options.skipValidation - Salta cross-check
+ * @param {boolean} options.skipImage - Salta ricerca immagine
+ * @param {boolean} options.skipJson - Non salvare il .json (es. per --rigenera)
+ * @param {string}  options.source - Etichetta origine (es. "DA URL", "DA TESTO", "DA JSON")
+ * @returns {Promise<{outputFile: string, jsonFile: string}>}
+ */
+export async function publishRecipe(recipe, args, options = {}) {
+    const {
+        skipValidation = args['no-validate'] === true,
+        skipImage = args['no-image'] === true,
+        skipJson = false,
+        source = '',
+    } = options;
+
+    const { ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args);
+
+    // ── Step 1: Cross-check con fonti reali ──
+    if (!skipValidation) {
+        log.header('CROSS-CHECK FONTI REALI');
+        try {
+            const { comparison, report } = await validateRecipe(recipe);
+            const score = comparison.score ?? comparison.confidence ?? 0;
+            const emoji = score >= 80 ? '🟢' : score >= 60 ? '🟡' : '🔴';
+            log.info(`${emoji} Confidenza: ${score}%`);
+            log.info(`Fonti analizzate: ${comparison.sourcesAnalyzed || comparison.sourcesUsed?.length || 0}`);
+
+            if (comparison.discrepancies?.length > 0) {
+                comparison.discrepancies.forEach(d => log.warn(`  ⚠️  ${d}`));
+            }
+            if (comparison.warnings?.length > 0) {
+                comparison.warnings.forEach(w => log.warn(`  ⚠️  ${w}`));
+            }
+            if (comparison.matches?.length > 0) {
+                log.info(`✅ Conferme: ${comparison.matches.length} ingredienti confermati`);
+            }
+
+            recipe._validation = { score, report };
+        } catch (err) {
+            log.warn(`Cross-check non riuscito: ${err.message}`);
+            log.info('Procedo senza validazione.');
+        }
+    }
+
+    // ── Step 2: Ricerca immagine stock ──
+    if (!skipImage) {
+        const imageData = await findAndDownloadImage(recipe, ricettarioPath);
+        if (imageData) {
+            recipe.image = imageData.homeRelativePath;
+            recipe.imageAttribution = imageData.attribution;
+            recipe._imageData = imageData;
+        }
+    }
+
+    // ── Step 3: Salva JSON intermedio ──
+    if (!skipJson) {
+        // Rimuovi campi interni (_) per il JSON persistente
+        const persistentJson = { ...recipe };
+        delete persistentJson._validation;
+        delete persistentJson._imageData;
+        delete persistentJson._sourcesUsed;
+        delete persistentJson._inputMode;
+
+        writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
+        log.info(`💾 JSON salvato: ${jsonFile}`);
+    }
+
+    // --dry-run: mostra JSON senza scrivere HTML
+    if (args['dry-run']) {
+        log.header('DRY RUN — JSON generato (nessun HTML scritto)');
+        console.log(JSON.stringify(recipe, null, 2));
+        return { outputFile: null, jsonFile };
+    }
+
+    // ── Step 4: Genera e salva HTML ──
+    const finalHtml = generateHtml(recipe);
+    writeFileSync(outputFile, finalHtml, 'utf-8');
+
+    // Salva report validazione
+    if (recipe._validation?.report) {
+        const reportFile = outputFile.replace('.html', '.validazione.md');
+        writeFileSync(reportFile, recipe._validation.report, 'utf-8');
+        log.info(`📋 Report validazione: ${reportFile}`);
+    }
+
+    // ── Step 5: Log riepilogo ──
+    const label = source ? `RICETTA GENERATA ${source}` : 'RICETTA GENERATA';
+    log.header(label);
+    log.info(`Titolo: ${recipe.title}`);
+    log.info(`Categoria: ${recipe.category}`);
+    if (recipe.hydration) log.info(`Idratazione: ${recipe.hydration}%`);
+    if (recipe.targetTemp) log.info(`Temp target: ${recipe.targetTemp}`);
+    log.info(`Ingredienti: ${recipe.ingredients?.length || 0}`);
+    if (recipe.stepsSpiral) log.info(`Step spirale: ${recipe.stepsSpiral.length}`);
+    if (recipe.stepsExtruder) log.info(`Step estrusore: ${recipe.stepsExtruder.length}`);
+    if (recipe.stepsHand) log.info(`Step a mano: ${recipe.stepsHand.length}`);
+    if (recipe.image) log.info(`Immagine: ${recipe.image}`);
+    log.info(`HTML: ${outputFile}`);
+    if (!skipJson) log.info(`JSON: ${jsonFile}`);
+
+    // ── Step 6: Inject nella homepage ──
+    if (args['no-inject'] !== true) {
+        log.header('INTEGRAZIONE HOMEPAGE');
+        try {
+            injectCard(recipe, ricettarioPath);
+        } catch (err) {
+            log.warn(`Errore nell'inserimento card: ${err.message}`);
+            log.info('La pagina ricetta è stata creata comunque.');
+        }
+    }
+
+    log.header('COMPLETATO');
+    log.info('Prossimi passi:');
+    log.info('  1. Apri http://localhost:5173 e verifica il risultato');
+    log.info('  2. git add + commit + push');
+
+    return { outputFile, jsonFile };
+}
