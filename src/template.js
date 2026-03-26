@@ -39,7 +39,7 @@ function ingredientRow({ name, note, grams, setupNote }) {
     }
     return `                            <tr>
                                 <td>${name}${noteHtml}</td>
-                                <td class="ingredient-qty" data-base="${grams}">${grams}g</td>
+                                <td class="ingredient-qty">${grams}g</td>
                             </tr>`;
 }
 
@@ -241,7 +241,7 @@ export function generateHtml(recipe) {
                                     aria-label="Diminuisci dosi">−</button>
                                 <div class="dose-calculator__input-wrapper">
                                     <input type="number" class="dose-calculator__input" id="dose-input" value="${totalKg}"
-                                        min="0.1" max="${Math.round(totalKg * 3 * 10) / 10}" step="any" data-base-total="${totalGrams}" aria-label="Kg di farina">
+                                        min="0.1" max="${Math.round(totalKg * 3 * 10) / 10}" step="any" aria-label="Kg di farina">
                                     <span class="dose-calculator__unit">kg</span>
                                 </div>
                                 <button class="dose-calculator__btn" id="dose-increase"
@@ -436,6 +436,13 @@ ${r.glossary.map(g => `                    <dt style="font-weight: 600; color: v
             </div>
         </div>
     </footer>
+
+    <!-- Recipe Data Model (sorgente di verità per il dose calculator) -->
+    <script type="application/json" id="recipe-data">${JSON.stringify({
+        totalFlour: totalGrams,
+        ingredients: r.ingredients.map(i => ({ name: i.name, grams: i.grams ?? null })),
+        suspensions: (r.suspensions || []).map(i => ({ name: i.name, grams: i.grams ?? null })),
+    })}</script>
 
     <script type="module" src="/js/main.js"></script>
 </body>
