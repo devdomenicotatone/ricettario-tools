@@ -55,14 +55,26 @@ export function resolveOutputPaths(recipe, args) {
 }
 
 /**
- * Apre un file nel browser predefinito (cross-platform)
+ * Apre un file nel browser predefinito (cross-platform).
+ * Ritorna una Promise che risolve dopo l'apertura + un breve delay
+ * per dare tempo al browser di caricare il file.
  */
 function openInBrowser(filePath) {
-    const cmd = process.platform === 'win32' ? `start "" "${filePath}"`
-        : process.platform === 'darwin' ? `open "${filePath}"`
-        : `xdg-open "${filePath}"`;
-    exec(cmd, (err) => {
-        if (err) log.warn(`Impossibile aprire il browser: ${err.message}`);
+    return new Promise((res) => {
+        let cmd;
+        if (process.platform === 'win32') {
+            // Usa explorer.exe — gestisce meglio spazi e path lunghi su Windows/PowerShell
+            cmd = `explorer.exe "${filePath}"`;
+        } else if (process.platform === 'darwin') {
+            cmd = `open "${filePath}"`;
+        } else {
+            cmd = `xdg-open "${filePath}"`;
+        }
+        exec(cmd, (err) => {
+            if (err) log.warn(`Impossibile aprire il browser: ${err.message}`);
+        });
+        // Attendi 2s per dare tempo al browser di aprire il file
+        setTimeout(res, 2000);
     });
 }
 
@@ -228,7 +240,7 @@ export async function publishRecipe(recipe, args, options = {}) {
         showPreviewSummary(recipe);
 
         log.info('🌐 Apertura preview nel browser...');
-        openInBrowser(outputFile);
+        await openInBrowser(outputFile);
 
         const confirmed = await askConfirmation(
             '  ❓ Pubblicare questa ricetta nella homepage? (s/n): '
