@@ -34,25 +34,10 @@
             <button class="nav-item" data-panel="ricette">
                 <span class="nav-icon">📋</span> Le mie Ricette
             </button>
-            <button class="nav-item" data-panel="immagini">
-                <span class="nav-icon">🖼️</span> Image Picker
-            </button>
-            <button class="nav-item" data-panel="rigenera">
-                <span class="nav-icon">🔄</span> Rigenera
-            </button>
 
             <div class="nav-section">SEO & QUALITÀ</div>
             <button class="nav-item" data-panel="seo">
                 <span class="nav-icon">📈</span> SEO Ideas
-            </button>
-            <button class="nav-item" data-panel="valida">
-                <span class="nav-icon">📊</span> Valida
-            </button>
-            <button class="nav-item" data-panel="verifica">
-                <span class="nav-icon">✅</span> Verifica AI
-            </button>
-            <button class="nav-item" data-panel="sync">
-                <span class="nav-icon">🔄</span> Sync Cards
             </button>
         </nav>
 
@@ -277,63 +262,9 @@
                 </div>
             </div>
 
-            <!-- ═══ IMAGE PICKER ═══ -->
-            <div class="panel" id="panel-immagini">
-                <div class="form-card">
-                    <div class="form-row">
-                        <label class="form-label">Seleziona Ricetta</label>
-                        <select class="form-select" id="img-slug">
-                            <option value="">-- Seleziona --</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary btn-lg" onclick="runRefreshImage()">
-                        🖼️ Cerca Immagini
-                    </button>
-                </div>
-                <div id="imagePickerArea" class="image-picker-area"></div>
-            </div>
 
-            <!-- ═══ RIGENERA ═══ -->
-            <div class="panel" id="panel-rigenera">
-                <div class="form-card">
-                    <p class="form-description">Rigenera i file HTML da JSON senza chiamare le API. Utile dopo aver modificato il template.</p>
-                    <div class="btn-group">
-                        <button class="btn btn-primary btn-lg" onclick="runRigenera(true)">
-                            🔄 Rigenera TUTTE
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ═══ VALIDA ═══ -->
-            <div class="panel" id="panel-valida">
-                <div class="form-card">
-                    <p class="form-description">Valida tutte le ricette confrontandole con fonti esterne via SerpAPI.</p>
-                    <button class="btn btn-primary btn-lg" onclick="runValida()">
-                        📊 Valida Ricette
-                    </button>
-                </div>
-            </div>
 
-            <!-- ═══ VERIFICA ═══ -->
-            <div class="panel" id="panel-verifica">
-                <div class="form-card">
-                    <p class="form-description">Verifica la qualità di tutte le ricette usando Claude AI.</p>
-                    <button class="btn btn-primary btn-lg" onclick="runVerifica()">
-                        ✅ Verifica con AI
-                    </button>
-                </div>
-            </div>
-
-            <!-- ═══ SYNC ═══ -->
-            <div class="panel" id="panel-sync">
-                <div class="form-card">
-                    <p class="form-description">Ricostruisce <code>recipes.json</code> analizzando tutte le ricette HTML. Aggiorna automaticamente le card nella homepage e nelle pagine categoria.</p>
-                    <button class="btn btn-primary btn-lg" onclick="runSyncCards()">
-                        🔄 Sync Cards
-                    </button>
-                </div>
-            </div>
 
             <!-- ═══ SEO IDEAS ═══ -->
             <div class="panel" id="panel-seo">

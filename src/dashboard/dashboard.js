@@ -103,7 +103,7 @@ const panelTitles = {
 
 document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
-        const panel = item.dataset.panel;
+        let panel = item.dataset.panel;
 
         // Update sidebar
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -111,7 +111,8 @@ document.querySelectorAll('.nav-item').forEach(item => {
 
         // Update panel
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById(`panel-${panel}`).classList.add('active');
+        const panelEl = document.getElementById(`panel-${panel}`);
+        if (panelEl) panelEl.classList.add('active');
 
         // Update title
         document.getElementById('panelTitle').textContent = panelTitles[panel] || '';
@@ -122,6 +123,25 @@ document.querySelectorAll('.nav-item').forEach(item => {
         if (panel === 'seo') loadSeoSuggestions();
     });
 });
+
+function navigateAndRun(panel, action) {
+    // Naviga al pannello ricette
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const navBtn = document.querySelector(`[data-panel="${panel}"]`) || 
+                   document.querySelector('[data-panel="ricette"]');
+    if (navBtn) navBtn.classList.add('active');
+
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const panelEl = document.getElementById(`panel-${panel}`);
+    if (panelEl) panelEl.classList.add('active');
+    document.getElementById('panelTitle').textContent = panelTitles[panel] || '';
+
+    if (panel === 'ricette') {
+        loadRecipes().then(() => { if (action) action(); });
+    } else {
+        if (action) action();
+    }
+}
 
 // ── Slider values ──
 document.querySelectorAll('.form-range').forEach(slider => {
@@ -195,11 +215,13 @@ async function runRigenera(tutte) {
 }
 
 async function runValida() {
-    await apiPost('valida', {});
+    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta da validare');
+    await apiPost('valida', { slugs: [...selectedSlugs] });
 }
 
 async function runVerifica() {
-    await apiPost('verifica', {});
+    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta da verificare');
+    await apiPost('verifica', { slugs: [...selectedSlugs] });
 }
 
 async function runSyncCards() {
@@ -209,6 +231,7 @@ async function runSyncCards() {
 // ── Recipes List PRO ──
 let allRecipes = [];
 let siteBaseUrl = 'http://localhost:5173/Ricettario/'; // aggiornato da fetchStatus
+let selectedSlugs = new Set();
 let recipeFilter = { category: 'all', search: '', sort: 'name-asc', view: 'grid' };
 
 const CATEGORY_COLORS = {
@@ -312,18 +335,18 @@ async function changeCategory(slug, oldCategory, newCategory) {
 async function loadRecipes() {
     const grid = document.getElementById('recipesGrid');
     grid.innerHTML = '<p class="empty-state">Caricamento...</p>';
-
     try {
         const resp = await fetch('/api/ricette');
         allRecipes = await resp.json();
-        buildCategoryTabs();
+        updateCategoryTabs();
         renderRecipes();
+        updateActionBar();
     } catch (err) {
-        grid.innerHTML = `<p class="empty-state">❌ Errore: ${err.message}</p>`;
+        grid.innerHTML = `<p class="empty-state">❌ Errore caricamento: ${err.message}</p>`;
     }
 }
 
-function buildCategoryTabs() {
+function updateCategoryTabs() {
     const tabsEl = document.getElementById('recipeCategoryTabs');
     const counts = {};
     allRecipes.forEach(r => {
@@ -420,8 +443,11 @@ function renderRecipes() {
 
     // Render
     if (recipeFilter.view === 'list') {
+        const allChecked = filtered.length > 0 && filtered.every(r => selectedSlugs.has(r.slug));
         grid.innerHTML = `<div class="recipe-list-header">
-            <span>Ricetta</span><span>Categoria</span><span>Idratazione</span><span>Tempo</span><span>Azioni</span>
+            <span><input type="checkbox" class="recipe-checkbox-all" ${allChecked ? 'checked' : ''} 
+                onchange="toggleSelectAll(this.checked)"> Ricetta</span>
+            <span>Categoria</span><span>Idratazione</span><span>Tempo</span><span>Azioni</span>
         </div>` + filtered.map(r => renderRecipeRow(r)).join('');
     } else {
         grid.innerHTML = filtered.map(r => renderRecipeCard(r)).join('');
@@ -437,9 +463,12 @@ function renderRecipeCard(r) {
     const hydNum = getHydrationNum(r.hydration);
     const hydClass = getHydrationClass(hydNum);
     const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
+    const isSelected = selectedSlugs.has(r.slug);
 
     return `
-        <div class="recipe-card">
+        <div class="recipe-card${isSelected ? ' selected' : ''}" onclick="toggleSelect('${r.slug}', event)">
+            <input type="checkbox" class="recipe-checkbox" ${isSelected ? 'checked' : ''}
+                onchange="toggleSelect('${r.slug}', event)" onclick="event.stopPropagation()">
             ${img ? `<div class="recipe-card-img-wrap">
                 <img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.parentElement.style.display='none'">
                 <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
@@ -455,7 +484,7 @@ function renderRecipeCard(r) {
                 <div class="recipe-card-actions">
                     <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine">🖼️</button>
                     <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML">🔄</button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slug:'${r.slug}'})" title="Verifica AI">✅</button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})" title="Verifica AI">✅</button>
                     <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito">👁️</a>
                 </div>
             </div>
@@ -469,10 +498,13 @@ function renderRecipeRow(r) {
     const catColor = CATEGORY_COLORS[cat] || '#888';
     const catEmoji = CATEGORY_EMOJIS[cat] || '📂';
     const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
+    const isSelected = selectedSlugs.has(r.slug);
 
     return `
-        <div class="recipe-row">
+        <div class="recipe-row${isSelected ? ' selected' : ''}" onclick="toggleSelect('${r.slug}', event)">
             <div class="recipe-row-info">
+                <input type="checkbox" class="recipe-checkbox" ${isSelected ? 'checked' : ''}
+                    onchange="toggleSelect('${r.slug}', event)" onclick="event.stopPropagation()">
                 ${img ? `<img class="recipe-row-thumb" src="${img}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<div class="recipe-row-thumb-empty"></div>'}
                 <span class="recipe-row-title">${title}</span>
             </div>
@@ -483,10 +515,168 @@ function renderRecipeRow(r) {
             <div class="recipe-row-actions">
                 <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')">🖼️</button>
                 <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})">🔄</button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slug:'${r.slug}'})">✅</button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})">✅</button>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank">👁️</a>
             </div>
         </div>`;
+}
+
+// ── Selection System (PRO — Shift+click, Ctrl+A, click-on-card) ──
+let lastClickedSlug = null; // Per Shift+click range selection
+
+function toggleSelect(slug, event) {
+    const filtered = getFilteredRecipes();
+
+    // ── Shift+Click: range selection ──
+    if (event && event.shiftKey && lastClickedSlug) {
+        const slugs = filtered.map(r => r.slug);
+        const fromIdx = slugs.indexOf(lastClickedSlug);
+        const toIdx = slugs.indexOf(slug);
+
+        if (fromIdx !== -1 && toIdx !== -1) {
+            const [start, end] = fromIdx < toIdx ? [fromIdx, toIdx] : [toIdx, fromIdx];
+            for (let i = start; i <= end; i++) {
+                selectedSlugs.add(slugs[i]);
+            }
+            renderRecipes();
+            updateActionBar();
+            return;
+        }
+    }
+
+    // ── Normal toggle ──
+    if (selectedSlugs.has(slug)) selectedSlugs.delete(slug);
+    else selectedSlugs.add(slug);
+
+    lastClickedSlug = slug;
+    renderRecipes();
+    updateActionBar();
+}
+
+function toggleSelectAll(checked) {
+    const filtered = getFilteredRecipes();
+    if (checked) {
+        filtered.forEach(r => selectedSlugs.add(r.slug));
+    } else {
+        filtered.forEach(r => selectedSlugs.delete(r.slug));
+    }
+    lastClickedSlug = null;
+    renderRecipes();
+    updateActionBar();
+}
+
+function clearSelection() {
+    selectedSlugs.clear();
+    lastClickedSlug = null;
+    renderRecipes();
+    updateActionBar();
+}
+
+// ── Keyboard shortcuts: Ctrl+A seleziona tutte, Escape deseleziona ──
+document.addEventListener('keydown', (e) => {
+    // Solo se siamo nel pannello ricette e non in un input
+    const isInInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    const ricettePanel = document.getElementById('panel-ricette');
+    if (!ricettePanel?.classList.contains('active')) return;
+
+    // Ctrl+A o Cmd+A → seleziona tutte le filtrate
+    if ((e.ctrlKey || e.metaKey) && e.key === 'a' && !isInInput) {
+        e.preventDefault();
+        toggleSelectAll(true);
+    }
+
+    // Escape → deseleziona tutte
+    if (e.key === 'Escape' && selectedSlugs.size > 0) {
+        e.preventDefault();
+        clearSelection();
+    }
+});
+
+function getFilteredRecipes() {
+    let filtered = [...allRecipes];
+    if (recipeFilter.category !== 'all') {
+        filtered = filtered.filter(r => (r.category || '') === recipeFilter.category);
+    }
+    if (recipeFilter.search) {
+        const s = recipeFilter.search.toLowerCase();
+        filtered = filtered.filter(r =>
+            (r.title || r.name || '').toLowerCase().includes(s) ||
+            (r.description || '').toLowerCase().includes(s)
+        );
+    }
+    return filtered;
+}
+
+function updateActionBar() {
+    let bar = document.getElementById('selectionActionBar');
+    if (selectedSlugs.size === 0) {
+        if (bar) bar.remove();
+        return;
+    }
+
+    if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'selectionActionBar';
+        bar.className = 'selection-action-bar';
+        document.body.appendChild(bar);
+    }
+
+    bar.innerHTML = `
+        <div class="action-bar-info">
+            <span class="action-bar-count">☑ ${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
+        </div>
+        <div class="action-bar-actions">
+            <button class="action-bar-btn" onclick="runValida()" title="Valida selezionate">
+                📊 Valida
+            </button>
+            <button class="action-bar-btn" onclick="runVerifica()" title="Verifica AI selezionate">
+                ✅ Verifica
+            </button>
+            <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera HTML selezionate (da JSON esistente)">
+                🔄 Rigenera
+            </button>
+            <button class="action-bar-btn action-bar-ai" onclick="batchRigeneraClaude()" title="Rigenera con Claude AI (estrae JSON dall'HTML e rigenera)">
+                🤖 Rigenera AI
+            </button>
+            <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
+                🗑️ Elimina
+            </button>
+            <button class="action-bar-btn action-bar-close" onclick="clearSelection()" title="Deseleziona">
+                ✕
+            </button>
+        </div>
+    `;
+}
+
+async function batchRigenera() {
+    const slugs = [...selectedSlugs];
+    appendTerminal(`\n🔄 Rigenerazione di ${slugs.length} ricette...`, 'job-start');
+    for (const slug of slugs) {
+        await apiPost('rigenera', { slug });
+    }
+}
+
+async function batchRigeneraClaude() {
+    const slugs = [...selectedSlugs];
+    const conferma = confirm(`🤖 Rigenerare ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'} con Claude AI?\n\nQuesto consuma crediti API Claude.\nOgni ricetta verrà analizzata e ricostruita da zero.\n\n${slugs.join('\n')}`);
+    if (!conferma) return;
+
+    appendTerminal(`\n🤖 Rigenerazione AI di ${slugs.length} ricette...`, 'job-start');
+    for (const slug of slugs) {
+        await apiPost('rigenera-claude', { slug });
+    }
+}
+
+async function batchElimina() {
+    const slugs = [...selectedSlugs];
+    const conferma = confirm(`⚠️ Eliminare ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}?\n\nQuesta azione è irreversibile!\n\n${slugs.join('\n')}`);
+    if (!conferma) return;
+
+    await apiPost('elimina', { slugs });
+    selectedSlugs.clear();
+    updateActionBar();
+    // Ricarica dopo un breve delay per dare tempo al sync
+    setTimeout(() => loadRecipes(), 1500);
 }
 
 // ── Recipes Event Handlers ──

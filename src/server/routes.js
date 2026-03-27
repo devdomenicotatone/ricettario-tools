@@ -150,13 +150,59 @@ export function setupRoutes(app) {
                 args.rigenera = true;
                 args.tutte = true;
             } else {
-                args.rigenera = slug;
+                // Cerca il file JSON reale per slug nelle cartelle categorie
+                const { CATEGORY_FOLDERS } = await import('../publisher.js');
+                const ricettarioPath = getRicettarioPath();
+                let jsonFile = null;
+                for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                    const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
+                    if (existsSync(candidate)) { jsonFile = candidate; break; }
+                }
+                if (!jsonFile) {
+                    ctx.error(`❌ ${slug}: JSON non trovato`);
+                    ctx.end(false);
+                    return;
+                }
+                args.rigenera = jsonFile;
             }
 
             await withOutputCapture(ctx, () => rigenera(args));
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
+    // ── Rigenera con Claude (per ricette legacy senza JSON) ──
+    app.post('/api/rigenera-claude', async (req, res) => {
+        const { slug } = req.body;
+        const jobId = `rigcl-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `Rigenera Claude: ${slug}`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const ricettarioPath = getRicettarioPath();
+
+            // Cerca il file HTML nelle cartelle categorie
+            let htmlFile = null;
+            for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.html`);
+                if (existsSync(candidate)) { htmlFile = candidate; break; }
+            }
+
+            if (!htmlFile) {
+                ctx.error(`❌ ${slug}: HTML non trovato`);
+                ctx.end(false);
+                return;
+            }
+
+            const { rigeneraClaude } = await import('../commands/rigenera-claude.js');
+            await withOutputCapture(ctx, () => rigeneraClaude(htmlFile, slug));
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ ${slug}: ${err.message}`);
             ctx.end(false);
         }
     });
@@ -265,13 +311,45 @@ export function setupRoutes(app) {
 
     // ── Valida ──
     app.post('/api/valida', async (req, res) => {
+        const { slugs } = req.body || {};
+        const label = slugs?.length ? `Validazione: ${slugs.length} ricette` : 'Validazione tutte';
         const jobId = `val-${++jobCounter}`;
-        const ctx = createJobContext(jobId, 'Validazione ricette');
+        const ctx = createJobContext(jobId, label);
         res.json({ jobId, status: 'started' });
 
         try {
-            const { valida } = await import('../commands/valida.js');
-            await withOutputCapture(ctx, () => valida({ valida: true }));
+            if (slugs?.length) {
+                // Batch: valida singole ricette
+                const { CATEGORY_FOLDERS } = await import('../publisher.js');
+                const { validateRecipe } = await import('../validator.js');
+                const ricettarioPath = getRicettarioPath();
+
+                await withOutputCapture(ctx, async () => {
+                    ctx.log(`📊 Validazione di ${slugs.length} ricette...\n`);
+                    for (const slug of slugs) {
+                        // Trova il JSON della ricetta
+                        let jsonFile = null;
+                        for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                            const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
+                            if (existsSync(candidate)) { jsonFile = candidate; break; }
+                        }
+                        if (!jsonFile) { ctx.log(`  ⚠️ ${slug}: JSON non trovato`); continue; }
+
+                        try {
+                            const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
+                            const { comparison } = await validateRecipe(recipe);
+                            const score = comparison.score ?? comparison.confidence ?? 0;
+                            const emoji = score >= 80 ? '🟢' : score >= 60 ? '🟡' : '🔴';
+                            ctx.log(`  ${emoji} ${score}% — ${recipe.title}`);
+                        } catch (err) {
+                            ctx.log(`  ❌ ${slug}: ${err.message}`);
+                        }
+                    }
+                });
+            } else {
+                const { valida } = await import('../commands/valida.js');
+                await withOutputCapture(ctx, () => valida({ valida: true }));
+            }
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
@@ -281,15 +359,42 @@ export function setupRoutes(app) {
 
     // ── Verifica ──
     app.post('/api/verifica', async (req, res) => {
-        const { slug } = req.body;
+        const { slug, slugs } = req.body || {};
+        const batchSlugs = slugs || (slug ? [slug] : null);
+        const label = batchSlugs ? `Verifica: ${batchSlugs.length} ricette` : 'Verifica tutte';
         const jobId = `ver-${++jobCounter}`;
-        const ctx = createJobContext(jobId, slug ? `Verifica: ${slug}` : 'Verifica tutte');
+        const ctx = createJobContext(jobId, label);
         res.json({ jobId, status: 'started' });
 
         try {
-            const { verifica } = await import('../commands/verifica.js');
-            const args = slug ? { 'verifica-ricetta': slug } : { verifica: true };
-            await withOutputCapture(ctx, () => verifica(args));
+            if (batchSlugs) {
+                const { CATEGORY_FOLDERS } = await import('../publisher.js');
+                const { verifyRecipe } = await import('../verify.js');
+                const ricettarioPath = getRicettarioPath();
+
+                await withOutputCapture(ctx, async () => {
+                    ctx.log(`✅ Verifica AI di ${batchSlugs.length} ricette...\n`);
+                    for (const s of batchSlugs) {
+                        let jsonFile = null;
+                        for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                            const candidate = resolve(ricettarioPath, 'ricette', folder, `${s}.json`);
+                            if (existsSync(candidate)) { jsonFile = candidate; break; }
+                        }
+                        if (!jsonFile) { ctx.log(`  ⚠️ ${s}: non trovato`); continue; }
+
+                        try {
+                            const { recipe, result } = await verifyRecipe(jsonFile);
+                            const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
+                            ctx.log(`  ${emoji} ${result.score}/100 — ${recipe.title}`);
+                        } catch (err) {
+                            ctx.log(`  ❌ ${s}: ${err.message}`);
+                        }
+                    }
+                });
+            } else {
+                const { verifica } = await import('../commands/verifica.js');
+                await withOutputCapture(ctx, () => verifica({ verifica: true }));
+            }
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
@@ -306,6 +411,78 @@ export function setupRoutes(app) {
         try {
             const { syncCards } = await import('../commands/sync-cards.js');
             await withOutputCapture(ctx, () => syncCards({}));
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
+    // ── Elimina Ricetta ──
+    app.post('/api/elimina', async (req, res) => {
+        const { slugs } = req.body || {};
+        if (!slugs?.length) return res.status(400).json({ error: 'Nessun slug fornito' });
+
+        const jobId = `del-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `Elimina: ${slugs.length} ricette`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { unlinkSync } = await import('fs');
+            const ricettarioPath = getRicettarioPath();
+
+            await withOutputCapture(ctx, async () => {
+                ctx.log(`🗑️ Eliminazione di ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}...\n`);
+                let deleted = 0;
+
+                for (const slug of slugs) {
+                    // Trova la cartella categoria
+                    let found = false;
+                    for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                        const jsonFile = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
+                        const htmlFile = resolve(ricettarioPath, 'ricette', folder, `${slug}.html`);
+                        if (!existsSync(jsonFile) && !existsSync(htmlFile)) continue;
+                        found = true;
+
+                        // Cancella tutti i file associati
+                        const filesToDelete = [
+                            resolve(ricettarioPath, 'ricette', folder, `${slug}.json`),
+                            resolve(ricettarioPath, 'ricette', folder, `${slug}.html`),
+                            resolve(ricettarioPath, 'ricette', folder, `${slug}.validazione.md`),
+                            resolve(ricettarioPath, 'ricette', folder, `${slug}.verifica.md`),
+                            resolve(ricettarioPath, 'public', 'images', 'ricette', folder, `${slug}.jpg`),
+                        ];
+
+                        for (const f of filesToDelete) {
+                            try {
+                                if (existsSync(f)) {
+                                    unlinkSync(f);
+                                    ctx.log(`  ✅ ${f.split(/[/\\]/).pop()}`);
+                                }
+                            } catch (e) {
+                                ctx.log(`  ⚠️ ${f.split(/[/\\]/).pop()}: ${e.message}`);
+                            }
+                        }
+
+                        deleted++;
+                        ctx.log(`  🗑️ "${slug}" eliminata da ${cat}\n`);
+                        break;
+                    }
+
+                    if (!found) {
+                        ctx.log(`  ⚠️ ${slug}: non trovata\n`);
+                    }
+                }
+
+                // Sync cards per aggiornare recipes.json
+                ctx.log('🔄 Aggiornamento recipes.json...');
+                const { syncCards } = await import('../commands/sync-cards.js');
+                await syncCards({});
+
+                ctx.log(`\n🎉 Eliminat${deleted === 1 ? 'a' : 'e'} ${deleted} ricett${deleted === 1 ? 'a' : 'e'}`);
+            });
+
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);

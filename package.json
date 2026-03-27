@@ -4,7 +4,9 @@
     "description": "CLI per creare ricette: scraping + AI rewriting + HTML generation",
     "type": "module",
     "scripts": {
-        "crea": "node crea-ricetta.js"
+        "crea": "node crea-ricetta.js",
+        "dashboard": "node dashboard.js",
+        "dashboard:dev": "npx nodemon --watch src/server --watch src/commands --watch dashboard.js --ext js,json dashboard.js"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",
@@ -19,5 +21,8 @@
         "puppeteer-extra-plugin-stealth": "^2.11.2",
         "slugify": "^1.6.6",
         "ws": "^8.20.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.14"
     }
 }

@@ -1,404 +1,334 @@
 {
   "Pane": {
-    "timestamp": 1774568488430,
+    "timestamp": 1774635226279,
     "suggestions": [
       {
-        "keyword": "ricetta pane fatto in casa veloce",
+        "keyword": "pane fatto in casa",
         "popularity": {
           "score": 100,
-          "label": "Top 1",
-          "emoji": "🔥"
+          "label": "18.100/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 18100,
+        "competition": "LOW",
+        "cpc": 0.07,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa con lievito di birra",
+        "keyword": "ricetta panettone",
         "popularity": {
-          "score": 97,
-          "label": "Top 2",
-          "emoji": "🔥"
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.02,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa con lievito secco",
+        "keyword": "ricetta pane fatto in casa",
         "popularity": {
-          "score": 94,
-          "label": "Top 3",
-          "emoji": "🔥"
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.07,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa con lievito madre",
+        "keyword": "ricetta pane",
         "popularity": {
-          "score": 91,
-          "label": "Top 4",
-          "emoji": "🔥"
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.07,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa da benedetta",
+        "keyword": "pane fatto in casa ricetta della nonna",
         "popularity": {
-          "score": 88,
-          "label": "Top 5",
-          "emoji": "🔥"
+          "score": 66,
+          "label": "6600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 6600,
+        "competition": "LOW",
+        "cpc": 0.04,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa bimby",
+        "keyword": "pane fatto in casa veloce",
         "popularity": {
-          "score": 85,
-          "label": "Top 6",
-          "emoji": "📈"
+          "score": 54,
+          "label": "5400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 5400,
+        "competition": "LOW",
+        "cpc": 0.02,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa con planetaria",
+        "keyword": "pane con lievito madre",
         "popularity": {
-          "score": 82,
-          "label": "Top 7",
-          "emoji": "📈"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.17,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa con lievito di birra fresco",
+        "keyword": "ricetta pane senza glutine",
         "popularity": {
-          "score": 79,
-          "label": "Top 8",
-          "emoji": "📈"
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 0.25,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa con farina 00",
+        "keyword": "ricetta pane arabo",
         "popularity": {
-          "score": 76,
-          "label": "Top 9",
-          "emoji": "📈"
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 2900,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa integrale",
+        "keyword": "ricetta pane integrale",
         "popularity": {
-          "score": 73,
-          "label": "Top 10",
-          "emoji": "📈"
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.05,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa morbido",
+        "keyword": "pane fatto in casa croccante",
         "popularity": {
-          "score": 70,
-          "label": "Top 11",
-          "emoji": "📈"
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.11,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa facile",
+        "keyword": "pane fatto in casa ricetta originale",
         "popularity": {
-          "score": 67,
-          "label": "Top 12",
-          "emoji": "📈"
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.03,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pane fatto in casa lunga lievitazione",
-        "popularity": {
-          "score": 64,
-          "label": "Top 13",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pane fatto in casa croccante",
-        "popularity": {
-          "score": 61,
-          "label": "Top 14",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pane fatto in casa lievito fresco",
-        "popularity": {
-          "score": 58,
-          "label": "Top 15",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre ricetta della nonna",
-        "popularity": {
-          "score": 55,
-          "label": "Top 16",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre ricetta facile",
-        "popularity": {
-          "score": 52,
-          "label": "Top 17",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre ricetta bimby",
-        "popularity": {
-          "score": 49,
-          "label": "Top 18",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre ricetta veloce",
-        "popularity": {
-          "score": 46,
-          "label": "Top 19",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre essiccato ricetta",
-        "popularity": {
-          "score": 43,
-          "label": "Top 20",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane integrale con lievito madre ricetta",
-        "popularity": {
-          "score": 40,
-          "label": "Top 21",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre secco ricetta",
-        "popularity": {
-          "score": 37,
-          "label": "Top 22",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre solido ricetta",
-        "popularity": {
-          "score": 34,
-          "label": "Top 23",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane pugliese con lievito madre ricetta",
-        "popularity": {
-          "score": 31,
-          "label": "Top 24",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane con lievito madre liquido ricetta",
-        "popularity": {
-          "score": 28,
-          "label": "Top 25",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane senza glutine con lievito madre ricetta",
-        "popularity": {
-          "score": 25,
-          "label": "Top 26",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane di segale con lievito madre ricetta",
-        "popularity": {
-          "score": 22,
-          "label": "Top 27",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pane di farro con lievito madre ricetta",
+        "keyword": "ricetta panettone fatto in casa",
         "popularity": {
           "score": 19,
-          "label": "Top 28",
-          "emoji": "📈"
+          "label": "1900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 1900,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone semplice",
+        "popularity": {
+          "score": 19,
+          "label": "1900/mese",
+          "emoji": "📊"
+        },
+        "volume": 1900,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pane",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pane di altamura con lievito madre ricetta",
+        "keyword": "ricetta panettone sofficissimo",
         "popularity": {
           "score": 16,
-          "label": "Top 29",
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.11,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone gastronomico",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panelle",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta pane veloce",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.02,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone salato",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pane fatto in casa con lievito di birra",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.04,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pane fatto in casa ricetta antica",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.04,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pane fatto in casa da benedetta",
+        "popularity": {
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pane con lievito madre ricetta",
+        "popularity": {
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pane ad alta idratazione ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
           "emoji": "📈"
         },
         "volume": null,
@@ -409,10 +339,80 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "ricetta pane con lievito madre fresco",
+        "keyword": "pane ad alta idratazione fatto in casa da benedetta",
         "popularity": {
-          "score": 13,
-          "label": "Top 30",
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pane ad alta idratazione fulvio marino",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pane ad alta idratazione bimby",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pane ad alta idratazione e lunga lievitazione",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pane ad alta idratazione senza lievito madre",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pane ad alta idratazione fatto in casa",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
           "emoji": "📈"
         },
         "volume": null,
@@ -425,307 +425,41 @@
     ]
   },
   "Pizza": {
-    "timestamp": 1774568503872,
+    "timestamp": 1774635239717,
     "suggestions": [
       {
-        "keyword": "ricetta pizza fatta in casa da benedetta",
+        "keyword": "ricetta pizza fatta in casa",
         "popularity": {
-          "score": 100,
-          "label": "Top 1",
-          "emoji": "🔥"
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.18,
         "category": "Pizza",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pizza fatta in casa con lievito fresco",
+        "keyword": "pizza in teglia ricetta",
         "popularity": {
-          "score": 97,
-          "label": "Top 2",
-          "emoji": "🔥"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.25,
         "category": "Pizza",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa croccante",
-        "popularity": {
-          "score": 94,
-          "label": "Top 3",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa bonci",
-        "popularity": {
-          "score": 91,
-          "label": "Top 4",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa veloce",
-        "popularity": {
-          "score": 88,
-          "label": "Top 5",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa con lievito istantaneo",
-        "popularity": {
-          "score": 85,
-          "label": "Top 6",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa con lievito secco",
-        "popularity": {
-          "score": 82,
-          "label": "Top 7",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa in teglia",
-        "popularity": {
-          "score": 79,
-          "label": "Top 8",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa con farina 00",
-        "popularity": {
-          "score": 76,
-          "label": "Top 9",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa benedetta rossi",
-        "popularity": {
-          "score": 73,
-          "label": "Top 10",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa lievitazione 24 ore",
-        "popularity": {
-          "score": 70,
-          "label": "Top 11",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa con lievito di birra",
-        "popularity": {
-          "score": 67,
-          "label": "Top 12",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa bimby",
-        "popularity": {
-          "score": 64,
-          "label": "Top 13",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa fulvio marino",
-        "popularity": {
-          "score": 61,
-          "label": "Top 14",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pizza fatta in casa morbida",
-        "popularity": {
-          "score": 58,
-          "label": "Top 15",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione veloce",
-        "popularity": {
-          "score": 55,
-          "label": "Top 16",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione bimby",
-        "popularity": {
-          "score": 52,
-          "label": "Top 17",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione lunga lievitazione",
-        "popularity": {
-          "score": 49,
-          "label": "Top 18",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione bonci",
-        "popularity": {
-          "score": 46,
-          "label": "Top 19",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione a mano",
-        "popularity": {
-          "score": 43,
-          "label": "Top 20",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "impasto pizza alta idratazione troppo appiccicoso",
         "popularity": {
           "score": 40,
           "label": "Top 21",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione con lievito secco",
-        "popularity": {
-          "score": 37,
-          "label": "Top 22",
           "emoji": "📈"
         },
         "volume": null,
@@ -750,88 +484,32 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "impasto pizza alta idratazione 24 ore",
+        "keyword": "pizza napoletana ricetta impasto",
         "popularity": {
-          "score": 31,
-          "label": "Top 24",
-          "emoji": "📈"
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 2900,
+        "competition": "LOW",
+        "cpc": 0.23,
         "category": "Pizza",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "impasto pizza alta idratazione planetaria",
+        "keyword": "pizza con lievito madre",
         "popularity": {
-          "score": 28,
-          "label": "Top 25",
-          "emoji": "📈"
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 2900,
+        "competition": "LOW",
+        "cpc": 0.16,
         "category": "Pizza",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione veloce bimby",
-        "popularity": {
-          "score": 25,
-          "label": "Top 26",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione con impastatrice",
-        "popularity": {
-          "score": 22,
-          "label": "Top 27",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione 8 ore",
-        "popularity": {
-          "score": 19,
-          "label": "Top 28",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "impasto pizza alta idratazione 10 ore",
-        "popularity": {
-          "score": 16,
-          "label": "Top 29",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "impasto pizza alta idratazione in teglia",
@@ -846,263 +524,375 @@
         "category": "Pizza",
         "alreadyCreated": false,
         "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza napoletana ricetta 24 ore",
+        "popularity": {
+          "score": 10,
+          "label": "Top 38",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza napoletana ricetta della nonna",
+        "popularity": {
+          "score": 10,
+          "label": "Top 40",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza napoletana ricetta lievitazione 24 ore",
+        "popularity": {
+          "score": 10,
+          "label": "Top 41",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza napoletana ricetta malati di pizza",
+        "popularity": {
+          "score": 10,
+          "label": "Top 42",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza napoletana ricetta giallozafferano",
+        "popularity": {
+          "score": 10,
+          "label": "Top 45",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta con farina 00",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta lievito secco",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta benedetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta giallo zafferano",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta impasto",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta facile",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "impasto pizza alta idratazione",
+        "popularity": {
+          "score": 7.2,
+          "label": "720/mese",
+          "emoji": "📊"
+        },
+        "volume": 720,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza napoletana ricetta originale",
+        "popularity": {
+          "score": 5.9,
+          "label": "590/mese",
+          "emoji": "📊"
+        },
+        "volume": 590,
+        "competition": "LOW",
+        "cpc": 0.26,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza con lievito madre secco",
+        "popularity": {
+          "score": 3.9,
+          "label": "390/mese",
+          "emoji": "📊"
+        },
+        "volume": 390,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza in teglia ricetta della nonna",
+        "popularity": {
+          "score": 3.2,
+          "label": "320/mese",
+          "emoji": "📊"
+        },
+        "volume": 320,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza con lievito madre in giornata",
+        "popularity": {
+          "score": 3.2,
+          "label": "320/mese",
+          "emoji": "📊"
+        },
+        "volume": 320,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta pizza fatta in casa da benedetta",
+        "popularity": {
+          "score": 2.6,
+          "label": "260/mese",
+          "emoji": "📊"
+        },
+        "volume": 260,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza con lievito madre a lunga lievitazione",
+        "popularity": {
+          "score": 2.6,
+          "label": "260/mese",
+          "emoji": "📊"
+        },
+        "volume": 260,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza in teglia ricetta napoletana",
+        "popularity": {
+          "score": 2.1,
+          "label": "210/mese",
+          "emoji": "📊"
+        },
+        "volume": 210,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "impasto pizza alta idratazione veloce",
+        "popularity": {
+          "score": 1.7,
+          "label": "170/mese",
+          "emoji": "📊"
+        },
+        "volume": 170,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza con lievito madre lievitazione 24 ore",
+        "popularity": {
+          "score": 1.7,
+          "label": "170/mese",
+          "emoji": "📊"
+        },
+        "volume": 170,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta pizza fatta in casa con lievito fresco",
+        "popularity": {
+          "score": 1.4,
+          "label": "140/mese",
+          "emoji": "📊"
+        },
+        "volume": 140,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pizza con lievito madre rinfrescato",
+        "popularity": {
+          "score": 1.1,
+          "label": "110/mese",
+          "emoji": "📊"
+        },
+        "volume": 110,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       }
     ]
   },
   "Focaccia": {
-    "timestamp": 1774607642531,
+    "timestamp": 1774633749435,
     "suggestions": [
+      {
+        "keyword": "ricetta focaccia",
+        "popularity": {
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
+        },
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.09,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
       {
         "keyword": "ricetta focaccia morbida",
         "popularity": {
-          "score": 100,
-          "label": "Top 1",
-          "emoji": "🔥"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.1,
         "category": "Focaccia",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia veloce",
-        "popularity": {
-          "score": 94,
-          "label": "Top 3",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "ricetta focaccia genovese",
         "popularity": {
-          "score": 91,
-          "label": "Top 4",
-          "emoji": "🔥"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.04,
         "category": "Focaccia",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia pugliese",
-        "popularity": {
-          "score": 88,
-          "label": "Top 5",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia alta e soffice",
-        "popularity": {
-          "score": 85,
-          "label": "Top 6",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia morbida dentro croccante fuori",
-        "popularity": {
-          "score": 82,
-          "label": "Top 7",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia di recco",
-        "popularity": {
-          "score": 76,
-          "label": "Top 9",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia veloce senza lievitazione",
-        "popularity": {
-          "score": 73,
-          "label": "Top 10",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia pugliese con patate",
-        "popularity": {
-          "score": 70,
-          "label": "Top 11",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia fulvio marino",
-        "popularity": {
-          "score": 67,
-          "label": "Top 12",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia genovese originale",
-        "popularity": {
-          "score": 64,
-          "label": "Top 13",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia veloce benedetta rossi",
-        "popularity": {
-          "score": 61,
-          "label": "Top 14",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta focaccia genovese morbida",
-        "popularity": {
-          "score": 58,
-          "label": "Top 15",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "focaccia genovese ricetta originale",
-        "popularity": {
-          "score": 55,
-          "label": "Top 16",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "focaccia genovese ricetta semplice",
-        "popularity": {
-          "score": 52,
-          "label": "Top 17",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "focaccia genovese ricetta giallo zafferano",
-        "popularity": {
-          "score": 49,
-          "label": "Top 18",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "focaccia genovese ricetta bimby",
-        "popularity": {
-          "score": 46,
-          "label": "Top 19",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "focaccia genovese ricetta veloce",
-        "popularity": {
-          "score": 43,
-          "label": "Top 20",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Focaccia",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "focaccia genovese ricetta senza malto",
@@ -1133,6 +923,48 @@
         "source": "autocomplete"
       },
       {
+        "keyword": "ricetta focaccia pugliese",
+        "popularity": {
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
+        },
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta focaccia di recco",
+        "popularity": {
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
+        },
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 1.01,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "focaccia pugliese ricetta",
+        "popularity": {
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
+        },
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
         "keyword": "focaccia genovese ricetta benedetta rossi",
         "popularity": {
           "score": 34,
@@ -1147,18 +979,18 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "focaccia genovese ricetta della nonna",
+        "keyword": "focaccia pugliese ricetta originale sofficissima",
         "popularity": {
-          "score": 28,
-          "label": "Top 25",
-          "emoji": "📈"
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 2900,
+        "competition": "LOW",
         "cpc": null,
         "category": "Focaccia",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "focaccia genovese ricetta di fulvio marino",
@@ -1173,6 +1005,20 @@
         "category": "Focaccia",
         "alreadyCreated": false,
         "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta focaccia veloce",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.06,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       },
       {
         "keyword": "focaccia genovese ricetta renata briano",
@@ -1203,6 +1049,20 @@
         "source": "autocomplete"
       },
       {
+        "keyword": "ricetta focaccia veloce benedetta rossi",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.1,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
         "keyword": "focaccia genovese ricetta originale con strutto",
         "popularity": {
           "score": 16,
@@ -1215,6 +1075,48 @@
         "category": "Focaccia",
         "alreadyCreated": false,
         "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia con lievito madre",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta focaccia genovese originale",
+        "popularity": {
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": 0.6,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "focaccia genovese ricetta originale",
+        "popularity": {
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": 0.6,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       },
       {
         "keyword": "focaccia genovese ricetta professionale",
@@ -1231,10 +1133,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "focaccia pugliese ricetta originale sofficissima",
+        "keyword": "focaccia pugliese ricetta originale bimby",
         "popularity": {
           "score": 10,
-          "label": "Top 31",
+          "label": "Top 41",
           "emoji": "📈"
         },
         "volume": null,
@@ -1245,10 +1147,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "focaccia pugliese ricetta originale sofficissima senza patate",
+        "keyword": "focaccia pugliese ricetta con patate",
         "popularity": {
           "score": 10,
-          "label": "Top 32",
+          "label": "Top 42",
           "emoji": "📈"
         },
         "volume": null,
@@ -1259,10 +1161,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "focaccia pugliese ricetta della nonna",
+        "keyword": "focaccia pugliese ricetta originale sofficissima ripiena",
         "popularity": {
           "score": 10,
-          "label": "Top 33",
+          "label": "Top 43",
           "emoji": "📈"
         },
         "volume": null,
@@ -1271,389 +1173,179 @@
         "category": "Focaccia",
         "alreadyCreated": false,
         "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia alta idratazione con biga",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia alta idratazione farina 00",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia alta idratazione benedetta rossi",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia alta idratazione mille bolle",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia alta idratazione fulvio marino",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "focaccia con lievito madre morbida",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta focaccia morbida dentro croccante fuori",
+        "popularity": {
+          "score": 8.8,
+          "label": "880/mese",
+          "emoji": "📊"
+        },
+        "volume": 880,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Focaccia",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       }
     ]
   },
   "Lievitati": {
-    "timestamp": 1774607649444,
+    "timestamp": 1774632522214,
     "suggestions": [
+      {
+        "keyword": "ricetta panettone",
+        "popularity": {
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
+        },
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.02,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
       {
         "keyword": "ricetta brioches",
         "popularity": {
-          "score": 100,
-          "label": "Top 1",
-          "emoji": "🔥"
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 0.04,
         "category": "Lievitati",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta brioche",
+        "popularity": {
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
+        },
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 0.04,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "cornetti fatti in casa",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.02,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       },
       {
         "keyword": "ricetta brioche sofficissima",
         "popularity": {
-          "score": 97,
-          "label": "Top 2",
-          "emoji": "🔥"
+          "score": 19,
+          "label": "1900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 1900,
+        "competition": "LOW",
+        "cpc": 0.04,
         "category": "Lievitati",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche col tuppo",
-        "popularity": {
-          "score": 94,
-          "label": "Top 3",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche sofficissima benedetta rossi",
-        "popularity": {
-          "score": 91,
-          "label": "Top 4",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioches fatte in casa",
-        "popularity": {
-          "score": 88,
-          "label": "Top 5",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche rustica",
-        "popularity": {
-          "score": 85,
-          "label": "Top 6",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche salate",
-        "popularity": {
-          "score": 82,
-          "label": "Top 7",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche siciliane",
-        "popularity": {
-          "score": 79,
-          "label": "Top 8",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche salata napoletana",
-        "popularity": {
-          "score": 76,
-          "label": "Top 9",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioches veloci",
-        "popularity": {
-          "score": 73,
-          "label": "Top 10",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche rustica napoletana",
-        "popularity": {
-          "score": 70,
-          "label": "Top 11",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioches pasticceria",
-        "popularity": {
-          "score": 67,
-          "label": "Top 12",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche pandoro",
-        "popularity": {
-          "score": 64,
-          "label": "Top 13",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioches bimby",
-        "popularity": {
-          "score": 61,
-          "label": "Top 14",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta brioche sofficissima veloce",
-        "popularity": {
-          "score": 58,
-          "label": "Top 15",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa da benedetta",
-        "popularity": {
-          "score": 55,
-          "label": "Top 16",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa come al bar",
-        "popularity": {
-          "score": 52,
-          "label": "Top 17",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa facili",
-        "popularity": {
-          "score": 49,
-          "label": "Top 18",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa con lievitazione tutta la notte",
-        "popularity": {
-          "score": 46,
-          "label": "Top 19",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa giallozafferano",
-        "popularity": {
-          "score": 43,
-          "label": "Top 20",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa senza burro",
-        "popularity": {
-          "score": 40,
-          "label": "Top 21",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa con lievito per dolci",
-        "popularity": {
-          "score": 37,
-          "label": "Top 22",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa con pasta sfoglia",
-        "popularity": {
-          "score": 34,
-          "label": "Top 23",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa bimby",
-        "popularity": {
-          "score": 31,
-          "label": "Top 24",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa veloci",
-        "popularity": {
-          "score": 28,
-          "label": "Top 25",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa soffici",
-        "popularity": {
-          "score": 25,
-          "label": "Top 26",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "cornetti fatti in casa con farina 00",
-        "popularity": {
-          "score": 22,
-          "label": "Top 27",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Lievitati",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "cornetti fatti in casa friggitrice ad aria",
@@ -1670,10 +1362,108 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "cornetti fatti in casa ricetta",
+        "keyword": "ricetta panettone fatto in casa",
+        "popularity": {
+          "score": 19,
+          "label": "1900/mese",
+          "emoji": "📊"
+        },
+        "volume": 1900,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone semplice",
+        "popularity": {
+          "score": 19,
+          "label": "1900/mese",
+          "emoji": "📊"
+        },
+        "volume": 1900,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone gastronomico",
         "popularity": {
           "score": 16,
-          "label": "Top 29",
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone salato",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta brioche col tuppo",
+        "popularity": {
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "babà rustico napoletano ricetta originale",
+        "popularity": {
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "cornetti fatti in casa ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "1000/mese",
+          "emoji": "📊"
+        },
+        "volume": 1000,
+        "competition": "LOW",
+        "cpc": 0.02,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "burger buns ricetta senza burro",
+        "popularity": {
+          "score": 10,
+          "label": "Top 49",
           "emoji": "📈"
         },
         "volume": null,
@@ -1684,10 +1474,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "cornetti fatti in casa benedetta rossi",
+        "keyword": "burger buns ricetta giallozafferano",
         "popularity": {
-          "score": 13,
-          "label": "Top 30",
+          "score": 10,
+          "label": "Top 50",
           "emoji": "📈"
         },
         "volume": null,
@@ -1696,227 +1486,311 @@
         "category": "Lievitati",
         "alreadyCreated": false,
         "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta benedetta rossi",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta cooker girl",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta con patate",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta fatto in casa da benedetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta benedetta parodi",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta lievito madre",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "burger buns ricetta misya",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "babà napoletano ricetta della nonna",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "baba napoletano ricetta iginio massari",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "baba napoletano ricetta originale con lievito madre",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta panettone sofficissimo veloce",
+        "popularity": {
+          "score": 8.8,
+          "label": "880/mese",
+          "emoji": "📊"
+        },
+        "volume": 880,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "cornetti fatti in casa come al bar",
+        "popularity": {
+          "score": 7.2,
+          "label": "720/mese",
+          "emoji": "📊"
+        },
+        "volume": 720,
+        "competition": "LOW",
+        "cpc": 0.14,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone senza glutine",
+        "popularity": {
+          "score": 7.2,
+          "label": "720/mese",
+          "emoji": "📊"
+        },
+        "volume": 720,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone al cioccolato",
+        "popularity": {
+          "score": 5.9,
+          "label": "590/mese",
+          "emoji": "📊"
+        },
+        "volume": 590,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta brioche sofficissima benedetta rossi",
+        "popularity": {
+          "score": 4.8,
+          "label": "480/mese",
+          "emoji": "📊"
+        },
+        "volume": 480,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Lievitati",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       }
     ]
   },
   "Pasta": {
-    "timestamp": 1774607655699,
+    "timestamp": 1774632527019,
     "suggestions": [
+      {
+        "keyword": "pasta fatta in casa",
+        "popularity": {
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
+        },
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.32,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "tagliatelle fatte in casa",
+        "popularity": {
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
+        },
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.11,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta pasta fresca",
+        "popularity": {
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
+        },
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.27,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
       {
         "keyword": "ricetta pasta fresca senza uova",
         "popularity": {
-          "score": 100,
-          "label": "Top 1",
-          "emoji": "🔥"
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 1600,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta pasta fresca all'uovo",
+        "keyword": "tagliatelle fatte in casa ricetta",
         "popularity": {
-          "score": 97,
-          "label": "Top 2",
-          "emoji": "🔥"
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.14,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca per ravioli",
-        "popularity": {
-          "score": 94,
-          "label": "Top 3",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca senza uova farina 00",
-        "popularity": {
-          "score": 91,
-          "label": "Top 4",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca senza uova senza macchina",
-        "popularity": {
-          "score": 88,
-          "label": "Top 5",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca per ravioli fatto in casa da benedetta",
-        "popularity": {
-          "score": 85,
-          "label": "Top 6",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca per lasagne",
-        "popularity": {
-          "score": 82,
-          "label": "Top 7",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca senza glutine",
-        "popularity": {
-          "score": 79,
-          "label": "Top 8",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca fatta in casa",
-        "popularity": {
-          "score": 76,
-          "label": "Top 9",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca perfetta",
-        "popularity": {
-          "score": 73,
-          "label": "Top 10",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca farina 00",
-        "popularity": {
-          "score": 70,
-          "label": "Top 11",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca di semola",
-        "popularity": {
-          "score": 67,
-          "label": "Top 12",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca con farina di mais",
-        "popularity": {
-          "score": 64,
-          "label": "Top 13",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca senza uova con planetaria",
-        "popularity": {
-          "score": 61,
-          "label": "Top 14",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta pasta fresca bimby",
-        "popularity": {
-          "score": 58,
-          "label": "Top 15",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pasta",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "pasta fatta in casa senza uova",
         "popularity": {
-          "score": 55,
-          "label": "Top 16",
+          "score": 13,
+          "label": "1300/mese",
+          "emoji": "📊"
+        },
+        "volume": 1300,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta ravioli fatti in casa con ricotta e spinaci",
+        "popularity": {
+          "score": 10,
+          "label": "Top 33",
           "emoji": "📈"
         },
         "volume": null,
@@ -1927,10 +1801,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pasta fatta in casa ricetta",
+        "keyword": "ricetta ravioli fatti in casa con ricotta",
         "popularity": {
-          "score": 52,
-          "label": "Top 17",
+          "score": 10,
+          "label": "Top 35",
           "emoji": "📈"
         },
         "volume": null,
@@ -1941,10 +1815,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pasta fatta in casa con semola",
+        "keyword": "ricetta ravioli fatti in casa senza glutine",
         "popularity": {
-          "score": 49,
-          "label": "Top 18",
+          "score": 10,
+          "label": "Top 36",
           "emoji": "📈"
         },
         "volume": null,
@@ -1955,10 +1829,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pasta fatta in casa con planetaria",
+        "keyword": "ricetta ravioli ripieni fatti in casa",
         "popularity": {
-          "score": 46,
-          "label": "Top 19",
+          "score": 10,
+          "label": "Top 40",
           "emoji": "📈"
         },
         "volume": null,
@@ -1969,10 +1843,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pasta fatta in casa senza glutine",
+        "keyword": "ricetta ravioli ricotta spinaci fatti in casa",
         "popularity": {
-          "score": 43,
-          "label": "Top 20",
+          "score": 10,
+          "label": "Top 44",
           "emoji": "📈"
         },
         "volume": null,
@@ -1983,10 +1857,10 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pasta fatta in casa bimby",
+        "keyword": "gnocchi fatti in casa ricetta semplice",
         "popularity": {
-          "score": 40,
-          "label": "Top 21",
+          "score": 10,
+          "label": "Top 50",
           "emoji": "📈"
         },
         "volume": null,
@@ -1997,10 +1871,122 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pasta fatta in casa benedetta rossi",
+        "keyword": "gnocchi fatti in casa ricetta bimby",
         "popularity": {
-          "score": 37,
-          "label": "Top 22",
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "gnocchi fatti in casa ricetta originale",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "gnocchi fatti in casa ricetta veloce",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "gnocchi morbidi fatti in casa ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "gnocchi di riso fatti in casa ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "gnocchi di zucca fatti in casa ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "gnocchi fatti in casa senza patate ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta gnocchi fatti in casa con patate",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta gnocchi fatti in casa senza uova",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
           "emoji": "📈"
         },
         "volume": null,
@@ -2013,413 +1999,413 @@
       {
         "keyword": "pasta fatta in casa acqua e farina",
         "popularity": {
-          "score": 34,
-          "label": "Top 23",
-          "emoji": "📈"
+          "score": 8.8,
+          "label": "880/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 880,
+        "competition": "LOW",
+        "cpc": 0.11,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa con uova",
+        "keyword": "tagliatelle fatte in casa ricetta della nonna",
         "popularity": {
-          "score": 31,
-          "label": "Top 24",
-          "emoji": "📈"
+          "score": 8.8,
+          "label": "880/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 880,
+        "competition": "LOW",
+        "cpc": 0.02,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa con semola e acqua",
+        "keyword": "tagliatelle fatte in casa senza uovo",
         "popularity": {
-          "score": 28,
-          "label": "Top 25",
-          "emoji": "📈"
+          "score": 7.2,
+          "label": "720/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 720,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa con macchina manuale",
+        "keyword": "pasta fatta in casa con semola",
         "popularity": {
-          "score": 25,
-          "label": "Top 26",
-          "emoji": "📈"
+          "score": 5.9,
+          "label": "590/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 590,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa senza uova per 2 persone",
+        "keyword": "tagliatelle fatte in casa da benedetta",
         "popularity": {
-          "score": 22,
-          "label": "Top 27",
-          "emoji": "📈"
+          "score": 5.9,
+          "label": "590/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 590,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa senza macchina",
+        "keyword": "ricetta pasta fresca per ravioli fatto in casa da benedetta",
         "popularity": {
-          "score": 19,
-          "label": "Top 28",
-          "emoji": "📈"
+          "score": 4.8,
+          "label": "480/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 480,
+        "competition": "LOW",
+        "cpc": 0.02,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa senza glutine con farina di riso",
+        "keyword": "pasta fatta in casa senza glutine",
         "popularity": {
-          "score": 16,
-          "label": "Top 29",
-          "emoji": "📈"
+          "score": 4.8,
+          "label": "480/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 480,
+        "competition": "LOW",
+        "cpc": 0.13,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "pasta fatta in casa da benedetta",
+        "keyword": "gnocchi fatti in casa ricetta",
         "popularity": {
-          "score": 13,
-          "label": "Top 30",
-          "emoji": "📈"
+          "score": 4.8,
+          "label": "480/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 480,
+        "competition": "LOW",
+        "cpc": 0.08,
+        "category": "Pasta",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pasta fatta in casa con planetaria",
+        "popularity": {
+          "score": 3.9,
+          "label": "390/mese",
+          "emoji": "📊"
+        },
+        "volume": 390,
+        "competition": "LOW",
         "cpc": null,
         "category": "Pasta",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       }
     ]
   },
   "Dolci": {
-    "timestamp": 1774613505761,
+    "timestamp": 1774632532514,
     "suggestions": [
       {
         "keyword": "ricetta torta di mele",
         "popularity": {
           "score": 100,
-          "label": "Top 1",
-          "emoji": "🔥"
+          "label": "33.100/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 33100,
+        "competition": "LOW",
+        "cpc": 0.04,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta torta pasqualina",
+        "keyword": "ricetta biscotti",
         "popularity": {
-          "score": 97,
-          "label": "Top 2",
-          "emoji": "🔥"
+          "score": 100,
+          "label": "22.200/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 22200,
+        "competition": "LOW",
+        "cpc": 0.09,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta torta pasqualina con pasta sfoglia pronta",
+        "keyword": "ricetta crostata",
         "popularity": {
-          "score": 94,
-          "label": "Top 3",
-          "emoji": "🔥"
+          "score": 100,
+          "label": "14.800/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 14800,
+        "competition": "LOW",
+        "cpc": 0.04,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta torta al cioccolato",
-        "popularity": {
-          "score": 91,
-          "label": "Top 4",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta torta di mele morbidissima",
-        "popularity": {
-          "score": 88,
-          "label": "Top 5",
-          "emoji": "🔥"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta torta margherita",
-        "popularity": {
-          "score": 85,
-          "label": "Top 6",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta tortano napoletano",
-        "popularity": {
-          "score": 82,
-          "label": "Top 7",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta torta tenerina",
-        "popularity": {
-          "score": 79,
-          "label": "Top 8",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "ricetta torta caprese",
         "popularity": {
-          "score": 76,
-          "label": "Top 9",
-          "emoji": "📈"
+          "score": 100,
+          "label": "12.100/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 12100,
+        "competition": "LOW",
+        "cpc": 0.34,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta torta allo yogurt",
+        "keyword": "ricetta crostata di marmellata",
         "popularity": {
-          "score": 73,
-          "label": "Top 10",
-          "emoji": "📈"
+          "score": 100,
+          "label": "12.100/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 12100,
+        "competition": "LOW",
+        "cpc": 0.09,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta torta",
+        "popularity": {
+          "score": 100,
+          "label": "12.100/mese",
+          "emoji": "📊"
+        },
+        "volume": 12100,
+        "competition": "LOW",
+        "cpc": 0.2,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta torta al cioccolato",
+        "popularity": {
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
+        },
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.04,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       },
       {
         "keyword": "ricetta torta paradiso",
         "popularity": {
-          "score": 70,
-          "label": "Top 11",
-          "emoji": "📈"
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.06,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "ricetta torta di mele buonissima",
-        "popularity": {
-          "score": 67,
-          "label": "Top 12",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "ricetta torta della nonna",
         "popularity": {
-          "score": 64,
-          "label": "Top 13",
-          "emoji": "📈"
+          "score": 99,
+          "label": "9900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 9900,
+        "competition": "LOW",
+        "cpc": 0.03,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta torta tenerina",
+        "popularity": {
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
+        },
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta biscotti natale",
+        "popularity": {
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
+        },
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.04,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta torta pasqualina",
+        "popularity": {
+          "score": 66,
+          "label": "6600/mese",
+          "emoji": "📊"
+        },
+        "volume": 6600,
+        "competition": "LOW",
+        "cpc": 0.12,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
       },
       {
         "keyword": "ricetta torta di carote",
         "popularity": {
-          "score": 61,
-          "label": "Top 14",
-          "emoji": "📈"
+          "score": 66,
+          "label": "6600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 6600,
+        "competition": "LOW",
+        "cpc": 0.05,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "ricetta torta all'arancia",
+        "keyword": "ricetta biscotti al burro",
         "popularity": {
-          "score": 58,
-          "label": "Top 15",
-          "emoji": "📈"
+          "score": 66,
+          "label": "6600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 6600,
+        "competition": "LOW",
+        "cpc": 0.03,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa facili",
+        "keyword": "ricetta biscotti semplici",
         "popularity": {
-          "score": 55,
-          "label": "Top 16",
-          "emoji": "📈"
+          "score": 66,
+          "label": "6600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 6600,
+        "competition": "LOW",
+        "cpc": 0.09,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa per diabetici",
+        "keyword": "ricetta biscotti pasta frolla",
         "popularity": {
-          "score": 52,
-          "label": "Top 17",
-          "emoji": "📈"
+          "score": 66,
+          "label": "6600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 6600,
+        "competition": "LOW",
+        "cpc": 0.1,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa da regalare a natale",
+        "keyword": "tiramisù ricetta originale",
         "popularity": {
-          "score": 49,
-          "label": "Top 18",
-          "emoji": "📈"
+          "score": 54,
+          "label": "5400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 5400,
+        "competition": "LOW",
+        "cpc": 0.23,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa veloci",
+        "keyword": "ricetta torta di mele morbidissima",
         "popularity": {
-          "score": 46,
-          "label": "Top 19",
-          "emoji": "📈"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.03,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa per natale",
+        "keyword": "ricetta torta allo yogurt",
         "popularity": {
-          "score": 43,
-          "label": "Top 20",
-          "emoji": "📈"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.18,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa per colazione",
+        "keyword": "ricetta biscotti con gocce di cioccolato",
         "popularity": {
-          "score": 40,
-          "label": "Top 21",
-          "emoji": "📈"
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.07,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
         "keyword": "dolci fatti in casa per bambini",
@@ -2436,116 +2422,130 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "dolci fatti in casa senza glutine",
+        "keyword": "ricetta torta margherita",
         "popularity": {
-          "score": 34,
-          "label": "Top 23",
-          "emoji": "📈"
+          "score": 36,
+          "label": "3600/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 3600,
+        "competition": "LOW",
+        "cpc": 0.77,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta biscotti classici",
+        "popularity": {
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
+        },
+        "volume": 2900,
+        "competition": "LOW",
+        "cpc": 0.14,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta biscotti morbidissimi",
+        "popularity": {
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
+        },
+        "volume": 2900,
+        "competition": "LOW",
+        "cpc": 0.08,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta crostata alla nutella",
+        "popularity": {
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
+        },
+        "volume": 2900,
+        "competition": "LOW",
         "cpc": null,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa per colesterolo alto",
+        "keyword": "ricetta torta di mele buonissima",
         "popularity": {
-          "score": 31,
-          "label": "Top 24",
-          "emoji": "📈"
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.11,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta biscotti senza burro",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.03,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta biscotti al cioccolato",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.06,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta crostata morbida",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
         "cpc": null,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       },
       {
-        "keyword": "dolci fatti in casa in gravidanza",
-        "popularity": {
-          "score": 28,
-          "label": "Top 25",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "dolci fatti in casa al cioccolato",
-        "popularity": {
-          "score": 25,
-          "label": "Top 26",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "dolci fatti in casa dietetici",
-        "popularity": {
-          "score": 22,
-          "label": "Top 27",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "dolci fatti in casa con pochi ingredienti",
+        "keyword": "ricetta torta pasqualina con pasta sfoglia pronta",
         "popularity": {
           "score": 19,
-          "label": "Top 28",
-          "emoji": "📈"
+          "label": "1900/mese",
+          "emoji": "📊"
         },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
+        "volume": 1900,
+        "competition": "LOW",
+        "cpc": 0.26,
         "category": "Dolci",
         "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "dolci fatti in casa e colesterolo",
-        "popularity": {
-          "score": 16,
-          "label": "Top 29",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "dolci fatti in casa ricette",
-        "popularity": {
-          "score": 13,
-          "label": "Top 30",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
+        "source": "dataforseo"
       }
     ]
   }

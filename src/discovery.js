@@ -10,9 +10,9 @@
  * @returns {Promise<Array<{title: string, url: string, snippet: string}>>}
  */
 export async function discoverRecipes(query, num = 5) {
-    const apiKey = process.env.SERPAPI_KEY;
+    const keys = [process.env.SERPAPI_KEY, process.env.SERPAPI_KEY_2].filter(Boolean);
 
-    if (!apiKey) {
+    if (keys.length === 0) {
         throw new Error(
             'SERPAPI_KEY non trovata nel .env.\n' +
             'Registrati su https://serpapi.com e inserisci la tua API key.'
@@ -22,55 +22,79 @@ export async function discoverRecipes(query, num = 5) {
     console.log(`🔍 Cerco ricette per: "${query}"...\n`);
 
     const searchQuery = `ricetta ${query}`;
-    const url = new URL('https://serpapi.com/search.json');
-    url.searchParams.set('api_key', apiKey);
-    url.searchParams.set('q', searchQuery);
-    url.searchParams.set('num', Math.min(num, 10).toString());
-    url.searchParams.set('hl', 'it');       // Lingua italiana
-    url.searchParams.set('gl', 'it');       // Geolocalizzazione Italia
-    url.searchParams.set('engine', 'google');
 
-    const res = await fetch(url);
+    // Prova ogni chiave disponibile (rotazione su fallimento)
+    let lastError = null;
+    for (let i = 0; i < keys.length; i++) {
+        const apiKey = keys[i];
+        const url = new URL('https://serpapi.com/search.json');
+        url.searchParams.set('api_key', apiKey);
+        url.searchParams.set('q', searchQuery);
+        url.searchParams.set('num', Math.min(num, 10).toString());
+        url.searchParams.set('hl', 'it');
+        url.searchParams.set('gl', 'it');
+        url.searchParams.set('engine', 'google');
 
-    if (!res.ok) {
-        const error = await res.json().catch(() => ({}));
-        throw new Error(
-            `SerpAPI errore ${res.status}: ${error?.error || res.statusText}`
-        );
+        try {
+            const res = await fetch(url);
+
+            if (!res.ok) {
+                const error = await res.json().catch(() => ({}));
+                // Se crediti esauriti/rate limit, prova la prossima chiave
+                if (res.status === 429 || (error?.error || '').includes('limit')) {
+                    console.log(`⚠️  Chiave ${i + 1}/${keys.length} esaurita, provo la prossima...`);
+                    lastError = error?.error || `HTTP ${res.status}`;
+                    continue;
+                }
+                throw new Error(`SerpAPI errore ${res.status}: ${error?.error || res.statusText}`);
+            }
+
+            const data = await res.json();
+
+            if (data.error) {
+                if (data.error.includes('limit') || data.error.includes('exceeded')) {
+                    console.log(`⚠️  Chiave ${i + 1}/${keys.length} esaurita, provo la prossima...`);
+                    lastError = data.error;
+                    continue;
+                }
+                throw new Error(`SerpAPI: ${data.error}`);
+            }
+
+            const organicResults = data.organic_results || [];
+
+            if (organicResults.length === 0) {
+                console.log('⚠️  Nessun risultato trovato. Prova con una query diversa.');
+                return [];
+            }
+
+            const results = organicResults.map((item, i) => ({
+                index: i + 1,
+                title: item.title,
+                url: item.link,
+                snippet: item.snippet || '',
+                source: new URL(item.link).hostname.replace('www.', ''),
+            }));
+
+            // Mostra i risultati
+            console.log(`📋 Trovate ${results.length} ricette:\n`);
+            results.forEach(r => {
+                console.log(`  ${r.index}. ${r.title}`);
+                console.log(`     🔗 ${r.url}`);
+                console.log(`     📰 ${r.source}`);
+                console.log(`     ${r.snippet.substring(0, 120)}...`);
+                console.log('');
+            });
+
+            return results;
+        } catch (err) {
+            lastError = err.message;
+            console.log(`⚠️  Chiave ${i + 1}/${keys.length} fallita: ${err.message}`);
+            if (i < keys.length - 1) continue;
+        }
     }
 
-    const data = await res.json();
-
-    if (data.error) {
-        throw new Error(`SerpAPI: ${data.error}`);
-    }
-
-    const organicResults = data.organic_results || [];
-
-    if (organicResults.length === 0) {
-        console.log('⚠️  Nessun risultato trovato. Prova con una query diversa.');
-        return [];
-    }
-
-    const results = organicResults.map((item, i) => ({
-        index: i + 1,
-        title: item.title,
-        url: item.link,
-        snippet: item.snippet || '',
-        source: new URL(item.link).hostname.replace('www.', ''),
-    }));
-
-    // Mostra i risultati
-    console.log(`📋 Trovate ${results.length} ricette:\n`);
-    results.forEach(r => {
-        console.log(`  ${r.index}. ${r.title}`);
-        console.log(`     🔗 ${r.url}`);
-        console.log(`     📰 ${r.source}`);
-        console.log(`     ${r.snippet.substring(0, 120)}...`);
-        console.log('');
-    });
-
-    return results;
+    console.log(`❌ Tutte le chiavi SerpAPI esaurite. Ultimo errore: ${lastError}`);
+    return [];
 }
 
 /**

@@ -21,11 +21,13 @@ import { log } from './utils/logger.js';
 
 const CATEGORY_SEEDS = {
     Pane: [
-        'ricetta pane fatto in casa',
-        'pane con lievito madre ricetta',
+        'ricetta pane',
+        'pane fatto in casa',
+        'pane con lievito madre',
         'pane ad alta idratazione',
         'ricetta pane integrale',
-        'pane senza impasto ricetta'
+        'pane senza impasto',
+        'pane casereccio ricetta'
     ],
     Pizza: [
         'ricetta pizza fatta in casa',
@@ -107,25 +109,32 @@ function setCachedResults(category, suggestions) {
 // ============================================================================
 
 async function fetchAutocomplete(seed) {
-    const apiKey = process.env.SERPAPI_KEY;
-    if (!apiKey) return [];
+    const keys = [process.env.SERPAPI_KEY, process.env.SERPAPI_KEY_2].filter(Boolean);
+    if (keys.length === 0) return [];
 
-    const url = new URL('https://serpapi.com/search.json');
-    url.searchParams.set('engine', 'google_autocomplete');
-    url.searchParams.set('q', seed);
-    url.searchParams.set('gl', 'it');
-    url.searchParams.set('hl', 'it');
-    url.searchParams.set('api_key', apiKey);
+    for (const apiKey of keys) {
+        const url = new URL('https://serpapi.com/search.json');
+        url.searchParams.set('engine', 'google_autocomplete');
+        url.searchParams.set('q', seed);
+        url.searchParams.set('gl', 'it');
+        url.searchParams.set('hl', 'it');
+        url.searchParams.set('api_key', apiKey);
 
-    try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-        if (!res.ok) return [];
-        const data = await res.json();
-        return (data.suggestions || []).map(s => s.value).filter(Boolean);
-    } catch (err) {
-        log.warn(`Autocomplete fallito per "${seed}": ${err.message}`);
-        return [];
+        try {
+            const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+            if (!res.ok) {
+                if (res.status === 429) continue; // Prova prossima chiave
+                return [];
+            }
+            const data = await res.json();
+            if (data.error && (data.error.includes('limit') || data.error.includes('exceeded'))) continue;
+            return (data.suggestions || []).map(s => s.value).filter(Boolean);
+        } catch (err) {
+            log.warn(`Autocomplete fallito per "${seed}": ${err.message}`);
+            continue;
+        }
     }
+    return [];
 }
 
 // ============================================================================

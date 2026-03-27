@@ -1,7 +1,9 @@
 /**
- * GENERATE RECIPES JSON
- * Scansiona tutte le ricette HTML e genera recipes.json con i metadati.
- * Usato dalla homepage per il rendering dinamico dei caroselli.
+ * GENERATE RECIPES JSON (v2 — SPA)
+ * Scansiona tutti i file .json nelle cartelle ricette e genera recipes.json.
+ * Usato dalla homepage SPA per il rendering dinamico dei caroselli.
+ *
+ * In v2 legge direttamente dai JSON (non più dagli HTML eliminati).
  */
 const fs = require('fs');
 const path = require('path');
@@ -22,87 +24,52 @@ for (const [dir, meta] of Object.entries(recipeDirs)) {
     const fullDir = path.join(ricettarioPath, 'ricette', dir);
     if (!fs.existsSync(fullDir)) continue;
 
-    const files = fs.readdirSync(fullDir).filter(f => f.endsWith('.html') && f !== 'index.html');
+    // Legge i file .json (non più .html!)
+    const files = fs.readdirSync(fullDir).filter(f => f.endsWith('.json'));
 
     for (const file of files) {
         const filePath = path.join(fullDir, file);
-        const html = fs.readFileSync(filePath, 'utf8');
-        const slug = file.replace('.html', '');
+        const slug = file.replace('.json', '');
 
-        // Estrai title
-        const titleMatch = html.match(/<title>([^<]+?)\s*[—–-]\s*Il Ricettario/);
-        const title = titleMatch?.[1]?.trim() || slug.replace(/-/g, ' ');
+        try {
+            const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-        // Estrai description dal meta tag
-        const descMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/);
-        const description = descMatch?.[1]?.trim() || '';
-
-        // Estrai immagine dall'hero background
-        const imgMatch = html.match(/recipe-hero"[^>]*style="background-image:\s*url\('([^']+)'\)/);
-        let image = imgMatch?.[1] || '';
-
-        // Estrai immagine dalla card (recipe-card__image) se non trovata nell'hero
-        if (!image) {
-            const cardImgMatch = html.match(/recipe-card__image[^>]*src="([^"]+)"/);
-            image = cardImgMatch?.[1] || '';
-        }
-
-        // Normalizza path immagine (rimuovi ../../)
-        image = image.replace(/^\.\.\/\.\.\//g, '');
-
-        // Estrai idratazione: cerca nel tech-badge o nel testo generico
-        const hydrationMatch = html.match(/[Ii]dratazione[^<]*<span[^>]*>\s*(?:&nbsp;)?\s*([\d.]+%)/)
-            || html.match(/💧[^<]*<span[^>]*>\s*(?:&nbsp;)?\s*([\d.]+%)/)
-            || html.match(/[Ii]dratazione\s*([\d.]+)%/)
-            || html.match(/💧\s*([\d.]+)%/);
-        const hydration = hydrationMatch?.[1] || null;
-
-        // Estrai tempo/lievitazione dai tech-badge
-        const timeBadgeMatch = html.match(/[Ll]ievitazione[^<]*<span[^>]*>\s*(?:&nbsp;)?\s*([^<]+)/);
-        let time = timeBadgeMatch?.[1]?.trim() || null;
-        if (!time) {
-            const allTimeMatches = [...html.matchAll(/⏱️\s*([^<\n]+)/g)];
-            for (const m of allTimeMatches) {
-                const val = m[1].trim();
-                if (val && val !== 'Nessuna' && val !== 'Lievitazione:' && val !== 'Tempo:' && !val.includes('Farina') && val.length < 80) {
-                    time = val;
-                    break;
+            // Determina immagine: dal JSON o path convenzionale
+            let image = '';
+            if (data.image) {
+                image = data.image.replace(/^\//, '');
+            } else {
+                const imgPath = `images/ricette/${dir}/${slug}.jpg`;
+                const imgFullPath = path.join(ricettarioPath, imgPath);
+                if (fs.existsSync(imgFullPath)) {
+                    image = imgPath;
                 }
             }
+
+            // Determina tool/setup
+            let tool = '';
+            if (data.stepsSpiral?.length) tool = '🔧 Impastatrice a spirale';
+            else if (data.stepsExtruder?.length) tool = '🔧 Estrusore con trafila';
+            else if (data.stepsHand?.length) tool = '🤲 A mano';
+
+            recipes.push({
+                title: data.title || slug.replace(/-/g, ' '),
+                slug,
+                category: meta.label,
+                categoryDir: dir,
+                emoji: meta.emoji,
+                // SPA: href senza .html
+                href: `ricette/${dir}/${slug}`,
+                image,
+                description: data.description || data.subtitle || '',
+                hydration: data.hydration ? `${data.hydration}%` : null,
+                time: data.fermentation || null,
+                temp: data.targetTemp || null,
+                tool,
+            });
+        } catch (err) {
+            console.warn(`⚠️  Errore parsing ${file}: ${err.message}`);
         }
-
-        // Estrai temperatura dai tech-badge
-        const tempBadgeMatch = html.match(/Target Temp[^<]*<span[^>]*>\s*(?:&nbsp;)?\s*([^<]+)/);
-        let temp = tempBadgeMatch?.[1]?.trim() || null;
-        if (!temp) {
-            const allTempMatches = [...html.matchAll(/🌡️\s*([^<\n]+)/g)];
-            for (const m of allTempMatches) {
-                const val = m[1].trim();
-                if (val && val !== 'Ambiente' && val !== 'Temperatura:' && val !== 'Target Temp:' && val.length < 30) {
-                    temp = val;
-                    break;
-                }
-            }
-        }
-
-        // Estrai tag strumento dall'HTML
-        const toolMatch = html.match(/hero-setup-tag[^>]*>([^<]+)/);
-        const tool = toolMatch?.[1]?.trim() || '';
-
-        recipes.push({
-            title,
-            slug,
-            category: meta.label,
-            categoryDir: dir,
-            emoji: meta.emoji,
-            href: `ricette/${dir}/${file}`,
-            image,
-            description,
-            hydration: hydration || null,
-            time,
-            temp,
-            tool,
-        });
     }
 }
 
@@ -134,7 +101,7 @@ const output = {
 const outputPath = path.join(ricettarioPath, 'public', 'recipes.json');
 fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf-8');
 
-console.log(`\n📋 RECIPES.JSON GENERATO`);
+console.log(`\n📋 RECIPES.JSON GENERATO (v2 — SPA)`);
 console.log(`   📁 ${outputPath}`);
 console.log(`   📊 ${recipes.length} ricette totali`);
 for (const [cat, count] of Object.entries(stats)) {

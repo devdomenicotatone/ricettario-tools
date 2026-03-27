@@ -599,6 +599,7 @@ body {
     border-radius: var(--radius);
     overflow: hidden;
     transition: all var(--transition);
+    cursor: pointer;
 }
 
 .recipe-card:hover {
@@ -868,6 +869,135 @@ body {
 .cat-dropdown-item:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ── SELECTION SYSTEM ── */
+.recipe-checkbox {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 5;
+}
+
+.recipe-card { position: relative; }
+.recipe-card:hover .recipe-checkbox,
+.recipe-card.selected .recipe-checkbox { opacity: 1; }
+.recipe-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(232, 160, 72, 0.3); }
+
+.recipe-row { position: relative; }
+.recipe-row .recipe-checkbox {
+    position: static;
+    opacity: 0;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+.recipe-row:hover .recipe-checkbox,
+.recipe-row.selected .recipe-checkbox { opacity: 1; }
+.recipe-row.selected { background: rgba(232, 160, 72, 0.08); border-color: var(--accent); }
+
+.recipe-checkbox-all {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* ── ACTION BAR FLOATING ── */
+.selection-action-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(30, 30, 40, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 10px 20px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    z-index: 999;
+    animation: slideUpBar 0.25s ease;
+}
+
+@keyframes slideUpBar {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.action-bar-info { display: flex; align-items: center; }
+.action-bar-count {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.action-bar-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.action-bar-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.action-bar-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.action-bar-close {
+    padding: 8px 12px;
+    border-radius: 50%;
+    font-size: 16px;
+    margin-left: 4px;
+}
+
+.action-bar-close:hover {
+    background: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.action-bar-danger {
+    color: #e74c3c;
+    border-color: rgba(231, 76, 60, 0.3);
+}
+.action-bar-danger:hover {
+    background: #e74c3c;
+    color: #fff;
+    border-color: #e74c3c;
+}
+
+.action-bar-ai {
+    color: #a78bfa;
+    border-color: rgba(167, 139, 250, 0.3);
+}
+.action-bar-ai:hover {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    color: #fff;
+    border-color: #7c3aed;
 }
 
 /* ── TERMINAL ── */
