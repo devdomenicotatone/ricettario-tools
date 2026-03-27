@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Ricettario Tools — Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">🔥</span>
+            <span class="brand-text">Ricettario<br><small>Tools Dashboard</small></span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">CREAZIONE</div>
+            <button class="nav-item active" data-panel="genera">
+                <span class="nav-icon">🆕</span> Crea da Nome
+            </button>
+            <button class="nav-item" data-panel="url">
+                <span class="nav-icon">🔗</span> Crea da URL
+            </button>
+            <button class="nav-item" data-panel="testo">
+                <span class="nav-icon">📝</span> Crea da Testo
+            </button>
+            <button class="nav-item" data-panel="scopri">
+                <span class="nav-icon">🔍</span> Scopri Ricette
+            </button>
+
+            <div class="nav-section">GESTIONE</div>
+            <button class="nav-item" data-panel="ricette">
+                <span class="nav-icon">📋</span> Le mie Ricette
+            </button>
+            <button class="nav-item" data-panel="immagini">
+                <span class="nav-icon">🖼️</span> Image Picker
+            </button>
+            <button class="nav-item" data-panel="rigenera">
+                <span class="nav-icon">🔄</span> Rigenera
+            </button>
+
+            <div class="nav-section">SEO & QUALITÀ</div>
+            <button class="nav-item" data-panel="seo">
+                <span class="nav-icon">📈</span> SEO Ideas
+            </button>
+            <button class="nav-item" data-panel="valida">
+                <span class="nav-icon">📊</span> Valida
+            </button>
+            <button class="nav-item" data-panel="verifica">
+                <span class="nav-icon">✅</span> Verifica AI
+            </button>
+            <button class="nav-item" data-panel="sync">
+                <span class="nav-icon">🔄</span> Sync Cards
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="api-status" id="apiStatus">
+                <div class="status-dot"></div>
+                <span>Connessione...</span>
+            </div>
+            <div class="kbd-hint" style="margin-top:8px">⌘K Comandi rapidi</div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <!-- HEADER -->
+        <header class="topbar">
+            <h1 class="topbar-title" id="panelTitle">🆕 Crea Ricetta da Nome</h1>
+            <div class="topbar-actions">
+                <div class="status-pills" id="statusPills"></div>
+            </div>
+        </header>
+
+        <!-- PANEL AREA -->
+        <div class="panel-area">
+            <!-- STATS BAR -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-card">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-ricette">—</div>
+                        <div class="stat-label">Ricette</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📂</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-categorie">—</div>
+                        <div class="stat-label">Categorie</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🖼️</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-immagini">—</div>
+                        <div class="stat-label">Immagini</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🤖</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-provider">—</div>
+                        <div class="stat-label">Provider attivi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ GENERA ═══ -->
+            <div class="panel active" id="panel-genera">
+                <div class="form-card">
+                    <div class="form-row">
+                        <label class="form-label">Nome Ricetta</label>
+                        <input type="text" class="form-input" id="gen-nome" placeholder="es. Focaccia Genovese Classica">
+                    </div>
+                    <div class="form-row-grid">
+                        <div>
+                            <label class="form-label">Idratazione %</label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="gen-idratazione" min="50" max="95" value="68">
+                                <span class="range-value" id="gen-idratazione-val">68%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Categoria</label>
+                            <select class="form-select" id="gen-tipo">
+                                <option value="">Auto-detect</option>
+                                <option value="Pane">🍞 Pane</option>
+                                <option value="Pizza">🍕 Pizza</option>
+                                <option value="Focaccia">🫓 Focaccia</option>
+                                <option value="Pasta">🍝 Pasta</option>
+                                <option value="Lievitati">🥐 Lievitati</option>
+                                <option value="Dolci">🍰 Dolci</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Note per l'AI <span class="optional">(opzionale)</span></label>
+                        <textarea class="form-textarea" id="gen-note" rows="2" placeholder="es. Usa biga al 30%, lievitazione fredda 24h..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="toggle-group">
+                            <label class="toggle"><input type="checkbox" id="gen-noimage"><span class="toggle-slider"></span> No immagine</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg" onclick="runGenera()">
+                        🔥 Genera Ricetta
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ URL ═══ -->
+            <div class="panel" id="panel-url">
+                <div class="form-card">
+                    <div class="form-row">
+                        <label class="form-label">URL Ricetta</label>
+                        <input type="text" class="form-input" id="url-input" placeholder="https://giallozafferano.it/ricetta/...">
+                        <small class="form-hint">Separa con virgola per batch multipli</small>
+                    </div>
+                    <div class="form-row-grid">
+                        <div>
+                            <label class="form-label">Idratazione %</label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="url-idratazione" min="50" max="95" value="68">
+                                <span class="range-value" id="url-idratazione-val">68%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Categoria</label>
+                            <select class="form-select" id="url-tipo">
+                                <option value="">Auto-detect</option>
+                                <option value="Pane">🍞 Pane</option>
+                                <option value="Pizza">🍕 Pizza</option>
+                                <option value="Focaccia">🫓 Focaccia</option>
+                                <option value="Pasta">🍝 Pasta</option>
+                                <option value="Lievitati">🥐 Lievitati</option>
+                                <option value="Dolci">🍰 Dolci</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg" onclick="runUrl()">
+                        🔗 Importa da URL
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ TESTO ═══ -->
+            <div class="panel" id="panel-testo">
+                <div class="form-card">
+                    <div class="form-row">
+                        <label class="form-label">Testo della Ricetta</label>
+                        <textarea class="form-textarea form-textarea-lg" id="testo-input" rows="10"
+                            placeholder="Incolla qui il testo della ricetta (appunti, note, chat)..."></textarea>
+                        <small class="form-hint">Puoi incollare testo libero, formattazione non necessaria</small>
+                    </div>
+                    <div class="form-row-grid">
+                        <div>
+                            <label class="form-label">Categoria</label>
+                            <select class="form-select" id="testo-tipo">
+                                <option value="">Auto-detect</option>
+                                <option value="Pane">🍞 Pane</option>
+                                <option value="Pizza">🍕 Pizza</option>
+                                <option value="Focaccia">🫓 Focaccia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Idratazione %</label>
+                            <div class="slider-group">
+                                <input type="range" class="form-range" id="testo-idratazione" min="50" max="95" value="68">
+                                <span class="range-value" id="testo-idratazione-val">68%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg" onclick="runTesto()">
+                        📝 Converti in Ricetta
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ SCOPRI ═══ -->
+            <div class="panel" id="panel-scopri">
+                <div class="form-card">
+                    <div class="form-row">
+                        <label class="form-label">Cerca su Google</label>
+                        <input type="text" class="form-input" id="scopri-query" placeholder="es. focaccia pugliese, pizza in teglia romana...">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Quanti risultati</label>
+                        <div class="slider-group">
+                            <input type="range" class="form-range" id="scopri-quante" min="1" max="10" value="5">
+                            <span class="range-value" id="scopri-quante-val">5</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg" onclick="runScopri()">
+                        🔍 Scopri Ricette
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ RICETTE LIST ═══ -->
+            <div class="panel" id="panel-ricette">
+                <div class="recipes-toolbar">
+                    <input type="text" class="form-input search-input" id="recipes-search" placeholder="🔍 Cerca ricetta...">
+                    <button class="btn btn-secondary" onclick="loadRecipes()">🔄 Aggiorna</button>
+                </div>
+                <div class="recipes-grid" id="recipesGrid">
+                    <p class="empty-state">Caricamento ricette...</p>
+                </div>
+            </div>
+
+            <!-- ═══ IMAGE PICKER ═══ -->
+            <div class="panel" id="panel-immagini">
+                <div class="form-card">
+                    <div class="form-row">
+                        <label class="form-label">Seleziona Ricetta</label>
+                        <select class="form-select" id="img-slug">
+                            <option value="">-- Seleziona --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-lg" onclick="runRefreshImage()">
+                        🖼️ Cerca Immagini
+                    </button>
+                </div>
+                <div id="imagePickerArea" class="image-picker-area"></div>
+            </div>
+
+            <!-- ═══ RIGENERA ═══ -->
+            <div class="panel" id="panel-rigenera">
+                <div class="form-card">
+                    <p class="form-description">Rigenera i file HTML da JSON senza chiamare le API. Utile dopo aver modificato il template.</p>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-lg" onclick="runRigenera(true)">
+                            🔄 Rigenera TUTTE
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ VALIDA ═══ -->
+            <div class="panel" id="panel-valida">
+                <div class="form-card">
+                    <p class="form-description">Valida tutte le ricette confrontandole con fonti esterne via SerpAPI.</p>
+                    <button class="btn btn-primary btn-lg" onclick="runValida()">
+                        📊 Valida Ricette
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ VERIFICA ═══ -->
+            <div class="panel" id="panel-verifica">
+                <div class="form-card">
+                    <p class="form-description">Verifica la qualità di tutte le ricette usando Claude AI.</p>
+                    <button class="btn btn-primary btn-lg" onclick="runVerifica()">
+                        ✅ Verifica con AI
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ SYNC ═══ -->
+            <div class="panel" id="panel-sync">
+                <div class="form-card">
+                    <p class="form-description">Ricostruisce <code>recipes.json</code> analizzando tutte le ricette HTML. Aggiorna automaticamente le card nella homepage e nelle pagine categoria.</p>
+                    <button class="btn btn-primary btn-lg" onclick="runSyncCards()">
+                        🔄 Sync Cards
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══ SEO IDEAS ═══ -->
+            <div class="panel" id="panel-seo">
+                <div class="seo-toolbar">
+                    <div class="seo-tabs" id="seoTabs">
+                        <button class="seo-tab active" data-category="Pane">🥖 Pane</button>
+                        <button class="seo-tab" data-category="Pizza">🍕 Pizza</button>
+                        <button class="seo-tab" data-category="Focaccia">🫓 Focaccia</button>
+                        <button class="seo-tab" data-category="Lievitati">🥐 Lievitati</button>
+                        <button class="seo-tab" data-category="Pasta">🍝 Pasta</button>
+                        <button class="seo-tab" data-category="Dolci">🍰 Dolci</button>
+                    </div>
+                    <button class="btn btn-sm btn-outline" id="seoRefreshBtn" onclick="loadSeoSuggestions(null, true)">
+                        🔄 Aggiorna
+                    </button>
+                </div>
+                <div class="seo-info">
+                    <span class="seo-source" id="seoSource">Fonte: Google Autocomplete via SerpAPI</span>
+                    <span class="seo-count" id="seoCount"></span>
+                </div>
+                <div class="seo-grid" id="seoGrid">
+                    <div class="seo-loading">
+                        <div class="seo-spinner"></div>
+                        <p>Seleziona una categoria per iniziare...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TERMINAL -->
+        <div class="terminal-container" id="terminalContainer">
+            <div class="terminal-header">
+                <span class="terminal-title">📟 Live Output</span>
+                <div class="terminal-actions">
+                    <button class="terminal-btn" onclick="clearTerminal()" title="Pulisci">🗑️</button>
+                    <button class="terminal-btn" onclick="toggleTerminal()" title="Minimizza" id="terminalToggle">▼</button>
+                </div>
+            </div>
+            <div class="terminal-body" id="terminal">
+                <div class="terminal-line system">🔥 Dashboard pronta. Seleziona un comando dalla sidebar.</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- IMAGE PICKER MODAL -->
+    <div class="modal-overlay" id="imageModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="modalTitle">🖼️ Seleziona Immagine</h3>
+                <button class="modal-close" onclick="closeImageModal()">✕</button>
+            </div>
+            <div class="modal-tabs" id="modalTabs"></div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- COMMAND PALETTE (Ctrl+K) -->
+    <div class="command-palette-overlay" id="commandPalette">
+        <div class="command-palette">
+            <input type="text" class="command-palette-input" id="cmdInput" placeholder="Cerca comando..." autocomplete="off">
+            <div class="command-palette-results" id="cmdResults"></div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
