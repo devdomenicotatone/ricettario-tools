@@ -88,17 +88,17 @@ function setRunning(running) {
 
 // ── Navigation ──
 const panelTitles = {
-    genera: '🆕 Crea Ricetta da Nome',
-    url: '🔗 Importa Ricetta da URL',
-    testo: '📝 Converti Testo in Ricetta',
-    scopri: '🔍 Scopri Ricette Online',
-    ricette: '📋 Le mie Ricette',
-    immagini: '🖼️ Image Picker',
-    rigenera: '🔄 Rigenera HTML',
-    seo: '📈 SEO Ideas — Suggerimenti Ricette',
-    valida: '📊 Validazione Ricette',
-    verifica: '✅ Verifica Qualità AI',
-    sync: '🔄 Sincronizza Cards',
+    genera: 'Crea Ricetta da Nome',
+    url: 'Importa Ricetta da URL',
+    testo: 'Converti Testo in Ricetta',
+    scopri: 'Scopri Ricette Online',
+    ricette: 'Le mie Ricette',
+    immagini: 'Image Picker',
+    rigenera: 'Rigenera HTML',
+    seo: 'SEO Ideas — Suggerimenti Ricette',
+    valida: 'Validazione Ricette',
+    verifica: 'Verifica Qualità AI',
+    sync: 'Sincronizza Cards',
 };
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -243,9 +243,9 @@ const CATEGORY_COLORS = {
     'Dolci':     '#e91e63',
 };
 
-const CATEGORY_EMOJIS = {
-    'Pane': '🥖', 'Pizza': '🍕', 'Focaccia': '🫓',
-    'Lievitati': '🥐', 'Pasta': '🍝', 'Dolci': '🍰',
+const CATEGORY_ICONS = {
+    'Pane': 'wheat', 'Pizza': 'pizza', 'Focaccia': 'sandwich',
+    'Lievitati': 'croissant', 'Pasta': 'utensils', 'Dolci': 'cake-slice',
 };
 
 function getHydrationNum(h) {
@@ -274,17 +274,18 @@ function showCategoryDropdown(slug, currentCategory, anchorEl) {
 
     dd.innerHTML = ALL_CATEGORIES
         .map(cat => {
-            const emoji = CATEGORY_EMOJIS[cat] || '📂';
+            const icon = CATEGORY_ICONS[cat] || 'folder';
             const color = CATEGORY_COLORS[cat] || '#888';
             const isCurrent = cat === currentCategory;
             return `<button class="cat-dropdown-item${isCurrent ? ' current' : ''}" 
                 data-cat="${cat}" style="--cat-color:${color}" 
                 ${isCurrent ? 'disabled' : ''}>
-                ${emoji} ${cat}${isCurrent ? ' ✓' : ''}
+                <i data-lucide="${icon}"></i> ${cat}${isCurrent ? ' ✓' : ''}
             </button>`;
         }).join('');
 
     document.body.appendChild(dd);
+    lucide.createIcons();
 
     // Click handler
     dd.addEventListener('click', async (e) => {
@@ -359,15 +360,16 @@ function updateCategoryTabs() {
     </button>`;
 
     Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
-        const emoji = CATEGORY_EMOJIS[cat] || '📂';
+        const icon = CATEGORY_ICONS[cat] || 'folder';
         const isActive = recipeFilter.category === cat ? 'active' : '';
         const color = CATEGORY_COLORS[cat] || '#888';
         html += `<button class="recipe-cat-tab ${isActive}" data-category="${cat}" style="--cat-color:${color}">
-            ${emoji} ${cat} <span class="cat-count">${count}</span>
+            <i data-lucide="${icon}"></i> ${cat} <span class="cat-count">${count}</span>
         </button>`;
     });
 
     tabsEl.innerHTML = html;
+    lucide.createIcons();
 
     // Attach click handlers
     tabsEl.querySelectorAll('.recipe-cat-tab').forEach(tab => {
@@ -452,6 +454,7 @@ function renderRecipes() {
     } else {
         grid.innerHTML = filtered.map(r => renderRecipeCard(r)).join('');
     }
+    lucide.createIcons();
 }
 
 function renderRecipeCard(r) {
@@ -459,7 +462,7 @@ function renderRecipeCard(r) {
     const img = r.image ? `/${r.image}` : '';
     const cat = r.category || '';
     const catColor = CATEGORY_COLORS[cat] || '#888';
-    const catEmoji = CATEGORY_EMOJIS[cat] || '📂';
+    const catIcon = CATEGORY_ICONS[cat] || 'folder';
     const hydNum = getHydrationNum(r.hydration);
     const hydClass = getHydrationClass(hydNum);
     const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
@@ -467,25 +470,25 @@ function renderRecipeCard(r) {
 
     return `
         <div class="recipe-card${isSelected ? ' selected' : ''}" onclick="toggleSelect('${r.slug}', event)">
-            <input type="checkbox" class="recipe-checkbox" ${isSelected ? 'checked' : ''}
-                onchange="toggleSelect('${r.slug}', event)" onclick="event.stopPropagation()">
+            <button class="recipe-delete-btn" onclick="event.stopPropagation(); eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             ${img ? `<div class="recipe-card-img-wrap">
                 <img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.parentElement.style.display='none'">
                 <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
-                    onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)">${catEmoji} ${cat}</span>
-            </div>` : `<div class="recipe-card-no-img"><span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)">${catEmoji} ${cat}</span></div>`}
+                    onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+            </div>` : `<div class="recipe-card-no-img"><span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span></div>`}
             <div class="recipe-card-body">
                 <div class="recipe-card-title">${title}</div>
                 <div class="recipe-card-badges">
-                    ${r.hydration ? `<span class="recipe-badge ${hydClass}">💧 ${r.hydration}</span>` : ''}
-                    ${r.time ? `<span class="recipe-badge recipe-badge-time">⏱️ ${r.time}</span>` : ''}
+                    ${r.hydration ? `<span class="recipe-badge ${hydClass}"><i data-lucide="droplets"></i> ${r.hydration}</span>` : ''}
+                    ${r.time ? `<span class="recipe-badge recipe-badge-time"><i data-lucide="clock"></i> ${r.time}</span>` : ''}
                 </div>
                 ${r.description ? `<div class="recipe-card-desc">${r.description.substring(0, 90)}…</div>` : ''}
-                <div class="recipe-card-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine">🖼️</button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML">🔄</button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})" title="Verifica AI">✅</button>
-                    <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito">👁️</a>
+                <div class="recipe-card-actions" onclick="event.stopPropagation()">
+                    <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('valida', {slugs:['${r.slug}']})" title="Valida ricetta"><i data-lucide="bar-chart-3"></i></button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})" title="Verifica AI"><i data-lucide="check-circle"></i></button>
+                    <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
             </div>
         </div>`;
@@ -496,7 +499,7 @@ function renderRecipeRow(r) {
     const img = r.image ? `/${r.image}` : '';
     const cat = r.category || '';
     const catColor = CATEGORY_COLORS[cat] || '#888';
-    const catEmoji = CATEGORY_EMOJIS[cat] || '📂';
+    const catIcon = CATEGORY_ICONS[cat] || 'folder';
     const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
     const isSelected = selectedSlugs.has(r.slug);
 
@@ -509,14 +512,16 @@ function renderRecipeRow(r) {
                 <span class="recipe-row-title">${title}</span>
             </div>
             <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
-                onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)">${catEmoji} ${cat}</span>
+                onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
             <span class="recipe-row-hydration">${r.hydration || '—'}</span>
             <span class="recipe-row-time">${r.time || '—'}</span>
-            <div class="recipe-row-actions">
-                <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')">🖼️</button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})">🔄</button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})">✅</button>
-                <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank">👁️</a>
+            <div class="recipe-row-actions" onclick="event.stopPropagation()">
+                <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('valida', {slugs:['${r.slug}']})" title="Valida ricetta"><i data-lucide="bar-chart-3"></i></button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})" title="Verifica AI"><i data-lucide="check-circle"></i></button>
+                <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
+                <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>
         </div>`;
 }
@@ -623,29 +628,30 @@ function updateActionBar() {
 
     bar.innerHTML = `
         <div class="action-bar-info">
-            <span class="action-bar-count">☑ ${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
+            <span class="action-bar-count"><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></i>${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
         </div>
         <div class="action-bar-actions">
             <button class="action-bar-btn" onclick="runValida()" title="Valida selezionate">
-                📊 Valida
+                <i data-lucide="bar-chart-3"></i> Valida
             </button>
             <button class="action-bar-btn" onclick="runVerifica()" title="Verifica AI selezionate">
-                ✅ Verifica
+                <i data-lucide="check-circle"></i> Verifica
             </button>
             <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera HTML selezionate (da JSON esistente)">
-                🔄 Rigenera
+                <i data-lucide="refresh-cw"></i> Rigenera
             </button>
             <button class="action-bar-btn action-bar-ai" onclick="batchRigeneraClaude()" title="Rigenera con Claude AI (estrae JSON dall'HTML e rigenera)">
-                🤖 Rigenera AI
+                <i data-lucide="sparkles"></i> Rigenera AI
             </button>
             <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
-                🗑️ Elimina
+                <i data-lucide="trash-2"></i> Elimina
             </button>
             <button class="action-bar-btn action-bar-close" onclick="clearSelection()" title="Deseleziona">
-                ✕
+                <i data-lucide="x"></i>
             </button>
         </div>
     `;
+    lucide.createIcons({ attrs: { 'width': 16, 'height': 16 } });
 }
 
 async function batchRigenera() {
@@ -676,6 +682,16 @@ async function batchElimina() {
     selectedSlugs.clear();
     updateActionBar();
     // Ricarica dopo un breve delay per dare tempo al sync
+    setTimeout(() => loadRecipes(), 1500);
+}
+
+async function eliminaSingola(slug) {
+    const conferma = confirm(`⚠️ Eliminare "${slug}"?\n\nQuesta azione è irreversibile!`);
+    if (!conferma) return;
+
+    await apiPost('elimina', { slugs: [slug] });
+    selectedSlugs.delete(slug);
+    updateActionBar();
     setTimeout(() => loadRecipes(), 1500);
 }
 
@@ -818,10 +834,11 @@ async function fetchStatus() {
 
         const pills = document.getElementById('statusPills');
         pills.innerHTML = [
-            status.hasAnthropic ? '<span class="pill active">🤖 Claude</span>' : '<span class="pill">🤖 No Claude</span>',
-            status.hasPexels ? '<span class="pill active">📸 Pexels</span>' : '',
-            status.hasUnsplash ? '<span class="pill active">📸 Unsplash</span>' : '',
+            status.hasAnthropic ? '<span class="pill active"><i data-lucide="sparkles"></i> Claude</span>' : '<span class="pill"><i data-lucide="sparkles"></i> No Claude</span>',
+            status.hasPexels ? '<span class="pill active"><i data-lucide="camera"></i> Pexels</span>' : '',
+            status.hasUnsplash ? '<span class="pill active"><i data-lucide="camera"></i> Unsplash</span>' : '',
         ].filter(Boolean).join('');
+        lucide.createIcons();
 
         // Update stats
         const providerCount = [status.hasAnthropic, status.hasPexels, status.hasUnsplash, status.hasSerpApi].filter(Boolean).length;
@@ -848,15 +865,16 @@ async function loadStats() {
 // ── Toast Notifications ──
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
-    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    const icons = { success: 'check-circle', error: 'x-circle', warning: 'alert-triangle', info: 'info' };
 
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
-        <span class="toast-icon">${icons[type] || '💬'}</span>
+        <span class="toast-icon"><i data-lucide="${icons[type] || 'message-circle'}"></i></span>
         <span class="toast-text">${message}</span>
     `;
     container.appendChild(toast);
+    lucide.createIcons({ attrs: { 'width': 18, 'height': 18 } });
 
     // Auto-dismiss dopo 4s
     setTimeout(() => {
@@ -867,17 +885,17 @@ function showToast(message, type = 'info') {
 
 // ── Command Palette (Ctrl+K) ──
 const commands = [
-    { icon: '🆕', name: 'Crea Ricetta da Nome', panel: 'genera' },
-    { icon: '🔗', name: 'Importa da URL', panel: 'url' },
-    { icon: '📝', name: 'Crea da Testo', panel: 'testo' },
-    { icon: '🔍', name: 'Scopri Ricette', panel: 'scopri' },
-    { icon: '📋', name: 'Le mie Ricette', panel: 'ricette' },
-    { icon: '🖼️', name: 'Image Picker', panel: 'immagini' },
-    { icon: '🔄', name: 'Rigenera Tutte', action: () => runRigenera(true) },
-    { icon: '📊', name: 'Valida Ricette', action: () => runValida() },
-    { icon: '✅', name: 'Verifica AI', action: () => runVerifica() },
-    { icon: '🔄', name: 'Sync Cards', action: () => runSyncCards() },
-    { icon: '🗑️', name: 'Pulisci Terminal', action: () => clearTerminal() },
+    { icon: 'plus-circle', name: 'Crea Ricetta da Nome', panel: 'genera' },
+    { icon: 'link', name: 'Importa da URL', panel: 'url' },
+    { icon: 'file-text', name: 'Crea da Testo', panel: 'testo' },
+    { icon: 'search', name: 'Scopri Ricette', panel: 'scopri' },
+    { icon: 'book-open', name: 'Le mie Ricette', panel: 'ricette' },
+    { icon: 'image', name: 'Image Picker', panel: 'immagini' },
+    { icon: 'refresh-cw', name: 'Rigenera Tutte', action: () => runRigenera(true) },
+    { icon: 'bar-chart-3', name: 'Valida Ricette', action: () => runValida() },
+    { icon: 'check-circle', name: 'Verifica AI', action: () => runVerifica() },
+    { icon: 'refresh-cw', name: 'Sync Cards', action: () => runSyncCards() },
+    { icon: 'trash-2', name: 'Pulisci Terminal', action: () => clearTerminal() },
 ];
 
 let cmdSelectedIdx = 0;
@@ -908,10 +926,11 @@ function renderCommands(filter) {
         <div class="command-item${i === cmdSelectedIdx ? ' selected' : ''}"
              onmouseenter="cmdSelectedIdx=${i}; renderCommands(document.getElementById('cmdInput').value)"
              onclick="executeCommand(${commands.indexOf(cmd)})">
-            <span class="command-item-icon">${cmd.icon}</span>
+            <span class="command-item-icon"><i data-lucide="${cmd.icon}"></i></span>
             <span class="command-item-name">${cmd.name}</span>
         </div>
     `).join('');
+    lucide.createIcons();
 }
 
 function executeCommand(idx) {

@@ -6,38 +6,39 @@
     <title>🔥 Ricettario Tools — Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <span class="brand-icon">🔥</span>
+            <span class="brand-icon"><i data-lucide="flame" class="lucide-icon"></i></span>
             <span class="brand-text">Ricettario<br><small>Tools Dashboard</small></span>
         </div>
 
         <nav class="sidebar-nav">
             <div class="nav-section">CREAZIONE</div>
             <button class="nav-item active" data-panel="genera">
-                <span class="nav-icon">🆕</span> Crea da Nome
+                <span class="nav-icon"><i data-lucide="plus-circle"></i></span> Crea da Nome
             </button>
             <button class="nav-item" data-panel="url">
-                <span class="nav-icon">🔗</span> Crea da URL
+                <span class="nav-icon"><i data-lucide="link"></i></span> Crea da URL
             </button>
             <button class="nav-item" data-panel="testo">
-                <span class="nav-icon">📝</span> Crea da Testo
+                <span class="nav-icon"><i data-lucide="file-text"></i></span> Crea da Testo
             </button>
             <button class="nav-item" data-panel="scopri">
-                <span class="nav-icon">🔍</span> Scopri Ricette
+                <span class="nav-icon"><i data-lucide="search"></i></span> Scopri Ricette
             </button>
 
             <div class="nav-section">GESTIONE</div>
             <button class="nav-item" data-panel="ricette">
-                <span class="nav-icon">📋</span> Le mie Ricette
+                <span class="nav-icon"><i data-lucide="book-open"></i></span> Le mie Ricette
             </button>
 
             <div class="nav-section">SEO & QUALITÀ</div>
             <button class="nav-item" data-panel="seo">
-                <span class="nav-icon">📈</span> SEO Ideas
+                <span class="nav-icon"><i data-lucide="trending-up"></i></span> SEO Ideas
             </button>
         </nav>
 
@@ -54,7 +55,7 @@
     <main class="main">
         <!-- HEADER -->
         <header class="topbar">
-            <h1 class="topbar-title" id="panelTitle">🆕 Crea Ricetta da Nome</h1>
+            <h1 class="topbar-title" id="panelTitle">Crea Ricetta da Nome</h1>
             <div class="topbar-actions">
                 <div class="status-pills" id="statusPills"></div>
             </div>
@@ -65,28 +66,28 @@
             <!-- STATS BAR -->
             <div class="stats-bar" id="statsBar">
                 <div class="stat-card">
-                    <div class="stat-icon">📖</div>
+                    <div class="stat-icon"><i data-lucide="chef-hat"></i></div>
                     <div class="stat-info">
                         <div class="stat-value" id="stat-ricette">—</div>
                         <div class="stat-label">Ricette</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📂</div>
+                    <div class="stat-icon"><i data-lucide="folder-open"></i></div>
                     <div class="stat-info">
                         <div class="stat-value" id="stat-categorie">—</div>
                         <div class="stat-label">Categorie</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🖼️</div>
+                    <div class="stat-icon"><i data-lucide="image"></i></div>
                     <div class="stat-info">
                         <div class="stat-value" id="stat-immagini">—</div>
                         <div class="stat-label">Immagini</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🤖</div>
+                    <div class="stat-icon"><i data-lucide="cpu"></i></div>
                     <div class="stat-info">
                         <div class="stat-value" id="stat-provider">—</div>
                         <div class="stat-label">Provider attivi</div>
@@ -132,7 +133,7 @@
                         </div>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runGenera()">
-                        🔥 Genera Ricetta
+                        <i data-lucide="flame"></i> Genera Ricetta
                     </button>
                 </div>
             </div>
@@ -167,7 +168,7 @@
                         </div>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runUrl()">
-                        🔗 Importa da URL
+                        <i data-lucide="link"></i> Importa da URL
                     </button>
                 </div>
             </div>
@@ -200,7 +201,7 @@
                         </div>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runTesto()">
-                        📝 Converti in Ricetta
+                        <i data-lucide="file-text"></i> Converti in Ricetta
                     </button>
                 </div>
             </div>
@@ -220,7 +221,7 @@
                         </div>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runScopri()">
-                        🔍 Scopri Ricette
+                        <i data-lucide="search"></i> Scopri Ricette
                     </button>
                 </div>
             </div>
@@ -236,7 +237,7 @@
 
                 <!-- Toolbar: Search + Sort + View -->
                 <div class="recipes-toolbar-pro">
-                    <input type="text" class="form-input search-input" id="recipes-search" placeholder="🔍 Cerca ricetta...">
+                    <input type="text" class="form-input search-input" id="recipes-search" placeholder="Cerca ricetta...">
                     <div class="toolbar-controls">
                         <select class="form-select toolbar-select" id="recipes-sort">
                             <option value="name-asc">Nome A→Z</option>
@@ -246,10 +247,10 @@
                             <option value="category">Categoria</option>
                         </select>
                         <div class="view-toggle" id="viewToggle">
-                            <button class="view-btn active" data-view="grid" title="Griglia">▦</button>
-                            <button class="view-btn" data-view="list" title="Lista">≡</button>
+                            <button class="view-btn active" data-view="grid" title="Griglia"><i data-lucide="layout-grid"></i></button>
+                            <button class="view-btn" data-view="list" title="Lista"><i data-lucide="list"></i></button>
                         </div>
-                        <button class="btn btn-secondary btn-icon" onclick="loadRecipes()" title="Aggiorna">🔄</button>
+                        <button class="btn btn-secondary btn-icon" onclick="loadRecipes()" title="Aggiorna"><i data-lucide="refresh-cw"></i></button>
                     </div>
                 </div>
 
@@ -278,7 +279,7 @@
                         <button class="seo-tab" data-category="Dolci">🍰 Dolci</button>
                     </div>
                     <button class="btn btn-sm btn-outline" id="seoRefreshBtn" onclick="loadSeoSuggestions(null, true)">
-                        🔄 Aggiorna
+                        <i data-lucide="refresh-cw"></i> Aggiorna
                     </button>
                 </div>
                 <div class="seo-info">
@@ -297,10 +298,10 @@
         <!-- TERMINAL -->
         <div class="terminal-container" id="terminalContainer">
             <div class="terminal-header">
-                <span class="terminal-title">📟 Live Output</span>
+                <span class="terminal-title"><i data-lucide="terminal" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px"></i>Live Output</span>
                 <div class="terminal-actions">
-                    <button class="terminal-btn" onclick="clearTerminal()" title="Pulisci">🗑️</button>
-                    <button class="terminal-btn" onclick="toggleTerminal()" title="Minimizza" id="terminalToggle">▼</button>
+                    <button class="terminal-btn" onclick="clearTerminal()" title="Pulisci"><i data-lucide="trash-2"></i></button>
+                    <button class="terminal-btn" onclick="toggleTerminal()" title="Minimizza" id="terminalToggle"><i data-lucide="chevron-down"></i></button>
                 </div>
             </div>
             <div class="terminal-body" id="terminal">
@@ -313,8 +314,8 @@
     <div class="modal-overlay" id="imageModal">
         <div class="modal-content modal-lg">
             <div class="modal-header">
-                <h3 id="modalTitle">🖼️ Seleziona Immagine</h3>
-                <button class="modal-close" onclick="closeImageModal()">✕</button>
+                <h3 id="modalTitle"><i data-lucide="image" style="width:20px;height:20px;vertical-align:-3px;margin-right:6px"></i>Seleziona Immagine</h3>
+                <button class="modal-close" onclick="closeImageModal()"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-tabs" id="modalTabs"></div>
             <div class="modal-body" id="modalBody"></div>
@@ -333,5 +334,6 @@
     </div>
 
     <script src="dashboard.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
