@@ -272,7 +272,7 @@ export function setupRoutes(app) {
             const { writeFileSync } = await import('fs');
 
             const catFolder = CATEGORY_FOLDERS[category] || category?.toLowerCase() || 'pane';
-            const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
+            const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
             const jsonFile = resolve(ricettarioPath, 'ricette', catFolder, `${slug}.json`);
 
             await withOutputCapture(ctx, async () => {
@@ -283,7 +283,7 @@ export function setupRoutes(app) {
 
                 // Aggiorna JSON
                 const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
-                recipe.image = `images/ricette/${catFolder}/${slug}.jpg`;
+                recipe.image = `images/ricette/${catFolder}/${slug}.webp`;
                 recipe.imageAttribution = buildAttribution(image);
                 recipe._originalImageUrl = image.url;
                 writeFileSync(jsonFile, JSON.stringify(recipe, null, 2), 'utf-8');
@@ -451,7 +451,8 @@ export function setupRoutes(app) {
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.html`),
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.validazione.md`),
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.verifica.md`),
-                            resolve(ricettarioPath, 'public', 'images', 'ricette', folder, `${slug}.jpg`),
+                            resolve(ricettarioPath, 'public', 'images', 'ricette', folder, `${slug}.webp`),
+                            resolve(ricettarioPath, 'public', 'images', 'ricette', folder, `${slug}.avif`),
                         ];
 
                         for (const f of filesToDelete) {
@@ -539,7 +540,8 @@ export function setupRoutes(app) {
             const oldJsonFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.json`);
             const oldHtmlFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.html`);
             const oldValidFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.validazione.md`);
-            const oldImgFile = resolve(ricettarioPath, 'public', 'images', 'ricette', oldFolder, `${slug}.jpg`);
+            const oldImgWebp = resolve(ricettarioPath, 'public', 'images', 'ricette', oldFolder, `${slug}.webp`);
+            const oldImgAvif = resolve(ricettarioPath, 'public', 'images', 'ricette', oldFolder, `${slug}.avif`);
 
             // Paths nuovi
             const newRecipeDir = resolve(ricettarioPath, 'ricette', newFolder);
@@ -547,7 +549,8 @@ export function setupRoutes(app) {
             const newJsonFile = resolve(newRecipeDir, `${slug}.json`);
             const newHtmlFile = resolve(newRecipeDir, `${slug}.html`);
             const newValidFile = resolve(newRecipeDir, `${slug}.validazione.md`);
-            const newImgFile = resolve(newImgDir, `${slug}.jpg`);
+            const newImgWebp = resolve(newImgDir, `${slug}.webp`);
+            const newImgAvif = resolve(newImgDir, `${slug}.avif`);
 
             // Verifica che il JSON sorgente esista
             if (!existsSync(oldJsonFile)) {
@@ -578,10 +581,14 @@ export function setupRoutes(app) {
                     ctx.log(`  ✅ ${slug}.validazione.md`);
                 }
 
-                // 4. Sposta immagine
-                if (existsSync(oldImgFile)) {
-                    renameSync(oldImgFile, newImgFile);
-                    ctx.log(`  ✅ ${slug}.jpg`);
+                // 4. Sposta immagini (WebP + AVIF)
+                if (existsSync(oldImgWebp)) {
+                    renameSync(oldImgWebp, newImgWebp);
+                    ctx.log(`  ✅ ${slug}.webp`);
+                }
+                if (existsSync(oldImgAvif)) {
+                    renameSync(oldImgAvif, newImgAvif);
+                    ctx.log(`  ✅ ${slug}.avif`);
                 }
 
                 // 5. Aggiorna JSON — category + image path

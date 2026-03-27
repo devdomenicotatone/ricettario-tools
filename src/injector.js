@@ -45,7 +45,7 @@ export function injectCard(recipe, ricettarioPath) {
     if (r.image) {
         image = r.image;
     } else if (r.slug) {
-        image = `images/ricette/${dir}/${slug}.jpg`;
+        image = `images/ricette/${dir}/${slug}.webp`;
     }
 
     // Normalizza path immagine

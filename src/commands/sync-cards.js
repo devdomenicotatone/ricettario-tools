@@ -60,7 +60,7 @@ function extractRecipeFromHtml(htmlPath, categoryDir) {
         image = image.replace(/^(?:\.\.\/)*/, '');
     } else {
         // Fallback: cerca nell'immagine OG o default
-        image = `images/ricette/${categoryDir}/${slug}.jpg`;
+        image = `images/ricette/${categoryDir}/${slug}.webp`;
     }
 
     // Idratazione: dal tech-badge

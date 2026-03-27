@@ -72,7 +72,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   ],
   "alert": "Testo dell'alert professionale",
   "proTips": ["Tip 1", "Tip 2"],
-  "imageKeywords": ["keyword1", "keyword2"],
+  "imageKeywords": ["english stock photo keyword", "another english term", "italian keyword", "german keyword"],
   "tags": ["tag1", "tag2"]
 }
 

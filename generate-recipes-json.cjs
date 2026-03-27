@@ -39,8 +39,8 @@ for (const [dir, meta] of Object.entries(recipeDirs)) {
             if (data.image) {
                 image = data.image.replace(/^\//, '');
             } else {
-                const imgPath = `images/ricette/${dir}/${slug}.jpg`;
-                const imgFullPath = path.join(ricettarioPath, imgPath);
+                const imgPath = `images/ricette/${dir}/${slug}.webp`;
+                const imgFullPath = path.join(ricettarioPath, 'public', imgPath);
                 if (fs.existsSync(imgFullPath)) {
                     image = imgPath;
                 }

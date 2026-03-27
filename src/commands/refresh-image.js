@@ -97,14 +97,14 @@ export async function refreshImage(args) {
     log.info(`✅ Selezionata: "${(selectedImage.title || '').substring(0, 60)}"`);
     log.info(`   ${selectedImage.width}×${selectedImage.height} — ${selectedImage.provider}`);
 
-    // ── Elimina immagine vecchia ──
-    const oldImagePath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
-    if (existsSync(oldImagePath)) {
-        unlinkSync(oldImagePath);
-    }
+    // ── Elimina immagini vecchie ──
+    const oldWebp = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
+    const oldAvif = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.avif`);
+    if (existsSync(oldWebp)) unlinkSync(oldWebp);
+    if (existsSync(oldAvif)) unlinkSync(oldAvif);
 
     // ── Scarica nuova immagine ──
-    const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.jpg`);
+    const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
     try {
         await downloadImage(selectedImage.url, localPath);
         log.info(`💾 Scaricata: ${localPath}`);
@@ -124,7 +124,7 @@ export async function refreshImage(args) {
     writeFileSync(indexFile, JSON.stringify(index, null, 2), 'utf-8');
 
     // ── Aggiorna JSON ──
-    recipe.image = `images/ricette/${catFolder}/${slug}.jpg`;
+    recipe.image = `images/ricette/${catFolder}/${slug}.webp`;
     recipe.imageAttribution = buildAttribution(selectedImage);
     recipe._originalImageUrl = selectedImage.url;
 

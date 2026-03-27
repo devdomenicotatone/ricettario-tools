@@ -37,53 +37,6 @@ function saveImageIndex(index) {
 const MIN_WIDTH = 600;
 const MIN_HEIGHT = 400;
 
-// ── Mappa di traduzione IT → EN per query più efficaci ──
-const TRANSLATIONS = {
-    // Categorie
-    'pane': 'bread',
-    'pasta': 'pasta',
-    'pizza': 'pizza',
-    'focaccia': 'focaccia',
-    'lievitati': 'pastry dough',
-    // Formati pasta
-    'rigatoni': 'rigatoni pasta',
-    'spaghetti': 'spaghetti',
-    'maccheroni': 'macaroni pasta',
-    'fusilli': 'fusilli pasta',
-    'linguine': 'linguine pasta',
-    'tagliatelle': 'tagliatelle egg pasta',
-    'pappardelle': 'pappardelle pasta',
-    'orecchiette': 'orecchiette pasta',
-    'pici': 'pici tuscan pasta',
-    'malloreddus': 'sardinian gnocchi malloreddus',
-    'tajarin': 'tajarin piedmont egg pasta',
-    'pizzoccheri': 'pizzoccheri buckwheat pasta',
-    'gnocco': 'gnocchi potato',
-    // Pane — specifici
-    'ciabatta': 'ciabatta italian bread',
-    'pagnotta': 'round bread loaf',
-    'filone': 'italian bread loaf baguette',
-    'casalingo': 'homemade rustic bread',
-    'integrale': 'whole wheat bread loaf',
-    'semola': 'semolina bread puglia',
-    'latte': 'milk bread soft rolls',
-    'noci': 'walnut bread artisan',
-    'olive': 'olive bread mediterranean',
-    // Pizza — specifici
-    'napoletana': 'neapolitan pizza wood oven',
-    'margherita': 'margherita pizza basil mozzarella',
-    'teglia': 'roman pizza al taglio',
-};
-
-// ── Keywords regionali/geografiche per query più specifiche ──
-const REGIONAL_KEYWORDS = [
-    'barese', 'genovese', 'napoletana', 'napoletano', 'romana', 'romano',
-    'siciliana', 'siciliano', 'pugliese', 'toscana', 'toscano', 'piemontese',
-    'ligure', 'calabrese', 'sarda', 'sardo', 'veneta', 'veneto', 'milanese',
-    'emiliana', 'emiliano', 'romagnola', 'romagnolo', 'marchigiana', 'marchigiano',
-    'campana', 'campano', 'friulana', 'friulano', 'abruzzese', 'lucana', 'lucano',
-    'classica', 'classico', 'tradizionale', 'antica', 'antico',
-];
 
 // ══════════════════════════════════════════════════════════
 //  PROVIDER 1: PEXELS
@@ -325,7 +278,7 @@ function scoreImage(image, keywords) {
     // ── GATE 1: L'immagine DEVE contenere almeno una keyword food ──
     const isFoodRelated = FOOD_KEYWORDS.some(fw => textToCheck.includes(fw));
     if (!isFoodRelated) {
-        score -= 100; // Penalita drammatica per immagini non-food
+        score -= 100;
     }
 
     // ── GATE 2: Penalizza fortemente immagini esplicitamente non-food ──
@@ -336,7 +289,6 @@ function scoreImage(image, keywords) {
     // ── Match con keywords ricetta (titolo + descrizione) ──
     for (const kw of keywords) {
         const kwLower = kw.toLowerCase();
-        // Match parole singole per evitare false positive
         const words = kwLower.split(/\s+/);
         for (const word of words) {
             if (word.length > 2 && textToCheck.includes(word)) score += 8;
@@ -359,58 +311,31 @@ function scoreImage(image, keywords) {
 }
 
 /**
- * Costruisce query di ricerca intelligenti per una ricetta
+ * Costruisce query di ricerca per una ricetta.
+ * Le keyword AI multilingua (EN/IT/DE) sono la fonte primaria.
+ * Il nome ricetta e la categoria servono solo come fallback minimale.
  */
 function buildSearchQueries(recipeName, category, aiKeywords) {
-    const cleanName = recipeName.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-    const nameWords = cleanName.toLowerCase().split(' ');
-    const STOPWORDS = ['di', 'del', 'della', 'delle', 'dei', 'al', 'alla', 'alle', 'con', 'in', 'per', 'tipo'];
-    const significantWords = nameWords.filter(w => !STOPWORDS.includes(w) && w.length > 2);
-
-    // Estrai parole regionali/geografiche dal titolo
-    const regionalWord = nameWords.find(w => REGIONAL_KEYWORDS.includes(w)) || '';
-
     const queries = [];
 
-    // 1. Keywords AI (più specifiche)
+    // 1. Keywords AI multilingua (generate da Claude in EN/IT/DE)
     if (aiKeywords.length > 0) {
-        queries.push(...aiKeywords.slice(0, 2));
+        queries.push(...aiKeywords.slice(0, 6));
     }
 
-    // 2. Query regionale specifica (es. "focaccia genovese" o "pizza napoletana")
-    if (regionalWord) {
-        const mainFood = significantWords.find(w => w !== regionalWord) || significantWords[0];
-        const translated = TRANSLATIONS[mainFood] || mainFood;
-        queries.push(`${translated} ${regionalWord} traditional`);
-        queries.push(`${mainFood} ${regionalWord}`);
-    }
+    // 2. Nome ricetta + "italian food" (fallback)
+    const cleanName = recipeName.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+    const STOPWORDS = ['di', 'del', 'della', 'delle', 'dei', 'al', 'alla', 'alle', 'con', 'in', 'per', 'tipo'];
+    const significant = cleanName.toLowerCase().split(' ')
+        .filter(w => !STOPWORDS.includes(w) && w.length > 2)
+        .slice(0, 3).join(' ');
+    if (significant) queries.push(`${significant} italian food`);
 
-    // 3. Traduzione diretta della prima parola significativa
-    const mainWord = significantWords[0] || nameWords[0];
-    if (TRANSLATIONS[mainWord]) {
-        queries.push(TRANSLATIONS[mainWord]);
-    }
-
-    // 4. Combinazione delle prime 2 parole significative tradotte
-    if (significantWords.length >= 2) {
-        const translated = significantWords.slice(0, 2)
-            .map(w => TRANSLATIONS[w] || w)
-            .join(' ');
-        queries.push(`${translated} homemade`);
-    }
-
-    // 5. Nome completo semplificato + "italian"
-    const simpleName = significantWords.slice(0, 3).join(' ');
-    queries.push(`${simpleName} italian homemade`);
-
-    // 6. Categoria come ultima risorsa
+    // 3. Categoria come ultima risorsa
     if (category) {
-        const catLower = category.toLowerCase();
-        const enCat = TRANSLATIONS[catLower] || catLower;
-        queries.push(`${enCat} italian traditional`);
+        queries.push(`${category.toLowerCase()} italian traditional`);
     }
 
-    // Rimuovi duplicati
     return [...new Set(queries)];
 }
 
@@ -548,7 +473,10 @@ export async function searchAllProviders(recipeName, category = '', aiKeywords =
 
 
 /**
- * Scarica un'immagine in locale
+ * Scarica un'immagine e la converte automaticamente in WebP + AVIF via sharp.
+ * @param {string} imageUrl - URL dell'immagine da scaricare
+ * @param {string} destPath - Path di destinazione (deve finire in .webp)
+ * @returns {Promise<string>} Path del file WebP salvato
  */
 export async function downloadImage(imageUrl, destPath) {
     const dir = dirname(destPath);
@@ -572,11 +500,36 @@ export async function downloadImage(imageUrl, destPath) {
             if (!response.ok) throw new Error(`Download fallito: HTTP ${response.status}`);
 
             const buffer = Buffer.from(await response.arrayBuffer());
-            writeFileSync(destPath, buffer);
-
             const sizeKB = Math.round(buffer.length / 1024);
-            console.log(`   💾 Salvata: ${destPath} (${sizeKB} KB)`);
-            return destPath;
+
+            // Converti con sharp in WebP + AVIF
+            try {
+                const sharp = (await import('sharp')).default;
+                const webpPath = destPath.replace(/\.[^.]+$/, '.webp');
+                const avifPath = destPath.replace(/\.[^.]+$/, '.avif');
+
+                await sharp(buffer)
+                    .resize({ width: 1800, withoutEnlargement: true })
+                    .webp({ quality: 82 })
+                    .toFile(webpPath);
+
+                await sharp(buffer)
+                    .resize({ width: 1800, withoutEnlargement: true })
+                    .avif({ quality: 50 })
+                    .toFile(avifPath);
+
+                const { statSync: fsStat } = await import('fs');
+                const webpSize = Math.round(fsStat(webpPath).size / 1024);
+                const avifSize = Math.round(fsStat(avifPath).size / 1024);
+                console.log(`   💾 Convertita: ${sizeKB}KB originale → ${webpSize}KB WebP + ${avifSize}KB AVIF`);
+                return webpPath;
+            } catch (sharpErr) {
+                // Fallback: se sharp non è disponibile, salva come ricevuto
+                console.log(`   ⚠️ Sharp non disponibile (${sharpErr.message}), salvo originale`);
+                writeFileSync(destPath, buffer);
+                console.log(`   💾 Salvata: ${destPath} (${sizeKB} KB)`);
+                return destPath;
+            }
         } catch (err) {
             if (attempt === 2) throw err;
             await sleep(1000);
@@ -595,10 +548,10 @@ export function buildAttribution(image) {
 }
 
 /**
- * Flusso completo: cerca + scarica + restituisce dati immagine
+ * Flusso completo: cerca + scarica + converte + restituisce dati immagine
  */
 export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = new Set()) {
-    const ext = 'jpg';
+    const ext = 'webp';
     const slug = recipe.slug || recipe.title.toLowerCase().replace(/\s+/g, '-');
 
     // Mappa categoria → sottocartella (unica sorgente di verità: publisher.js)

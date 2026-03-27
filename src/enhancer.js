@@ -23,7 +23,7 @@ REGOLE:
 8. Generare 2-3 PRO TIP utili e non banali
 9. Il tono è tecnico ma accessibile — come un artigiano che spiega al suo apprendista
 10. TUTTE le temperature in °C, TUTTI i tempi in minuti
-11. Generare 3-5 keyword specifiche per trovare immagini reali del piatto
+11. Generare 5-8 keyword MULTILINGUA per trovare immagini reali del piatto su stock photo (Pexels, Unsplash, Pixabay). Priorità: INGLESE (la maggior parte delle immagini sono taggate in EN), poi italiano e tedesco. Ogni keyword deve descrivere il piatto finito, NON gli ingredienti. Esempi: "homemade focaccia olive oil", "neapolitan pizza wood oven", "fresh pasta tagliatelle", "ciabatta brot italienisch", "pane fatto in casa"
 12. GLOSSARIO: Identifica TUTTI i termini tecnici usati nella ricetta e aggiungi una spiegazione breve e chiara. Esempi: autolisi, incordatura, puntata, pirlatura, cilindratura, appretto, cascatura, staglio, maturazione, poolish, biga, slap & fold, stretch & fold, trafila al bronzo
 13. COTTURA (per Pane/Pizza): Genera una sezione cottura separata con:
     - Temperatura forno (MAX 280°C per forni casalinghi moderni, MAI temperature superiori)
@@ -78,7 +78,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   ],
   "alert": "Testo dell'alert professionale (cosa NON fare e perché)",
   "proTips": ["Tip 1", "Tip 2"],
-  "imageKeywords": ["keyword1 per ricerca immagini", "keyword2 in english", "keyword3"],
+  "imageKeywords": ["english keyword for stock photo", "another english search term", "italian keyword", "german keyword", "descriptive food photography term"],
   "tags": ["tag1", "tag2", "tag3"]
 }
 
