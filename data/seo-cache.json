@@ -2123,5 +2123,430 @@
         "source": "autocomplete"
       }
     ]
+  },
+  "Dolci": {
+    "timestamp": 1774613505761,
+    "suggestions": [
+      {
+        "keyword": "ricetta torta di mele",
+        "popularity": {
+          "score": 100,
+          "label": "Top 1",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta pasqualina",
+        "popularity": {
+          "score": 97,
+          "label": "Top 2",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta pasqualina con pasta sfoglia pronta",
+        "popularity": {
+          "score": 94,
+          "label": "Top 3",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta al cioccolato",
+        "popularity": {
+          "score": 91,
+          "label": "Top 4",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta di mele morbidissima",
+        "popularity": {
+          "score": 88,
+          "label": "Top 5",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta margherita",
+        "popularity": {
+          "score": 85,
+          "label": "Top 6",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta tortano napoletano",
+        "popularity": {
+          "score": 82,
+          "label": "Top 7",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta tenerina",
+        "popularity": {
+          "score": 79,
+          "label": "Top 8",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta caprese",
+        "popularity": {
+          "score": 76,
+          "label": "Top 9",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta allo yogurt",
+        "popularity": {
+          "score": 73,
+          "label": "Top 10",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta paradiso",
+        "popularity": {
+          "score": 70,
+          "label": "Top 11",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta di mele buonissima",
+        "popularity": {
+          "score": 67,
+          "label": "Top 12",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta della nonna",
+        "popularity": {
+          "score": 64,
+          "label": "Top 13",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta di carote",
+        "popularity": {
+          "score": 61,
+          "label": "Top 14",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta torta all'arancia",
+        "popularity": {
+          "score": 58,
+          "label": "Top 15",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa facili",
+        "popularity": {
+          "score": 55,
+          "label": "Top 16",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa per diabetici",
+        "popularity": {
+          "score": 52,
+          "label": "Top 17",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa da regalare a natale",
+        "popularity": {
+          "score": 49,
+          "label": "Top 18",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa veloci",
+        "popularity": {
+          "score": 46,
+          "label": "Top 19",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa per natale",
+        "popularity": {
+          "score": 43,
+          "label": "Top 20",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa per colazione",
+        "popularity": {
+          "score": 40,
+          "label": "Top 21",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa per bambini",
+        "popularity": {
+          "score": 37,
+          "label": "Top 22",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa senza glutine",
+        "popularity": {
+          "score": 34,
+          "label": "Top 23",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa per colesterolo alto",
+        "popularity": {
+          "score": 31,
+          "label": "Top 24",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa in gravidanza",
+        "popularity": {
+          "score": 28,
+          "label": "Top 25",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa al cioccolato",
+        "popularity": {
+          "score": 25,
+          "label": "Top 26",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa dietetici",
+        "popularity": {
+          "score": 22,
+          "label": "Top 27",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa con pochi ingredienti",
+        "popularity": {
+          "score": 19,
+          "label": "Top 28",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa e colesterolo",
+        "popularity": {
+          "score": 16,
+          "label": "Top 29",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dolci fatti in casa ricette",
+        "popularity": {
+          "score": 13,
+          "label": "Top 30",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      }
+    ]
   }
 }

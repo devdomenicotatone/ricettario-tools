@@ -206,50 +206,308 @@ async function runSyncCards() {
     await apiPost('sync-cards', {});
 }
 
-// ── Recipes List ──
+// ── Recipes List PRO ──
+let allRecipes = [];
+let siteBaseUrl = 'http://localhost:5173/Ricettario/'; // aggiornato da fetchStatus
+let recipeFilter = { category: 'all', search: '', sort: 'name-asc', view: 'grid' };
+
+const CATEGORY_COLORS = {
+    'Pane':      '#d4a574',
+    'Pizza':     '#e74c3c',
+    'Focaccia':  '#27ae60',
+    'Lievitati': '#f39c12',
+    'Pasta':     '#3498db',
+    'Dolci':     '#e91e63',
+};
+
+const CATEGORY_EMOJIS = {
+    'Pane': '🥖', 'Pizza': '🍕', 'Focaccia': '🫓',
+    'Lievitati': '🥐', 'Pasta': '🍝', 'Dolci': '🍰',
+};
+
+function getHydrationNum(h) {
+    if (!h) return 0;
+    return parseFloat(String(h).replace('%', '')) || 0;
+}
+
+function getHydrationClass(val) {
+    if (val >= 75) return 'hydration-high';
+    if (val >= 60) return 'hydration-mid';
+    return 'hydration-low';
+}
+
+// ── Cambio Categoria One-Click ──
+const ALL_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci'];
+
+function showCategoryDropdown(slug, currentCategory, anchorEl) {
+    // Rimuovi dropdown precedente
+    document.querySelector('.cat-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'cat-dropdown';
+    dd.style.top = `${rect.bottom + 4}px`;
+    dd.style.left = `${rect.left}px`;
+
+    dd.innerHTML = ALL_CATEGORIES
+        .map(cat => {
+            const emoji = CATEGORY_EMOJIS[cat] || '📂';
+            const color = CATEGORY_COLORS[cat] || '#888';
+            const isCurrent = cat === currentCategory;
+            return `<button class="cat-dropdown-item${isCurrent ? ' current' : ''}" 
+                data-cat="${cat}" style="--cat-color:${color}" 
+                ${isCurrent ? 'disabled' : ''}>
+                ${emoji} ${cat}${isCurrent ? ' ✓' : ''}
+            </button>`;
+        }).join('');
+
+    document.body.appendChild(dd);
+
+    // Click handler
+    dd.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.cat-dropdown-item');
+        if (!btn || btn.disabled) return;
+        const newCat = btn.dataset.cat;
+        dd.remove();
+        await changeCategory(slug, currentCategory, newCat);
+    });
+
+    // Chiudi al click fuori
+    setTimeout(() => {
+        document.addEventListener('click', function closeDD(e) {
+            if (!dd.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeDD);
+            }
+        });
+    }, 10);
+}
+
+async function changeCategory(slug, oldCategory, newCategory) {
+    appendTerminal(`\n🔄 Cambio categoria: "${slug}" → ${newCategory}...`, 'job-start');
+    setRunning(true);
+
+    try {
+        const resp = await fetch('/api/cambia-categoria', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug, oldCategory, newCategory }),
+        });
+        const data = await resp.json();
+
+        if (data.error) {
+            appendTerminal(`❌ ${data.error}`, 'stderr');
+            setRunning(false);
+            return;
+        }
+
+        // Ricarica ricette dopo sync (aspetta un po' per i file)
+        setTimeout(() => loadRecipes(), 2000);
+    } catch (err) {
+        appendTerminal(`❌ Errore: ${err.message}`, 'stderr');
+        setRunning(false);
+    }
+}
+
 async function loadRecipes() {
     const grid = document.getElementById('recipesGrid');
     grid.innerHTML = '<p class="empty-state">Caricamento...</p>';
 
     try {
         const resp = await fetch('/api/ricette');
-        const recipes = await resp.json();
-
-        if (!recipes.length) {
-            grid.innerHTML = '<p class="empty-state">Nessuna ricetta trovata.</p>';
-            return;
-        }
-
-        const searchTerm = (document.getElementById('recipes-search').value || '').toLowerCase();
-        const filtered = searchTerm
-            ? recipes.filter(r => (r.title || r.name || '').toLowerCase().includes(searchTerm))
-            : recipes;
-
-        grid.innerHTML = filtered.map(r => {
-            const title = r.title || r.name || r.slug;
-            const img = r.image ? `/${r.image}` : '';
-            const cat = r.category || '';
-
-            return `
-                <div class="recipe-card">
-                    ${img ? `<img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.style.display='none'">` : ''}
-                    <div class="recipe-card-body">
-                        <div class="recipe-card-title">${title}</div>
-                        <div class="recipe-card-meta">${cat}${r.hydration ? ` · ${r.hydration}%` : ''}</div>
-                        <div class="recipe-card-actions">
-                            <button class="btn btn-secondary" onclick="runRefreshImageForSlug('${r.slug}')">🖼️ Immagine</button>
-                            <button class="btn btn-secondary" onclick="apiPost('rigenera', {slug:'${r.slug}'})">🔄</button>
-                        </div>
-                    </div>
-                </div>`;
-        }).join('');
+        allRecipes = await resp.json();
+        buildCategoryTabs();
+        renderRecipes();
     } catch (err) {
         grid.innerHTML = `<p class="empty-state">❌ Errore: ${err.message}</p>`;
     }
 }
 
-// Search filter
-document.getElementById('recipes-search')?.addEventListener('input', loadRecipes);
+function buildCategoryTabs() {
+    const tabsEl = document.getElementById('recipeCategoryTabs');
+    const counts = {};
+    allRecipes.forEach(r => {
+        const cat = r.category || 'Altro';
+        counts[cat] = (counts[cat] || 0) + 1;
+    });
+
+    let html = `<button class="recipe-cat-tab ${recipeFilter.category === 'all' ? 'active' : ''}" data-category="all">
+        Tutte <span class="cat-count">${allRecipes.length}</span>
+    </button>`;
+
+    Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
+        const emoji = CATEGORY_EMOJIS[cat] || '📂';
+        const isActive = recipeFilter.category === cat ? 'active' : '';
+        const color = CATEGORY_COLORS[cat] || '#888';
+        html += `<button class="recipe-cat-tab ${isActive}" data-category="${cat}" style="--cat-color:${color}">
+            ${emoji} ${cat} <span class="cat-count">${count}</span>
+        </button>`;
+    });
+
+    tabsEl.innerHTML = html;
+
+    // Attach click handlers
+    tabsEl.querySelectorAll('.recipe-cat-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            recipeFilter.category = tab.dataset.category;
+            tabsEl.querySelectorAll('.recipe-cat-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderRecipes();
+        });
+    });
+}
+
+function renderRecipes() {
+    const grid = document.getElementById('recipesGrid');
+    const counterEl = document.getElementById('recipesCounter');
+
+    // Filter
+    let filtered = [...allRecipes];
+
+    if (recipeFilter.category !== 'all') {
+        filtered = filtered.filter(r => (r.category || '') === recipeFilter.category);
+    }
+
+    if (recipeFilter.search) {
+        const s = recipeFilter.search.toLowerCase();
+        filtered = filtered.filter(r =>
+            (r.title || r.name || '').toLowerCase().includes(s) ||
+            (r.description || '').toLowerCase().includes(s)
+        );
+    }
+
+    // Sort
+    const sortKey = recipeFilter.sort;
+    filtered.sort((a, b) => {
+        switch (sortKey) {
+            case 'name-asc':
+                return (a.title || '').localeCompare(b.title || '', 'it');
+            case 'name-desc':
+                return (b.title || '').localeCompare(a.title || '', 'it');
+            case 'hydration-asc':
+                return getHydrationNum(a.hydration) - getHydrationNum(b.hydration);
+            case 'hydration-desc':
+                return getHydrationNum(b.hydration) - getHydrationNum(a.hydration);
+            case 'category':
+                return (a.category || '').localeCompare(b.category || '', 'it') ||
+                       (a.title || '').localeCompare(b.title || '', 'it');
+            default: return 0;
+        }
+    });
+
+    // Counter
+    if (filtered.length === allRecipes.length) {
+        counterEl.textContent = `${allRecipes.length} ricette`;
+    } else {
+        counterEl.textContent = `${filtered.length} di ${allRecipes.length} ricette`;
+    }
+
+    // Empty state
+    if (!filtered.length) {
+        const catName = recipeFilter.category !== 'all' ? recipeFilter.category : '';
+        grid.innerHTML = `<div class="empty-state-pro">
+            <div class="empty-state-icon">📭</div>
+            <p>Nessuna ricetta${catName ? ` in "${catName}"` : ''}</p>
+            <button class="btn btn-primary" onclick="document.querySelector('[data-panel=genera]').click()">
+                🔥 Crea la prima!
+            </button>
+        </div>`;
+        return;
+    }
+
+    // Toggle view class
+    grid.className = recipeFilter.view === 'list' ? 'recipes-list' : 'recipes-grid';
+
+    // Render
+    if (recipeFilter.view === 'list') {
+        grid.innerHTML = `<div class="recipe-list-header">
+            <span>Ricetta</span><span>Categoria</span><span>Idratazione</span><span>Tempo</span><span>Azioni</span>
+        </div>` + filtered.map(r => renderRecipeRow(r)).join('');
+    } else {
+        grid.innerHTML = filtered.map(r => renderRecipeCard(r)).join('');
+    }
+}
+
+function renderRecipeCard(r) {
+    const title = r.title || r.name || r.slug;
+    const img = r.image ? `/${r.image}` : '';
+    const cat = r.category || '';
+    const catColor = CATEGORY_COLORS[cat] || '#888';
+    const catEmoji = CATEGORY_EMOJIS[cat] || '📂';
+    const hydNum = getHydrationNum(r.hydration);
+    const hydClass = getHydrationClass(hydNum);
+    const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
+
+    return `
+        <div class="recipe-card">
+            ${img ? `<div class="recipe-card-img-wrap">
+                <img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
+                    onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)">${catEmoji} ${cat}</span>
+            </div>` : `<div class="recipe-card-no-img"><span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)">${catEmoji} ${cat}</span></div>`}
+            <div class="recipe-card-body">
+                <div class="recipe-card-title">${title}</div>
+                <div class="recipe-card-badges">
+                    ${r.hydration ? `<span class="recipe-badge ${hydClass}">💧 ${r.hydration}</span>` : ''}
+                    ${r.time ? `<span class="recipe-badge recipe-badge-time">⏱️ ${r.time}</span>` : ''}
+                </div>
+                ${r.description ? `<div class="recipe-card-desc">${r.description.substring(0, 90)}…</div>` : ''}
+                <div class="recipe-card-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine">🖼️</button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML">🔄</button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slug:'${r.slug}'})" title="Verifica AI">✅</button>
+                    <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito">👁️</a>
+                </div>
+            </div>
+        </div>`;
+}
+
+function renderRecipeRow(r) {
+    const title = r.title || r.name || r.slug;
+    const img = r.image ? `/${r.image}` : '';
+    const cat = r.category || '';
+    const catColor = CATEGORY_COLORS[cat] || '#888';
+    const catEmoji = CATEGORY_EMOJIS[cat] || '📂';
+    const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
+
+    return `
+        <div class="recipe-row">
+            <div class="recipe-row-info">
+                ${img ? `<img class="recipe-row-thumb" src="${img}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<div class="recipe-row-thumb-empty"></div>'}
+                <span class="recipe-row-title">${title}</span>
+            </div>
+            <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
+                onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)">${catEmoji} ${cat}</span>
+            <span class="recipe-row-hydration">${r.hydration || '—'}</span>
+            <span class="recipe-row-time">${r.time || '—'}</span>
+            <div class="recipe-row-actions">
+                <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')">🖼️</button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})">🔄</button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slug:'${r.slug}'})">✅</button>
+                <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank">👁️</a>
+            </div>
+        </div>`;
+}
+
+// ── Recipes Event Handlers ──
+document.getElementById('recipes-search')?.addEventListener('input', (e) => {
+    recipeFilter.search = e.target.value;
+    renderRecipes();
+});
+
+document.getElementById('recipes-sort')?.addEventListener('change', (e) => {
+    recipeFilter.sort = e.target.value;
+    renderRecipes();
+});
+
+document.getElementById('viewToggle')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.view-btn');
+    if (!btn) return;
+    recipeFilter.view = btn.dataset.view;
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderRecipes();
+});
 
 // ── Image Picker ──
 async function loadRecipesForPicker() {
@@ -364,6 +622,9 @@ async function fetchStatus() {
     try {
         const resp = await fetch('/api/status');
         const status = await resp.json();
+
+        // Salva URL del sito Vite per i link "Apri nel sito"
+        if (status.siteUrl) siteBaseUrl = status.siteUrl;
 
         const pills = document.getElementById('statusPills');
         pills.innerHTML = [

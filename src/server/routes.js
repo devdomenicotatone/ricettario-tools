@@ -6,7 +6,7 @@
  */
 
 import { resolve } from 'path';
-import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, statSync, renameSync, mkdirSync, writeFileSync } from 'fs';
 import { createJobContext, withOutputCapture } from './ws-handler.js';
 
 let jobCounter = 0;
@@ -334,11 +334,124 @@ export function setupRoutes(app) {
         }
     });
 
+    // ── Cambia Categoria ──
+    app.post('/api/cambia-categoria', async (req, res) => {
+        const { slug, oldCategory, newCategory } = req.body;
+
+        if (!slug || !oldCategory || !newCategory) {
+            return res.status(400).json({ error: 'slug, oldCategory e newCategory sono obbligatori' });
+        }
+        if (oldCategory === newCategory) {
+            return res.status(400).json({ error: 'La categoria è già la stessa' });
+        }
+
+        const jobId = `cat-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `Categoria: ${slug} → ${newCategory}`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { generateHtml } = await import('../template.js');
+            const { syncCards } = await import('../commands/sync-cards.js');
+
+            const ricettarioPath = getRicettarioPath();
+            const oldFolder = CATEGORY_FOLDERS[oldCategory] || oldCategory.toLowerCase();
+            const newFolder = CATEGORY_FOLDERS[newCategory] || newCategory.toLowerCase();
+
+            // Paths vecchi
+            const oldJsonFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.json`);
+            const oldHtmlFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.html`);
+            const oldValidFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.validazione.md`);
+            const oldImgFile = resolve(ricettarioPath, 'public', 'images', 'ricette', oldFolder, `${slug}.jpg`);
+
+            // Paths nuovi
+            const newRecipeDir = resolve(ricettarioPath, 'ricette', newFolder);
+            const newImgDir = resolve(ricettarioPath, 'public', 'images', 'ricette', newFolder);
+            const newJsonFile = resolve(newRecipeDir, `${slug}.json`);
+            const newHtmlFile = resolve(newRecipeDir, `${slug}.html`);
+            const newValidFile = resolve(newRecipeDir, `${slug}.validazione.md`);
+            const newImgFile = resolve(newImgDir, `${slug}.jpg`);
+
+            // Verifica che il JSON sorgente esista
+            if (!existsSync(oldJsonFile)) {
+                ctx.error(`❌ JSON non trovato: ${oldJsonFile}`);
+                ctx.end(false);
+                return;
+            }
+
+            // Crea cartelle destinazione se non esistono
+            mkdirSync(newRecipeDir, { recursive: true });
+            mkdirSync(newImgDir, { recursive: true });
+
+            await withOutputCapture(ctx, async () => {
+                // 1. Sposta JSON
+                ctx.log(`📦 Spostamento file da ${oldFolder}/ → ${newFolder}/`);
+                renameSync(oldJsonFile, newJsonFile);
+                ctx.log(`  ✅ ${slug}.json`);
+
+                // 2. Sposta HTML
+                if (existsSync(oldHtmlFile)) {
+                    renameSync(oldHtmlFile, newHtmlFile);
+                    ctx.log(`  ✅ ${slug}.html`);
+                }
+
+                // 3. Sposta validazione
+                if (existsSync(oldValidFile)) {
+                    renameSync(oldValidFile, newValidFile);
+                    ctx.log(`  ✅ ${slug}.validazione.md`);
+                }
+
+                // 4. Sposta immagine
+                if (existsSync(oldImgFile)) {
+                    renameSync(oldImgFile, newImgFile);
+                    ctx.log(`  ✅ ${slug}.jpg`);
+                }
+
+                // 5. Aggiorna JSON — category + image path
+                ctx.log(`\n📝 Aggiornamento metadati...`);
+                const recipe = JSON.parse(readFileSync(newJsonFile, 'utf-8'));
+                recipe.category = newCategory;
+                if (recipe.image) {
+                    recipe.image = recipe.image.replace(
+                        `images/ricette/${oldFolder}/`,
+                        `images/ricette/${newFolder}/`
+                    );
+                }
+                writeFileSync(newJsonFile, JSON.stringify(recipe, null, 2), 'utf-8');
+                ctx.log(`  ✅ category: ${newCategory}`);
+                ctx.log(`  ✅ image: ${recipe.image || 'nessuna'}`);
+
+                // 6. Rigenera HTML con la nuova categoria
+                ctx.log(`\n📄 Rigenerazione HTML...`);
+                recipe.slug = slug;
+                const html = generateHtml(recipe);
+                writeFileSync(newHtmlFile, html, 'utf-8');
+                ctx.log(`  ✅ HTML rigenerato`);
+
+                // 7. Sync cards (ricostruisce recipes.json)
+                ctx.log(`\n🔄 Sync cards...`);
+                await syncCards({});
+                ctx.log(`  ✅ recipes.json aggiornato`);
+
+                ctx.log(`\n🎉 Categoria cambiata: "${slug}" → ${newCategory}`);
+            });
+
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
     // ── Status / Health ──
     app.get('/api/status', (req, res) => {
+        // Leggi URL del sito Vite da env o usa default
+        const siteUrl = process.env.SITE_URL || 'http://localhost:5173/Ricettario/';
+
         res.json({
             status: 'ok',
             uptime: process.uptime(),
+            siteUrl,
             hasAnthropic: !!process.env.ANTHROPIC_API_KEY,
             hasSerpApi: !!process.env.SERPAPI_KEY,
             hasPexels: !!process.env.PEXELS_API_KEY,

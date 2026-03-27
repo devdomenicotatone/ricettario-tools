@@ -240,12 +240,38 @@
                 </div>
             </div>
 
-            <!-- ═══ RICETTE LIST ═══ -->
+            <!-- ═══ RICETTE LIST PRO ═══ -->
             <div class="panel" id="panel-ricette">
-                <div class="recipes-toolbar">
-                    <input type="text" class="form-input search-input" id="recipes-search" placeholder="🔍 Cerca ricetta...">
-                    <button class="btn btn-secondary" onclick="loadRecipes()">🔄 Aggiorna</button>
+                <!-- Category Tabs -->
+                <div class="recipes-category-tabs" id="recipeCategoryTabs">
+                    <button class="recipe-cat-tab active" data-category="all">
+                        Tutte <span class="cat-count" id="cat-count-all">0</span>
+                    </button>
                 </div>
+
+                <!-- Toolbar: Search + Sort + View -->
+                <div class="recipes-toolbar-pro">
+                    <input type="text" class="form-input search-input" id="recipes-search" placeholder="🔍 Cerca ricetta...">
+                    <div class="toolbar-controls">
+                        <select class="form-select toolbar-select" id="recipes-sort">
+                            <option value="name-asc">Nome A→Z</option>
+                            <option value="name-desc">Nome Z→A</option>
+                            <option value="hydration-asc">Idratazione ↑</option>
+                            <option value="hydration-desc">Idratazione ↓</option>
+                            <option value="category">Categoria</option>
+                        </select>
+                        <div class="view-toggle" id="viewToggle">
+                            <button class="view-btn active" data-view="grid" title="Griglia">▦</button>
+                            <button class="view-btn" data-view="list" title="Lista">≡</button>
+                        </div>
+                        <button class="btn btn-secondary btn-icon" onclick="loadRecipes()" title="Aggiorna">🔄</button>
+                    </div>
+                </div>
+
+                <!-- Result Counter -->
+                <div class="recipes-counter" id="recipesCounter"></div>
+
+                <!-- Grid/List -->
                 <div class="recipes-grid" id="recipesGrid">
                     <p class="empty-state">Caricamento ricette...</p>
                 </div>
