@@ -1,0 +1,228 @@
+[
+  {
+    "file": "cantuccini-di-prato.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per la Finitura"
+    ]
+  },
+  {
+    "file": "cartocci-alla-crema-siciliani.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per la Farcitura"
+    ]
+  },
+  {
+    "file": "migliaccio-napoletano.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per il Composto",
+      "Per la Finitura"
+    ]
+  },
+  {
+    "file": "focaccia-barese.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per il Condimento"
+    ]
+  },
+  {
+    "file": "focaccia-di-recco-igp.json",
+    "groups": 3,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per la Farcitura",
+      "Per la Finitura"
+    ]
+  },
+  {
+    "file": "focaccia-genovese-classica.json",
+    "groups": 3,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale",
+      "Per la Salamoia e Finitura"
+    ]
+  },
+  {
+    "file": "focaccia-genovese-fugassa.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per il Condimento"
+    ]
+  },
+  {
+    "file": "burger-buns-biga.json",
+    "groups": 3,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale",
+      "Per la Finitura"
+    ]
+  },
+  {
+    "file": "burger-buns-professionali.json",
+    "groups": 3,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale",
+      "Per la Finitura"
+    ]
+  },
+  {
+    "file": "cornetti-sfogliati-classici.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per la Sfogliatura"
+    ]
+  },
+  {
+    "file": "impasto-rosticceria-siciliana.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto",
+      "Per la Finitura"
+    ]
+  },
+  {
+    "file": "panettone-classico.json",
+    "groups": 3,
+    "flat": 0,
+    "names": [
+      "Per il Primo Impasto",
+      "Per il Secondo Impasto",
+      "Per il Terzo Impasto"
+    ]
+  },
+  {
+    "file": "panettone-pere-cioccolato.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per il Primo Impasto",
+      "Per il Secondo Impasto"
+    ]
+  },
+  {
+    "file": "pasta-brioche-classica.json",
+    "groups": 1,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto"
+    ]
+  },
+  {
+    "file": "baguette-francese-tradizionale.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per il Poolish",
+      "Per l'Impasto Finale"
+    ]
+  },
+  {
+    "file": "ciabatta-poolish.json",
+    "groups": 3,
+    "flat": 0,
+    "names": [
+      "Per il Poolish",
+      "Per l'Impasto Finale",
+      "Per lo Spolvero"
+    ]
+  },
+  {
+    "file": "pane-alle-noci-con-poolish.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per il Poolish",
+      "Per l'Impasto Finale"
+    ]
+  },
+  {
+    "file": "pane-di-altamura-dop.json",
+    "groups": 1,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto"
+    ]
+  },
+  {
+    "file": "pane-integrale-biga-saccorosso-miele.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale"
+    ]
+  },
+  {
+    "file": "pane-pugliese-biga.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale"
+    ]
+  },
+  {
+    "file": "gnocchi-di-patate.json",
+    "groups": 1,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto"
+    ]
+  },
+  {
+    "file": "pinsa-romana.json",
+    "groups": 1,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto"
+    ]
+  },
+  {
+    "file": "pizza-contemporanea-canotto.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale"
+    ]
+  },
+  {
+    "file": "pizza-napoletana-biga-criscito.json",
+    "groups": 2,
+    "flat": 0,
+    "names": [
+      "Per la Biga",
+      "Per l'Impasto Finale"
+    ]
+  },
+  {
+    "file": "pizza-napoletana-verace-stg.json",
+    "groups": 1,
+    "flat": 0,
+    "names": [
+      "Per l'Impasto"
+    ]
+  }
+]

@@ -102,26 +102,17 @@
                         <label class="form-label">Nome Ricetta</label>
                         <input type="text" class="form-input" id="gen-nome" placeholder="es. Focaccia Genovese Classica">
                     </div>
-                    <div class="form-row-grid">
-                        <div>
-                            <label class="form-label">Idratazione %</label>
-                            <div class="slider-group">
-                                <input type="range" class="form-range" id="gen-idratazione" min="50" max="95" value="68">
-                                <span class="range-value" id="gen-idratazione-val">68%</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="form-label">Categoria</label>
-                            <select class="form-select" id="gen-tipo">
-                                <option value="">Auto-detect</option>
-                                <option value="Pane">🍞 Pane</option>
-                                <option value="Pizza">🍕 Pizza</option>
-                                <option value="Focaccia">🫓 Focaccia</option>
-                                <option value="Pasta">🍝 Pasta</option>
-                                <option value="Lievitati">🥐 Lievitati</option>
-                                <option value="Dolci">🍰 Dolci</option>
-                            </select>
-                        </div>
+                    <div class="form-row">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="gen-tipo">
+                            <option value="">Auto-detect</option>
+                            <option value="Pane">🍞 Pane</option>
+                            <option value="Pizza">🍕 Pizza</option>
+                            <option value="Focaccia">🫓 Focaccia</option>
+                            <option value="Pasta">🍝 Pasta</option>
+                            <option value="Lievitati">🥐 Lievitati</option>
+                            <option value="Dolci">🍰 Dolci</option>
+                        </select>
                     </div>
                     <div class="form-row">
                         <label class="form-label">Note per l'AI <span class="optional">(opzionale)</span></label>
@@ -146,26 +137,17 @@
                         <input type="text" class="form-input" id="url-input" placeholder="https://giallozafferano.it/ricetta/...">
                         <small class="form-hint">Separa con virgola per batch multipli</small>
                     </div>
-                    <div class="form-row-grid">
-                        <div>
-                            <label class="form-label">Idratazione %</label>
-                            <div class="slider-group">
-                                <input type="range" class="form-range" id="url-idratazione" min="50" max="95" value="68">
-                                <span class="range-value" id="url-idratazione-val">68%</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="form-label">Categoria</label>
-                            <select class="form-select" id="url-tipo">
-                                <option value="">Auto-detect</option>
-                                <option value="Pane">🍞 Pane</option>
-                                <option value="Pizza">🍕 Pizza</option>
-                                <option value="Focaccia">🫓 Focaccia</option>
-                                <option value="Pasta">🍝 Pasta</option>
-                                <option value="Lievitati">🥐 Lievitati</option>
-                                <option value="Dolci">🍰 Dolci</option>
-                            </select>
-                        </div>
+                    <div class="form-row">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="url-tipo">
+                            <option value="">Auto-detect</option>
+                            <option value="Pane">🍞 Pane</option>
+                            <option value="Pizza">🍕 Pizza</option>
+                            <option value="Focaccia">🫓 Focaccia</option>
+                            <option value="Pasta">🍝 Pasta</option>
+                            <option value="Lievitati">🥐 Lievitati</option>
+                            <option value="Dolci">🍰 Dolci</option>
+                        </select>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runUrl()">
                         <i data-lucide="link"></i> Importa da URL
@@ -182,23 +164,14 @@
                             placeholder="Incolla qui il testo della ricetta (appunti, note, chat)..."></textarea>
                         <small class="form-hint">Puoi incollare testo libero, formattazione non necessaria</small>
                     </div>
-                    <div class="form-row-grid">
-                        <div>
-                            <label class="form-label">Categoria</label>
-                            <select class="form-select" id="testo-tipo">
-                                <option value="">Auto-detect</option>
-                                <option value="Pane">🍞 Pane</option>
-                                <option value="Pizza">🍕 Pizza</option>
-                                <option value="Focaccia">🫓 Focaccia</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label">Idratazione %</label>
-                            <div class="slider-group">
-                                <input type="range" class="form-range" id="testo-idratazione" min="50" max="95" value="68">
-                                <span class="range-value" id="testo-idratazione-val">68%</span>
-                            </div>
-                        </div>
+                    <div class="form-row">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="testo-tipo">
+                            <option value="">Auto-detect</option>
+                            <option value="Pane">🍞 Pane</option>
+                            <option value="Pizza">🍕 Pizza</option>
+                            <option value="Focaccia">🫓 Focaccia</option>
+                        </select>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runTesto()">
                         <i data-lucide="file-text"></i> Converti in Ricetta

@@ -171,7 +171,6 @@ async function runGenera() {
 
     await apiPost('genera', {
         nome,
-        idratazione: document.getElementById('gen-idratazione').value,
         tipo: document.getElementById('gen-tipo').value,
         note: document.getElementById('gen-note').value,
         noImage: document.getElementById('gen-noimage').checked,
@@ -184,7 +183,6 @@ async function runUrl() {
 
     await apiPost('genera', {
         url,
-        idratazione: document.getElementById('url-idratazione').value,
         tipo: document.getElementById('url-tipo').value,
     });
 }
@@ -196,7 +194,6 @@ async function runTesto() {
     await apiPost('testo', {
         text,
         tipo: document.getElementById('testo-tipo').value,
-        idratazione: document.getElementById('testo-idratazione').value,
     });
 }
 
@@ -214,14 +211,9 @@ async function runRigenera(tutte) {
     await apiPost('rigenera', { tutte: true });
 }
 
-async function runValida() {
-    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta da validare');
-    await apiPost('valida', { slugs: [...selectedSlugs] });
-}
-
-async function runVerifica() {
-    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta da verificare');
-    await apiPost('verifica', { slugs: [...selectedSlugs] });
+async function runQualita(withGrounding = false) {
+    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
+    await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding });
 }
 
 async function runSyncCards() {
@@ -486,8 +478,7 @@ function renderRecipeCard(r) {
                 <div class="recipe-card-actions" onclick="event.stopPropagation()">
                     <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
                     <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('valida', {slugs:['${r.slug}']})" title="Valida ricetta"><i data-lucide="bar-chart-3"></i></button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})" title="Verifica AI"><i data-lucide="check-circle"></i></button>
+                    <button class="btn btn-secondary btn-sm" onclick="apiPost('qualita', {slugs:['${r.slug}']})" title="Analisi Qualità"><i data-lucide="shield-check"></i></button>
                     <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
             </div>
@@ -518,8 +509,7 @@ function renderRecipeRow(r) {
             <div class="recipe-row-actions" onclick="event.stopPropagation()">
                 <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
                 <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('valida', {slugs:['${r.slug}']})" title="Valida ricetta"><i data-lucide="bar-chart-3"></i></button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('verifica', {slugs:['${r.slug}']})" title="Verifica AI"><i data-lucide="check-circle"></i></button>
+                <button class="btn btn-secondary btn-sm" onclick="apiPost('qualita', {slugs:['${r.slug}']})" title="Analisi Qualità"><i data-lucide="shield-check"></i></button>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>
@@ -631,17 +621,14 @@ function updateActionBar() {
             <span class="action-bar-count"><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></i>${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
         </div>
         <div class="action-bar-actions">
-            <button class="action-bar-btn" onclick="runValida()" title="Valida selezionate">
-                <i data-lucide="bar-chart-3"></i> Valida
+            <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Claude + Gemini)">
+                <i data-lucide="shield-check"></i> Qualità
             </button>
-            <button class="action-bar-btn" onclick="runVerifica()" title="Verifica AI selezionate">
-                <i data-lucide="check-circle"></i> Verifica
+            <button class="action-bar-btn action-bar-ai" onclick="runQualita(true)" title="Qualità + fonti web (SerpAPI grounding)">
+                <i data-lucide="globe"></i> + Web
             </button>
-            <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera HTML selezionate (da JSON esistente)">
+            <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera selezionate (da JSON esistente)">
                 <i data-lucide="refresh-cw"></i> Rigenera
-            </button>
-            <button class="action-bar-btn action-bar-ai" onclick="batchRigeneraClaude()" title="Rigenera con Claude AI (estrae JSON dall'HTML e rigenera)">
-                <i data-lucide="sparkles"></i> Rigenera AI
             </button>
             <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
                 <i data-lucide="trash-2"></i> Elimina
@@ -662,16 +649,6 @@ async function batchRigenera() {
     }
 }
 
-async function batchRigeneraClaude() {
-    const slugs = [...selectedSlugs];
-    const conferma = confirm(`🤖 Rigenerare ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'} con Claude AI?\n\nQuesto consuma crediti API Claude.\nOgni ricetta verrà analizzata e ricostruita da zero.\n\n${slugs.join('\n')}`);
-    if (!conferma) return;
-
-    appendTerminal(`\n🤖 Rigenerazione AI di ${slugs.length} ricette...`, 'job-start');
-    for (const slug of slugs) {
-        await apiPost('rigenera-claude', { slug });
-    }
-}
 
 async function batchElimina() {
     const slugs = [...selectedSlugs];
@@ -835,6 +812,7 @@ async function fetchStatus() {
         const pills = document.getElementById('statusPills');
         pills.innerHTML = [
             status.hasAnthropic ? '<span class="pill active"><i data-lucide="sparkles"></i> Claude</span>' : '<span class="pill"><i data-lucide="sparkles"></i> No Claude</span>',
+            status.hasGemini ? '<span class="pill active"><i data-lucide="shield-check"></i> Gemini</span>' : '',
             status.hasPexels ? '<span class="pill active"><i data-lucide="camera"></i> Pexels</span>' : '',
             status.hasUnsplash ? '<span class="pill active"><i data-lucide="camera"></i> Unsplash</span>' : '',
         ].filter(Boolean).join('');
@@ -892,8 +870,8 @@ const commands = [
     { icon: 'book-open', name: 'Le mie Ricette', panel: 'ricette' },
     { icon: 'image', name: 'Image Picker', panel: 'immagini' },
     { icon: 'refresh-cw', name: 'Rigenera Tutte', action: () => runRigenera(true) },
-    { icon: 'bar-chart-3', name: 'Valida Ricette', action: () => runValida() },
-    { icon: 'check-circle', name: 'Verifica AI', action: () => runVerifica() },
+    { icon: 'shield-check', name: 'Qualità Ricette', action: () => runQualita() },
+    { icon: 'globe', name: 'Qualità + Web', action: () => runQualita(true) },
     { icon: 'refresh-cw', name: 'Sync Cards', action: () => runSyncCards() },
     { icon: 'trash-2', name: 'Pulisci Terminal', action: () => clearTerminal() },
 ];

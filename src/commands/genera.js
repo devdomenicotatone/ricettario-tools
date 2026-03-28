@@ -25,7 +25,6 @@ export async function genera(args) {
     } else {
         // Mode B: Generazione da zero
         enhancedRecipe = await generateRecipe(args.nome, {
-            idratazione: args.idratazione,
             tipo: args.tipo,
             note: args.note,
         });

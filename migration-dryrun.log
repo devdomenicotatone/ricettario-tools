@@ -1,0 +1,273 @@
+﻿ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+Ôòæ   MIGRAZIONE ingredientGroups ÔÇö Ricettario      Ôòæ
+ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+   MODE: ­ƒöì DRY RUN (nessuna modifica)
+
+   ­ƒôü Trovate 26 ricette in C:\Users\dom19\Desktop\Ricettario\Ricettario\Ricettario\ricette
+
+
+   ­ƒöä dolci\cantuccini-di-prato.json (Cantuccini di Prato)
+      11 ingredienti da raggruppare...
+node : ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+In riga:1 car:1
++ node migrate-ingredient-groups.mjs --dry-run 2>&1 | Out-File 
+-FilePat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ÔØî Claude API ...licit 
+   ly omitted:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä dolci\cartocci-alla-crema-siciliani.json (Cartocci alla Crema Siciliani)
+      7 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä dolci\migliaccio-napoletano.json (Migliaccio Napoletano)
+      11 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä dolci\pasta-frolla-classica.json (Pasta Frolla Classica)
+      7 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä focaccia\focaccia-barese.json (Focaccia Barese)
+      8 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä focaccia\focaccia-di-recco-igp.json (Focaccia di Recco IGP)
+      7 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä focaccia\focaccia-genovese-classica.json (Focaccia Genovese Classica)
+      13 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä focaccia\focaccia-genovese-fugassa.json (Focaccia Genovese (F├╝gassa))
+      11 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\burger-buns-biga.json (Burger Buns con Biga)
+      12 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\burger-buns-professionali.json (Burger Buns Professionali)
+      13 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\cornetti-sfogliati-classici.json (Cornetti Sfogliati Classici)
+      13 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\impasto-rosticceria-siciliana.json (Impasto Rosticceria Siciliana)
+      8 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\panettone-classico.json (Panettone Classico)
+      25 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\panettone-pere-cioccolato.json (Panettone Pere e Cioccolato)
+      16 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä lievitati\pasta-brioche-classica.json (Pasta Brioche Classica)
+      13 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+   ÔÅ¡´©Å  pane\baguette-francese-tradizionale.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\ciabatta-poolish.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\pane-alle-noci-con-poolish.json ÔÇö gi├á migrata, skip
+
+   ­ƒöä pane\pane-di-altamura-dop.json (Pane di Altamura DOP)
+      5 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+   ÔÅ¡´©Å  pane\pane-integrale-biga-saccorosso-miele.json ÔÇö gi├á migrata, skip
+
+   ­ƒöä pane\pane-pugliese-biga.json (Pane Pugliese con Biga)
+      6 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä pasta\gnocchi-di-patate.json (Gnocchi di Patate)
+      5 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä pizza\pinsa-romana.json (Pinsa Romana)
+      8 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä pizza\pizza-contemporanea-canotto.json (Pizza Contemporanea Canotto)
+      10 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä pizza\pizza-napoletana-biga-criscito.json (Pizza Napoletana Antica Tradizione con Biga e Criscito)
+      10 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+   ­ƒöä pizza\pizza-napoletana-verace-stg.json (Pizza Napoletana Verace STG)
+      6 ingredienti da raggruppare...
+ÔØî Claude API fallita dopo 1 tentativo: Could not resolve 
+authentication method. Expected either apiKey or authToken to be 
+set. Or for one of the "X-Api-Key" or "Authorization" headers to be 
+explicitly omitted
+      ÔØî ERRORE: Could not resolve authentication method. Expected 
+either apiKey or authToken to be set. Or for one of the "X-Api-Key" 
+or "Authorization" headers to be explicitly omitted
+
+
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   REPORT MIGRAZIONE
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   Ô£à Migrate:  0
+   ÔÅ¡´©Å  Skippate: 4
+   ÔØî Errori:   22
+
+   ÔÜá´©Å  Ricette con errore:
+     dolci\cantuccini-di-prato.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     dolci\cartocci-alla-crema-siciliani.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     dolci\migliaccio-napoletano.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     dolci\pasta-frolla-classica.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     focaccia\focaccia-barese.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     focaccia\focaccia-di-recco-igp.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     focaccia\focaccia-genovese-classica.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     focaccia\focaccia-genovese-fugassa.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\burger-buns-biga.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\burger-buns-professionali.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\cornetti-sfogliati-classici.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\impasto-rosticceria-siciliana.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\panettone-classico.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\panettone-pere-cioccolato.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     lievitati\pasta-brioche-classica.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pane\pane-di-altamura-dop.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pane\pane-pugliese-biga.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pasta\gnocchi-di-patate.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pizza\pinsa-romana.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pizza\pizza-contemporanea-canotto.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pizza\pizza-napoletana-biga-criscito.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+     pizza\pizza-napoletana-verace-stg.json: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+
+

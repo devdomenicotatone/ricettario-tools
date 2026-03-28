@@ -1,8 +1,13 @@
 /**
- * VERIFY — Verifica qualità ricette con Claude API
+ * VERIFY — Verifica qualità ricette con Claude + Gemini Challenge
+ * 
+ * ARCHITETTURA DUAL-LLM (Anti-Loop):
+ *   1. Claude → genera verifica iniziale (score, issues, glossario)
+ *   2. Gemini → challenge singolo passaggio (conferma, contesta, aggiunge)
+ *   3. Report finale → merge dei due verdetti, senza loop
  * 
  * Diverso da validator.js (cross-check SerpAPI con fonti web),
- * questo usa Claude come esperto per verificare:
+ * questo usa LLM come esperti per verificare:
  * - Dosi e proporzioni realistiche
  * - Temperature (max 280°C per forni casalinghi)
  * - Tempi coerenti
@@ -10,7 +15,7 @@
  * - Setup corretto per categoria
  * - Sezione cottura presente per pane/pizza
  */
-import { callClaude, parseClaudeJson } from './utils/api.js';
+import { callClaude, callGemini, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'fs';
 import { resolve, basename, relative } from 'path';
@@ -119,113 +124,141 @@ RISPONDI con un JSON valido (NO markdown fences):
   "summary": "Breve riepilogo di 2-3 righe sulla qualità complessiva della ricetta"
 }`;
 
+// ── Prompt Gemini Challenger ──
+const GEMINI_CHALLENGE_SYSTEM = `Sei un revisore critico indipendente — un secondo parere esperto.
+Hai ricevuto:
+1. Una RICETTA originale
+2. Il VERDETTO DI UN ALTRO AI (Claude) che l'ha già verificata
+
+Il tuo compito è METTERE IN DISCUSSIONE il verdetto, NON ripeterlo passivamente.
+
+COSA DEVI FARE:
+- CONFERMA i problemi reali trovati dall'altro AI
+- CONTESTA le segnalazioni che ritieni sbagliate o troppo punitive ("falsi positivi")
+- AGGIUNGI problemi che l'altro AI ha MANCATO
+- VALUTA se lo score assegnato è giusto, troppo alto o troppo basso
+
+CRITERI TECNICI:
+- Idratazione: coerente con il tipo di prodotto?
+- Sale: 2-3% su farina è standard, ma varia per tipo
+- Temperature acqua: devono corrispondere al contesto (spirale vs mano, W farina, durata impasto)
+- Forno casalingo: MAX 280°C
+- Lieviti: proporzioni realistiche per il tipo e i tempi
+- ingredientGroups: gli ingredienti sono nel gruppo giusto? Manca qualcosa?
+
+ATTENZIONE:
+- NON essere pignolo senza motivo — segnala solo problemi REALI
+- Se il verdetto dell'altro AI è corretto, dillo chiaramente
+- Se hai dubbi, segnala come "⚠️ Da verificare" non come errore
+
+RISPONDI con un JSON valido (NO markdown fences):
+{
+  "agreement": "🟢 Confermo il verdetto|🟡 Parziale disaccordo|🔴 Forte disaccordo",
+  "scoreAdjustment": 0,
+  "challengedIssues": [
+    {"originalIssue": "Breve rif. al problema segnalato da Claude", "verdict": "✅ Confermo|❌ Falso positivo|⚠️ Parzialmente corretto", "reason": "Spiegazione"}
+  ],
+  "missedIssues": [
+    {"severity": "❌|⚠️|💡", "area": "Area", "message": "Problema non rilevato", "fix": "Correzione suggerita"}
+  ],
+  "ingredientGroupsReview": {
+    "correct": true,
+    "issues": []
+  },
+  "summary": "Breve giudizio del revisore indipendente (2-3 righe)"
+}`;
+
 
 /**
- * Estrae il contenuto leggibile da un file HTML di ricetta
+ * Estrae il contenuto leggibile da un file JSON di ricetta (SPA)
  */
-function extractRecipeContent(filePath) {
-    const html = readFileSync(filePath, 'utf-8');
+function extractRecipeContentFromJson(filePath) {
+    const raw = readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(raw);
 
-    // Titolo
-    const titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-    const title = titleMatch ? titleMatch[1].trim() : basename(filePath, '.html');
-
-    // Categoria dal path o dal tag
-    const pathParts = filePath.replace(/\\/g, '/').split('/');
-    const catFromPath = pathParts[pathParts.length - 2] || '';
-    const catMatch = html.match(/tag--category[^>]*>[^<]*?([A-Za-zÀ-ú]+)\s*<\/span>/i);
-    const category = catMatch ? catMatch[1] : catFromPath;
-
-    // Ingredienti dalla tabella
+    // Ingredienti: supporta sia ingredientGroups che ingredients flat
     const ingredients = [];
-    const tableMatch = html.match(/<table[^>]*class="[^"]*ingredients-table[^"]*"[^>]*>([\s\S]*?)<\/table>/i);
-    if (tableMatch) {
-        const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-        let row;
-        while ((row = rowRegex.exec(tableMatch[1])) !== null) {
-            const text = row[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-            if (text.length > 3) ingredients.push(text);
+    if (data.ingredientGroups?.length > 0) {
+        for (const group of data.ingredientGroups) {
+            ingredients.push(`── ${group.group} ──`);
+            for (const item of group.items) {
+                const parts = [item.name];
+                if (item.note) parts.push(`(${item.note})`);
+                if (item.grams != null) parts.push(`${item.grams}g`);
+                ingredients.push(parts.join(' '));
+            }
+        }
+    } else if (data.ingredients?.length > 0) {
+        for (const item of data.ingredients) {
+            const parts = [item.name];
+            if (item.note) parts.push(`(${item.note})`);
+            if (item.grams != null) parts.push(`${item.grams}g`);
+            ingredients.push(parts.join(' '));
         }
     }
 
     // Sospensioni
-    const suspensions = [];
-    const allTables = html.matchAll(/<table[^>]*class="[^"]*ingredients-table[^"]*"[^>]*>([\s\S]*?)<\/table>/gi);
-    let tableIdx = 0;
-    for (const tbl of allTables) {
-        tableIdx++;
-        if (tableIdx === 2) { // seconda tabella = sospensioni
-            const rowRegex2 = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-            let row2;
-            while ((row2 = rowRegex2.exec(tbl[1])) !== null) {
-                const text = row2[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-                if (text.length > 3) suspensions.push(text);
-            }
-        }
-    }
+    const suspensions = (data.suspensions || []).map(s => {
+        const parts = [s.name];
+        if (s.note) parts.push(`(${s.note})`);
+        if (s.grams != null) parts.push(`${s.grams}g`);
+        return parts.join(' ');
+    });
 
-    // Procedimento (tutti gli step)
+    // Procedimento — prende da tutti i setup disponibili
     const steps = [];
-    const stepRegex = /<li[^>]*class="[^"]*step-item[^"]*"[^>]*>([\s\S]*?)<\/li>/gi;
-    let step;
-    while ((step = stepRegex.exec(html)) !== null) {
-        const text = step[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-        if (text.length > 10) steps.push(text);
-    }
-
-    // Fallback: cerca <ol class="steps-list"> → <li>
-    if (steps.length === 0) {
-        const olRegex = /<ol[^>]*class="[^"]*steps-list[^"]*"[^>]*>([\s\S]*?)<\/ol>/gi;
-        let ol;
-        while ((ol = olRegex.exec(html)) !== null) {
-            const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi;
-            let li;
-            while ((li = liRegex.exec(ol[1])) !== null) {
-                const text = li[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-                if (text.length > 10) steps.push(text);
+    for (const key of ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment']) {
+        if (data[key]?.length > 0) {
+            steps.push(`── ${key} ──`);
+            for (const step of data[key]) {
+                const text = step.title + (step.detail ? `: ${step.detail}` : '');
+                steps.push(text);
             }
         }
     }
 
-    // Tech badges
-    const hydrationMatch = html.match(/[Ii]dratazione[^<]*?(\d{2,3})\s*%/);
-    const hydration = hydrationMatch ? hydrationMatch[1] + '%' : '';
+    // Setup detect
+    const setups = [];
+    if (data.stepsSpiral?.length) setups.push('Spirale');
+    if (data.stepsHand?.length) setups.push('A mano');
+    if (data.stepsExtruder?.length) setups.push('Estrusore');
+    const currentSetup = setups.join(' + ') || '';
 
-    const tempMatch = html.match(/Target Temp[^<]*?<span[^>]*>([^<]+)/i);
-    const targetTemp = tempMatch ? tempMatch[1].trim() : '';
+    // Alert e ProTips
+    const alert = data.alert || '';
+    const proTips = (data.proTips || []).map(t => typeof t === 'string' ? t : t.text || '');
 
-    const fermMatch = html.match(/Lievitazione[^<]*?<span[^>]*>([^<]+)/i);
-    const fermentation = fermMatch ? fermMatch[1].trim() : '';
-
-    // Setup attuale
-    const setupMatch = html.match(/Setup[^<]*?<span[^>]*>([^<]+)/i);
-    const currentSetup = setupMatch ? setupMatch[1].trim() : '';
-
-    // Alert
-    const alertMatch = html.match(/ALERT PROFESSIONALE[\s\S]*?<p>([^<]+)<\/p>/i);
-    const alert = alertMatch ? alertMatch[1].trim() : '';
-
-    // Pro Tips
-    const proTips = [];
-    const tipRegex = /PRO TIP:<\/strong>\s*([^<]+)/gi;
-    let tip;
-    while ((tip = tipRegex.exec(html)) !== null) {
-        proTips.push(tip[1].trim());
-    }
+    // Categoria dal path
+    const pathParts = filePath.replace(/\\/g, '/').split('/');
+    const catFromPath = pathParts[pathParts.length - 2] || '';
 
     return {
-        title, category, filePath,
-        ingredients, suspensions, steps,
-        hydration, targetTemp, fermentation,
-        currentSetup, alert, proTips,
+        title: data.title || basename(filePath, '.json'),
+        category: data.category || catFromPath,
+        filePath,
+        ingredients,
+        suspensions,
+        steps,
+        hydration: data.hydration ? `${data.hydration}%` : '',
+        targetTemp: data.targetTemp || '',
+        fermentation: data.fermentation || '',
+        currentSetup,
+        alert,
+        proTips,
     };
 }
 
 /**
- * Verifica una singola ricetta con Claude
+ * Verifica una singola ricetta con Claude + Gemini Challenge
+ * Supporta sia file .json (SPA) che .html (legacy)
+ * @param {string} filePath - Percorso al file della ricetta
+ * @param {object} options - { skipGemini: boolean } per saltare il challenge Gemini
  */
-export async function verifyRecipe(filePath) {
-    const recipe = extractRecipeContent(filePath);
+export async function verifyRecipe(filePath, options = {}) {
+    const isJson = filePath.endsWith('.json');
+    const recipe = isJson
+        ? extractRecipeContentFromJson(filePath)
+        : extractRecipeContent(filePath);
 
     log.info(`Verifico: "${recipe.title}" (${recipe.category})`);
     log.debug(`${recipe.ingredients.length} ingredienti, ${recipe.steps.length} step`);
@@ -254,15 +287,87 @@ Verifica la correttezza di TUTTO: dosi, temperature, tempi, setup, termini tecni
 Per la categoria "${recipe.category}", il setup è corretto?
 La ricetta ha una sezione cottura completa con temperatura, tempo e suggerimenti?`;
 
-    const text = await callClaude({
+    // ── STEP 1: Claude verifica ──
+    log.info('   🔵 Claude sta verificando...');
+    const claudeText = await callClaude({
         model: 'claude-sonnet-4-20250514',
         maxTokens: 3000,
         system: VERIFY_SYSTEM,
         messages: [{ role: 'user', content: userPrompt }],
     });
+    const claudeResult = parseClaudeJson(claudeText);
 
-    const result = parseClaudeJson(text);
-    return { recipe, result };
+    // ── STEP 2: Gemini Challenge (singolo passaggio, NO loop) ──
+    let geminiResult = null;
+    if (!options.skipGemini && process.env.GEMINI_API_KEY) {
+        try {
+            log.info('   🔴 Gemini sta contestando...');
+            const geminiPrompt = `RICETTA ORIGINALE:
+${userPrompt}
+
+══════════════════════════════════════
+VERDETTO DI CLAUDE (altro AI):
+${JSON.stringify(claudeResult, null, 2)}
+══════════════════════════════════════
+
+Analizza CRITICAMENTE il verdetto di Claude. Conferma, contesta o aggiungi problemi.`;
+
+            const geminiText = await callGemini({
+                model: 'gemini-3.1-pro-preview',
+                maxTokens: 4096,
+                system: GEMINI_CHALLENGE_SYSTEM,
+                messages: [{ role: 'user', content: geminiPrompt }],
+            });
+            geminiResult = parseClaudeJson(geminiText); // stesso parser JSON robusto
+            log.info(`   🔴 Gemini: ${geminiResult.agreement}`);
+        } catch (err) {
+            log.warn(`   ⚠️ Gemini challenge fallito: ${err.message}`);
+            log.warn('   Procedo con solo verdetto Claude.');
+        }
+    } else if (!process.env.GEMINI_API_KEY) {
+        log.debug('   ⏭️ GEMINI_API_KEY non configurata, skip challenge');
+    }
+
+    // ── STEP 3: Merge risultati ──
+    const result = mergeVerifyResults(claudeResult, geminiResult);
+    return { recipe, result, claudeResult, geminiResult };
+}
+
+/**
+ * Merge i risultati di Claude e Gemini in un verdetto unificato
+ * Gemini può aggiustare lo score e aggiungere issues mancanti
+ */
+function mergeVerifyResults(claude, gemini) {
+    // Se non c'è Gemini, restituisci solo Claude
+    if (!gemini) return { ...claude, challenger: null };
+
+    const merged = { ...claude };
+
+    // Aggiusta score se Gemini suggerisce
+    if (gemini.scoreAdjustment && gemini.scoreAdjustment !== 0) {
+        merged.originalScore = claude.score;
+        merged.score = Math.max(0, Math.min(100, claude.score + gemini.scoreAdjustment));
+    }
+
+    // Aggiungi issues mancanti trovate da Gemini
+    if (gemini.missedIssues?.length > 0) {
+        merged.issues = [
+            ...(claude.issues || []),
+            ...gemini.missedIssues.map(i => ({ ...i, source: '🔴 Gemini' })),
+        ];
+    }
+
+    // Attach Gemini metadata
+    merged.challenger = {
+        agreement: gemini.agreement,
+        scoreAdjustment: gemini.scoreAdjustment || 0,
+        challengedIssues: gemini.challengedIssues || [],
+        missedIssues: gemini.missedIssues || [],
+        ingredientGroupsReview: gemini.ingredientGroupsReview || null,
+        summary: gemini.summary,
+    };
+
+    return merged;
 }
 
 /**
@@ -313,6 +418,50 @@ function generateVerifyReport(recipe, result) {
         report += `- Attuale: ${r.setupCorrection.currentSetup}\n`;
         report += `- Corretto: ${r.setupCorrection.correctSetup}\n`;
         report += `- Motivo: ${r.setupCorrection.reason}\n\n`;
+    }
+
+    // ── Gemini Challenge ──
+    if (r.challenger) {
+        report += `## 🔴 Revisione Gemini (Challenge)\n\n`;
+        report += `**Verdetto**: ${r.challenger.agreement}\n`;
+        if (r.challenger.scoreAdjustment !== 0) {
+            const dir = r.challenger.scoreAdjustment > 0 ? '+' : '';
+            report += `**Score adjustment**: ${dir}${r.challenger.scoreAdjustment} punti`;
+            if (r.originalScore != null) {
+                report += ` (Claude: ${r.originalScore} → Finale: ${r.score})`;
+            }
+            report += '\n';
+        }
+        report += `\n${r.challenger.summary}\n\n`;
+
+        // Issues contestate
+        if (r.challenger.challengedIssues?.length > 0) {
+            report += `### Issues di Claude contestate\n\n`;
+            report += `| Problema originale | Verdetto Gemini | Motivazione |\n|---|---|---|\n`;
+            r.challenger.challengedIssues.forEach(i => {
+                report += `| ${i.originalIssue} | ${i.verdict} | ${i.reason} |\n`;
+            });
+            report += '\n';
+        }
+
+        // Issues mancanti
+        if (r.challenger.missedIssues?.length > 0) {
+            report += `### Issues mancanti (trovate solo da Gemini)\n\n`;
+            report += `| Sev. | Area | Problema | Correzione |\n|------|------|----------|------------|\n`;
+            r.challenger.missedIssues.forEach(i => {
+                report += `| ${i.severity} | ${i.area} | ${i.message} | ${i.fix} |\n`;
+            });
+            report += '\n';
+        }
+
+        // Review ingredientGroups
+        if (r.challenger.ingredientGroupsReview && !r.challenger.ingredientGroupsReview.correct) {
+            report += `### ⚠️ Problemi ingredientGroups\n\n`;
+            r.challenger.ingredientGroupsReview.issues.forEach(issue => {
+                report += `- ${issue}\n`;
+            });
+            report += '\n';
+        }
     }
 
     return report;

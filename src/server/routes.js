@@ -68,7 +68,7 @@ export function setupRoutes(app) {
 
     // ── Genera da nome ──
     app.post('/api/genera', async (req, res) => {
-        const { nome, url, idratazione, tipo, note, noImage, preview } = req.body;
+        const { nome, url, tipo, note, noImage, preview } = req.body;
         const jobId = `gen-${++jobCounter}`;
         const jobName = nome ? `Genera: ${nome}` : `Scraping: ${url}`;
         const ctx = createJobContext(jobId, jobName);
@@ -80,7 +80,6 @@ export function setupRoutes(app) {
             const args = {};
             if (nome) args.nome = nome;
             if (url) args.url = url;
-            if (idratazione) args.idratazione = String(idratazione);
             if (tipo) args.tipo = tipo;
             if (note) args.note = note;
             if (noImage) args['no-image'] = true;
@@ -95,7 +94,7 @@ export function setupRoutes(app) {
 
     // ── Genera da testo ──
     app.post('/api/testo', async (req, res) => {
-        const { text, tipo, idratazione } = req.body;
+        const { text, tipo } = req.body;
         const jobId = `txt-${++jobCounter}`;
         const ctx = createJobContext(jobId, `Testo: ${(text || '').substring(0, 40)}...`);
         res.json({ jobId, status: 'started' });
@@ -109,7 +108,6 @@ export function setupRoutes(app) {
             const { testo } = await import('../commands/testo.js');
             const args = { testo: tmpFile };
             if (tipo) args.tipo = tipo;
-            if (idratazione) args.idratazione = String(idratazione);
 
             await withOutputCapture(ctx, () => testo(args));
             ctx.end(true);
@@ -174,38 +172,6 @@ export function setupRoutes(app) {
         }
     });
 
-    // ── Rigenera con Claude (per ricette legacy senza JSON) ──
-    app.post('/api/rigenera-claude', async (req, res) => {
-        const { slug } = req.body;
-        const jobId = `rigcl-${++jobCounter}`;
-        const ctx = createJobContext(jobId, `Rigenera Claude: ${slug}`);
-        res.json({ jobId, status: 'started' });
-
-        try {
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
-            const ricettarioPath = getRicettarioPath();
-
-            // Cerca il file HTML nelle cartelle categorie
-            let htmlFile = null;
-            for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
-                const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.html`);
-                if (existsSync(candidate)) { htmlFile = candidate; break; }
-            }
-
-            if (!htmlFile) {
-                ctx.error(`❌ ${slug}: HTML non trovato`);
-                ctx.end(false);
-                return;
-            }
-
-            const { rigeneraClaude } = await import('../commands/rigenera-claude.js');
-            await withOutputCapture(ctx, () => rigeneraClaude(htmlFile, slug));
-            ctx.end(true);
-        } catch (err) {
-            ctx.error(`❌ ${slug}: ${err.message}`);
-            ctx.end(false);
-        }
-    });
 
     // ── Refresh Image (con image picker) ──
     app.post('/api/refresh-image', async (req, res) => {
@@ -268,7 +234,6 @@ export function setupRoutes(app) {
             const ricettarioPath = getRicettarioPath();
             const { downloadImage, buildAttribution } = await import('../image-finder.js');
             const { CATEGORY_FOLDERS } = await import('../publisher.js');
-            const { generateHtml } = await import('../template.js');
             const { writeFileSync } = await import('fs');
 
             const catFolder = CATEGORY_FOLDERS[category] || category?.toLowerCase() || 'pane';
@@ -289,13 +254,6 @@ export function setupRoutes(app) {
                 writeFileSync(jsonFile, JSON.stringify(recipe, null, 2), 'utf-8');
                 ctx.log(`💾 JSON aggiornato`);
 
-                // Rigenera HTML
-                recipe.slug = slug;
-                recipe.category = category;
-                const html = generateHtml(recipe);
-                writeFileSync(jsonFile.replace('.json', '.html'), html, 'utf-8');
-                ctx.log(`📄 HTML rigenerato`);
-
                 // Sync cards
                 const { syncCards } = await import('../commands/sync-cards.js');
                 await syncCards({});
@@ -309,71 +267,26 @@ export function setupRoutes(app) {
         }
     });
 
-    // ── Valida ──
-    app.post('/api/valida', async (req, res) => {
-        const { slugs } = req.body || {};
-        const label = slugs?.length ? `Validazione: ${slugs.length} ricette` : 'Validazione tutte';
-        const jobId = `val-${++jobCounter}`;
-        const ctx = createJobContext(jobId, label);
-        res.json({ jobId, status: 'started' });
-
-        try {
-            if (slugs?.length) {
-                // Batch: valida singole ricette
-                const { CATEGORY_FOLDERS } = await import('../publisher.js');
-                const { validateRecipe } = await import('../validator.js');
-                const ricettarioPath = getRicettarioPath();
-
-                await withOutputCapture(ctx, async () => {
-                    ctx.log(`📊 Validazione di ${slugs.length} ricette...\n`);
-                    for (const slug of slugs) {
-                        // Trova il JSON della ricetta
-                        let jsonFile = null;
-                        for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
-                            const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
-                            if (existsSync(candidate)) { jsonFile = candidate; break; }
-                        }
-                        if (!jsonFile) { ctx.log(`  ⚠️ ${slug}: JSON non trovato`); continue; }
-
-                        try {
-                            const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
-                            const { comparison } = await validateRecipe(recipe);
-                            const score = comparison.score ?? comparison.confidence ?? 0;
-                            const emoji = score >= 80 ? '🟢' : score >= 60 ? '🟡' : '🔴';
-                            ctx.log(`  ${emoji} ${score}% — ${recipe.title}`);
-                        } catch (err) {
-                            ctx.log(`  ❌ ${slug}: ${err.message}`);
-                        }
-                    }
-                });
-            } else {
-                const { valida } = await import('../commands/valida.js');
-                await withOutputCapture(ctx, () => valida({ valida: true }));
-            }
-            ctx.end(true);
-        } catch (err) {
-            ctx.error(`❌ Errore: ${err.message}`);
-            ctx.end(false);
-        }
-    });
-
-    // ── Verifica ──
-    app.post('/api/verifica', async (req, res) => {
-        const { slug, slugs } = req.body || {};
+    // ── Qualità (pipeline unificata — sostituisce valida + verifica) ──
+    async function handleQualita(req, res) {
+        const { slug, slugs, grounding } = req.body || {};
         const batchSlugs = slugs || (slug ? [slug] : null);
-        const label = batchSlugs ? `Verifica: ${batchSlugs.length} ricette` : 'Verifica tutte';
-        const jobId = `ver-${++jobCounter}`;
+        const groundingEnabled = grounding === true;
+        const label = batchSlugs
+            ? `Qualità: ${batchSlugs.length} ricett${batchSlugs.length === 1 ? 'a' : 'e'}${groundingEnabled ? ' + Web' : ''}`
+            : 'Qualità tutte';
+        const jobId = `qlt-${++jobCounter}`;
         const ctx = createJobContext(jobId, label);
         res.json({ jobId, status: 'started' });
 
         try {
             if (batchSlugs) {
                 const { CATEGORY_FOLDERS } = await import('../publisher.js');
-                const { verifyRecipe } = await import('../verify.js');
+                const { analyzeQuality } = await import('../quality.js');
                 const ricettarioPath = getRicettarioPath();
 
                 await withOutputCapture(ctx, async () => {
-                    ctx.log(`✅ Verifica AI di ${batchSlugs.length} ricette...\n`);
+                    ctx.log(`🔍 Analisi qualità${groundingEnabled ? ' + fonti web' : ''} di ${batchSlugs.length} ricette...\n`);
                     for (const s of batchSlugs) {
                         let jsonFile = null;
                         for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
@@ -383,24 +296,48 @@ export function setupRoutes(app) {
                         if (!jsonFile) { ctx.log(`  ⚠️ ${s}: non trovato`); continue; }
 
                         try {
-                            const { recipe, result } = await verifyRecipe(jsonFile);
+                            const { recipe, result } = await analyzeQuality(jsonFile, { grounding: groundingEnabled });
                             const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
                             ctx.log(`  ${emoji} ${result.score}/100 — ${recipe.title}`);
+                            if (result.schema && !result.schema.pass) {
+                                ctx.log(`     📐 Schema: ${result.schema.errors.length} errori`);
+                            }
+                            if (result.issues?.length > 0) {
+                                result.issues.forEach(i => ctx.log(`     ${i.severity} [${i.area}] ${i.message}`));
+                            }
+                            if (result.gemini) {
+                                ctx.log(`     🔴 Gemini: ${result.gemini.agreement}`);
+                                if (result.gemini.scoreAdjustment) {
+                                    ctx.log(`     Score adj: ${result.gemini.scoreAdjustment > 0 ? '+' : ''}${result.gemini.scoreAdjustment}`);
+                                }
+                            }
+                            if (result.grounding) {
+                                ctx.log(`     🌐 Fonti: ${result.grounding.sourcesCount} (${result.grounding.sources.map(s => s.domain).join(', ')})`);
+                            }
                         } catch (err) {
                             ctx.log(`  ❌ ${s}: ${err.message}`);
                         }
                     }
                 });
-            } else {
-                const { verifica } = await import('../commands/verifica.js');
-                await withOutputCapture(ctx, () => verifica({ verifica: true }));
             }
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
             ctx.end(false);
         }
+    }
+
+    app.post('/api/qualita', handleQualita);
+
+    // Backward-compat: /api/verifica → qualità senza grounding
+    app.post('/api/verifica', handleQualita);
+    // Backward-compat: /api/valida → qualità CON grounding
+    app.post('/api/valida', (req, res) => {
+        req.body = { ...(req.body || {}), grounding: true };
+        handleQualita(req, res);
     });
+
+
 
     // ── Sync Cards ──
     app.post('/api/sync-cards', async (req, res) => {
@@ -529,7 +466,6 @@ export function setupRoutes(app) {
 
         try {
             const { CATEGORY_FOLDERS } = await import('../publisher.js');
-            const { generateHtml } = await import('../template.js');
             const { syncCards } = await import('../commands/sync-cards.js');
 
             const ricettarioPath = getRicettarioPath();
@@ -538,7 +474,6 @@ export function setupRoutes(app) {
 
             // Paths vecchi
             const oldJsonFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.json`);
-            const oldHtmlFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.html`);
             const oldValidFile = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}.validazione.md`);
             const oldImgWebp = resolve(ricettarioPath, 'public', 'images', 'ricette', oldFolder, `${slug}.webp`);
             const oldImgAvif = resolve(ricettarioPath, 'public', 'images', 'ricette', oldFolder, `${slug}.avif`);
@@ -547,7 +482,6 @@ export function setupRoutes(app) {
             const newRecipeDir = resolve(ricettarioPath, 'ricette', newFolder);
             const newImgDir = resolve(ricettarioPath, 'public', 'images', 'ricette', newFolder);
             const newJsonFile = resolve(newRecipeDir, `${slug}.json`);
-            const newHtmlFile = resolve(newRecipeDir, `${slug}.html`);
             const newValidFile = resolve(newRecipeDir, `${slug}.validazione.md`);
             const newImgWebp = resolve(newImgDir, `${slug}.webp`);
             const newImgAvif = resolve(newImgDir, `${slug}.avif`);
@@ -569,19 +503,13 @@ export function setupRoutes(app) {
                 renameSync(oldJsonFile, newJsonFile);
                 ctx.log(`  ✅ ${slug}.json`);
 
-                // 2. Sposta HTML
-                if (existsSync(oldHtmlFile)) {
-                    renameSync(oldHtmlFile, newHtmlFile);
-                    ctx.log(`  ✅ ${slug}.html`);
-                }
-
-                // 3. Sposta validazione
+                // 2. Sposta validazione
                 if (existsSync(oldValidFile)) {
                     renameSync(oldValidFile, newValidFile);
                     ctx.log(`  ✅ ${slug}.validazione.md`);
                 }
 
-                // 4. Sposta immagini (WebP + AVIF)
+                // 3. Sposta immagini (WebP + AVIF)
                 if (existsSync(oldImgWebp)) {
                     renameSync(oldImgWebp, newImgWebp);
                     ctx.log(`  ✅ ${slug}.webp`);
@@ -591,7 +519,7 @@ export function setupRoutes(app) {
                     ctx.log(`  ✅ ${slug}.avif`);
                 }
 
-                // 5. Aggiorna JSON — category + image path
+                // 4. Aggiorna JSON — category + image path
                 ctx.log(`\n📝 Aggiornamento metadati...`);
                 const recipe = JSON.parse(readFileSync(newJsonFile, 'utf-8'));
                 recipe.category = newCategory;
@@ -605,14 +533,7 @@ export function setupRoutes(app) {
                 ctx.log(`  ✅ category: ${newCategory}`);
                 ctx.log(`  ✅ image: ${recipe.image || 'nessuna'}`);
 
-                // 6. Rigenera HTML con la nuova categoria
-                ctx.log(`\n📄 Rigenerazione HTML...`);
-                recipe.slug = slug;
-                const html = generateHtml(recipe);
-                writeFileSync(newHtmlFile, html, 'utf-8');
-                ctx.log(`  ✅ HTML rigenerato`);
-
-                // 7. Sync cards (ricostruisce recipes.json)
+                // 5. Sync cards (ricostruisce recipes.json)
                 ctx.log(`\n🔄 Sync cards...`);
                 await syncCards({});
                 ctx.log(`  ✅ recipes.json aggiornato`);
@@ -637,6 +558,7 @@ export function setupRoutes(app) {
             uptime: process.uptime(),
             siteUrl,
             hasAnthropic: !!process.env.ANTHROPIC_API_KEY,
+            hasGemini: !!process.env.GEMINI_API_KEY,
             hasSerpApi: !!process.env.SERPAPI_KEY,
             hasPexels: !!process.env.PEXELS_API_KEY,
             hasUnsplash: !!process.env.UNSPLASH_ACCESS_KEY,

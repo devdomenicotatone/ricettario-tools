@@ -56,7 +56,24 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "fermentation": "~24h",
   "totalFlour": 1000,
   "ingredients": [
-    { "name": "Nome Ingrediente", "note": "(nota tecnica setup primario)", "grams": 600, "setupNote": { "spirale": "(temperatura in base al contesto — vedi regola 15)", "mano": "(temperatura adeguata al setup manuale)" } }
+    { "name": "Nome Ingrediente", "note": "(nota tecnica setup primario)", "grams": 600, "setupNote": { "spirale": "(nota spirale)", "mano": "(nota mano)" } }
+  ],
+  "ingredientGroups": [
+    {
+      "group": "Per il Poolish",
+      "items": [
+        { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 300 },
+        { "name": "Acqua", "note": "(temperatura ambiente)", "grams": 300 },
+        { "name": "Lievito di Birra Fresco", "note": "(0.5g)", "grams": 0.5 }
+      ]
+    },
+    {
+      "group": "Per l'Impasto Finale",
+      "items": [
+        { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 700 },
+        { "name": "Acqua", "note": "(18-20°C)", "grams": 380, "setupNote": { "spirale": "(18-20°C)", "mano": "(20-22°C)" } }
+      ]
+    }
   ],
   "suspensions": [
     { "name": "Nome Sospensione", "note": "(nota)", "grams": 160 }
@@ -89,6 +106,12 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "imageKeywords": ["english keyword for stock photo", "another english search term", "italian keyword", "german keyword", "descriptive food photography term"],
   "tags": ["tag1", "tag2", "tag3"]
 }
+
+REGOLA INGREDIENTI RAGGRUPPATI (ingredientGroups):
+- Se la ricetta ha 2+ COMPONENTI LOGICHE DISTINTE (es. Biga + Impasto, Poolish + Impasto, Frolla + Crema + Ganache, Impasto + Decorazione), USA "ingredientGroups" e lascia "ingredients" come array vuoto [].
+- Ogni gruppo ha un "group" (nome descrittivo: "Per il Poolish", "Per l'Impasto Finale", "Per la Decorazione") e un array "items" con gli ingredienti.
+- Se la ricetta ha UN SOLO componente logico (es. migliaccio, biscotti, pane senza prefermento), USA "ingredients" come array piatto e lascia "ingredientGroups" vuoto [] o omettilo.
+- NON usare ingredientGroups con un solo gruppo: usa direttamente "ingredients".
 
 NOTE IMPORTANTI:
 - Per PASTA: usa "stepsExtruder" al posto di "stepsSpiral". "stepsHand" solo se il formato è fattibile a mano. Se non è fattibile, ometti "stepsHand" o lascialo come array vuoto.
@@ -326,7 +349,6 @@ export async function generateRecipe(nome, options = {}) {
 
   const userPrompt = `Crea una ricetta professionale completa per: "${nome}"
 
-${options.idratazione ? `Idratazione target: ${options.idratazione}%` : ''}
 ${options.tipo ? `Tipo: ${options.tipo}` : ''}
 ${options.note ? `Note: ${options.note}` : ''}
 

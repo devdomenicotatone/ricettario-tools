@@ -1,0 +1,42 @@
+﻿ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+Ôòæ   MIGRAZIONE ingredientGroups ÔÇö Ricettario      Ôòæ
+ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+   MODE: ­ƒöì DRY RUN (nessuna modifica)
+
+   ­ƒôü Trovate 25 ricette in C:\Users\dom19\Desktop\Ricettario\Ricettario\Ricettario\ricette
+
+   ÔÅ¡´©Å  dolci\cantuccini-di-prato.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  dolci\cartocci-alla-crema-siciliani.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  dolci\migliaccio-napoletano.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  focaccia\focaccia-barese.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  focaccia\focaccia-di-recco-igp.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  focaccia\focaccia-genovese-classica.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  focaccia\focaccia-genovese-fugassa.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\burger-buns-biga.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\burger-buns-professionali.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\cornetti-sfogliati-classici.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\impasto-rosticceria-siciliana.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\panettone-classico.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\panettone-pere-cioccolato.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  lievitati\pasta-brioche-classica.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\baguette-francese-tradizionale.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\ciabatta-poolish.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\pane-alle-noci-con-poolish.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\pane-di-altamura-dop.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\pane-integrale-biga-saccorosso-miele.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pane\pane-pugliese-biga.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pasta\gnocchi-di-patate.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pizza\pinsa-romana.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pizza\pizza-contemporanea-canotto.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pizza\pizza-napoletana-biga-criscito.json ÔÇö gi├á migrata, skip
+   ÔÅ¡´©Å  pizza\pizza-napoletana-verace-stg.json ÔÇö gi├á migrata, skip
+
+
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   REPORT MIGRAZIONE
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   Ô£à Migrate:  0
+   ÔÅ¡´©Å  Skippate: 25
+   ÔØî Errori:   0
+
+

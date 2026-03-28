@@ -209,3 +209,83 @@ function extractBalancedJson(text) {
 function sleep(ms) {
     return new Promise(r => setTimeout(r, ms));
 }
+
+// ═══════════════════════════════════════════════════════════
+// GEMINI API — Challenger / Reviewer
+// ═══════════════════════════════════════════════════════════
+
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+let _geminiClient = null;
+function getGeminiClient() {
+    if (!_geminiClient) {
+        const key = process.env.GEMINI_API_KEY;
+        if (!key) throw new Error('GEMINI_API_KEY non configurata nel .env');
+        _geminiClient = new GoogleGenerativeAI(key);
+    }
+    return _geminiClient;
+}
+
+/**
+ * Chiama Gemini API con retry automatico
+ *
+ * @param {object} options
+ * @param {string} [options.model] - Modello Gemini (default: gemini-3.1-pro-preview)
+ * @param {number} [options.maxTokens] - Max tokens output (default: 8192)
+ * @param {string} [options.system] - System instruction
+ * @param {Array} options.messages - Array messaggi [{role: 'user'|'model', content: string}]
+ * @param {object} [options.retry] - Config retry
+ * @returns {Promise<string>} Testo della risposta
+ */
+export async function callGemini({
+    model = 'gemini-3.1-pro-preview',
+    maxTokens = 8192,
+    system,
+    messages,
+    retry = DEFAULT_RETRY,
+}) {
+    const { maxAttempts, baseDelayMs, maxDelayMs } = { ...DEFAULT_RETRY, ...retry };
+    const client = getGeminiClient();
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            const genModel = client.getGenerativeModel({
+                model,
+                ...(system ? { systemInstruction: system } : {}),
+                generationConfig: { maxOutputTokens: maxTokens },
+            });
+
+            // Converti messaggi nel formato Gemini
+            const history = messages.slice(0, -1).map(m => ({
+                role: m.role === 'assistant' ? 'model' : m.role,
+                parts: [{ text: m.content }],
+            }));
+
+            const lastMessage = messages[messages.length - 1];
+
+            if (history.length > 0) {
+                const chat = genModel.startChat({ history });
+                const result = await chat.sendMessage(lastMessage.content);
+                return result.response.text().trim();
+            } else {
+                const result = await genModel.generateContent(lastMessage.content);
+                return result.response.text().trim();
+            }
+        } catch (err) {
+            const isLast = attempt === maxAttempts;
+            const retryable = err.status === 429 || err.status >= 500 ||
+                err.message?.includes('overloaded') || err.message?.includes('rate');
+
+            if (isLast || !retryable) {
+                log.error(`Gemini API fallita dopo ${attempt} tentativ${attempt === 1 ? 'o' : 'i'}: ${err.message}`);
+                throw err;
+            }
+
+            const delay = Math.min(baseDelayMs * Math.pow(2, attempt - 1), maxDelayMs);
+            log.warn(`Gemini API errore (tentativo ${attempt}/${maxAttempts}): ${err.message}`);
+            log.warn(`   Retry in ${delay / 1000}s...`);
+            await sleep(delay);
+        }
+    }
+}
+
