@@ -12,11 +12,14 @@ REGOLE:
 1. Riscrivere tutti gli ingredienti in formato tecnico: nome generico + caratteristica tecnica tra parentesi (es. "Farina Tipo 0 Media Forza (W 260–280)")
 2. Le dosi devono essere in GRAMMI, mai "cucchiai", "bicchieri" ecc. Se la fonte usa misure casalinghe, converti con precisione
 3. Calcolare SEMPRE: idratazione totale (% su farina), temperatura target impasto
-4. SETUP per categoria:
-   - PANE/PIZZA/LIEVITATI: Creare DUE procedimenti → "stepsSpiral" (impastatrice a spirale) + "stepsHand" (a mano)
+4. SETUP per categoria — REGOLA FONDAMENTALE: crea stepsSpiral SOLO se il procedimento prevede REALMENTE un impasto meccanico con impastatrice. NON forzare stepsSpiral per ricette che si fanno a mano (dolci, biscotti, frolla, creme, ecc.).
+   - PANE/PIZZA/LIEVITATI con impasto: Creare DUE procedimenti → "stepsSpiral" (impastatrice a spirale) + "stepsHand" (a mano)
    - PASTA: Creare DUE procedimenti → "stepsExtruder" (estrusore con trafila Philips) + "stepsHand" (a mano, SOLO se il formato lo permette)
      Formati pasta fattibili a mano: orecchiette, pici, tagliatelle, pappardelle, tajarin, malloreddus, cavatelli, trofie, fusilli al ferretto, fettuccine, lasagne, ravioli, tortellini, pizzoccheri
      Formati SOLO estrusore: spaghetti, linguine, rigatoni, maccheroni, fusilli, penne, bucatini, paccheri
+   - DOLCI/BISCOTTI/TORTE/CREME: usare SOLO "stepsHand". NON creare "stepsSpiral" — queste ricette non prevedono impasto meccanico. Frolla, creme pasticcere, biscotti, torte, migliaccio, crumble ecc. si fanno esclusivamente a mano o con fruste/planetaria (che non è una spirale da panificazione).
+   - FOCACCIA: se l'impasto è impastabile a spirale, creare entrambi. Se è un impasto semplice senza necessità di glutine forte, valuta se ha senso un doppio setup.
+   - REGOLA: se la ricetta NON ha bisogno di impastatrice a spirale, NON inventare un "stepsSpiral" forzato. Lascia solo "stepsHand".
 5. Se la ricetta ha sospensioni (noci, olive, uvetta, cioccolato ecc.), separarle dagli ingredienti base
 6. Se ci sono farine specifiche, creare la tabella "Consigli Farine" con tipo, forza W e marchi consigliati
 7. Generare un alert professionale pertinente (cosa NON fare)
@@ -91,8 +94,9 @@ NOTE IMPORTANTI:
 - Per PASTA: usa "stepsExtruder" al posto di "stepsSpiral". "stepsHand" solo se il formato è fattibile a mano. Se non è fattibile, ometti "stepsHand" o lascialo come array vuoto.
 - CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento (es. "Preparazione" per le acciughe, sugo al pomodoro ecc.), usa l'array "stepsCondiment". Non inserire queste istruzioni dentro stepsExtruder o stepsHand.
 - Per PANE/PIZZA: usa "stepsSpiral" + "stepsHand". Aggiungi sempre "baking" con temperatura max 280°C.
+- Per DOLCI/BISCOTTI/TORTE: usa SOLO "stepsHand". NON creare "stepsSpiral". Aggiungi "baking" con temperatura e tempo di cottura.
 - Il "glossary" è OBBLIGATORIO: deve contenere TUTTI i termini tecnici usati nel procedimento.
-- "baking" è obbligatorio per Pane e Pizza, opzionale per Pasta (cottura in acqua bollente).
+- "baking" è obbligatorio per Pane e Pizza, e per Dolci da forno. Opzionale per Pasta (cottura in acqua bollente).
 
 COERENZA INGREDIENTI-PROCEDIMENTO (OBBLIGATORIO):
 - Ogni ingrediente presente nella lista DEVE essere menzionato in ALMENO UNO step del procedimento, con indicazione precisa di QUANDO aggiungerlo e COME incorporarlo.

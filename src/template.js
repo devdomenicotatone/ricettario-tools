@@ -81,20 +81,48 @@ export function generateHtml(recipe) {
 
 
 
-    // Setup dinamico basato sulla categoria
+    // Setup dinamico basato sulla categoria e disponibilità step
     const isPasta = (r.category || '').toLowerCase() === 'pasta';
-    const primarySteps = isPasta
-        ? (r.stepsExtruder || r.stepsSpiral || []).map(stepItem).join('\n')
-        : (r.stepsSpiral || []).map(stepItem).join('\n');
-    const secondarySteps = (r.stepsHand || []).map(stepItem).join('\n');
-    const hasSecondary = secondarySteps.trim().length > 0;
+    
+    // Determina quali step esistono realmente
+    const hasSpiralSteps = (r.stepsSpiral || []).length > 0;
+    const hasExtruderSteps = (r.stepsExtruder || []).length > 0;
+    const hasHandSteps = (r.stepsHand || []).length > 0;
+    const hasMachineSteps = isPasta ? hasExtruderSteps : hasSpiralSteps;
+    
+    // Se non ci sono step "macchina" (spirale/estrusore), promuovi stepsHand a primario
+    // Questo è il caso tipico di Dolci, Focaccia senza impasto meccanico, ecc.
+    const isHandOnly = !hasMachineSteps && hasHandSteps;
+    
+    let primarySteps, secondarySteps, hasSecondary;
+    let primaryLabel, primaryBadge, primarySetupId;
+    
+    if (isHandOnly) {
+        // Solo procedimento a mano — nessun toggle setup
+        primarySteps = (r.stepsHand || []).map(stepItem).join('\n');
+        secondarySteps = '';
+        hasSecondary = false;
+        primaryLabel = '🤲 Procedimento';
+        primaryBadge = '🤲 A mano';
+        primarySetupId = 'mano';
+    } else if (isPasta) {
+        primarySteps = (r.stepsExtruder || r.stepsSpiral || []).map(stepItem).join('\n');
+        secondarySteps = (r.stepsHand || []).map(stepItem).join('\n');
+        hasSecondary = secondarySteps.trim().length > 0;
+        primaryLabel = '🍝 Pasta';
+        primaryBadge = '🍝 Pasta';
+        primarySetupId = 'estrusore';
+    } else {
+        primarySteps = (r.stepsSpiral || []).map(stepItem).join('\n');
+        secondarySteps = (r.stepsHand || []).map(stepItem).join('\n');
+        hasSecondary = secondarySteps.trim().length > 0;
+        primaryLabel = '🔧 Impastatrice a spirale';
+        primaryBadge = '🔧 Spirale';
+        primarySetupId = 'spirale';
+    }
 
     const condimentSteps = (r.stepsCondiment || []).map(stepItem).join('\n');
     const hasCondiment = condimentSteps.trim().length > 0;
-
-    const primaryLabel = isPasta ? '🍝 Pasta' : '🔧 Impastatrice a spirale';
-    const primaryBadge = isPasta ? '🍝 Pasta' : '🔧 Spirale';
-    const primarySetupId = isPasta ? 'estrusore' : 'spirale';
 
     const flourRows = r.flourTable?.length
         ? r.flourTable.map(flourRow).join('\n')
@@ -177,7 +205,7 @@ export function generateHtml(recipe) {
 
             <div class="recipe-hero__content">
                 <div class="recipe-hero__tags reveal">
-                    <span class="tag tag--tool" id="hero-setup-tag">${primaryLabel}</span>
+${!isHandOnly ? `                    <span class="tag tag--tool" id="hero-setup-tag">${primaryLabel}</span>` : ''}
                     <span class="tag tag--category">${r.emoji || '🥖'} ${r.category || 'Pane'}</span>
                 </div>
                 <h1 class="recipe-hero__title reveal reveal-delay-1">${r.title}</h1>
@@ -200,10 +228,10 @@ export function generateHtml(recipe) {
             <div class="tech-badge">
                 ⏱️ Lievitazione: <span class="tech-badge__value">&nbsp;${r.fermentation}</span>
             </div>
-            <div class="tech-badge tech-badge--toggle" id="setup-badge" role="button" tabindex="0"
+${!isHandOnly ? `            <div class="tech-badge tech-badge--toggle" id="setup-badge" role="button" tabindex="0"
                 aria-label="Cambia setup">
                 🔧 Setup: <span class="tech-badge__value" id="setup-badge-value">&nbsp;${isPasta ? 'Macchina Pasta' : 'A mano'}</span>
-            </div>
+            </div>` : ''}
         </div>
     </div>
 
