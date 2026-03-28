@@ -66,116 +66,8 @@ export function resolveOutputPaths(recipe, args) {
     return { ricettarioPath, outputDir, outputFile, jsonFile };
 }
 
-/**
- * Crea automaticamente la pagina categoria (index.html) se non esiste.
- * Usa l'immagine della ricetta appena generata come hero.
- */
-function ensureCategoryPage(category, outputDir, heroImagePath) {
-    const indexFile = resolve(outputDir, 'index.html');
-    if (existsSync(indexFile)) return; // Già esiste
-
-    const meta = CATEGORY_META[category] || {
-        emoji: '🍽️',
-        title: `${category}`,
-        desc: `Tutte le ricette di ${category.toLowerCase()} del Ricettario.`,
-    };
-
-    const heroStyle = heroImagePath
-        ? `\n        style="background-image: url('${heroImagePath}');"` : '';
-
-    const html = `<!DOCTYPE html>
-<html lang="it" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="${meta.desc}">
-    <title>${meta.title} — Il Ricettario</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${meta.emoji}</text></svg>">
-</head>
-<body>
-    <nav class="navbar" id="navbar">
-        <div class="navbar__inner">
-            <a href="../../index.html" class="navbar__brand">🔥 <span>Il Ricettario</span></a>
-            <ul class="navbar__links" id="nav-links">
-                <li><a href="../../index.html#ricette">Ricette</a></li>
-                <li><a href="../../index.html#strumenti">Strumenti</a></li>
-                <li><a href="../../index.html#chi-sono">Chi Sono</a></li>
-            </ul>
-            <div class="navbar__actions">
-                <button class="theme-toggle" id="theme-toggle" aria-label="Cambia tema">🌙</button>
-                <button class="hamburger" id="hamburger" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <section class="category-hero"${heroStyle}>
-        <div class="category-hero__content">
-            <span class="category-hero__emoji">${meta.emoji}</span>
-            <h1 class="category-hero__title">${meta.title}</h1>
-            <p class="category-hero__subtitle">${meta.desc}</p>
-            <div class="category-hero__count" id="recipe-count">📊 Caricamento...</div>
-        </div>
-    </section>
-
-    <main class="section">
-        <div class="container">
-            <nav class="breadcrumb">
-                <a href="../../index.html">Home</a>
-                <span class="breadcrumb__separator">›</span>
-                <a href="../../index.html#ricette">Ricette</a>
-                <span class="breadcrumb__separator">›</span>
-                <span class="breadcrumb__current">${category}</span>
-            </nav>
-            <div class="category-toolbar">
-                <div class="category-toolbar__search">
-                    <span class="category-toolbar__search-icon">🔍</span>
-                    <input type="text" class="category-toolbar__search-input" id="category-search"
-                        placeholder="Cerca tra le ricette di ${category.toLowerCase()}...">
-                </div>
-                <div class="category-toolbar__sort">
-                    <button class="category-toolbar__sort-btn active" data-sort="az">A-Z</button>
-                    <button class="category-toolbar__sort-btn" data-sort="hydration">💧 Idratazione</button>
-                </div>
-            </div>
-            <div class="category-grid" id="category-grid">
-                <div class="category-empty">
-                    <div class="category-empty__icon">⏳</div>
-                    <p>Caricamento ricette...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer__grid">
-                <div class="footer__brand">
-                    <div class="footer__brand-name">🔥 <span>Il Ricettario</span></div>
-                    <p class="footer__brand-desc">Ricettario personale. Ricette artigianali documentate con precisione tecnica.</p>
-                </div>
-                <div>
-                    <h4 class="footer__col-title">Navigazione</h4>
-                    <ul class="footer__links">
-                        <li><a href="../../index.html">↗ Home</a></li>
-                        <li><a href="../../index.html#ricette">↗ Tutte le Ricette</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer__bottom">
-                <span>© <span id="current-year">2026</span> Il Ricettario</span>
-            </div>
-        </div>
-    </footer>
-
-    <script type="module" src="/js/category-page.js"></script>
-</body>
-</html>`;
-
-    writeFileSync(indexFile, html, 'utf-8');
-    log.info(`📂 Pagina categoria "${category}" creata: ${indexFile}`);
-}
+// ensureCategoryPage rimossa — la SPA gestisce le pagine di categoria
+// tramite il router client-side (renderCategory in main.js)
 
 /**
  * Apre la preview nel browser via dev server Vite.
@@ -373,10 +265,6 @@ export async function publishRecipe(recipe, args, options = {}) {
         writeFileSync(reportFile, recipe._validation.report, 'utf-8');
         log.info(`📋 Report validazione: ${reportFile}`);
     }
-
-    // ── Step 4b: Assicura pagina categoria ──
-    const heroRelative = recipe.image ? `../../${recipe.image}` : '';
-    ensureCategoryPage(recipe.category, outputDir, heroRelative);
 
     // ── Step 5: Log riepilogo ──
     const label = source ? `RICETTA GENERATA ${source}` : 'RICETTA GENERATA';

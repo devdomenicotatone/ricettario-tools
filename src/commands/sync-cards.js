@@ -1,8 +1,11 @@
 /**
- * COMANDO: sync-cards — Ricostruisce recipes.json scannerizzando tutte le ricette HTML
+ * COMANDO: sync-cards — Ricostruisce recipes.json scannerizzando tutti i JSON ricetta
  * 
- * Scannerizza ricette/{pane,pizza,pasta,lievitati,dolci,focaccia}/*.html
- * Estrae metadati da ogni HTML e ricostruisce recipes.json da zero.
+ * Scannerizza ricette/{pane,pizza,pasta,lievitati,dolci,focaccia}/*.json
+ * Estrae metadati da ogni JSON e ricostruisce recipes.json da zero.
+ * 
+ * I file JSON sono la UNICA fonte di verità — gli HTML sono template
+ * generati dinamicamente e non vengono mai usati come sorgente dati.
  * 
  * Uso: node crea-ricetta.js --sync-cards
  */
@@ -22,82 +25,49 @@ const CATEGORIES = {
 };
 
 /**
- * Estrae un valore da HTML usando regex
+ * Estrae i metadati di una ricetta dal file JSON
  */
-function extract(html, regex, group = 1) {
-    const match = html.match(regex);
-    return match ? match[group].trim() : null;
-}
+function extractRecipeFromJson(jsonPath, categoryDir) {
+    const data = JSON.parse(readFileSync(jsonPath, 'utf-8'));
+    const filename = basename(jsonPath, '.json');
 
-/**
- * Estrae i metadati di una ricetta da un file HTML
- */
-function extractRecipeFromHtml(htmlPath, categoryDir) {
-    const html = readFileSync(htmlPath, 'utf-8');
-    const filename = basename(htmlPath, '.html');
-
-    // Salta file index.html delle categorie
+    // Salta eventuali file index.json
     if (filename === 'index') return null;
 
-    // Title: dal tag <title> (rimuovi " — Il Ricettario")
-    const rawTitle = extract(html, /<title>(.+?)<\/title>/);
-    const title = rawTitle ? rawTitle.replace(/\s*[—–-]\s*Il Ricettario\s*$/i, '').trim() : filename;
+    const slug = data.slug || filename;
+    const category = data.category || CATEGORIES[categoryDir]?.name || categoryDir;
+    const emoji = data.emoji || CATEGORIES[categoryDir]?.emoji || '🍝';
 
-    // Description: dal meta tag
-    const description = extract(html, /<meta\s+name="description"\s+content="([^"]+)"/i) || '';
+    // Immagine: dal JSON, oppure path convenzionale
+    const image = data.image || `images/ricette/${categoryDir}/${slug}.webp`;
 
-    // Slug: dal filename
-    const slug = filename;
+    // Fermentation / time: normalizzazione
+    const time = data.fermentation || data.time || null;
 
-    // Emoji: dal tag category nel hero
-    const tagEmoji = extract(html, /class="tag tag--category"[^>]*>([^<]+)/);
-    const emoji = tagEmoji ? tagEmoji.trim().split(' ')[0] : (CATEGORIES[categoryDir]?.emoji || '🍝');
+    // Temperatura
+    const temp = data.targetTemp || data.temp || null;
 
-    // Immagine: dal hero background-image
-    let image = extract(html, /recipe-hero"[^>]*style="background-image:\s*url\('([^']+)'\)/);
-    if (image) {
-        // Normalizza path relativo a root (rimuovi ../../)
-        image = image.replace(/^(?:\.\.\/)*/, '');
-    } else {
-        // Fallback: cerca nell'immagine OG o default
-        image = `images/ricette/${categoryDir}/${slug}.webp`;
-    }
-
-    // Idratazione: dal tech-badge
-    const hydration = extract(html, /Idratazione:.*?<span[^>]*>\s*&nbsp;([^<]+)/i);
-
-    // Temp target: dal tech-badge
-    const temp = extract(html, /Target Temp:.*?<span[^>]*>\s*&nbsp;([^<]+)/i) ||
-        extract(html, /Temperatura.*?:.*?<span[^>]*>\s*&nbsp;([^<]+)/i);
-
-    // Lievitazione/Tempo: dal tech-badge
-    const time = extract(html, /Lievitazione:.*?<span[^>]*>\s*&nbsp;([^<]+)/i) ||
-        extract(html, /Tempo.*?:.*?<span[^>]*>\s*&nbsp;([^<]+)/i);
-
-    // Setup/Tool: dal tag setup nel hero
-    const setupTag = extract(html, /id="hero-setup-tag"[^>]*>([^<]+)/);
-    const tool = setupTag ? setupTag.trim() : '';
-
-    const category = CATEGORIES[categoryDir]?.name || categoryDir;
+    // Tool/Setup
+    const tool = data.tool || '';
 
     return {
-        title,
+        title: data.title || slug,
         slug,
         category,
         categoryDir,
         emoji,
         href: `ricette/${categoryDir}/${slug}.html`,
         image,
-        description: description.substring(0, 160),
-        hydration: hydration || null,
-        time: time || null,
-        temp: temp || null,
+        description: (data.description || '').substring(0, 160),
+        hydration: data.hydration ? `${data.hydration}%` : null,
+        time,
+        temp,
         tool,
     };
 }
 
 /**
- * Sync-cards: scannerizza tutte le ricette HTML e ricostruisce recipes.json
+ * Sync-cards: scannerizza tutti i JSON ricetta e ricostruisce recipes.json
  */
 export async function syncCards(args) {
     const ricettarioPath = resolve(process.cwd(), args.output || process.env.RICETTARIO_PATH || '../Ricettario');
@@ -120,13 +90,13 @@ export async function syncCards(args) {
 
     for (const dir of categoryDirs) {
         const categoryPath = join(ricettePath, dir);
-        const htmlFiles = readdirSync(categoryPath)
-            .filter(f => f.endsWith('.html') && f !== 'index.html');
+        const jsonFiles = readdirSync(categoryPath)
+            .filter(f => f.endsWith('.json') && f !== 'index.json');
 
-        for (const file of htmlFiles) {
+        for (const file of jsonFiles) {
             const filePath = join(categoryPath, file);
             try {
-                const recipe = extractRecipeFromHtml(filePath, dir);
+                const recipe = extractRecipeFromJson(filePath, dir);
                 if (recipe) {
                     allRecipes.push(recipe);
                     log.info(`  ✅ ${recipe.title} (${dir}/${file})`);

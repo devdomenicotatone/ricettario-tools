@@ -30,9 +30,14 @@ REGOLE:
     - Tempo di cottura specifico
     - Suggerimenti: pietra refrattaria, vapore, posizione teglia, come riconoscere la cottura perfetta
 14. Le temperature dei forni devono SEMPRE essere per forni casalinghi (max 280°C). MAI suggerire temperature superiori.
-15. INGREDIENTI DINAMICI PER SETUP: Se un ingrediente ha caratteristiche diverse a seconda del setup (spirale vs mano), usa il campo opzionale "setupNote". Esempi:
-    - Acqua: spirale → "ghiacciata 2-4°C" / mano → "20-22°C, in 3 riprese"
-    - Lievito: dosi diverse se impasto più lungo a mano
+15. INGREDIENTI DINAMICI PER SETUP: Se un ingrediente ha caratteristiche diverse a seconda del setup (spirale vs mano), usa il campo opzionale "setupNote".
+    TEMPERATURA ACQUA — NON È UNA REGOLA FISSA, dipende dal contesto:
+    - Acqua GHIACCIATA (2-6°C) per spirale: SOLO quando ci sono impasti lunghi (>12-15 min) ad alta velocità (V6+) con farine forti (W>300) e alta idratazione (>72%). La spirale genera calore meccanico e serve compensare.
+    - Acqua FRESCA (16-20°C) per spirale: per impasti medi (8-12 min) con farine medie (W 240-300) e idratazione moderata (65-72%).
+    - Acqua AMBIENTE (20-24°C): per impasti brevi (<8 min), farine deboli/integrali (W<240), basse idratazioni (<65%), o quando la ricetta sorgente NON specifica acqua fredda.
+    - A MANO: generalmente 2-4°C più calda rispetto alla spirale, perché le mani non generano lo stesso calore meccanico.
+    REGOLA D'ORO: Se la ricetta sorgente specifica una temperatura acqua, RISPETTALA. Non inventare acqua ghiacciata se la fonte non la menziona.
+    Lievito: dosi diverse se impasto più lungo a mano (generalmente +20-30%).
     Il campo "note" classico deve contenere la nota del setup PRIMARIO (spirale/estrusore). "setupNote" serve per le VARIAZIONI.
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
@@ -48,7 +53,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "fermentation": "~24h",
   "totalFlour": 1000,
   "ingredients": [
-    { "name": "Nome Ingrediente", "note": "(nota tecnica setup primario)", "grams": 600, "setupNote": { "spirale": "ghiacciata 2-4°C", "mano": "20-22°C, in 3 riprese" } }
+    { "name": "Nome Ingrediente", "note": "(nota tecnica setup primario)", "grams": 600, "setupNote": { "spirale": "(temperatura in base al contesto — vedi regola 15)", "mano": "(temperatura adeguata al setup manuale)" } }
   ],
   "suspensions": [
     { "name": "Nome Sospensione", "note": "(nota)", "grams": 160 }
@@ -87,7 +92,18 @@ NOTE IMPORTANTI:
 - CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento (es. "Preparazione" per le acciughe, sugo al pomodoro ecc.), usa l'array "stepsCondiment". Non inserire queste istruzioni dentro stepsExtruder o stepsHand.
 - Per PANE/PIZZA: usa "stepsSpiral" + "stepsHand". Aggiungi sempre "baking" con temperatura max 280°C.
 - Il "glossary" è OBBLIGATORIO: deve contenere TUTTI i termini tecnici usati nel procedimento.
-- "baking" è obbligatorio per Pane e Pizza, opzionale per Pasta (cottura in acqua bollente).`;
+- "baking" è obbligatorio per Pane e Pizza, opzionale per Pasta (cottura in acqua bollente).
+
+COERENZA INGREDIENTI-PROCEDIMENTO (OBBLIGATORIO):
+- Ogni ingrediente presente nella lista DEVE essere menzionato in ALMENO UNO step del procedimento, con indicazione precisa di QUANDO aggiungerlo e COME incorporarlo.
+- Se un ingrediente è nella lista ma non appare in nessuno step, è un ERRORE GRAVE. Verifica prima di rispondere.
+- Esempio: se l'olio EVO è tra gli ingredienti, DEVE comparire un passaggio tipo "Aggiungere l'olio a filo durante l'impastamento".
+
+FEDELTÀ ALLA FONTE:
+- Se stai trasformando una ricetta da URL/testo, le dosi, le temperature dell'acqua, i tempi e le tecniche della fonte hanno PRIORITÀ ASSOLUTA.
+- NON aggiungere ingredienti che la fonte non menziona.
+- NON modificare temperature dell'acqua rispetto a quelle indicate nella fonte.
+- Puoi AGGIUNGERE dettagli tecnici (W farina, marchi, glossario), ma NON ALTERARE la ricetta.`;
 
 /**
  * Riscrive una ricetta con Claude, arricchita da fonti reali
@@ -184,7 +200,7 @@ export async function enhanceRecipe(rawRecipe) {
   log.info(`Claude sta riscrivendo la ricetta ${sourceLabel}...`);
 
   const dataDirective = sourcesFound > 0
-    ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali autorevoli. DEVI basare i dati tecnici (forza farina W, temperature impasto, temperature acqua per setup spirale vs mano, tempi, proporzioni) sui dati reali sotto. Per gli ingredienti che cambiano tra setup (es. acqua ghiacciata per spirale vs tiepida per mano), compila il campo setupNote.`
+    ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali autorevoli. DEVI basare i dati tecnici (forza farina W, temperature impasto, temperature acqua, tempi, proporzioni) sui dati reali sotto. Se la fonte specifica una temperatura dell'acqua, RISPETTALA — non sostituirla con acqua ghiacciata a meno che il contesto tecnico lo richieda (vedi regola 15). Per gli ingredienti che cambiano tra setup spirale vs mano, compila il campo setupNote.`
     : `Non ho trovato fonti reali. Basati sui dati scrappati e sulla tua conoscenza, ma sii conservativo.`;
 
   const userPrompt = `Ecco i dati grezzi di una ricetta scrappata da ${rawRecipe.sourceUrl || 'fonte web'}:
