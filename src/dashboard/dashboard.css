@@ -712,6 +712,50 @@ body {
 
 .recipe-badge-time { color: var(--text-muted); }
 
+/* Quality Badge */
+.quality-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: default;
+    transition: all var(--transition);
+}
+.quality-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.quality-good {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.quality-warn {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.quality-bad {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    animation: qualityPulse 2s ease-in-out infinite;
+}
+@keyframes qualityPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.2); }
+}
+
+/* Quality badge in list view */
+.recipe-row-quality {
+    min-width: 50px;
+    text-align: center;
+}
+
 .recipe-card-desc {
     font-size: 12px;
     color: var(--text-muted);
@@ -781,7 +825,7 @@ body {
 
 .recipe-list-header {
     display: grid;
-    grid-template-columns: 2fr 120px 80px 1fr auto;
+    grid-template-columns: 2fr 120px 60px 80px 1fr auto;
     gap: 12px;
     padding: 8px 14px;
     font-size: 10px;
@@ -794,7 +838,7 @@ body {
 
 .recipe-row {
     display: grid;
-    grid-template-columns: 2fr 120px 80px 1fr auto;
+    grid-template-columns: 2fr 120px 60px 80px 1fr auto;
     gap: 12px;
     align-items: center;
     padding: 10px 14px;
@@ -1098,6 +1142,16 @@ body {
     background: linear-gradient(135deg, #7c3aed, #a78bfa);
     color: #fff;
     border-color: #7c3aed;
+}
+
+.action-bar-fix {
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+.action-bar-fix:hover {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    color: #fff;
+    border-color: #d97706;
 }
 
 /* ── TERMINAL ── */

@@ -339,7 +339,112 @@ export function setupRoutes(app) {
 
 
 
+    // ── Quality Index (per badge dashboard) ──
+    app.get('/api/quality-index', async (req, res) => {
+        try {
+            const { loadQualityIndex } = await import('../quality.js');
+            res.json(loadQualityIndex());
+        } catch (err) {
+            res.json({});
+        }
+    });
+
+    // ── Qualità Fix (applica correzioni AI alla ricetta) ──
+    app.post('/api/qualita/fix', async (req, res) => {
+        const { slug, slugs } = req.body || {};
+        const batchSlugs = slugs || (slug ? [slug] : null);
+        if (!batchSlugs?.length) return res.status(400).json({ error: 'Nessun slug' });
+
+        const jobId = `fix-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `Fix: ${batchSlugs.length} ricett${batchSlugs.length === 1 ? 'a' : 'e'}`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { loadQualityIndex } = await import('../quality.js');
+            const { callClaude, parseClaudeJson } = await import('../utils/api.js');
+            const ricettarioPath = getRicettarioPath();
+            const qualityIndex = loadQualityIndex();
+
+            await withOutputCapture(ctx, async () => {
+                ctx.log(`🔧 Applicazione fix AI a ${batchSlugs.length} ricette...\n`);
+
+                for (const s of batchSlugs) {
+                    const scoreData = qualityIndex[s];
+                    if (!scoreData || scoreData.score >= 85) {
+                        ctx.log(`  ⏭️ ${s}: score ${scoreData?.score || '?'}/100 — skip (>= 85)`);
+                        continue;
+                    }
+
+                    // Trova JSON
+                    let jsonFile = null;
+                    for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                        const candidate = resolve(ricettarioPath, 'ricette', folder, `${s}.json`);
+                        if (existsSync(candidate)) { jsonFile = candidate; break; }
+                    }
+                    if (!jsonFile) { ctx.log(`  ⚠️ ${s}: non trovato`); continue; }
+
+                    // Leggi report qualità
+                    const reportPath = jsonFile.replace('.json', '.qualita.md');
+                    const report = existsSync(reportPath) ? readFileSync(reportPath, 'utf-8') : null;
+                    if (!report) {
+                        ctx.log(`  ⚠️ ${s}: nessun report qualità — esegui prima l'analisi`);
+                        continue;
+                    }
+
+                    try {
+                        const recipeJson = readFileSync(jsonFile, 'utf-8');
+                        ctx.log(`  🔧 ${s}: invio a Claude per correzione...`);
+
+                        const fixPrompt = `Correggi questa ricetta JSON basandoti sul report di qualità.
+
+══ REPORT QUALITÀ ══
+${report}
+
+══ RICETTA JSON ORIGINALE ══
+${recipeJson}
+
+REGOLE TASSATIVE:
+1. Restituisci SOLO il JSON corretto, nessun testo prima o dopo
+2. NON cambiare la struttura del JSON (stessi campi, stessi nomi)
+3. Correggi SOLO i problemi segnalati nel report (severity ❌ e ⚠️)
+4. NON modificare aspetti non segnalati
+5. Se un ingrediente è nel gruppo sbagliato, spostalo
+6. Se mancano step di cottura nel procedimento, aggiungili basandoti sulla sezione baking
+7. Mantieni lo stesso stile e livello di dettaglio del testo originale`;
+
+                        const fixedText = await callClaude({
+                            model: 'claude-sonnet-4-20250514',
+                            maxTokens: 16000,
+                            system: 'Sei un correttore di ricette JSON. Correggi gli errori segnalati nel report e restituisci SOLO il JSON valido.',
+                            messages: [{ role: 'user', content: fixPrompt }],
+                        });
+
+                        // Parsa e salva
+                        const fixed = parseClaudeJson(fixedText);
+                        if (!fixed?.title) throw new Error('JSON corretto non valido');
+
+                        // Backup
+                        const backupPath = jsonFile.replace('.json', '.backup.json');
+                        writeFileSync(backupPath, recipeJson, 'utf-8');
+
+                        // Salva
+                        writeFileSync(jsonFile, JSON.stringify(fixed, null, 2), 'utf-8');
+                        ctx.log(`  ✅ ${s}: corretto (backup salvato)`);
+                    } catch (err) {
+                        ctx.log(`  ❌ ${s}: fix fallito — ${err.message}`);
+                    }
+                }
+            });
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
     // ── Sync Cards ──
+
     app.post('/api/sync-cards', async (req, res) => {
         const jobId = `sync-${++jobCounter}`;
         const ctx = createJobContext(jobId, 'Sync Cards');

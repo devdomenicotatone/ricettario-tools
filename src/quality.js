@@ -552,14 +552,45 @@ export async function analyzeQuality(filePath, options = {}) {
 
     log.info(`   📊 Layer 4: Score finale ${finalScore >= 80 ? '🟢' : finalScore >= 60 ? '🟡' : '🔴'} ${finalScore}/100`);
 
+    // Salva nello quality index per badge dashboard
+    saveScoreToIndex(recipe.slug || basename(filePath, '.json'), {
+        score: finalScore,
+        verdict: claude.verdict,
+        issueCount: issues.length,
+        timestamp: new Date().toISOString(),
+    });
+
     return { recipe, result };
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// QUALITY INDEX — persistenza score per badge dashboard
+// ══════════════════════════════════════════════════════════════════════
+
+const QUALITY_INDEX_PATH = resolve(process.cwd(), 'quality-index.json');
+
+function loadQualityIndex() {
+    try {
+        if (existsSync(QUALITY_INDEX_PATH)) {
+            return JSON.parse(readFileSync(QUALITY_INDEX_PATH, 'utf-8'));
+        }
+    } catch { /* ignore corrupt file */ }
+    return {};
+}
+
+function saveScoreToIndex(slug, data) {
+    const index = loadQualityIndex();
+    index[slug] = data;
+    writeFileSync(QUALITY_INDEX_PATH, JSON.stringify(index, null, 2), 'utf-8');
+}
+
+export { loadQualityIndex };
+
 /**
  * Calcola l'hash MD5 del contenuto del file per tracciabilità.
- * Usato per evitare ri-analisi inutili e per audit trail.
  */
 export function computeFileHash(filePath) {
     const content = readFileSync(filePath, 'utf-8');
     return createHash('md5').update(content).digest('hex');
 }
+

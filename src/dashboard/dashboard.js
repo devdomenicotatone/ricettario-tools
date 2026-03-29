@@ -222,9 +222,34 @@ async function runSyncCards() {
 
 // ── Recipes List PRO ──
 let allRecipes = [];
-let siteBaseUrl = 'http://localhost:5173/Ricettario/'; // aggiornato da fetchStatus
+let siteBaseUrl = 'http://localhost:5173/Ricettario/';
 let selectedSlugs = new Set();
 let recipeFilter = { category: 'all', search: '', sort: 'name-asc', view: 'grid' };
+let qualityIndex = {}; // slug → {score, verdict, issueCount, timestamp}
+
+async function fetchQualityIndex() {
+    try {
+        const res = await fetch('/api/quality-index');
+        qualityIndex = await res.json();
+    } catch { qualityIndex = {}; }
+}
+
+function getQualityBadge(slug) {
+    const q = qualityIndex[slug];
+    if (!q) return '';
+    const cls = q.score >= 80 ? 'quality-good' : q.score >= 60 ? 'quality-warn' : 'quality-bad';
+    const emoji = q.score >= 80 ? '🟢' : q.score >= 60 ? '🟡' : '🔴';
+    return `<span class="quality-badge ${cls}" title="Qualità: ${q.score}/100 — ${q.issueCount} issue (${new Date(q.timestamp).toLocaleDateString()})">${emoji} ${q.score}</span>`;
+}
+
+async function runFix() {
+    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
+    // Filtra solo quelle con score < 85
+    const fixable = [...selectedSlugs].filter(s => qualityIndex[s] && qualityIndex[s].score < 85);
+    if (fixable.length === 0) return alert('Nessuna ricetta selezionata necessita di fix (tutte >= 85)');
+    if (!confirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'} con problemi?\n\nVerrà creato un backup .backup.json per ogni file.`)) return;
+    await apiPost('qualita/fix', { slugs: fixable });
+}
 
 const CATEGORY_COLORS = {
     'Pane':      '#d4a574',
@@ -329,7 +354,10 @@ async function loadRecipes() {
     const grid = document.getElementById('recipesGrid');
     grid.innerHTML = '<p class="empty-state">Caricamento...</p>';
     try {
-        const resp = await fetch('/api/ricette');
+        const [resp] = await Promise.all([
+            fetch('/api/ricette'),
+            fetchQualityIndex(),
+        ]);
         allRecipes = await resp.json();
         updateCategoryTabs();
         renderRecipes();
@@ -441,7 +469,7 @@ function renderRecipes() {
         grid.innerHTML = `<div class="recipe-list-header">
             <span><input type="checkbox" class="recipe-checkbox-all" ${allChecked ? 'checked' : ''} 
                 onchange="toggleSelectAll(this.checked)"> Ricetta</span>
-            <span>Categoria</span><span>Idratazione</span><span>Tempo</span><span>Azioni</span>
+            <span>Categoria</span><span>Qualità</span><span>Idratazione</span><span>Tempo</span><span>Azioni</span>
         </div>` + filtered.map(r => renderRecipeRow(r)).join('');
     } else {
         grid.innerHTML = filtered.map(r => renderRecipeCard(r)).join('');
@@ -471,6 +499,7 @@ function renderRecipeCard(r) {
             <div class="recipe-card-body">
                 <div class="recipe-card-title">${title}</div>
                 <div class="recipe-card-badges">
+                    ${getQualityBadge(r.slug)}
                     ${r.hydration ? `<span class="recipe-badge ${hydClass}"><i data-lucide="droplets"></i> ${r.hydration}</span>` : ''}
                     ${r.time ? `<span class="recipe-badge recipe-badge-time"><i data-lucide="clock"></i> ${r.time}</span>` : ''}
                 </div>
@@ -504,6 +533,7 @@ function renderRecipeRow(r) {
             </div>
             <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
                 onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+            ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
             <span class="recipe-row-hydration">${r.hydration || '—'}</span>
             <span class="recipe-row-time">${r.time || '—'}</span>
             <div class="recipe-row-actions" onclick="event.stopPropagation()">
@@ -629,6 +659,9 @@ function updateActionBar() {
             </button>
             <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera selezionate (da JSON esistente)">
                 <i data-lucide="refresh-cw"></i> Rigenera
+            </button>
+            <button class="action-bar-btn action-bar-fix" onclick="runFix()" title="Applica fix AI alle ricette problematiche (< 85)">
+                <i data-lucide="wrench"></i> Fix AI
             </button>
             <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
                 <i data-lucide="trash-2"></i> Elimina
