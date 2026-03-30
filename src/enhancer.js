@@ -156,11 +156,46 @@ TOKEN DOSI NEL PROCEDIMENTO (OBBLIGATORIO):
 - Esempio SBAGLIATO: "Aggiungere 500g farina e 350g acqua fredda"
 - Questo sistema permette al frontend di aggiornare automaticamente le dosi nel procedimento quando l'utente usa il calcolatore dosi.
 
+⚠️ REGOLA CRITICA TOKEN — MATCHING INGREDIENTE (VIOLAZIONE = ERRORE GRAVE):
+- Il nome del token DEVE corrispondere ALL'INGREDIENTE A CUI SI RIFERISCE, mai a un altro ingrediente con grammi simili.
+- Prima di scrivere un token, VERIFICA che il nome descriva ciò che l'utente deve aggiungere in quel momento.
+
+  ERRORI COMUNI DA EVITARE (pattern reali trovati in produzione):
+  ❌ "{farina_media_poolish:300}g di acqua"      → il token dice farina, ma l'ingrediente è ACQUA
+  ❌ "{semola_impasto:80}g di zucchero semolato"  → il token dice semola, ma l'ingrediente è ZUCCHERO  
+  ❌ "{miele_impasto_finale:50}g di olio EVO"     → il token dice miele, ma l'ingrediente è OLIO
+  ❌ "{lievito_fresco_biga:15}g latte"            → il token dice lievito, ma l'ingrediente è LATTE
+  ❌ "{sale_impasto_finale:15}g di olio EVO"      → il token dice sale, ma l'ingrediente è OLIO
+  ❌ "{acqua_impasto:280}g ciascuna"              → token acqua usato per peso pezzatura  
+
+  VERSIONI CORRETTE:
+  ✅ "{acqua_poolish:300}g di acqua"
+  ✅ "{zucchero_impasto:80}g di zucchero semolato"
+  ✅ "{olio_impasto_finale:50}g di olio EVO"
+  ✅ "{latte_impasto:15}g di latte"
+  ✅ "{olio_impasto:15}g di olio EVO"
+  ✅ "{panetto_peso:280!}g ciascuna"
+
+  REGOLA: Se stai scrivendo "X di ACQUA", il token DEVE contenere "acqua". Se stai scrivendo "X di OLIO", il token DEVE contenere "olio". Mai incrociare.
+
 TOKEN FISSI (NON SCALABILI):
 - Per valori che NON devono cambiare quando l'utente moltiplica le dosi, aggiungi il suffisso ! al token: {nome:valore!}
 - Esempio: peso panetto pizza = misura standard fissa → {panetto_peso:285!}g — resta 285g anche a ×2 dosi (si fanno più panetti, non panetti più grandi)
 - Usa il suffisso ! per: peso singolo panetto/porzione, temperature in gradi, tempi in minuti, percentuali
 - NON usare ! per: quantità di ingredienti (farina, acqua, sale, lievito) — queste DEVONO scalare col moltiplicatore
+
+TERMINOLOGIA TECNICA (OBBLIGATORIO):
+- "Autolisi" = SOLO farina + acqua, SENZA lievito o pre-impasto. Se l'impasto contiene già poolish/biga/lievito, NON è autolisi. Usa "Riposo per idratazione" o "Fermentolisi".
+- "Pirlatura" = arrotondamento a sfera (boule, panettone). Per forme cilindriche (baguette, filoncini) usa "Formatura".
+- "Biga" = pre-impasto rigido al 44-50% di idratazione, matura 16-24h. Se l'idratazione è > 60%, è un "Poolish" o un "Lievitino".
+- Forno "statico" per pane e baguette (mai ventilato durante la cottura — il ventilato impedisce l'oven spring).
+
+CHECKLIST PRE-OUTPUT (esegui mentalmente prima di rispondere):
+1. Per OGNI token nel testo, verifica: il nome del token descrive l'ingrediente menzionato subito dopo?
+2. La somma degli ingredienti corrisponde alla resa dichiarata nel procedimento?
+3. L'idratazione dichiarata corrisponde a (liquidi totali / farine totali × 100)?
+4. I tempi di lievitazione sono realistici per la quantità di lievito indicata?
+5. Il peso totale ÷ numero pezzi = peso singolo pezzo indicato?
 
 INGREDIENTI DI PRE-IMPASTI E PESO TOTALE:
 - Quando una ricetta ha ingredientGroups con un pre-impasto (biga, poolish, lievitino, autolisi) il cui prodotto finale appare come ingrediente nel gruppo successivo (es. "Biga matura: 1205g"), gli ingredienti del gruppo pre-impasto DEVONO avere "excludeFromTotal": true.

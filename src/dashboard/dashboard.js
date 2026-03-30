@@ -53,6 +53,10 @@ function handleWsMessage(data) {
 }
 
 // ── Terminal ──
+let terminalPinned = false;
+let terminalAutoCollapseTimer = null;
+let terminalLineCount = 0;
+
 function appendTerminal(text, type = 'stdout') {
     const terminal = document.getElementById('terminal');
     const line = document.createElement('div');
@@ -60,21 +64,71 @@ function appendTerminal(text, type = 'stdout') {
     line.textContent = text;
     terminal.appendChild(line);
     terminal.scrollTop = terminal.scrollHeight;
+    terminalLineCount++;
 
-    // Expand terminal if minimized
-    document.getElementById('terminalContainer').classList.remove('minimized');
+    // Update badge counter
+    updateTerminalBadge();
 }
 
 function clearTerminal() {
     document.getElementById('terminal').innerHTML =
         '<div class="terminal-line system">🔥 Terminal pulito.</div>';
+    terminalLineCount = 0;
+    updateTerminalBadge();
+}
+
+function expandTerminal() {
+    const container = document.getElementById('terminalContainer');
+    container.classList.remove('minimized');
+    updateToggleIcon(false);
+}
+
+function collapseTerminal() {
+    if (terminalPinned) return;
+    const container = document.getElementById('terminalContainer');
+    container.classList.add('minimized');
+    updateToggleIcon(true);
 }
 
 function toggleTerminal() {
     const container = document.getElementById('terminalContainer');
-    container.classList.toggle('minimized');
-    document.getElementById('terminalToggle').textContent =
-        container.classList.contains('minimized') ? '▲' : '▼';
+    const isMinimized = container.classList.contains('minimized');
+    if (isMinimized) {
+        expandTerminal();
+        // Se aperto manualmente, blocca auto-collapse per un po'
+        clearTimeout(terminalAutoCollapseTimer);
+        if (!terminalPinned) {
+            terminalAutoCollapseTimer = setTimeout(() => collapseTerminal(), 10000);
+        }
+    } else {
+        collapseTerminal();
+        clearTimeout(terminalAutoCollapseTimer);
+    }
+}
+
+function toggleTerminalPin() {
+    terminalPinned = !terminalPinned;
+    const pinBtn = document.getElementById('terminalPinBtn');
+    pinBtn.classList.toggle('active', terminalPinned);
+    pinBtn.title = terminalPinned ? 'Sblocca' : 'Blocca aperto';
+    if (terminalPinned) {
+        clearTimeout(terminalAutoCollapseTimer);
+        expandTerminal();
+    }
+}
+
+function updateToggleIcon(minimized) {
+    const btn = document.getElementById('terminalToggle');
+    if (btn) btn.innerHTML = minimized ? '<i data-lucide="chevron-up"></i>' : '<i data-lucide="chevron-down"></i>';
+    lucide?.createIcons?.();
+}
+
+function updateTerminalBadge() {
+    const badge = document.getElementById('terminalBadge');
+    if (badge) {
+        badge.textContent = terminalLineCount > 0 ? terminalLineCount : '';
+        badge.classList.toggle('visible', terminalLineCount > 0);
+    }
 }
 
 // ── Running state ──

@@ -271,12 +271,16 @@
         </div>
 
         <!-- TERMINAL -->
-        <div class="terminal-container" id="terminalContainer">
-            <div class="terminal-header">
-                <span class="terminal-title"><i data-lucide="terminal" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px"></i>Live Output</span>
+        <div class="terminal-container minimized" id="terminalContainer">
+            <div class="terminal-header" onclick="toggleTerminal()">
+                <span class="terminal-title">
+                    <i data-lucide="terminal" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px"></i>Live Output
+                    <span class="terminal-badge" id="terminalBadge"></span>
+                </span>
                 <div class="terminal-actions">
-                    <button class="terminal-btn" onclick="clearTerminal()" title="Pulisci"><i data-lucide="trash-2"></i></button>
-                    <button class="terminal-btn" onclick="toggleTerminal()" title="Minimizza" id="terminalToggle"><i data-lucide="chevron-down"></i></button>
+                    <button class="terminal-btn" onclick="event.stopPropagation();toggleTerminalPin()" title="Blocca aperto" id="terminalPinBtn"><i data-lucide="pin" style="width:12px;height:12px"></i></button>
+                    <button class="terminal-btn" onclick="event.stopPropagation();clearTerminal()" title="Pulisci"><i data-lucide="trash-2"></i></button>
+                    <button class="terminal-btn" onclick="event.stopPropagation();toggleTerminal()" title="Minimizza" id="terminalToggle"><i data-lucide="chevron-up"></i></button>
                 </div>
             </div>
             <div class="terminal-body" id="terminal">
