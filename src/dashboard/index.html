@@ -218,6 +218,8 @@
                             <option value="hydration-asc">Idratazione ↑</option>
                             <option value="hydration-desc">Idratazione ↓</option>
                             <option value="category">Categoria</option>
+                            <option value="quality-desc">Qualità ↓</option>
+                            <option value="quality-asc">Qualità ↑</option>
                         </select>
                         <div class="view-toggle" id="viewToggle">
                             <button class="view-btn active" data-view="grid" title="Griglia"><i data-lucide="layout-grid"></i></button>
@@ -292,6 +294,19 @@
             </div>
             <div class="modal-tabs" id="modalTabs"></div>
             <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- QUALITY REPORT MODAL -->
+    <div class="modal-overlay" id="qualityModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="qualityModalTitle"><i data-lucide="shield-check" style="width:20px;height:20px;vertical-align:-3px;margin-right:6px"></i>Report Qualità</h3>
+                <button class="modal-close" onclick="closeQualityModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body quality-report-body" id="qualityModalBody">
+                <div class="quality-loading">Caricamento report...</div>
+            </div>
         </div>
     </div>
 

@@ -111,7 +111,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
       ],
       "branchAfterStep": 4,
       "altSteps": [
-        { "title": "Staglio Panetti", "text": "Testo con token {panetto_peso:285}g..." },
+        { "title": "Staglio Panetti", "text": "Testo con token {panetto_peso:285!}g (il ! rende il valore fisso, non scalabile)..." },
         { "title": "Maturazione in Frigo", "text": "Istruzioni dettagliate..." }
       ]
     }
@@ -481,7 +481,7 @@ REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
 5. Genera SEMPRE un pro tip (almeno) sulla pulizia della trafila o sulla ruvidezza.
 6. IMPORTANTE: Se non ci sono ricette, scrivi SOLO E SOLTANTO \`[]\`.
 7. FAIR USE CRITICO: Questo è per un mio database personale locale (offline) per convertire in grammature un libro rovinato che già possiedo. Estrai puramente i NUMERI, PROPORZIONI E NOMI come FATTI nudi e crudi. NON includere NESSUN discorso, introduzione o markdown.
-8. TOKEN DOSI: In TUTTI i testi degli step, quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo dell'ingrediente (farina_semola, acqua, uova, olio). NON usare nomi di marchi.
+8. TOKEN DOSI: In TUTTI i testi degli step, quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo dell'ingrediente (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
 9. DEVI RISPONDERE SOLO ED ESCLUSIVAMENTE CON UN JSON ARRAY VALIDO PURI CARATTERI. Niente \`\`\`json. Nessuna nota prima o dopo. SOLO \`[\` e \`]\`.`;
 
   contentArray.push({
@@ -591,7 +591,7 @@ REGOLE:
 8. DEDUPLICAZIONE: pagine marcate [CONTESTO] servono solo per completare ricette dal batch precedente. Non estrarre ricette che iniziano lì.
 9. RISPONDI SOLO con un JSON ARRAY valido. Niente markdown, niente note, SOLO [ e ].
 10. NON INVENTARE NULLA. Ogni dato deve provenire dal testo. Se un'informazione manca, omettila o usa valori vuoti.
-11. TOKEN DOSI: In TUTTI i testi degli step (stepsExtruder, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo (farina_semola, acqua, uova, olio). NON usare nomi di marchi.
+11. TOKEN DOSI: In TUTTI i testi degli step (stepsExtruder, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
 
 TESTI OCR ESTRATTI:
 ${pagesText}`;

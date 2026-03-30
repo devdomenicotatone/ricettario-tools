@@ -79,7 +79,10 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
 NOTE:
 - "baking" è obbligatorio per Pane/Pizza/Focaccia, opzionale per Pasta
 - Il glossary deve contenere TUTTI i termini tecnici presenti nel procedimento
-- Se l'HTML ha un'immagine, estrai il percorso e mettilo nel campo "image"`;
+- Se l'HTML ha un'immagine, estrai il percorso e mettilo nel campo "image"
+10. TOKEN DOSI: In TUTTI i testi degli step, quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Aggiungere {farina:500}g farina e {acqua:350}g acqua". Il nome_generico è un ID descrittivo (farina_biga, acqua_rinfresco, sale, lievito). NON usare nomi di marchi nei token.
+11. TOKEN FISSI: Per valori che NON devono scalare col calcolatore dosi (peso singolo panetto/porzione, temperature), aggiungi ! dopo il valore: {panetto_peso:285!}g. Usa ! per: peso porzione standard. NON usare ! per ingredienti (farina, acqua, sale, lievito).
+12. EXCLUDEFROMTOTAL: Se la ricetta ha ingredientGroups con pre-impasto (biga, poolish) e nel gruppo successivo c'è il prodotto assemblato (es. "Biga matura: 1205g"), gli ingredienti del primo gruppo DEVONO avere "excludeFromTotal": true per evitare doppio conteggio nel peso totale.`;
 
 /**
  * Rigenera una singola ricetta legacy (HTML → Claude → JSON → HTML)

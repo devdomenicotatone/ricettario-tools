@@ -349,6 +349,26 @@ export function setupRoutes(app) {
         }
     });
 
+    // ── Quality Report (per modal dashboard) ──
+    app.get('/api/quality-report/:slug', async (req, res) => {
+        const slug = req.params.slug;
+        const ricettarioPath = getRicettarioPath();
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                const reportPath = resolve(ricettarioPath, 'ricette', folder, `${slug}.qualita.md`);
+                if (existsSync(reportPath)) {
+                    const content = readFileSync(reportPath, 'utf-8');
+                    return res.json({ slug, report: content });
+                }
+            }
+            res.status(404).json({ error: `Nessun report qualità trovato per "${slug}"` });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
     // ── Qualità Fix (applica correzioni AI alla ricetta) ──
     app.post('/api/qualita/fix', async (req, res) => {
         const { slug, slugs } = req.body || {};

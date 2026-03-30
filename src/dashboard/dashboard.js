@@ -239,7 +239,9 @@ function getQualityBadge(slug) {
     if (!q) return '';
     const cls = q.score >= 80 ? 'quality-good' : q.score >= 60 ? 'quality-warn' : 'quality-bad';
     const emoji = q.score >= 80 ? '🟢' : q.score >= 60 ? '🟡' : '🔴';
-    return `<span class="quality-badge ${cls}" title="Qualità: ${q.score}/100 — ${q.issueCount} issue (${new Date(q.timestamp).toLocaleDateString()})">${emoji} ${q.score}</span>`;
+    return `<span class="quality-badge ${cls} clickable" 
+        onclick="event.stopPropagation(); showQualityReport('${slug}')" 
+        title="Qualità: ${q.score}/100 — ${q.issueCount} issue (${new Date(q.timestamp).toLocaleDateString()}) — Clicca per dettagli">${emoji} ${q.score}</span>`;
 }
 
 async function runFix() {
@@ -436,6 +438,16 @@ function renderRecipes() {
             case 'category':
                 return (a.category || '').localeCompare(b.category || '', 'it') ||
                        (a.title || '').localeCompare(b.title || '', 'it');
+            case 'quality-desc': {
+                const qa = qualityIndex[a.slug]?.score ?? -1;
+                const qb = qualityIndex[b.slug]?.score ?? -1;
+                return qb - qa;
+            }
+            case 'quality-asc': {
+                const qa = qualityIndex[a.slug]?.score ?? 999;
+                const qb = qualityIndex[b.slug]?.score ?? 999;
+                return qa - qb;
+            }
             default: return 0;
         }
     });
@@ -832,6 +844,63 @@ function closeImageModal() {
 document.getElementById('imageModal')?.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) closeImageModal();
 });
+
+// ── Quality Report Modal ──
+async function showQualityReport(slug) {
+    const modal = document.getElementById('qualityModal');
+    const body = document.getElementById('qualityModalBody');
+    const title = document.getElementById('qualityModalTitle');
+
+    modal.classList.add('active');
+    body.innerHTML = '<div class="quality-loading">⏳ Caricamento report...</div>';
+    title.innerHTML = `<i data-lucide="shield-check" style="width:20px;height:20px;vertical-align:-3px;margin-right:6px"></i>Report Qualità: ${slug}`;
+    lucide.createIcons();
+
+    try {
+        const resp = await fetch(`/api/quality-report/${slug}`);
+        const data = await resp.json();
+
+        if (data.error) {
+            body.innerHTML = `<div class="quality-error">❌ ${data.error}</div>`;
+            return;
+        }
+
+        // Render markdown basilare
+        body.innerHTML = `<div class="quality-report-content">${renderMarkdown(data.report)}</div>`;
+    } catch (err) {
+        body.innerHTML = `<div class="quality-error">❌ Errore: ${err.message}</div>`;
+    }
+}
+
+function closeQualityModal() {
+    document.getElementById('qualityModal').classList.remove('active');
+}
+
+document.getElementById('qualityModal')?.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal-overlay')) closeQualityModal();
+});
+
+// Markdown renderer basico (headings, bold, lists, tables, code)
+function renderMarkdown(md) {
+    return md
+        .replace(/^### (.+)$/gm, '<h4>$1</h4>')
+        .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        .replace(/<\/ul>\s*<ul>/g, '')
+        .replace(/^\|(.+)\|$/gm, (line) => {
+            const cells = line.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`);
+            return `<tr>${cells.join('')}</tr>`;
+        })
+        .replace(/(<tr>.*<\/tr>)/gs, '<table class="quality-table">$1</table>')
+        .replace(/<\/table>\s*<table[^>]*>/g, '')
+        .replace(/^(?!<[hultd])(.*\S.*)$/gm, '<p>$1</p>')
+        .replace(/<p>---<\/p>/g, '<hr>')
+        .replace(/<p><tr>/g, '<tr>')
+        .replace(/<\/tr><\/p>/g, '</tr>');
+}
 
 // ── Status ──
 async function fetchStatus() {

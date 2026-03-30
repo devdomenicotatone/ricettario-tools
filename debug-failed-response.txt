@@ -1,45 +1,33 @@
 {
-  "agreement": "🟡 Parziale disaccordo",
-  "scoreAdjustment": -10,
+  "agreement": "🔴 Forte disaccordo",
+  "scoreAdjustment": -35,
   "challengedIssues": [
     {
-      "originalIssue": "Errore grave nelle dosi della biga: 290g acqua vs 50g in procedimento",
+      "originalIssue": "Nel punto 1 si riferisce a '{burro_impasto_finale:50}g di acqua'",
       "verdict": "✅ Confermo",
-      "reason": "Discrepanza gravissima. Inoltre 290g di acqua su 300g di farina darebbero un'idratazione del 96%, impossibile da gestire come impasto 'sbricioloso' descritto al punto 1."
+      "reason": "Errore di templating evidente nel testo."
     },
     {
-      "originalIssue": "Manca totalmente lo zucchero nel procedimento",
+      "originalIssue": "Nel punto 1 si usa solo 100g di Manitoba",
       "verdict": "✅ Confermo",
-      "reason": "I 40g di zucchero dichiarati non vengono mai inseriti nelle fasi di impasto."
+      "reason": "Grave discrepanza tra la lista ingredienti e il procedimento."
     },
     {
-      "originalIssue": "Idratazione dichiarata 58% non corrisponde (calcolata 50%)",
+      "originalIssue": "Nel punto 2 si indicano quantità sbagliate: '{farina_media_impasto_finale:200}g Manitoba...'",
+      "verdict": "✅ Confermo",
+      "reason": "Il procedimento inventa farina extra non presente negli ingredienti."
+    },
+    {
+      "originalIssue": "Nel punto 7 riferimento errato '{semi_di_sesamo_finitura:30}g latte'",
+      "verdict": "✅ Confermo",
+      "reason": "Altro errore nei richiami delle variabili (templating)."
+    },
+    {
+      "originalIssue": "Idratazione totale reale 62.4% (585g liquidi/935g farine totali)",
+      "verdict": "❌ Falso positivo",
+      "reason": "I calcoli di Claude sono una totale allucinazione. La farina totale in ricetta è 500g (300+200). I liquidi (acqua+latte+uova) superano i 560g. L'idratazione è oltre il 110%, non il 62.4%!"
+    },
+    {
+      "originalIssue": "Lievito totale 2% su farina, alto per lievitazione di 4h30",
       "verdict": "⚠️ Parziale",
-      "reason": "Claude ha ragione sul fatto che la percentuale sia errata, ma il suo calcolo (50%) ignora completamente uova e tuorli (70g totali), che apportano liquidi significativi in un impasto brioche."
-    },
-    {
-      "originalIssue": "Manitoba dichiarata 300g ma usata solo 200g",
-      "verdict": "❌ Falso positivo",
-      "reason": "Claude non ha saputo leggere: il procedimento usa 100g di Manitoba nello step 1 (biga) e 200g nello step 2. Totale 300g. La dose torna."
-    },
-    {
-      "originalIssue": "Lievito totale 10g (2%) alto per 4h30, rischio sovralievitazione",
-      "verdict": "❌ Falso positivo",
-      "reason": "Il 2% di lievito fresco su farina in un impasto ricco di grassi (burro, olio) e zuccheri (che rallentano l'attività dei lieviti) è perfettamente standard e adeguato per un ciclo di 4.5 ore a 26°C."
-    }
-  ],
-  "missedIssues": [
-    {
-      "severity": "❌",
-      "area": "Resa / Pesi",
-      "message": "Il peso totale dell'impasto (farine+liquidi+grassi+zuccheri) è di circa 960g. Il procedimento prevede di formare '8 pezzi da 100g' (800g totali). Mancano all'appello ben 160g di impasto.",
-      "fix": "Correggere la pezzatura (es. 8 pezzi da 120g) o ricalcolare le proporzioni degli ingredienti."
-    },
-    {
-      "severity": "⚠️",
-      "area": "Struttura Ricetta",
-      "message": "La sezione 'SOSPENSIONI' contiene sesamo, latte e tuorlo usati per la finitura esterna. Le sospensioni sono ingredienti che vanno inseriti all'interno dell'impasto (es. gocce di cioccolato, uvetta).",
-      "fix": "Rimuovere la sezione SOSPENSIONI e lasciare questi ingredienti solo sotto 'Per la Finitura'."
-    }
-  ],
-  "summary": "Claude ha individuato falle critiche (acqua della biga e zucchero mancante), ma ha commesso banali errori matematici su far
+      "reason": "2% di lievito fresco (10g su 500g) in un impasto fortemente arricchito (burro, uova, zucchero) per un processo di sole

@@ -23,72 +23,25 @@ import { searchRealSources, scrapeRecipePage } from './validator.js';
 // LAYER 1: SCHEMA VALIDATION (deterministico, istantaneo)
 // ══════════════════════════════════════════════════════════════════════
 
-const REQUIRED_FIELDS = ['title', 'category', 'hydration'];
+// ── Schema centralizzato (Single Source of Truth) ──
+import { validateRecipeSchema, TOKEN_REGEX, CATEGORIES_NEEDING_BAKING } from './recipe-schema.js';
+
 const REQUIRED_STEP_KEYS = ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment'];
 
 /**
  * Validazione deterministica dello schema JSON della ricetta.
- * Non usa AI — è puro controllo strutturale.
+ * Usa lo schema centralizzato + check custom extra.
  */
 function validateSchema(recipe, filePath) {
-    const errors = [];
-    const warnings = [];
+    // Validazione base dallo schema centralizzato
+    const schemaResult = validateRecipeSchema(recipe);
 
-    // Campi obbligatori
-    for (const field of REQUIRED_FIELDS) {
-        if (!recipe[field] && recipe[field] !== 0) {
-            errors.push(`Campo obbligatorio mancante: "${field}"`);
-        }
-    }
+    const errors = [...schemaResult.errors];
+    const warnings = [...schemaResult.warnings];
 
-    // Ingredienti: deve avere ingredientGroups O ingredients
-    const hasGroups = recipe.ingredientGroups?.length > 0;
-    const hasFlat = recipe.ingredients?.length > 0;
-    if (!hasGroups && !hasFlat) {
-        errors.push('Nessun ingrediente trovato (né ingredientGroups né ingredients)');
-    }
-    if (hasFlat && !hasGroups) {
-        warnings.push('Usa formato flat "ingredients" — migrare a "ingredientGroups"');
-    }
+    // ── Check custom aggiuntivi (non nello schema base) ──
 
-    // Validazione ingredientGroups
-    if (hasGroups) {
-        let totalGrams = 0;
-        for (const group of recipe.ingredientGroups) {
-            if (!group.group) warnings.push('ingredientGroup senza nome di gruppo');
-            if (!group.items?.length) errors.push(`Gruppo "${group.group || '?'}" senza ingredienti`);
-            for (const item of (group.items || [])) {
-                if (!item.name) errors.push(`Ingrediente senza nome nel gruppo "${group.group}"`);
-                if (item.grams != null) totalGrams += item.grams;
-            }
-        }
-        if (totalGrams === 0) warnings.push('Nessun ingrediente con grammi definiti');
-    }
-
-    // Almeno un tipo di step
-    const hasSteps = REQUIRED_STEP_KEYS.some(k => recipe[k]?.length > 0);
-    if (!hasSteps) {
-        errors.push('Nessun procedimento trovato (stepsSpiral/stepsHand/stepsExtruder/stepsCondiment)');
-    }
-
-    // Hydration range check
-    const h = parseFloat(recipe.hydration);
-    if (!isNaN(h)) {
-        if (h < 25 || h > 100) warnings.push(`Idratazione ${h}% fuori range tipico (25-100%)`);
-    }
-
-    // Cottura: pane/pizza/focaccia devono avere bakingSection o cookingSection
-    const needsBaking = ['Pane', 'Pizza', 'Focaccia'].includes(recipe.category);
-    if (needsBaking && !recipe.bakingSection && !recipe.cookingSection) {
-        warnings.push(`Categoria "${recipe.category}" senza sezione cottura (bakingSection/cookingSection)`);
-    }
-
-    // Metadata qualità
-    if (!recipe.description) warnings.push('Manca la descrizione della ricetta');
-    if (!recipe.fermentation && needsBaking) warnings.push('Manca il campo "fermentation" (tempi lievitazione)');
-
-    // Token dosi dinamiche: warning se nessuno step contiene token {id:base}
-    const TOKEN_REGEX = /\{[a-z_]+:\d+\.?\d*\}/;
+    // Token dosi dinamiche: warning se nessuno step contiene token
     const allStepTexts = REQUIRED_STEP_KEYS
         .flatMap(k => (recipe[k] || []).map(s => s.text || ''));
     const hasTokens = allStepTexts.some(t => TOKEN_REGEX.test(t));
@@ -104,7 +57,6 @@ function validateSchema(recipe, filePath) {
             if (variant.branchAfterStep == null) {
                 errors.push(`Variante "${variant.id || '?'}" senza "branchAfterStep"`);
             } else {
-                // Verifica che branchAfterStep sia un indice valido
                 const primaryKey = REQUIRED_STEP_KEYS.find(k => recipe[k]?.length > 0);
                 const primaryStepsLen = primaryKey ? recipe[primaryKey].length : 0;
                 if (variant.branchAfterStep < 0 || variant.branchAfterStep >= primaryStepsLen) {
@@ -114,7 +66,6 @@ function validateSchema(recipe, filePath) {
             if (!variant.altSteps?.length) {
                 errors.push(`Variante "${variant.id || '?'}" senza altSteps`);
             }
-            // Check ingredientOverrides refs
             if (variant.ingredientOverrides?.length > 0) {
                 for (const override of variant.ingredientOverrides) {
                     if (!override.ref) warnings.push(`ingredientOverride senza "ref" in variante "${variant.id}"`);
