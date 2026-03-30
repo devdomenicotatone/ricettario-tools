@@ -211,7 +211,7 @@ function extractRecipeContentFromJson(filePath) {
         if (data[key]?.length > 0) {
             steps.push(`── ${key} ──`);
             for (const step of data[key]) {
-                const text = step.title + (step.detail ? `: ${step.detail}` : '');
+                const text = step.title + (step.text ? `: ${step.text}` : '');
                 steps.push(text);
             }
         }

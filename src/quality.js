@@ -87,6 +87,43 @@ function validateSchema(recipe, filePath) {
     if (!recipe.description) warnings.push('Manca la descrizione della ricetta');
     if (!recipe.fermentation && needsBaking) warnings.push('Manca il campo "fermentation" (tempi lievitazione)');
 
+    // Token dosi dinamiche: warning se nessuno step contiene token {id:base}
+    const TOKEN_REGEX = /\{[a-z_]+:\d+\.?\d*\}/;
+    const allStepTexts = REQUIRED_STEP_KEYS
+        .flatMap(k => (recipe[k] || []).map(s => s.text || ''));
+    const hasTokens = allStepTexts.some(t => TOKEN_REGEX.test(t));
+    if (!hasTokens && allStepTexts.length > 0) {
+        warnings.push('Nessun token {id:base} trovato negli step — le dosi nel procedimento non saranno dinamiche');
+    }
+
+    // Validazione struttura variants (se presente)
+    if (recipe.variants?.length > 0) {
+        for (const variant of recipe.variants) {
+            if (!variant.id) errors.push(`Variante senza "id"`);
+            if (!variant.label) warnings.push(`Variante "${variant.id || '?'}" senza "label"`);
+            if (variant.branchAfterStep == null) {
+                errors.push(`Variante "${variant.id || '?'}" senza "branchAfterStep"`);
+            } else {
+                // Verifica che branchAfterStep sia un indice valido
+                const primaryKey = REQUIRED_STEP_KEYS.find(k => recipe[k]?.length > 0);
+                const primaryStepsLen = primaryKey ? recipe[primaryKey].length : 0;
+                if (variant.branchAfterStep < 0 || variant.branchAfterStep >= primaryStepsLen) {
+                    errors.push(`Variante "${variant.id}": branchAfterStep ${variant.branchAfterStep} fuori range (0-${primaryStepsLen - 1})`);
+                }
+            }
+            if (!variant.altSteps?.length) {
+                errors.push(`Variante "${variant.id || '?'}" senza altSteps`);
+            }
+            // Check ingredientOverrides refs
+            if (variant.ingredientOverrides?.length > 0) {
+                for (const override of variant.ingredientOverrides) {
+                    if (!override.ref) warnings.push(`ingredientOverride senza "ref" in variante "${variant.id}"`);
+                    if (override.grams == null) warnings.push(`ingredientOverride "${override.ref}" senza "grams" in variante "${variant.id}"`);
+                }
+            }
+        }
+    }
+
     return {
         pass: errors.length === 0,
         errors,

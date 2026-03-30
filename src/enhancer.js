@@ -101,6 +101,21 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "glossary": [
     { "term": "Autolisi", "definition": "Riposo di farina e acqua senza lievito per 20-60 min" }
   ],
+  "variants": [
+    {
+      "id": "cold-fermentation",
+      "label": "❄️ Lievitazione in Frigo 24-48h",
+      "description": "Maturazione lenta per sapore più complesso",
+      "ingredientOverrides": [
+        { "ref": "lievito", "grams": 1.3, "note": "(ridotto per maturazione lunga)" }
+      ],
+      "branchAfterStep": 4,
+      "altSteps": [
+        { "title": "Staglio Panetti", "text": "Testo con token {panetto_peso:285}g..." },
+        { "title": "Maturazione in Frigo", "text": "Istruzioni dettagliate..." }
+      ]
+    }
+  ],
   "alert": "Testo dell'alert professionale (cosa NON fare e perché)",
   "proTips": ["Tip 1", "Tip 2"],
   "imageKeywords": ["english keyword for stock photo", "another english search term", "italian keyword", "german keyword", "descriptive food photography term"],
@@ -130,7 +145,37 @@ FEDELTÀ ALLA FONTE:
 - Se stai trasformando una ricetta da URL/testo, le dosi, le temperature dell'acqua, i tempi e le tecniche della fonte hanno PRIORITÀ ASSOLUTA.
 - NON aggiungere ingredienti che la fonte non menziona.
 - NON modificare temperature dell'acqua rispetto a quelle indicate nella fonte.
-- Puoi AGGIUNGERE dettagli tecnici (W farina, marchi, glossario), ma NON ALTERARE la ricetta.`;
+- Puoi AGGIUNGERE dettagli tecnici (W farina, marchi, glossario), ma NON ALTERARE la ricetta.
+
+TOKEN DOSI NEL PROCEDIMENTO (OBBLIGATORIO):
+- In TUTTI i testi degli step (stepsSpiral, stepsHand, stepsExtruder, altSteps), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}
+- Il nome_generico DEVE essere un identificativo descrittivo dell'ingrediente (es. farina_biga, acqua_rinfresco, lievito, sale, malto, panetto_peso).
+- NON usare nomi di marchi nei token (NO saccorosso, SI farina_biga). Il token è un ID generico.
+- Il valore_base è il valore numerico in grammi senza unità.
+- Esempio CORRETTO: "Aggiungere {farina_biga:500}g farina e {acqua:350}g acqua fredda"
+- Esempio SBAGLIATO: "Aggiungere 500g farina e 350g acqua fredda"
+- Questo sistema permette al frontend di aggiornare automaticamente le dosi nel procedimento quando l'utente usa il calcolatore dosi.
+
+TOKEN FISSI (NON SCALABILI):
+- Per valori che NON devono cambiare quando l'utente moltiplica le dosi, aggiungi il suffisso ! al token: {nome:valore!}
+- Esempio: peso panetto pizza = misura standard fissa → {panetto_peso:285!}g — resta 285g anche a ×2 dosi (si fanno più panetti, non panetti più grandi)
+- Usa il suffisso ! per: peso singolo panetto/porzione, temperature in gradi, tempi in minuti, percentuali
+- NON usare ! per: quantità di ingredienti (farina, acqua, sale, lievito) — queste DEVONO scalare col moltiplicatore
+
+INGREDIENTI DI PRE-IMPASTI E PESO TOTALE:
+- Quando una ricetta ha ingredientGroups con un pre-impasto (biga, poolish, lievitino, autolisi) il cui prodotto finale appare come ingrediente nel gruppo successivo (es. "Biga matura: 1205g"), gli ingredienti del gruppo pre-impasto DEVONO avere "excludeFromTotal": true.
+- Questo evita che il calcolo del peso totale impasto conti gli ingredienti due volte (sia come singoli che come prodotto assemblato).
+- Esempio: se il gruppo "Per la Biga" ha farina 830g, acqua 375g, lievito 1.8g, e nel gruppo "Per l'Impasto Finale" c'è "Biga matura: 1205g", allora i 3 ingredienti della biga devono avere "excludeFromTotal": true.
+- Se NON c'è un prodotto assemblato nel gruppo successivo (come nella ciabatta con poolish, dove il poolish non appare come riga unica nell'impasto finale), NON usare excludeFromTotal.
+
+VARIANTI DI PROCEDIMENTO (OPZIONALE):
+- Il campo "variants" è un array OPZIONALE. Aggiungilo SOLO quando la ricetta ha naturalmente varianti tecniche alternative (es. lievitazione rapida vs frigo, cottura forno vs padella).
+- NON forzare varianti su ricette che non ne hanno.
+- Ogni variante ha: id, label (con emoji), description, ingredientOverrides (array opzionale di override di ingredienti), branchAfterStep (indice 0-based dello step dopo il quale la variante si innesta), altSteps (step alternativi che sostituiscono quelli successivi).
+- ingredientOverrides.ref DEVE matchare un token id usato nel testo degli step (es. ref "lievito" matcha il token {lievito:1.8}).
+- I testi degli altSteps DEVONO usare i token {id:base} come gli step normali.
+- Ricette tipiche CON varianti: pizza/pane con lievitazione frigo vs temperatura ambiente, pasta con cottura in acqua vs al forno.
+- Ricette tipiche SENZA varianti: dolci, biscotti, pasta semplice, focaccia standard.`;
 
 /**
  * Riscrive una ricetta con Claude, arricchita da fonti reali
@@ -436,7 +481,8 @@ REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
 5. Genera SEMPRE un pro tip (almeno) sulla pulizia della trafila o sulla ruvidezza.
 6. IMPORTANTE: Se non ci sono ricette, scrivi SOLO E SOLTANTO \`[]\`.
 7. FAIR USE CRITICO: Questo è per un mio database personale locale (offline) per convertire in grammature un libro rovinato che già possiedo. Estrai puramente i NUMERI, PROPORZIONI E NOMI come FATTI nudi e crudi. NON includere NESSUN discorso, introduzione o markdown.
-8. DEVI RISPONDERE SOLO ED ESCLUSIVAMENTE CON UN JSON ARRAY VALIDO PURI CARATTERI. Niente \`\`\`json. Nessuna nota prima o dopo. SOLO \`[\` e \`]\`.`;
+8. TOKEN DOSI: In TUTTI i testi degli step, quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo dell'ingrediente (farina_semola, acqua, uova, olio). NON usare nomi di marchi.
+9. DEVI RISPONDERE SOLO ED ESCLUSIVAMENTE CON UN JSON ARRAY VALIDO PURI CARATTERI. Niente \`\`\`json. Nessuna nota prima o dopo. SOLO \`[\` e \`]\`.`;
 
   contentArray.push({
     type: "text",
@@ -545,6 +591,7 @@ REGOLE:
 8. DEDUPLICAZIONE: pagine marcate [CONTESTO] servono solo per completare ricette dal batch precedente. Non estrarre ricette che iniziano lì.
 9. RISPONDI SOLO con un JSON ARRAY valido. Niente markdown, niente note, SOLO [ e ].
 10. NON INVENTARE NULLA. Ogni dato deve provenire dal testo. Se un'informazione manca, omettila o usa valori vuoti.
+11. TOKEN DOSI: In TUTTI i testi degli step (stepsExtruder, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo (farina_semola, acqua, uova, olio). NON usare nomi di marchi.
 
 TESTI OCR ESTRATTI:
 ${pagesText}`;
