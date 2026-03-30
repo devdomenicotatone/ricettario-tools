@@ -68,7 +68,7 @@ export function setupRoutes(app) {
 
     // ── Genera da nome ──
     app.post('/api/genera', async (req, res) => {
-        const { nome, url, tipo, note, noImage, preview } = req.body;
+        const { nome, url, tipo, note, noImage, preview, aiModel, keepExisting } = req.body;
         const jobId = `gen-${++jobCounter}`;
         const jobName = nome ? `Genera: ${nome}` : `Scraping: ${url}`;
         const ctx = createJobContext(jobId, jobName);
@@ -83,6 +83,8 @@ export function setupRoutes(app) {
             if (tipo) args.tipo = tipo;
             if (note) args.note = note;
             if (noImage) args['no-image'] = true;
+            if (aiModel) args.aiModel = aiModel;
+            if (keepExisting) args.keepExisting = true;
 
             await withOutputCapture(ctx, () => genera(args));
             ctx.end(true);
@@ -94,7 +96,7 @@ export function setupRoutes(app) {
 
     // ── Genera da testo ──
     app.post('/api/testo', async (req, res) => {
-        const { text, tipo } = req.body;
+        const { text, tipo, aiModel } = req.body;
         const jobId = `txt-${++jobCounter}`;
         const ctx = createJobContext(jobId, `Testo: ${(text || '').substring(0, 40)}...`);
         res.json({ jobId, status: 'started' });
@@ -108,6 +110,7 @@ export function setupRoutes(app) {
             const { testo } = await import('../commands/testo.js');
             const args = { testo: tmpFile };
             if (tipo) args.tipo = tipo;
+            if (aiModel) args.aiModel = aiModel;
 
             await withOutputCapture(ctx, () => testo(args));
             ctx.end(true);
@@ -269,7 +272,7 @@ export function setupRoutes(app) {
 
     // ── Qualità (pipeline unificata — sostituisce valida + verifica) ──
     async function handleQualita(req, res) {
-        const { slug, slugs, grounding } = req.body || {};
+        const { slug, slugs, grounding, geminiModel } = req.body || {};
         const batchSlugs = slugs || (slug ? [slug] : null);
         const groundingEnabled = grounding === true;
         const label = batchSlugs
@@ -296,7 +299,7 @@ export function setupRoutes(app) {
                         if (!jsonFile) { ctx.log(`  ⚠️ ${s}: non trovato`); continue; }
 
                         try {
-                            const { recipe, result } = await analyzeQuality(jsonFile, { grounding: groundingEnabled });
+                            const { recipe, result } = await analyzeQuality(jsonFile, { grounding: groundingEnabled, geminiModel });
                             const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
                             ctx.log(`  ${emoji} ${result.score}/100 — ${recipe.title}`);
                             if (result.schema && !result.schema.pass) {

@@ -313,7 +313,7 @@ ${JSON.stringify(claudeResult, null, 2)}
 Analizza CRITICAMENTE il verdetto di Claude. Conferma, contesta o aggiungi problemi.`;
 
             const geminiText = await callGemini({
-                model: 'gemini-3.1-pro-preview',
+                model: 'gemini-2.5-pro',
                 maxTokens: 4096,
                 system: GEMINI_CHALLENGE_SYSTEM,
                 messages: [{ role: 'user', content: geminiPrompt }],

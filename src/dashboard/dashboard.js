@@ -53,7 +53,7 @@ function handleWsMessage(data) {
 }
 
 // ── Terminal ──
-let terminalPinned = false;
+let terminalPinned = localStorage.getItem('terminalPinned') === 'true';
 let terminalAutoCollapseTimer = null;
 let terminalLineCount = 0;
 
@@ -108,6 +108,7 @@ function toggleTerminal() {
 
 function toggleTerminalPin() {
     terminalPinned = !terminalPinned;
+    localStorage.setItem('terminalPinned', terminalPinned);
     const pinBtn = document.getElementById('terminalPinBtn');
     pinBtn.classList.toggle('active', terminalPinned);
     pinBtn.title = terminalPinned ? 'Sblocca' : 'Blocca aperto';
@@ -129,6 +130,18 @@ function updateTerminalBadge() {
         badge.textContent = terminalLineCount > 0 ? terminalLineCount : '';
         badge.classList.toggle('visible', terminalLineCount > 0);
     }
+}
+
+// Ripristina stato pin dal localStorage
+if (terminalPinned) {
+    requestAnimationFrame(() => {
+        const pinBtn = document.getElementById('terminalPinBtn');
+        if (pinBtn) {
+            pinBtn.classList.add('active');
+            pinBtn.title = 'Sblocca';
+        }
+        expandTerminal();
+    });
 }
 
 // ── Running state ──
@@ -228,6 +241,8 @@ async function runGenera() {
         tipo: document.getElementById('gen-tipo').value,
         note: document.getElementById('gen-note').value,
         noImage: document.getElementById('gen-noimage').checked,
+        keepExisting: document.getElementById('gen-keep').checked,
+        aiModel: document.getElementById('gen-model').value,
     });
 }
 
@@ -238,6 +253,7 @@ async function runUrl() {
     await apiPost('genera', {
         url,
         tipo: document.getElementById('url-tipo').value,
+        aiModel: document.getElementById('url-model').value,
     });
 }
 
@@ -248,6 +264,7 @@ async function runTesto() {
     await apiPost('testo', {
         text,
         tipo: document.getElementById('testo-tipo').value,
+        aiModel: document.getElementById('testo-model').value,
     });
 }
 
@@ -265,9 +282,14 @@ async function runRigenera(tutte) {
     await apiPost('rigenera', { tutte: true });
 }
 
+function getSelectedGeminiModel() {
+    const sel = document.getElementById('gemini-model-select');
+    return sel ? sel.value : 'gemini-2.5-pro';
+}
+
 async function runQualita(withGrounding = false) {
     if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
-    await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding });
+    await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding, geminiModel: getSelectedGeminiModel() });
 }
 
 async function runSyncCards() {
@@ -717,6 +739,12 @@ function updateActionBar() {
             <span class="action-bar-count"><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></i>${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
         </div>
         <div class="action-bar-actions">
+            <select id="gemini-model-select" class="action-bar-select" title="Modello Gemini per il challenge">
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
+                <option value="gemini-2-flash">Gemini 2 Flash</option>
+            </select>
             <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Claude + Gemini)">
                 <i data-lucide="shield-check"></i> Qualità
             </button>

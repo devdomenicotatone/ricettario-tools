@@ -230,7 +230,7 @@ function getGeminiClient() {
  * Chiama Gemini API con retry automatico
  *
  * @param {object} options
- * @param {string} [options.model] - Modello Gemini (default: gemini-3.1-pro-preview)
+ * @param {string} [options.model] - Modello Gemini (default: gemini-2.5-pro)
  * @param {number} [options.maxTokens] - Max tokens output (default: 8192)
  * @param {string} [options.system] - System instruction
  * @param {Array} options.messages - Array messaggi [{role: 'user'|'model', content: string}]
@@ -238,7 +238,7 @@ function getGeminiClient() {
  * @returns {Promise<string>} Testo della risposta
  */
 export async function callGemini({
-    model = 'gemini-3.1-pro-preview',
+    model = 'gemini-2.5-pro',
     maxTokens = 8192,
     system,
     messages,

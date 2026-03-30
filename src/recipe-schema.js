@@ -198,6 +198,62 @@ export function validateRecipeSchema(recipe) {
         }
     }
 
+    // Validazione idratazione vs ingredienti reali
+    // L'idratazione rispetta excludeFromTotal: i sub-ingredienti dei pre-impasti il cui
+    // prodotto assemblato appare come ingrediente nel gruppo successivo non si contano.
+    // Il totalFlour invece conta TUTTA la farina (serve al calcolatore dosi frontend).
+    if (recipe.hydration && recipe.hydration > 0 && recipe.ingredientGroups?.length > 0) {
+        const flourKeywords = ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'tipo 2', 'integrale', 'nuvola', 'saccorosso'];
+        const waterKeywords = ['acqua'];
+        // Ingredienti assemblati da pre-impasti (contengono farina+acqua ma non sono farina pura)
+        const assembledKeywords = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento', 'lievito madre', 'pasta madre'];
+        let hydrationFlour = 0;   // Per calcolo idratazione (rispetta excludeFromTotal)
+        let hydrationWater = 0;
+        let allFlour = 0;         // Per validazione totalFlour (TUTTA la farina)
+
+        for (const g of recipe.ingredientGroups) {
+            for (const item of g.items || []) {
+                const name = (item.name || '').toLowerCase();
+
+                // Skip ingredienti assemblati da pre-impasti (es. "Biga Matura", "Biga di Saccorosso")
+                // Questi contengono farina+acqua ma NON sono farina pura → non vanno contati
+                const isAssembled = assembledKeywords.some(kw => name.includes(kw));
+                if (isAssembled) continue;
+
+                const isFlour = flourKeywords.some(kw => name.includes(kw));
+                const isWater = waterKeywords.some(kw => name.includes(kw));
+
+                // totalFlour conta SEMPRE tutta la farina
+                if (isFlour) allFlour += item.grams || 0;
+
+                // Idratazione: skip ingredienti esclusi (sub-ingredienti pre-impasto)
+                if (item.excludeFromTotal) continue;
+                if (isFlour) hydrationFlour += item.grams || 0;
+                if (isWater) hydrationWater += item.grams || 0;
+            }
+        }
+
+        if (hydrationFlour > 0 && hydrationWater > 0) {
+            const computedHydration = Math.round((hydrationWater / hydrationFlour) * 100);
+            const declared = recipe.hydration;
+            const diff = Math.abs(computedHydration - declared);
+
+            if (diff > 3) {
+                errors.push(`Idratazione dichiarata ${declared}% ma calcolata ${computedHydration}% (${hydrationWater}g acqua / ${hydrationFlour}g farina). Scarto: ${diff}%`);
+            } else if (diff > 1) {
+                warnings.push(`Idratazione dichiarata ${declared}% vs calcolata ${computedHydration}% (scarto ${diff}%)`);
+            }
+        }
+
+        // Validazione totalFlour (usa TUTTA la farina, inclusi pre-impasti)
+        if (recipe.totalFlour && allFlour > 0) {
+            const flourDiff = Math.abs(recipe.totalFlour - allFlour);
+            if (flourDiff > 5) {
+                errors.push(`totalFlour dichiarato ${recipe.totalFlour}g ma somma farine = ${allFlour}g (differenza: ${flourDiff}g)`);
+            }
+        }
+    }
+
     return {
         errors,
         warnings,

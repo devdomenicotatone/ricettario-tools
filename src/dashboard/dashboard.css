@@ -219,6 +219,39 @@ body {
 }
 
 .form-row { margin-bottom: 20px; }
+.form-row-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+.model-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-label-sm {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    margin: 0;
+}
+.form-select-sm {
+    padding: 6px 28px 6px 10px !important;
+    font-size: 12px !important;
+    width: auto !important;
+    min-width: 140px;
+}
+.ai-model-select {
+    color-scheme: dark;
+}
+.ai-model-select option {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
 
 .form-row-grid {
     display: grid;
@@ -254,6 +287,14 @@ body {
     font-family: inherit;
     font-size: 14px;
     transition: border-color var(--transition);
+    color-scheme: dark;
+}
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-elevated) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    caret-color: var(--text-primary);
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -325,6 +366,11 @@ body {
 }
 
 /* ── TOGGLE ── */
+.toggle-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+}
 .toggle {
     display: flex;
     align-items: center;
@@ -1085,6 +1131,42 @@ body {
     display: flex;
     gap: 6px;
     align-items: center;
+}
+
+.action-bar-select {
+    padding: 6px 28px 6px 10px;
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 8px;
+    background-color: rgba(30, 30, 40, 0.95);
+    color: #c4b5fd;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all var(--transition);
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    color-scheme: dark;
+}
+.action-bar-select option {
+    background: #1e1e28;
+    color: #e2dff0;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+.action-bar-select:hover {
+    border-color: rgba(167, 139, 250, 0.5);
+    background-color: rgba(40, 35, 55, 0.95);
+}
+.action-bar-select:focus {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.15);
 }
 
 .action-bar-btn {

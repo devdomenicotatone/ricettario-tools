@@ -3,67 +3,67 @@
     "score": 88,
     "verdict": "🟢 Buona",
     "issueCount": 4,
-    "timestamp": "2026-03-30T20:07:33.242Z"
+    "timestamp": "2026-03-30T21:35:23.008Z"
   },
   "ciabatta-poolish": {
-    "score": 80,
-    "verdict": "🟢 Buona",
-    "issueCount": 5,
-    "timestamp": "2026-03-30T20:08:08.992Z"
-  },
-  "pane-alle-noci-con-poolish": {
-    "score": 85,
-    "verdict": "🟢 Buona",
-    "issueCount": 5,
-    "timestamp": "2026-03-30T20:08:53.629Z"
-  },
-  "pane-di-altamura-dop": {
-    "score": 57,
-    "verdict": "🟢 Buona",
-    "issueCount": 6,
-    "timestamp": "2026-03-30T20:09:32.413Z"
-  },
-  "pane-integrale-biga-saccorosso-miele": {
-    "score": 70,
+    "score": 60,
     "verdict": "🟡 Da migliorare",
     "issueCount": 6,
-    "timestamp": "2026-03-30T20:10:36.320Z"
+    "timestamp": "2026-03-30T21:36:02.813Z"
+  },
+  "pane-alle-noci-con-poolish": {
+    "score": 65,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 5,
+    "timestamp": "2026-03-30T21:36:21.750Z"
+  },
+  "pane-di-altamura-dop": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-03-30T21:36:33.878Z"
+  },
+  "pane-integrale-biga-saccorosso-miele": {
+    "score": 75,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 6,
+    "timestamp": "2026-03-30T21:36:52.755Z"
   },
   "pane-pugliese-biga": {
-    "score": 45,
-    "verdict": "🔴 Problematica",
-    "issueCount": 10,
-    "timestamp": "2026-03-30T20:11:17.411Z"
+    "score": 60,
+    "verdict": "🟢 Buona",
+    "issueCount": 5,
+    "timestamp": "2026-03-30T23:34:53.246Z"
   },
   "pinsa-romana": {
-    "score": 75,
+    "score": 92,
     "verdict": "🟢 Buona",
-    "issueCount": 7,
-    "timestamp": "2026-03-30T20:11:57.454Z"
+    "issueCount": 3,
+    "timestamp": "2026-03-30T21:37:08.204Z"
   },
   "pizza-contemporanea-canotto": {
-    "score": 85,
+    "score": 90,
     "verdict": "🟢 Buona",
-    "issueCount": 6,
-    "timestamp": "2026-03-30T20:12:42.529Z"
+    "issueCount": 5,
+    "timestamp": "2026-03-30T21:37:53.127Z"
   },
   "pizza-napoletana-biga-criscito": {
     "score": 92,
     "verdict": "🟢 Buona",
-    "issueCount": 4,
-    "timestamp": "2026-03-30T20:13:22.483Z"
+    "issueCount": 3,
+    "timestamp": "2026-03-30T21:38:10.461Z"
   },
   "pizza-napoletana-verace-stg": {
-    "score": 75,
-    "verdict": "🟢 Buona",
-    "issueCount": 5,
-    "timestamp": "2026-03-30T20:14:04.477Z"
-  },
-  "gnocchi-di-patate": {
     "score": 92,
     "verdict": "🟢 Buona",
-    "issueCount": 4,
-    "timestamp": "2026-03-30T20:14:36.356Z"
+    "issueCount": 3,
+    "timestamp": "2026-03-30T21:38:27.679Z"
+  },
+  "gnocchi-di-patate": {
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-03-30T21:38:40.041Z"
   },
   "burger-buns-biga": {
     "score": 40,
@@ -72,81 +72,99 @@
     "timestamp": "2026-03-30T20:15:20.427Z"
   },
   "burger-buns-professionali": {
-    "score": 45,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 11,
-    "timestamp": "2026-03-30T20:16:10.587Z"
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-03-30T21:43:06.988Z"
   },
   "cornetti-sfogliati-classici": {
-    "score": 73,
-    "verdict": "🟢 Buona",
-    "issueCount": 6,
-    "timestamp": "2026-03-30T20:16:49.488Z"
-  },
-  "impasto-rosticceria-siciliana": {
-    "score": 95,
-    "verdict": "🟢 Buona",
-    "issueCount": 4,
-    "timestamp": "2026-03-30T20:17:23.689Z"
-  },
-  "panettone-classico": {
-    "score": 20,
-    "verdict": "🔴 Problematica",
-    "issueCount": 9,
-    "timestamp": "2026-03-30T20:18:10.026Z"
-  },
-  "panettone-pere-cioccolato": {
     "score": 75,
     "verdict": "🟡 Da migliorare",
     "issueCount": 6,
-    "timestamp": "2026-03-30T20:19:03.738Z"
+    "timestamp": "2026-03-30T21:39:10.087Z"
   },
-  "pasta-brioche-classica": {
+  "impasto-rosticceria-siciliana": {
     "score": 80,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 5,
+    "timestamp": "2026-03-30T21:39:51.356Z"
+  },
+  "panettone-classico": {
+    "score": 70,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-03-30T21:40:40.145Z"
+  },
+  "panettone-pere-cioccolato": {
+    "score": 92,
     "verdict": "🟢 Buona",
     "issueCount": 5,
-    "timestamp": "2026-03-30T20:20:03.070Z"
+    "timestamp": "2026-03-30T21:40:56.755Z"
+  },
+  "pasta-brioche-classica": {
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-03-30T21:41:10.121Z"
   },
   "cantuccini-di-prato": {
-    "score": 80,
+    "score": 75,
     "verdict": "🟡 Da migliorare",
     "issueCount": 7,
-    "timestamp": "2026-03-30T20:20:41.618Z"
+    "timestamp": "2026-03-30T21:41:25.347Z"
   },
   "cartocci-alla-crema-siciliani": {
-    "score": 50,
+    "score": 60,
     "verdict": "🟡 Da migliorare",
-    "issueCount": 9,
-    "timestamp": "2026-03-30T20:21:25.361Z"
+    "issueCount": 6,
+    "timestamp": "2026-03-30T21:41:41.418Z"
   },
   "migliaccio-napoletano": {
     "score": 60,
     "verdict": "🟢 Buona",
-    "issueCount": 4,
-    "timestamp": "2026-03-30T20:21:53.326Z"
+    "issueCount": 3,
+    "timestamp": "2026-03-30T21:41:54.072Z"
   },
   "focaccia-barese": {
-    "score": 85,
+    "score": 75,
     "verdict": "🟡 Da migliorare",
-    "issueCount": 7,
-    "timestamp": "2026-03-30T20:22:35.531Z"
+    "issueCount": 5,
+    "timestamp": "2026-03-30T21:42:09.895Z"
   },
   "focaccia-di-recco-igp": {
     "score": 92,
     "verdict": "🟢 Buona",
     "issueCount": 3,
-    "timestamp": "2026-03-30T20:23:25.548Z"
+    "timestamp": "2026-03-30T21:42:24.822Z"
   },
   "focaccia-genovese-fugassa": {
-    "score": 60,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 8,
-    "timestamp": "2026-03-30T20:24:17.911Z"
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-03-30T21:42:36.124Z"
   },
   "focaccia-genovese-classica": {
     "score": 72,
     "verdict": "🟡 Da migliorare",
     "issueCount": 6,
-    "timestamp": "2026-03-30T20:24:35.717Z"
+    "timestamp": "2026-03-30T21:42:55.147Z"
+  },
+  "burger-buns-con-biga": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-03-30T21:38:52.349Z"
+  },
+  "pane-pugliese-con-biga": {
+    "score": 60,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-03-30T23:41:53.770Z"
+  },
+  "pane-pugliese-biga-claude": {
+    "score": 60,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-03-30T23:35:02.104Z"
   }
 }

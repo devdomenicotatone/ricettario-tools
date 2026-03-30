@@ -187,6 +187,16 @@ CRITERI DI VERIFICA:
    - I raggruppamenti sono logici?
    - Ogni ingrediente è nel gruppo giusto?
 
+7. VERIFICA MATEMATICA IDRATAZIONE (CRITICO):
+   - Calcola FARINA TOTALE sommando tutte le farine in tutti i gruppi (biga + impasto + poolish)
+   - Calcola ACQUA TOTALE sommando tutta l'acqua in tutti i gruppi
+   - IDRATAZIONE REALE = (ACQUA TOTALE / FARINA TOTALE) × 100
+   - Se lo scarto tra idratazione dichiarata e calcolata è > 3%, segnala come ❌ errore critico
+
+CONTESTO TECNICO RICETTARIO:
+- Le ricette usano token {nome_ingrediente:valore}g nel procedimento — sono placeholder per il calcolatore dosi frontend. NON segnalarli come errori.
+- Token con suffisso ! (es. {panetto_peso:520!}g) = token FISSO, non scala col moltiplicatore. Il ! è intenzionale, NON un errore.
+
 RISPONDI con un JSON valido (NO markdown fences):
 {
   "score": 85,
@@ -209,6 +219,11 @@ COSA DEVI FARE:
 - CONTESTA le segnalazioni sbagliate o troppo punitive ("falsi positivi")
 - AGGIUNGI problemi che l'altro AI ha MANCATO
 - VALUTA se lo score è giusto, troppo alto o troppo basso
+
+CONTESTO TECNICO RICETTARIO:
+- Le ricette usano token nel procedimento con sintassi {nome_ingrediente:valore}g — questi sono placeholder per il calcolatore dosi frontend.
+- Token con suffisso ! (es. {panetto_peso:520!}g) sono TOKEN FISSI: il valore NON scala col moltiplicatore dosi. Il ! NON è un errore di battitura.
+- Non segnalare la presenza di token {nome:valore} come errore — sono parte del sistema.
 
 ATTENZIONE:
 - NON essere pignolo senza motivo — segnala solo problemi REALI
@@ -260,15 +275,22 @@ function buildRecipePrompt(recipe) {
         return parts.join(' ');
     });
 
-    // Steps: invia solo il setup PRIMARIO per evitare diluzione attenzione
-    // Priorità: spirale > estrusore > mano > condiment
+    // Steps: invia TUTTI i setup disponibili per validazione completa
+    // (il bug precedente inviava solo il primario, causando falsi positivi su stepsHand mancanti)
     const steps = [];
-    const primaryKey = ['stepsSpiral', 'stepsExtruder', 'stepsHand', 'stepsCondiment']
-        .find(k => recipe[k]?.length > 0);
-    if (primaryKey && recipe[primaryKey]?.length > 0) {
-        for (const step of recipe[primaryKey]) {
-            const stepText = step.text || step.detail || '';
-            steps.push(`${step.title}${stepText ? `: ${stepText}` : ''}`);
+    const STEP_LABELS = {
+        stepsSpiral: 'PROCEDIMENTO (Impastatrice a Spirale)',
+        stepsExtruder: 'PROCEDIMENTO (Estrusore)',
+        stepsHand: 'PROCEDIMENTO (A Mano)',
+        stepsCondiment: 'CONDIMENTO/SALSA',
+    };
+    for (const key of ['stepsSpiral', 'stepsExtruder', 'stepsHand', 'stepsCondiment']) {
+        if (recipe[key]?.length > 0) {
+            steps.push(`\n── ${STEP_LABELS[key]} ──`);
+            for (const step of recipe[key]) {
+                const stepText = step.text || step.detail || '';
+                steps.push(`${step.title}${stepText ? `: ${stepText}` : ''}`);
+            }
         }
     }
 
@@ -310,7 +332,7 @@ ${recipe.proTips?.length > 0 ? `\nPRO TIPS:\n${recipe.proTips.map(t => `- ${t}`)
 /**
  * Claude verifica + Gemini contesta (singolo passaggio, anti-loop)
  */
-async function dualLlmReview(recipePrompt, groundingContext) {
+async function dualLlmReview(recipePrompt, groundingContext, geminiModel = 'gemini-2.5-pro') {
     // Se ci sono fonti web, aggiungi una direttiva esplicita
     const groundingDirective = groundingContext
         ? `\n\nHai anche accesso a FONTI WEB REALI per cross-check. Confronta ingredienti e proporzioni della ricetta con le fonti. Segnala discrepanze significative come issues.`
@@ -336,7 +358,7 @@ async function dualLlmReview(recipePrompt, groundingContext) {
             const geminiPrompt = `RICETTA:\n${recipePrompt}\n\n══════════════════════════════════════\nVERDETTO CLAUDE:\n${JSON.stringify(claude, null, 2)}\n══════════════════════════════════════\n\nAnalizza CRITICAMENTE il verdetto.`;
 
             const geminiText = await callGemini({
-                model: 'gemini-3.1-pro-preview',
+                model: geminiModel,
                 maxTokens: 4096,
                 system: GEMINI_CHALLENGE_SYSTEM,
                 messages: [{ role: 'user', content: geminiPrompt }],
@@ -507,7 +529,7 @@ export async function analyzeQuality(filePath, options = {}) {
 
     // ── Layer 3: Dual-LLM Review ──
     const recipePrompt = buildRecipePrompt(recipe);
-    const { claude, gemini } = await dualLlmReview(recipePrompt, grounding);
+    const { claude, gemini } = await dualLlmReview(recipePrompt, grounding, options.geminiModel);
 
     // ── Layer 4: Score & Report ──
     const finalScore = computeFinalScore(schema, claude, gemini, grounding);

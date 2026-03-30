@@ -11,7 +11,6 @@ import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { exec } from 'child_process';
 import { createInterface } from 'readline';
-import { generateHtml } from './template.js';
 import { injectCard } from './injector.js';
 import { findAndDownloadImage } from './image-finder.js';
 import { validateRecipe } from './validator.js';
@@ -52,10 +51,22 @@ export function resolveOutputPaths(recipe, args) {
     );
     const category = recipe.category || args.tipo || 'Pane';
     const subfolder = CATEGORY_FOLDERS[category] || category.toLowerCase();
-    const slug = recipe.slug || recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    recipe.slug = slug;
+    let slug = recipe.slug || recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
     const outputDir = resolve(ricettarioPath, 'ricette', subfolder);
+
+    // ── Keep existing: non sovrascrivere, aggiungi suffisso modello ──
+    if (args.keepExisting) {
+        const existingJson = resolve(outputDir, `${slug}.json`);
+        if (existsSync(existingJson)) {
+            const suffix = args.aiModel || 'v2';
+            const newSlug = `${slug}-${suffix}`;
+            log.info(`📋 "${slug}" esiste → salvo come "${newSlug}" (confronto A/B)`);
+            slug = newSlug;
+        }
+    }
+
+    recipe.slug = slug;
     const outputFile = resolve(outputDir, `${slug}.html`);
     const jsonFile = resolve(outputDir, `${slug}.json`);
 
@@ -255,13 +266,9 @@ export async function publishRecipe(recipe, args, options = {}) {
         return { outputFile: null, jsonFile };
     }
 
-    // ── Step 4: Genera e salva HTML ──
-    const finalHtml = generateHtml(recipe);
-    writeFileSync(outputFile, finalHtml, 'utf-8');
-
-    // Salva report validazione
+    // ── Step 4: Salva report validazione ──
     if (recipe._validation?.report) {
-        const reportFile = outputFile.replace('.html', '.validazione.md');
+        const reportFile = jsonFile.replace('.json', '.validazione.md');
         writeFileSync(reportFile, recipe._validation.report, 'utf-8');
         log.info(`📋 Report validazione: ${reportFile}`);
     }
@@ -278,7 +285,6 @@ export async function publishRecipe(recipe, args, options = {}) {
     if (recipe.stepsExtruder) log.info(`Step estrusore: ${recipe.stepsExtruder.length}`);
     if (recipe.stepsHand) log.info(`Step a mano: ${recipe.stepsHand.length}`);
     if (recipe.image) log.info(`Immagine: ${recipe.image}`);
-    log.info(`HTML: ${outputFile}`);
     if (!skipJson) log.info(`JSON: ${jsonFile}`);
 
     // ── Step 5b: PREVIEW (se --preview è attivo) ──

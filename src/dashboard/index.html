@@ -118,9 +118,18 @@
                         <label class="form-label">Note per l'AI <span class="optional">(opzionale)</span></label>
                         <textarea class="form-textarea" id="gen-note" rows="2" placeholder="es. Usa biga al 30%, lievitazione fredda 24h..."></textarea>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row form-row-inline">
                         <div class="toggle-group">
                             <label class="toggle"><input type="checkbox" id="gen-noimage"><span class="toggle-slider"></span> No immagine</label>
+                            <label class="toggle"><input type="checkbox" id="gen-keep"><span class="toggle-slider"></span> Mantieni esistente</label>
+                        </div>
+                        <div class="model-selector">
+                            <label class="form-label-sm">Modello AI</label>
+                            <select class="form-select form-select-sm ai-model-select" id="gen-model">
+                                <option value="claude">Claude Sonnet</option>
+                                <option value="gemini">Gemini 2.5 Pro</option>
+                                <option value="gemini-3.1">Gemini 3.1 Pro</option>
+                            </select>
                         </div>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runGenera()">
@@ -149,6 +158,16 @@
                             <option value="Dolci">🍰 Dolci</option>
                         </select>
                     </div>
+                    <div class="form-row">
+                        <div class="model-selector">
+                            <label class="form-label-sm">Modello AI</label>
+                            <select class="form-select form-select-sm ai-model-select" id="url-model">
+                                <option value="claude">Claude Sonnet</option>
+                                <option value="gemini">Gemini 2.5 Pro</option>
+                                <option value="gemini-3.1">Gemini 3.1 Pro</option>
+                            </select>
+                        </div>
+                    </div>
                     <button class="btn btn-primary btn-lg" onclick="runUrl()">
                         <i data-lucide="link"></i> Importa da URL
                     </button>
@@ -172,6 +191,16 @@
                             <option value="Pizza">🍕 Pizza</option>
                             <option value="Focaccia">🫓 Focaccia</option>
                         </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="model-selector">
+                            <label class="form-label-sm">Modello AI</label>
+                            <select class="form-select form-select-sm ai-model-select" id="testo-model">
+                                <option value="claude">Claude Sonnet</option>
+                                <option value="gemini">Gemini 2.5 Pro</option>
+                                <option value="gemini-3.1">Gemini 3.1 Pro</option>
+                            </select>
+                        </div>
                     </div>
                     <button class="btn btn-primary btn-lg" onclick="runTesto()">
                         <i data-lucide="file-text"></i> Converti in Ricetta

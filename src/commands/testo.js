@@ -42,9 +42,10 @@ export async function testo(args) {
 
     log.info(`Testo letto: ${recipeText.length} caratteri, ${recipeText.split('\n').length} righe`);
 
-    // ── Step 1: Claude struttura il testo in JSON ──
+    // ── Step 1: AI struttura il testo in JSON ──
     const enhancedRecipe = await enhanceFromText(recipeText, {
         tipo: args.tipo,
+        aiModel: args.aiModel,
     });
 
     log.info(`Titolo identificato: ${enhancedRecipe.title}`);

@@ -1,47 +1,31 @@
+```json
 {
-  "agreement": "🔴 Forte disaccordo",
-  "scoreAdjustment": -35,
+  "agreement": "🟡 Parziale disaccordo",
+  "scoreAdjustment": -5,
   "challengedIssues": [
     {
-      "originalIssue": "Sale al 2% su farina (16g su 800g) è al limite inferiore per focaccia, che tradizionalmente usa 2.5-3%",
-      "verdict": "❌ Falso positivo",
-      "reason": "Il 2% di sale è standard e corretto. Considerando l'enorme quantità di stracchino (che apporta molta sapidità), aumentare il sale al 3% nell'impasto rischierebbe di rendere il prodotto finale immangiabile per l'eccesso di sale."
+      "originalIssue": "Il calcolo dell'idratazione presenta una leggera discrepanza: con 600g farina totale e 375g acqua totale, l'idratazione reale è 62.5%, non 70%",
+      "verdict": "✅ Confermo",
+      "reason": "Il calcolo è matematicamente corretto. Farina totale: 100g (biga) + 500g (impasto) = 600g. Acqua totale: 45g (biga) + 330g (impasto) = 375g. L'idratazione reale è (375/600)*100 = 62.5%. La discrepanza del 7.5% rispetto al 70% dichiarato è un errore significativo e fuorviante nei metadati della ricetta."
     },
     {
-      "originalIssue": "Nel punto 8 si menziona un terzo panetto da 288g che non viene utilizzato nel procedimento",
-      "verdict": "⚠️ Parziale",
-      "reason": "Claude individua l'incongruenza, ma la derubrica a semplice 'consiglio' (💡) quando in realtà è un grave errore procedurale. Inoltre, manca completamente di notare l'errore matematico alla base di questo numero (vedi missed issues)."
-    },
-    {
-      "originalIssue": "L'olio per ungere teglia (30g) potrebbe essere unificato con quello per finitura visto l'uso multiplo",
+      "originalIssue": "La percentuale di lievito di birra nella biga (0.1g su 100g farina = 0.1%) è estremamente bassa, al limite del minimo tecnico per 18-24h",
       "verdict": "❌ Falso positivo",
-      "reason": "Separare le grammature e le destinazioni d'uso (teglia vs finitura) è un'ottima pratica di formattazione che aumenta la chiarezza. Unificarli rende più difficile capire quanto olio usare per step."
+      "reason": "La quantità di lievito (0.1%) è tecnicamente corretta e tipica per una biga a lunga maturazione (18-24 ore) a temperatura ambiente controllata (20-22°C). Non è un errore, ma una scelta precisa per sviluppare complessità aromatica evitando un'eccessiva acidità. Aumentare il lievito, come suggerito, altererebbe l'equilibrio della ricetta e accorcerebbe i tempi di maturazione, snaturando il risultato."
     }
   ],
   "missedIssues": [
     {
-      "severity": "❌",
-      "area": "Proporzioni Impasto/Teglia",
-      "message": "Fisicamente impossibile: inserire 1 kg di impasto (500g base + 500g copertura) in una teglia 30x40 cm genererà una focaccia spessa vari millimetri, vanificando la promessa di 'spessore 1 mm'. Per una vera Focaccia di Recco 30x40 servono circa 150-180g di impasto per la base e 100-150g per la copertura.",
-      "fix": "Modificare la ricetta: con 1400g di impasto si fanno circa 4 o 5 teglie 30x40, oppure ridurre drasticamente le dosi iniziali."
-    },
-    {
-      "severity": "❌",
-      "area": "Matematica delle dosi",
-      "message": "Il peso totale dell'impasto è 1400g (800 farina + 544 acqua + 16 sale + 40 olio). Tuttavia, lo step 2 divide in panetti da 500 + 500 + 288 = 1288g. Mancano 112g all'appello.",
-      "fix": "Correggere la matematica della divisione dei panetti in modo che la somma sia pari al peso totale."
-    },
-    {
       "severity": "⚠️",
-      "area": "Idratazione",
-      "message": "Un'idratazione del 68% in un impasto azzimo (senza lievito) da tirare a velo è eccessivamente alta. L'impasto risulterà troppo colloso e difficile da stendere sottilissimo senza strapparlo. Tradizionalmente, la Recco viaggia sul 50-55% di idratazione.",
-      "fix": "Ridurre l'acqua a 400-440g (50-55% di idratazione)."
+      "area": "Procedimento / Lievitazione",
+      "message": "La durata della puntata in massa (3 ore a 24-26°C) è eccessivamente lunga per un impasto che utilizza un pre-fermento maturo come la biga e un'ulteriore aggiunta di lievito.",
+      "fix": "Ridurre la durata della puntata a 60-90 minuti, monitorando l'impasto fino a un aumento di volume del 50-70% (non il raddoppio). Una puntata così lunga rischia di degradare la maglia glutinica e portare a un impasto sovra-fermentato, con conseguente scarso sviluppo in forno e sapore acido."
     },
     {
       "severity": "💡",
-      "area": "Procedimento / Finitura",
-      "message": "Nella Focaccia di Recco IGP originale, la sfoglia superiore non viene semplicemente 'bucata', ma vengono pizzicati e strappati piccoli lembi di pasta per creare dei veri e propri camini larghi da cui il formaggio in ebollizione uscirà in cottura.",
-      "fix": "Modificare lo Step 8 indicando di strappare delicatamente la pasta creando fori larghi circa 1-2 cm."
+      "area": "Ingredienti",
+      "message": "L'impasto finale contiene il 25% di biga sul peso della farina totale (145g di biga su 600g di farina). Questo valore è leggermente basso, la norma per il pane con biga si attesta spesso tra il 30% e il 50%.",
+      "fix": "Per un sapore più caratteristico e una struttura più sviluppata, si potrebbe considerare di aumentare la quantità di biga, ricalcolando di conseguenza gli altri ingredienti per mantenere l'idratazione e le percentuali desiderate. Non è un errore, ma un'ottimizzazione per un risultato più classico."
     }
   ],
-  "summary": "Claude ha premiato con un punteggio altissimo (92) una ricetta con gravi errori matematici e proporzionali. Inserire 1 kg di
+  "summary": "Confermo il grave errore sull'idratazione rilevato da Claude, ma contesto la critica sulla quantità di lievito nella biga, che è una scelta tecnica corretta. Il verdet

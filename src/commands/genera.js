@@ -19,14 +19,15 @@ export async function genera(args) {
         if (rawData.steps.length) {
             log.info(`Estratti: ${rawData.ingredients.length} ingredienti, ${rawData.steps.length} step`);
         } else {
-            log.info(`Estratte ${rawData.ingredients.length} righe di testo grezzo (Claude farà il parsing)`);
+            log.info(`Estratte ${rawData.ingredients.length} righe di testo grezzo (AI farà il parsing)`);
         }
-        enhancedRecipe = await enhanceRecipe(rawData);
+        enhancedRecipe = await enhanceRecipe(rawData, { aiModel: args.aiModel });
     } else {
         // Mode B: Generazione da zero
         enhancedRecipe = await generateRecipe(args.nome, {
             tipo: args.tipo,
             note: args.note,
+            aiModel: args.aiModel,
         });
     }
 

@@ -1,9 +1,41 @@
 /**
- * ENHANCER — Claude riscrive la ricetta nello stile tecnico del Ricettario
+ * ENHANCER — AI riscrive la ricetta nello stile tecnico del Ricettario
+ * Supporta Claude e Gemini come modelli di generazione
  */
 
-import { callClaude, parseClaudeJson } from './utils/api.js';
+import { callClaude, callGemini, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
+
+/**
+ * Helper: chiama il modello AI selezionato (claude o gemini)
+ * @param {string} aiModel - 'claude' | 'gemini' | 'gemini-3.1'
+ * @param {object} opts - { system, messages }
+ * @returns {Promise<string>} Testo risposta
+ */
+async function callAI(aiModel, { system, messages }) {
+    const MODEL_MAP = {
+        'gemini': { name: 'Gemini 2.5 Pro', id: 'gemini-2.5-pro' },
+        'gemini-3.1': { name: 'Gemini 3.1 Pro', id: 'gemini-3.1-pro-preview' },
+    };
+    const geminiModel = MODEL_MAP[aiModel];
+    
+    if (geminiModel) {
+        log.info(`🤖 ${geminiModel.name} sta elaborando...`);
+        return callGemini({
+            model: geminiModel.id,
+            maxTokens: 65536,
+            system,
+            messages,
+        });
+    }
+    
+    // Default: Claude
+    log.info(`🤖 Claude Sonnet sta elaborando...`);
+    return callClaude({
+        system,
+        messages,
+    });
+}
 
 const SYSTEM_PROMPT = `Sei un esperto panificatore, pastaio e tecnologo alimentare italiano.
 Il tuo compito è trasformare ricette grezze (scrappate da siti web) in ricette professionali nel formato esatto del "Ricettario" — un sito artigianale con documentazione tecnica precisa.
@@ -62,16 +94,16 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
     {
       "group": "Per il Poolish",
       "items": [
-        { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 300 },
-        { "name": "Acqua", "note": "(temperatura ambiente)", "grams": 300 },
-        { "name": "Lievito di Birra Fresco", "note": "(0.5g)", "grams": 0.5 }
+        { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 300, "tokenId": "farina_poolish" },
+        { "name": "Acqua", "note": "(temperatura ambiente)", "grams": 300, "tokenId": "acqua_poolish" },
+        { "name": "Lievito di Birra Fresco", "note": "(0.5g)", "grams": 0.5, "tokenId": "lievito_fresco_poolish" }
       ]
     },
     {
       "group": "Per l'Impasto Finale",
       "items": [
-        { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 700 },
-        { "name": "Acqua", "note": "(18-20°C)", "grams": 380, "setupNote": { "spirale": "(18-20°C)", "mano": "(20-22°C)" } }
+        { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 700, "tokenId": "farina_impasto" },
+        { "name": "Acqua", "note": "(18-20°C)", "grams": 380, "tokenId": "acqua_impasto", "setupNote": { "spirale": "(18-20°C)", "mano": "(20-22°C)" } }
       ]
     }
   ],
@@ -127,6 +159,15 @@ REGOLA INGREDIENTI RAGGRUPPATI (ingredientGroups):
 - Ogni gruppo ha un "group" (nome descrittivo: "Per il Poolish", "Per l'Impasto Finale", "Per la Decorazione") e un array "items" con gli ingredienti.
 - Se la ricetta ha UN SOLO componente logico (es. migliaccio, biscotti, pane senza prefermento), USA "ingredients" come array piatto e lascia "ingredientGroups" vuoto [] o omettilo.
 - NON usare ingredientGroups con un solo gruppo: usa direttamente "ingredients".
+
+CAMPO tokenId (OBBLIGATORIO per ogni ingrediente):
+- Ogni ingrediente (sia in "ingredients" che in "ingredientGroups.items") DEVE avere un campo "tokenId".
+- Il tokenId è l'ESATTO nome del token usato nel procedimento per quell'ingrediente.
+- CONTRATTO: il tokenId di un ingrediente DEVE corrispondere al nome del token {tokenId:valore} usato negli step.
+  Esempio: ingrediente { "name": "Acqua", "grams": 330, "tokenId": "acqua_impasto" } → nel procedimento: "{acqua_impasto:330}g di acqua".
+- Il tokenId serve come chiave univoca per: (1) il sistema dosi-calcolatore che aggiorna i valori nel procedimento, (2) le varianti ingredientOverrides.ref che modificano le dosi.
+- Il tokenId DEVE essere UNICO in tutta la ricetta (mai due ingredienti con lo stesso tokenId).
+- Formato: snake_case, descrittivo, con suffisso del gruppo se ci sono duplicati. Es: "lievito_biga" e "lievito_impasto" per distinguere il lievito della biga da quello dell'impasto finale.
 
 NOTE IMPORTANTI:
 - Per PASTA: usa "stepsExtruder" al posto di "stepsSpiral". "stepsHand" solo se il formato è fattibile a mano. Se non è fattibile, ometti "stepsHand" o lascialo come array vuoto.
@@ -190,10 +231,49 @@ TERMINOLOGIA TECNICA (OBBLIGATORIO):
 - "Biga" = pre-impasto rigido al 44-50% di idratazione, matura 16-24h. Se l'idratazione è > 60%, è un "Poolish" o un "Lievitino".
 - Forno "statico" per pane e baguette (mai ventilato durante la cottura — il ventilato impedisce l'oven spring).
 
-CHECKLIST PRE-OUTPUT (esegui mentalmente prima di rispondere):
+⚠️ REGOLE PANIFICATORIE CRITICHE (errori ricorrenti da correggere):
+
+1. BIGA — IDRATAZIONE OBBLIGATORIA 44-50%:
+   - La biga è un pre-impasto RIGIDO. Acqua/Farina = 44-50%. Mai superiore.
+   - Se hai 100g farina nella biga → acqua = 44-50g. MAI 75g (quello è un poolish).
+   - La biga DEVE risultare "panetto ruvido e compatto", NON "impasto umido e appiccicoso".
+   - ❌ ERRORE TIPICO: biga con 75g acqua su 100g farina = 75% → NON è una biga.
+   - ✅ CORRETTO: biga con 45g acqua su 100g farina = 45%.
+
+2. LIEVITO — COERENZA CON TEMPI DI MATURAZIONE:
+   - Fermentazione >12h (biga, poolish, retard in frigo): lievito di birra fresco ≤ 0.1-0.2% su farina del pre-impasto.
+   - Impasto finale con pre-impasto maturo: il pre-impasto fornisce GIÀ forza lievitante. Il lievito aggiuntivo deve essere minimo (0-2g su 1kg farina impasto).
+   - ❌ ERRORE TIPICO: 1g lievito su 100g farina biga (1%) per 18h → biga collassa.
+   - ❌ ERRORE TIPICO: 5g lievito nell'impasto finale con biga matura → troppo, sapore piatto.
+   - ✅ CORRETTO: 0.1-0.2g nella biga, 1-2g nell'impasto finale.
+
+3. SALE — STANDARD ITALIANO:
+   - Pane italiano tradizionale: sale = 2-2.5% su farina totale (incluse farine dei pre-impasti).
+   - Per 600g farina totale → sale = 12-15g. Per 1000g → sale = 20-25g.
+   - ❌ ERRORE TIPICO: 10g sale su 600g farina = 1.67% → sotto standard.
+   - Eccezione: pane toscano (senza sale), specifiche regionali.
+
+4. BASSINAGE — OBBLIGATORIO PER ALTA IDRATAZIONE (>68%):
+   - Per impasti ad alta idratazione, NON aggiungere tutta l'acqua insieme.
+   - Tecnica bassinage: aggiungere 75-80% dell'acqua inizialmente, il restante 20-25% a filo DOPO l'incordatura.
+   - Nel procedimento, specificare SEMPRE la suddivisione (es. "300g acqua base + 80g bassinage").
+
+5. TEMPERATURA ACQUA — SPIRALE vs MANO:
+   - Spirale con impasto >10 min: acqua FREDDA (6-10°C) per compensare riscaldamento meccanico.
+   - A mano: acqua FRESCA (10-14°C) perché le mani generano meno calore.
+   - Target: temperatura impasto finale 24-26°C.
+
+CHECKLIST PRE-OUTPUT (OBBLIGATORIA — esegui i calcoli prima di generare il JSON):
 1. Per OGNI token nel testo, verifica: il nome del token descrive l'ingrediente menzionato subito dopo?
 2. La somma degli ingredienti corrisponde alla resa dichiarata nel procedimento?
-3. L'idratazione dichiarata corrisponde a (liquidi totali / farine totali × 100)?
+3. ⚠️ VERIFICA IDRATAZIONE (CRITICO — errore frequente):
+   a) Calcola FARINA TOTALE = somma di TUTTE le farine in TUTTI i gruppi (biga + impasto + poolish ecc.)
+   b) Calcola ACQUA TOTALE = somma di TUTTA l'acqua in TUTTI i gruppi (biga + impasto + bassinage ecc.)
+   c) IDRATAZIONE = (ACQUA TOTALE / FARINA TOTALE) × 100
+   d) Il campo "hydration" nel JSON DEVE corrispondere ESATTAMENTE a questo calcolo (arrotondato all'intero).
+   e) Il campo "totalFlour" DEVE essere uguale a FARINA TOTALE calcolata al punto (a).
+   ❌ ERRORE TIPICO: dichiarare hydration: 70 ma generare ingredienti che danno 62.5% — questo succede quando si copia il valore "tipico" per quel tipo di pane senza calcolare.
+   ✅ CORRETTO: prima genera gli ingredienti, POI calcola l'idratazione, POI scrivi il campo hydration.
 4. I tempi di lievitazione sono realistici per la quantità di lievito indicata?
 5. Il peso totale ÷ numero pezzi = peso singolo pezzo indicato?
 
@@ -224,7 +304,7 @@ VARIANTI DI PROCEDIMENTO (OPZIONALE):
  * @param {object} rawRecipe - Dati scrappati dal modulo scraper
  * @returns {Promise<object>} Ricetta enhanced in formato JSON strutturato
  */
-export async function enhanceRecipe(rawRecipe) {
+export async function enhanceRecipe(rawRecipe, options = {}) {
   // ── Step 1: Cerca fonti reali per cross-reference ──
   let realSourcesText = '';
   let sourcesFound = 0;
@@ -304,7 +384,8 @@ export async function enhanceRecipe(rawRecipe) {
   const sourceLabel = sourcesFound > 0
     ? `(arricchita con ${sourcesFound} fonti reali)`
     : '(senza fonti reali aggiuntive)';
-  log.info(`Claude sta riscrivendo la ricetta ${sourceLabel}...`);
+  const aiName = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro'}[options.aiModel] || 'Claude';
+  log.info(`${aiName} sta riscrivendo la ricetta ${sourceLabel}...`);
 
   const dataDirective = sourcesFound > 0
     ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali autorevoli. DEVI basare i dati tecnici (forza farina W, temperature impasto, temperature acqua, tempi, proporzioni) sui dati reali sotto. Se la fonte specifica una temperatura dell'acqua, RISPETTALA — non sostituirla con acqua ghiacciata a meno che il contesto tecnico lo richieda (vedi regola 15). Per gli ingredienti che cambiano tra setup spirale vs mano, compila il campo setupNote.`
@@ -331,7 +412,7 @@ ${realSourcesText}
 
 Trasforma questa ricetta nel formato JSON tecnico del Ricettario. I dati tecnici devono riflettere le fonti reali quando disponibili.`;
 
-  const text = await callClaude({
+  const text = await callAI(options.aiModel, {
     system: SYSTEM_PROMPT,
     messages: [{ role: 'user', content: userPrompt }],
   });
@@ -421,7 +502,8 @@ export async function generateRecipe(nome, options = {}) {
   const sourceLabel = sourcesFound > 0
     ? `(base: ${sourcesFound} fonti reali)`
     : '(senza fonti — usa conoscenza generale)';
-  console.log(`\n🤖 Claude sta creando la ricetta "${nome}" ${sourceLabel}...`);
+  const aiLabel = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro'}[options.aiModel] || 'Claude';
+  console.log(`\n🤖 ${aiLabel} sta creando la ricetta "${nome}" ${sourceLabel}...`);
 
   const dataDirective = sourcesFound > 0
     ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali. DEVI basare ingredienti e proporzioni sui dati scrappati sotto. Non inventare. Se le fonti si contraddicono, privilegia la media delle proporzioni. Cita mentalmente le fonti nel tuo ragionamento.`
@@ -437,7 +519,7 @@ ${realSourcesText}
 
 Genera la ricetta completa nel formato JSON del Ricettario. I dati devono riflettere FEDELMENTE le fonti reali sopra. Se un ingrediente appare nella maggioranza delle fonti, deve essere presente. Se le proporzioni variano, usa la media.`;
 
-  const text = await callClaude({
+  const text = await callAI(options.aiModel, {
     system: SYSTEM_PROMPT,
     messages: [{ role: 'user', content: userPrompt }],
   });
@@ -664,7 +746,7 @@ ${pagesText}`;
  * @returns {Promise<object>} Ricetta strutturata in formato JSON
  */
 export async function enhanceFromText(rawText, options = {}) {
-  log.info('Claude sta strutturando la ricetta dal testo libero...');
+  log.info('AI sta strutturando la ricetta dal testo libero...');
 
   // ── Step 1 (opzionale): Cerca fonti reali per arricchire ──
   let realSourcesText = '';
@@ -731,7 +813,8 @@ export async function enhanceFromText(rawText, options = {}) {
   const sourceLabel = sourcesFound > 0
     ? `(con ${sourcesFound} fonti di riferimento)`
     : '(senza fonti aggiuntive)';
-  log.info(`Claude sta strutturando la ricetta ${sourceLabel}...`);
+  const aiName = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro'}[options.aiModel] || 'Claude';
+  log.info(`${aiName} sta strutturando la ricetta ${sourceLabel}...`);
 
   const userPrompt = `L'utente ha inserito questa ricetta in formato TESTO LIBERO (appunti personali, note, copia-incolla).
 Il tuo compito è STRUTTURARLA nel formato JSON del Ricettario, SENZA modificare dosi e ingredienti dell'utente.
@@ -751,7 +834,7 @@ ${realSourcesText}
 Trasforma il testo in un JSON strutturato. Le dosi DEVONO essere fedeli al testo originale.
 Aggiungi glossario tecnico, proTips, flourTable e alert basandoti sulla tua esperienza.`;
 
-  const text = await callClaude({
+  const text = await callAI(options.aiModel, {
     system: SYSTEM_PROMPT,
     messages: [{ role: 'user', content: userPrompt }],
   });
