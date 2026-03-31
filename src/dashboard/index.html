@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔥 Ricettario Tools — Dashboard</title>
+    <title>🌾 Ricettario Tools — Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -91,6 +91,13 @@
                     <div class="stat-info">
                         <div class="stat-value" id="stat-provider">—</div>
                         <div class="stat-label">Provider attivi</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-clickable" onclick="showUsedImagesMenu(this)" title="Gestisci index immagini usate">
+                    <div class="stat-icon"><i data-lucide="image-off"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-used-images">—</div>
+                        <div class="stat-label">Img. tracciate</div>
                     </div>
                 </div>
             </div>
@@ -313,7 +320,7 @@
                 </div>
             </div>
             <div class="terminal-body" id="terminal">
-                <div class="terminal-line system">🔥 Dashboard pronta. Seleziona un comando dalla sidebar.</div>
+                <div class="terminal-line system">🌾 Dashboard pronta. Seleziona un comando dalla sidebar.</div>
             </div>
         </div>
     </main>

@@ -53,6 +53,7 @@ export function setupRoutes(app) {
                                     hydration: data.hydration,
                                     image: data.image,
                                     date: data.date,
+                                    _generatedBy: data._generatedBy || null,
                                 });
                             } catch {}
                         }
@@ -497,6 +498,12 @@ REGOLE TASSATIVE:
             const { unlinkSync } = await import('fs');
             const ricettarioPath = getRicettarioPath();
 
+            // ── Carica index immagini usate per pulizia ──
+            const imageIndexFile = resolve(process.cwd(), 'data', 'used-images.json');
+            let imageIndex = {};
+            try { if (existsSync(imageIndexFile)) imageIndex = JSON.parse(readFileSync(imageIndexFile, 'utf-8')); } catch {}
+            let imageIndexDirty = false;
+
             await withOutputCapture(ctx, async () => {
                 ctx.log(`🗑️ Eliminazione di ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}...\n`);
                 let deleted = 0;
@@ -510,12 +517,27 @@ REGOLE TASSATIVE:
                         if (!existsSync(jsonFile) && !existsSync(htmlFile)) continue;
                         found = true;
 
+                        // ── Pulisci used-images.json: rimuovi URL dell'immagine ──
+                        if (existsSync(jsonFile)) {
+                            try {
+                                const recipeData = JSON.parse(readFileSync(jsonFile, 'utf-8'));
+                                const imgUrl = recipeData._originalImageUrl;
+                                if (imgUrl && imageIndex[imgUrl]) {
+                                    delete imageIndex[imgUrl];
+                                    imageIndexDirty = true;
+                                    ctx.log(`  🖼️ Rimossa da used-images: ${imgUrl.substring(0, 60)}...`);
+                                }
+                            } catch {}
+                        }
+
                         // Cancella tutti i file associati
                         const filesToDelete = [
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.json`),
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.html`),
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.validazione.md`),
                             resolve(ricettarioPath, 'ricette', folder, `${slug}.verifica.md`),
+                            resolve(ricettarioPath, 'ricette', folder, `${slug}.qualita.md`),
+                            resolve(ricettarioPath, 'ricette', folder, `${slug}.backup.json`),
                             resolve(ricettarioPath, 'public', 'images', 'ricette', folder, `${slug}.webp`),
                             resolve(ricettarioPath, 'public', 'images', 'ricette', folder, `${slug}.avif`),
                         ];
@@ -539,6 +561,12 @@ REGOLE TASSATIVE:
                     if (!found) {
                         ctx.log(`  ⚠️ ${slug}: non trovata\n`);
                     }
+                }
+
+                // ── Salva index immagini pulito ──
+                if (imageIndexDirty) {
+                    writeFileSync(imageIndexFile, JSON.stringify(imageIndex, null, 2), 'utf-8');
+                    ctx.log(`🖼️ used-images.json aggiornato (${Object.keys(imageIndex).length} immagini)`);
                 }
 
                 // Sync cards per aggiornare recipes.json
@@ -667,6 +695,79 @@ REGOLE TASSATIVE:
                 ctx.log(`  ✅ recipes.json aggiornato`);
 
                 ctx.log(`\n🎉 Categoria cambiata: "${slug}" → ${newCategory}`);
+            });
+
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
+    // ── Used Images Index: Info ──
+    app.get('/api/used-images', (req, res) => {
+        const imageIndexFile = resolve(process.cwd(), 'data', 'used-images.json');
+        try {
+            let index = {};
+            if (existsSync(imageIndexFile)) {
+                index = JSON.parse(readFileSync(imageIndexFile, 'utf-8'));
+            }
+            res.json({
+                count: Object.keys(index).length,
+                entries: index,
+            });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
+    // ── Used Images Index: Reset (svuota) ──
+    app.post('/api/used-images/reset', (req, res) => {
+        const imageIndexFile = resolve(process.cwd(), 'data', 'used-images.json');
+        try {
+            writeFileSync(imageIndexFile, '{}', 'utf-8');
+            res.json({ ok: true, count: 0, message: 'Index resettato' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
+    // ── Used Images Index: Rebuild (ricostruisci da ricette esistenti) ──
+    app.post('/api/used-images/rebuild', async (req, res) => {
+        const jobId = `imgidx-${++jobCounter}`;
+        const ctx = createJobContext(jobId, 'Rebuild Image Index');
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const ricettarioPath = getRicettarioPath();
+            const imageIndexFile = resolve(process.cwd(), 'data', 'used-images.json');
+
+            await withOutputCapture(ctx, async () => {
+                ctx.log('🖼️ Ricostruzione index immagini usate...\n');
+                const newIndex = {};
+                let count = 0;
+
+                for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                    const catDir = resolve(ricettarioPath, 'ricette', folder);
+                    if (!existsSync(catDir)) continue;
+
+                    for (const file of readdirSync(catDir)) {
+                        if (!file.endsWith('.json') || file === 'index.json' || file.endsWith('.backup.json') || file.endsWith('.qualita.json')) continue;
+                        try {
+                            const data = JSON.parse(readFileSync(resolve(catDir, file), 'utf-8'));
+                            const slug = file.replace('.json', '');
+                            if (data._originalImageUrl) {
+                                newIndex[data._originalImageUrl] = slug;
+                                count++;
+                                ctx.log(`  ✅ ${slug} → ${data._originalImageUrl.substring(0, 60)}...`);
+                            }
+                        } catch {}
+                    }
+                }
+
+                writeFileSync(imageIndexFile, JSON.stringify(newIndex, null, 2), 'utf-8');
+                ctx.log(`\n🎉 Index ricostruito: ${count} immagini da ricette esistenti`);
             });
 
             ctx.end(true);

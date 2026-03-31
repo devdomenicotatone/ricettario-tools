@@ -55,12 +55,16 @@ export function resolveOutputPaths(recipe, args) {
 
     const outputDir = resolve(ricettarioPath, 'ricette', subfolder);
 
-    // ── Keep existing: non sovrascrivere, aggiungi suffisso modello ──
+    // ── Keep existing: non sovrascrivere, aggiungi suffisso numerico ──
     if (args.keepExisting) {
         const existingJson = resolve(outputDir, `${slug}.json`);
         if (existsSync(existingJson)) {
-            const suffix = args.aiModel || 'v2';
-            const newSlug = `${slug}-${suffix}`;
+            // Trova il prossimo numero libero (slug-v2, slug-v3, ...)
+            let version = 2;
+            while (existsSync(resolve(outputDir, `${slug}-v${version}.json`))) {
+                version++;
+            }
+            const newSlug = `${slug}-v${version}`;
             log.info(`📋 "${slug}" esiste → salvo come "${newSlug}" (confronto A/B)`);
             slug = newSlug;
         }
@@ -254,6 +258,7 @@ export async function publishRecipe(recipe, args, options = {}) {
         delete persistentJson._imageData;
         delete persistentJson._sourcesUsed;
         delete persistentJson._inputMode;
+        // NOTA: _generatedBy viene mantenuto nel JSON per tracciare il modello AI usato
 
         writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
         log.info(`💾 JSON salvato: ${jsonFile}`);

@@ -170,39 +170,57 @@ const panelTitles = {
 
 document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
-        let panel = item.dataset.panel;
-
-        // Update sidebar
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        item.classList.add('active');
-
-        // Update panel
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        const panelEl = document.getElementById(`panel-${panel}`);
-        if (panelEl) panelEl.classList.add('active');
-
-        // Update title
-        document.getElementById('panelTitle').textContent = panelTitles[panel] || '';
-
-        // Load data if needed
-        if (panel === 'ricette') loadRecipes();
-        if (panel === 'immagini') loadRecipesForPicker();
-        if (panel === 'seo') loadSeoSuggestions();
+        const panel = item.dataset.panel;
+        navigateToPanel(panel);
     });
 });
 
-function navigateAndRun(panel, action) {
-    // Naviga al pannello ricette
+/**
+ * Navigazione centralizzata: aggiorna sidebar, panel, titolo, hash URL e carica dati
+ */
+function navigateToPanel(panel) {
+    if (!panel) return;
+
+    // Update sidebar
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const navBtn = document.querySelector(`[data-panel="${panel}"]`) || 
-                   document.querySelector('[data-panel="ricette"]');
+    const navBtn = document.querySelector(`[data-panel="${panel}"]`);
     if (navBtn) navBtn.classList.add('active');
 
+    // Update panel
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     const panelEl = document.getElementById(`panel-${panel}`);
     if (panelEl) panelEl.classList.add('active');
+
+    // Update title
     document.getElementById('panelTitle').textContent = panelTitles[panel] || '';
 
+    // Persist in URL hash (senza triggare hashchange)
+    history.replaceState(null, '', `#${panel}`);
+
+    // Load data if needed
+    if (panel === 'ricette') loadRecipes();
+    if (panel === 'immagini') loadRecipesForPicker();
+    if (panel === 'seo') loadSeoSuggestions();
+}
+
+// Restore panel from URL hash on page load
+function restorePanelFromHash() {
+    const hash = location.hash.replace('#', '');
+    if (hash && panelTitles[hash]) {
+        navigateToPanel(hash);
+    }
+}
+
+// Handle browser back/forward
+window.addEventListener('hashchange', () => {
+    const hash = location.hash.replace('#', '');
+    if (hash && panelTitles[hash]) {
+        navigateToPanel(hash);
+    }
+});
+
+function navigateAndRun(panel, action) {
+    navigateToPanel(panel);
     if (panel === 'ricette') {
         loadRecipes().then(() => { if (action) action(); });
     } else {
@@ -565,6 +583,17 @@ function renderRecipes() {
     lucide.createIcons();
 }
 
+function getAiBadge(generatedBy) {
+    if (!generatedBy) return '';
+    const models = {
+        'claude': { label: 'Claude', icon: 'sparkles', color: '#a855f7' },
+        'gemini': { label: 'Gemini', icon: 'sparkles', color: '#4285f4' },
+        'gemini-3.1': { label: 'Gemini 3.1', icon: 'sparkles', color: '#34a853' },
+    };
+    const m = models[generatedBy] || { label: generatedBy, icon: 'cpu', color: '#888' };
+    return `<span class="recipe-badge ai-badge" style="color:${m.color};border-color:${m.color}40;background:${m.color}15" title="Generata con ${m.label}"><i data-lucide="${m.icon}"></i> ${m.label}</span>`;
+}
+
 function renderRecipeCard(r) {
     const title = r.title || r.name || r.slug;
     const img = r.image ? `/${r.image}` : '';
@@ -587,6 +616,7 @@ function renderRecipeCard(r) {
             <div class="recipe-card-body">
                 <div class="recipe-card-title">${title}</div>
                 <div class="recipe-card-badges">
+                    ${getAiBadge(r._generatedBy)}
                     ${getQualityBadge(r.slug)}
                     ${r.hydration ? `<span class="recipe-badge ${hydClass}"><i data-lucide="droplets"></i> ${r.hydration}</span>` : ''}
                     ${r.time ? `<span class="recipe-badge recipe-badge-time"><i data-lucide="clock"></i> ${r.time}</span>` : ''}
@@ -621,6 +651,7 @@ function renderRecipeRow(r) {
             </div>
             <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
                 onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+            ${getAiBadge(r._generatedBy)}
             ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
             <span class="recipe-row-hydration">${r.hydration || '—'}</span>
             <span class="recipe-row-time">${r.time || '—'}</span>
@@ -1022,6 +1053,75 @@ async function loadStats() {
         const withImage = recipes.filter(r => r.image).length;
         document.getElementById('stat-immagini').textContent = withImage;
     } catch {}
+
+    // Used images count
+    loadUsedImagesCount();
+}
+
+async function loadUsedImagesCount() {
+    try {
+        const resp = await fetch('/api/used-images');
+        const data = await resp.json();
+        document.getElementById('stat-used-images').textContent = data.count;
+    } catch {
+        document.getElementById('stat-used-images').textContent = '?';
+    }
+}
+
+// ── Used Images Management ──
+function showUsedImagesMenu(anchorEl) {
+    // Rimuovi dropdown precedente
+    document.querySelector('.used-images-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'used-images-dropdown cat-dropdown';
+    dd.style.top = `${rect.bottom + 4}px`;
+    dd.style.left = `${rect.left}px`;
+    dd.style.minWidth = '220px';
+
+    dd.innerHTML = `
+        <button class="cat-dropdown-item" onclick="rebuildUsedImages(); this.closest('.cat-dropdown').remove()">
+            <i data-lucide="database"></i> 🔄 Ricostruisci da ricette
+        </button>
+        <button class="cat-dropdown-item" style="--cat-color:#e74c3c" onclick="resetUsedImages(); this.closest('.cat-dropdown').remove()">
+            <i data-lucide="trash-2"></i> 🗑️ Reset (svuota tutto)
+        </button>
+    `;
+
+    document.body.appendChild(dd);
+    lucide.createIcons();
+
+    // Chiudi al click fuori
+    setTimeout(() => {
+        document.addEventListener('click', function closeDD(e) {
+            if (!dd.contains(e.target) && !anchorEl.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeDD);
+            }
+        });
+    }, 10);
+}
+
+async function resetUsedImages() {
+    if (!confirm('⚠️ Resettare l\'index delle immagini usate?\n\nTutte le immagini saranno considerate "nuove" e potranno essere riproposte.')) return;
+    try {
+        const resp = await fetch('/api/used-images/reset', { method: 'POST' });
+        const data = await resp.json();
+        appendTerminal(`\n🗑️ Used Images: index resettato (${data.count} entries)`, 'success');
+        showToast('Index immagini resettato', 'success');
+        loadUsedImagesCount();
+    } catch (err) {
+        appendTerminal(`❌ Reset fallito: ${err.message}`, 'stderr');
+        showToast('Reset fallito', 'error');
+    }
+}
+
+async function rebuildUsedImages() {
+    appendTerminal('\n🔄 Ricostruzione index immagini da ricette esistenti...', 'job-start');
+    await apiPost('used-images/rebuild', {});
+    // Ricarica il conteggio dopo un delay per dare tempo al job
+    setTimeout(() => loadUsedImagesCount(), 2000);
 }
 
 // ── Toast Notifications ──
@@ -1057,6 +1157,8 @@ const commands = [
     { icon: 'shield-check', name: 'Qualità Ricette', action: () => runQualita() },
     { icon: 'globe', name: 'Qualità + Web', action: () => runQualita(true) },
     { icon: 'refresh-cw', name: 'Sync Cards', action: () => runSyncCards() },
+    { icon: 'database', name: 'Ricostruisci Index Immagini', action: () => rebuildUsedImages() },
+    { icon: 'image-off', name: 'Reset Index Immagini', action: () => resetUsedImages() },
     { icon: 'trash-2', name: 'Pulisci Terminal', action: () => clearTerminal() },
 ];
 
@@ -1169,6 +1271,7 @@ handleWsMessage = function(data) {
             showToast('Operazione fallita — controlla il terminal', 'error');
         }
         loadStats(); // Refresh stats after job
+        loadRecipes(); // Refresh recipe list after job (nuove ricette, eliminazioni, ecc.)
     }
 };
 
@@ -1176,6 +1279,7 @@ handleWsMessage = function(data) {
 connectWebSocket();
 fetchStatus();
 loadStats();
+restorePanelFromHash(); // Ripristina il pannello dall'URL hash (es. #ricette)
 
 // ── SEO Ideas ──
 let currentSeoCategory = 'Pane';
@@ -1295,11 +1399,7 @@ async function generateFromSeo(keyword, category) {
     }
 
     // Switch to genera panel
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.querySelector('[data-panel="genera"]').classList.add('active');
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-genera').classList.add('active');
-    document.getElementById('panelTitle').textContent = panelTitles.genera;
+    navigateToPanel('genera');
 
     showToast(`📝 "${keyword}" pronta per la generazione!`, 'info');
 }

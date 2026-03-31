@@ -63,6 +63,7 @@ function extractRecipeFromJson(jsonPath, categoryDir) {
         time,
         temp,
         tool,
+        _generatedBy: data._generatedBy || null,
     };
 }
 
