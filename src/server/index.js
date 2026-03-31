@@ -34,6 +34,15 @@ export function startServer(port = 3500) {
     );
     app.use(express.static(ricettarioPublic));
 
+    // ── Favicon (dal sito Ricettario) ──
+    const ricettarioRoot = resolve(
+        process.cwd(),
+        process.env.RICETTARIO_PATH || '../Ricettario'
+    );
+    app.get('/favicon.svg', (req, res) => {
+        res.sendFile(resolve(ricettarioRoot, 'favicon.svg'));
+    });
+
     // ── API Routes ──
     setupRoutes(app);
 
