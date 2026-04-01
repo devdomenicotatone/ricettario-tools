@@ -44,6 +44,19 @@
         </nav>
 
         <div class="sidebar-footer">
+            <div class="gemini-key-switcher" id="geminiKeySwitcher" style="display:none">
+                <div class="key-switcher-label"><i data-lucide="key-round" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i>Gemini API Key</div>
+                <div class="key-switcher-btns">
+                    <button class="key-btn active" data-slot="1" onclick="switchGeminiKey(1)">
+                        <span class="key-num">API 1</span>
+                        <span class="key-preview" id="keyPreview1"></span>
+                    </button>
+                    <button class="key-btn" data-slot="2" onclick="switchGeminiKey(2)">
+                        <span class="key-num">API 2</span>
+                        <span class="key-preview" id="keyPreview2"></span>
+                    </button>
+                </div>
+            </div>
             <div class="api-status" id="apiStatus">
                 <div class="status-dot"></div>
                 <span>Connessione...</span>

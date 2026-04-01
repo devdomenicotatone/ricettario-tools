@@ -217,13 +217,35 @@ function sleep(ms) {
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 let _geminiClient = null;
+let _activeGeminiSlot = 1; // 1 = GEMINI_API_KEY, 2 = GEMINI_API_KEY2
+
 function getGeminiClient() {
     if (!_geminiClient) {
-        const key = process.env.GEMINI_API_KEY;
-        if (!key) throw new Error('GEMINI_API_KEY non configurata nel .env');
+        const key = _activeGeminiSlot === 2
+            ? process.env.GEMINI_API_KEY2
+            : process.env.GEMINI_API_KEY;
+        if (!key) throw new Error(`GEMINI_API_KEY${_activeGeminiSlot === 2 ? '2' : ''} non configurata nel .env`);
         _geminiClient = new GoogleGenerativeAI(key);
     }
     return _geminiClient;
+}
+
+/** Resetta il client Gemini (forza ricreazione al prossimo uso) */
+export function resetGeminiClient() {
+    _geminiClient = null;
+}
+
+/** Cambia la chiave Gemini attiva (1 o 2) */
+export function switchGeminiKey(slot) {
+    if (slot !== 1 && slot !== 2) throw new Error('Slot deve essere 1 o 2');
+    _activeGeminiSlot = slot;
+    _geminiClient = null; // forza ricreazione
+    log.info(`🔑 Gemini API Key switchata a slot ${slot}`);
+}
+
+/** Ritorna lo slot attivo (1 o 2) */
+export function getActiveGeminiSlot() {
+    return _activeGeminiSlot;
 }
 
 /**

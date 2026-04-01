@@ -153,6 +153,71 @@ body {
 
 .status-dot.connected { background: var(--success); }
 
+/* ── GEMINI KEY SWITCHER ── */
+.gemini-key-switcher {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.key-switcher-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.key-switcher-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.key-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 6px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.key-btn:hover {
+    border-color: var(--border-light);
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+}
+
+.key-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+    color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.key-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.key-preview {
+    font-size: 9px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
 /* ── MAIN ── */
 .main {
     flex: 1;

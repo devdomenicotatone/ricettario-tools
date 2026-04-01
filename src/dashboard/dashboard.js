@@ -1024,10 +1024,14 @@ async function fetchStatus() {
         // Salva URL del sito Vite per i link "Apri nel sito"
         if (status.siteUrl) siteBaseUrl = status.siteUrl;
 
+        const geminiLabel = status.hasGemini
+            ? `<span class="pill active"><i data-lucide="shield-check"></i> Gemini <small>(Key ${status.geminiSlot || 1})</small></span>`
+            : '';
+
         const pills = document.getElementById('statusPills');
         pills.innerHTML = [
             status.hasAnthropic ? '<span class="pill active"><i data-lucide="sparkles"></i> Claude</span>' : '<span class="pill"><i data-lucide="sparkles"></i> No Claude</span>',
-            status.hasGemini ? '<span class="pill active"><i data-lucide="shield-check"></i> Gemini</span>' : '',
+            geminiLabel,
             status.hasPexels ? '<span class="pill active"><i data-lucide="camera"></i> Pexels</span>' : '',
             status.hasUnsplash ? '<span class="pill active"><i data-lucide="camera"></i> Unsplash</span>' : '',
         ].filter(Boolean).join('');
@@ -1036,7 +1040,64 @@ async function fetchStatus() {
         // Update stats
         const providerCount = [status.hasAnthropic, status.hasPexels, status.hasUnsplash, status.hasSerpApi].filter(Boolean).length;
         document.getElementById('stat-provider').textContent = providerCount;
+
+        // Mostra/nascondi key switcher se ci sono 2 chiavi
+        if (status.hasGemini2) {
+            fetchGeminiKeyStatus();
+        }
     } catch {}
+}
+
+// ── Gemini API Key Switcher ──
+async function fetchGeminiKeyStatus() {
+    try {
+        const resp = await fetch('/api/gemini-key');
+        const data = await resp.json();
+
+        const switcher = document.getElementById('geminiKeySwitcher');
+        if (!switcher) return;
+
+        // Mostra solo se ci sono entrambe le chiavi
+        if (data.hasKey1 && data.hasKey2) {
+            switcher.style.display = '';
+        } else {
+            switcher.style.display = 'none';
+            return;
+        }
+
+        // Aggiorna preview
+        const p1 = document.getElementById('keyPreview1');
+        const p2 = document.getElementById('keyPreview2');
+        if (p1) p1.textContent = data.key1Preview || '';
+        if (p2) p2.textContent = data.key2Preview || '';
+
+        // Aggiorna bottone attivo
+        switcher.querySelectorAll('.key-btn').forEach(btn => {
+            const slot = parseInt(btn.dataset.slot);
+            btn.classList.toggle('active', slot === data.activeSlot);
+        });
+    } catch {}
+}
+
+async function switchGeminiKey(slot) {
+    try {
+        const resp = await fetch('/api/gemini-key', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slot }),
+        });
+        const data = await resp.json();
+
+        if (data.ok) {
+            appendTerminal(`🔑 ${data.message}`, 'success');
+            fetchGeminiKeyStatus();
+            fetchStatus(); // Aggiorna anche i pills
+        } else {
+            appendTerminal(`❌ ${data.error}`, 'stderr');
+        }
+    } catch (err) {
+        appendTerminal(`❌ Errore switch key: ${err.message}`, 'stderr');
+    }
 }
 
 // ── Stats Bar ──
