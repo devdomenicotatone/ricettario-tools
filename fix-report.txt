@@ -1,0 +1,342 @@
+
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   FIX-TOKENS ÔÇö Correttore Token Invertiti
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   Modalit├á: ­ƒöì DRY-RUN (nessuna modifica)
+
+ÔÜá´©Å Cantuccini di Prato (dolci/cantuccini-di-prato.json)
+   A Mano #1: {uova_impasto} ├¿ "uova" ma testo dice "farina"
+      ÔåÆ ...) con lo zucchero semolato ({semola_impa
+   A Mano #5: {uova_finitura} ├¿ "uova" ma testo dice "acqua"
+      ÔåÆ ...) con 1 cucchiaino d'acqua. Spennellare 
+
+ÔÜá´©Å Migliaccio Napoletano (dolci/migliaccio-napoletano.json)
+   A Mano #1: {latte_composto} ├¿ "latte" ma testo dice "acqua"
+      ÔåÆ ...), acqua ({latte_composto:500}g), sale (
+   A Mano #1: {latte_composto} ├¿ "latte" ma testo dice "sale"
+      ÔåÆ ...), sale ({baccello_di_vaniglia_composto:
+   A Mano #2: {uova_composto} ├¿ "uova" ma testo dice "farina"
+      ÔåÆ ..., 4 uova medie) con lo zucchero ({semola
+
+­ƒöº Focaccia Barese (focaccia/focaccia-barese.json)
+   Spirale #2: {acqua_impasto} ├¿ "acqua" ma testo dice "farina"
+      ÔåÆ ... semola), la purea di patate fredda, il 
+   Spirale #2: {farina_media_impasto} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di acqua. Avviare a velocit├á 1 per 4-5 
+   ­ƒöì Fixabile (dry-run)
+
+­ƒöº Focaccia di Recco IGP (focaccia/focaccia-di-recco-igp.json)
+   Spirale #1: {farina_forte_impasto} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ...). Aggiungere l'acqua ({acqua_impasto:54
+   A Mano #1: {farina_forte_impasto} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ...) a fontana su piano di lavoro. Versare 
+   A Mano #1: {acqua_impasto} ├¿ "acqua" ma testo dice "sale"
+      ÔåÆ ...) a temperatura ambiente gradualmente, i
+   A Mano #1: {sale_impasto} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ...) nell'acqua. Iniziare a incorporare la 
+   A Mano #1: {olio_evo_impasto} ├¿ "olio" ma testo dice "acqua"
+      ÔåÆ ...) e continuare a lavorare energicamente.
+   ­ƒöì Fixabile (dry-run)
+
+ÔÜá´©Å Focaccia Genovese Classica (focaccia/focaccia-genovese-classica.json)
+   Spirale #1: {olio_evo_salamoia_e_fini} ├¿ "olio" ma testo dice "acqua"
+      ÔåÆ ... tipo 0), unire {acqua_biga:120}g acqua 
+   Spirale #7: {olio_evo_salamoia_e_fini} ├¿ "olio" ma testo dice "sale"
+      ÔåÆ ... olio EVO + {sale_salamoia_e_fini:4}g sa
+   A Mano #1: {olio_evo_salamoia_e_fini} ├¿ "olio" ma testo dice "acqua"
+      ÔåÆ ... tipo 0), {acqua_biga:120}g acqua tiepid
+   A Mano #2: {lievito_impasto_finale} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... miele e 5g lievito fresco sbriciolato. 
+   A Mano #7: {olio_evo_salamoia_e_fini} ├¿ "olio" ma testo dice "sale"
+      ÔåÆ ... olio EVO + {sale_salamoia_e_fini:4}g sa
+
+ÔÜá´©Å Burger Buns con Biga (lievitati/burger-buns-con-biga.json)
+   Spirale #1: {lievito_biga} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito di birra fresco sbriciolato.
+   Spirale #2: {farina_00_impasto} ├¿ "farina" ma testo dice "sale"
+      ÔåÆ ... di farina 00 e {sale_impasto:8}g di sal
+   Spirale #2: {latte_impasto} ├¿ "latte" ma testo dice "zucchero"
+      ÔåÆ ... di latte freddo (18-20┬░C), {uovo_impast
+   Spirale #6: {latte_glassa} ├¿ "latte" ma testo dice "sale"
+      ÔåÆ ... di latte e un pizzico di sale fino a ot
+   A Mano #1: {lievito_biga} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito di birra fresco sbriciolato.
+   A Mano #2: {latte_impasto} ├¿ "latte" ma testo dice "zucchero"
+      ÔåÆ ... di latte tiepido (22-24┬░C), {uovo_impas
+   A Mano #2: {zucchero_impasto} ├¿ "zucchero" ma testo dice "lievito"
+      ÔåÆ ... di zucchero, {miele_impasto:10}g di mie
+   A Mano #2: {miele_impasto} ├¿ "miele" ma testo dice "lievito"
+      ÔåÆ ... di miele e {lievito_impasto:15}g di lie
+   A Mano #6: {latte_glassa} ├¿ "latte" ma testo dice "sale"
+      ÔåÆ ... di latte e un pizzico di sale. Con penn
+
+ÔÜá´©Å Burger Buns Professionali (lievitati/burger-buns-professionali.json)
+   Spirale #1: {lievito_biga} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito in {acqua_biga:50}g di acqua
+   A Mano #1: {lievito_biga} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito in {acqua_biga:50}g di acqua
+
+­ƒöº Cornetti Sfogliati Classici (lievitati/cornetti-sfogliati-classici.json)
+   Spirale #1: {farina_media_impasto} ├¿ "farina" ma testo dice "lievito"
+      ÔåÆ ...), lievito fresco sbriciolato ({lievito_
+   Spirale #1: {lievito_fresco_impasto} ├¿ "lievito" ma testo dice "farina"
+      ÔåÆ ...) e latte a 20-22┬░C (150g dei {farina_me
+   Spirale #2: {uova_impasto} ├¿ "uova" ma testo dice "farina"
+      ÔåÆ ...) in 2 riprese, aspettando assorbimento 
+   Spirale #2: {miele_impasto} ├¿ "miele" ma testo dice "latte"
+      ÔåÆ ...). Impastare in V1 per 2 minuti. Aumenta
+   A Mano #1: {lievito_fresco_impasto} ├¿ "lievito" ma testo dice "farina"
+      ÔåÆ ...) in met├á del latte tiepido (100g a 28-3
+   A Mano #1: {farina_media_impasto} ├¿ "farina" ma testo dice "latte"
+      ÔåÆ ... 00) e mescolare con cucchiaio di legno.
+   A Mano #2: {uova_impasto} ├¿ "uova" ma testo dice "zucchero"
+      ÔåÆ ...) in 2 riprese, lavorando bene tra una a
+   ­ƒöì Fixabile (dry-run)
+
+ÔÜá´©Å Panettone Classico (lievitati/panettone-classico.json)
+   A Mano #1: {lievito_madre_base} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... lievito maturo + {farina_rinfresco:150}
+   A Mano #1: {farina_rinfresco} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... farina Manitoba + {acqua_rinfresco:75}g
+   A Mano #3: {zucchero_primo} ├¿ "zucchero" ma testo dice "malto"
+      ÔåÆ ... zucchero + {malto:3}g malto fino a otte
+   A Mano #6: {miele} ├¿ "miele" ma testo dice "burro"
+      ÔåÆ ... miele. Mescolare fino a completa emulsi
+
+ÔÜá´©Å Panettone Pere e Cioccolato (lievitati/panettone-pere-cioccolato.json)
+   Spirale #2: {farina_panettone_for_primo_impasto} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... farina panettone + {zucchero_secondo_im
+   Spirale #2: {zucchero_secondo_impasto} ├¿ "zucchero" ma testo dice "acqua"
+      ÔåÆ ... acqua a 24-26┬░C + {lievito_madre_primo_
+   Spirale #2: {lievito_madre_primo_impasto} ├¿ "lievito" ma testo dice "zucchero"
+      ÔåÆ ... zucchero in 2 riprese, continuare 5 min
+   Spirale #4: {miele_secondo_impasto} ├¿ "miele" ma testo dice "malto"
+      ÔåÆ ... miele d'acacia + {pasta_darancia_second
+   A Mano #2: {zucchero_secondo_impasto} ├¿ "zucchero" ma testo dice "acqua"
+      ÔåÆ ... lievito madre spezzettato finemente + {
+   A Mano #2: {uova_secondo_impasto} ├¿ "uova" ma testo dice "acqua"
+      ÔåÆ ... acqua a 28-30┬░C. Amalgamare con le dita
+   A Mano #2: {lievito_madre_primo_impasto} ├¿ "lievito" ma testo dice "zucchero"
+      ÔåÆ ... zucchero in 3 riprese, continuando a la
+   A Mano #4: {miele_secondo_impasto} ├¿ "miele" ma testo dice "malto"
+      ÔåÆ ... miele d'acacia + {pasta_darancia_second
+
+ÔÜá´©Å Pasta Brioche Classica (lievitati/pasta-brioche-classica.json)
+   Spirale #2: {lievito_fresco_impasto} ├¿ "lievito" ma testo dice "latte"
+      ÔåÆ ...) nel latte intero a temperatura ambient
+   A Mano #9: {latte_impasto} ├¿ "latte" ma testo dice "zucchero"
+      ÔåÆ ... latte. Spennellare delicatamente. Opzio
+
+ÔÜá´©Å Baguette Francese Tradizionale (pane/baguette-francese-tradizionale.json)
+   Spirale #1: {farina_media_poolish} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Farina Tipo 0, {acqua_poolish:300}g 
+   Spirale #2: {farina_media_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Farina Tipo 0, {farina_forte_impasto
+   Spirale #2: {farina_forte_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Manitoba, {acqua_impasto_finale:380}
+   A Mano #1: {farina_media_poolish} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Farina Tipo 0, {acqua_poolish:300}g 
+   A Mano #2: {farina_media_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Farina Tipo 0, {farina_forte_impasto
+   A Mano #2: {farina_forte_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Manitoba, 250g di acqua (20-22┬░C), {
+
+­ƒöº Ciabatta con Poolish (pane/ciabatta-poolish.json)
+   Spirale #1: {lievito_fresco_poolish} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito fresco in {farina_media_pool
+   Spirale #1: {farina_media_poolish} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di acqua a 20-22┬░C. Aggiungere {farina_
+   Spirale #2: {farina_media_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di farina tipo 0, {malto_impasto_finale
+   Spirale #2: {malto_impasto_finale} ├¿ "malto" ma testo dice "acqua"
+      ÔåÆ ... di malto e {acqua_poolish:200}g di liev
+   Spirale #2: {olio_impasto_finale} ├¿ "olio" ma testo dice "sale"
+      ÔåÆ ... di sale e {sale_impasto_finale:15}g di 
+   Spirale #2: {sale_impasto_finale} ├¿ "sale" ma testo dice "olio"
+      ÔåÆ ... di olio EVO.
+   A Mano #1: {lievito_fresco_poolish} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito fresco in {farina_media_pool
+   A Mano #1: {farina_media_poolish} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di acqua a 20-22┬░C. Aggiungere {farina_
+   A Mano #2: {farina_media_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di farina tipo 0 e {farina_media_poolis
+   A Mano #2: {farina_media_poolish} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di acqua a 20-22┬░C (NON tutta subito: r
+   A Mano #3: {malto_impasto_finale} ├¿ "malto" ma testo dice "sale"
+      ÔåÆ ... di malto e {sale_impasto_finale:15}g di
+   A Mano #3: {sale_impasto_finale} ├¿ "sale" ma testo dice "olio"
+      ÔåÆ ... di olio EVO a filo e continuare slap & 
+   ­ƒöì Fixabile (dry-run)
+
+­ƒöº Pane alle Noci con Poolish (pane/pane-alle-noci-con-poolish.json)
+   A Mano #2: {farina_media_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di farina restante formando una fontana
+   A Mano #2: {lievito_fresco_impasto_finale} ├¿ "lievito" ma testo dice "farina"
+      ÔåÆ ... di lievito. Iniziare a incorporare la f
+   A Mano #3: {acqua_impasto_finale} ├¿ "acqua" ma testo dice "olio"
+      ÔåÆ ... di olio extravergine di oliva. Incorpor
+   A Mano #3: {olio_evo_impasto_finale} ├¿ "olio" ma testo dice "acqua"
+      ÔåÆ ... di acqua gradualmente. Iniziare l'impas
+   ­ƒöì Fixabile (dry-run)
+
+­ƒöº Pane Integrale con Biga di Saccorosso e Miele (pane/pane-integrale-biga-saccorosso-miele.json)
+   Spirale #1: {farina_caputo_saccor_biga} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Caputo Saccorosso, {acqua_biga:360}g
+   Spirale #2: {acqua_impasto_finale} ├¿ "acqua" ma testo dice "farina"
+      ÔåÆ ... Caputo Integrale, {farina_integrale_imp
+   Spirale #2: {farina_integrale_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... Caputo Saccorosso e 975g di acqua (65% 
+   Spirale #3: {miele_impasto_finale} ├¿ "miele" ma testo dice "sale"
+      ÔåÆ ... di miele millefiori (lasciare incorpora
+   A Mano #1: {farina_caputo_saccor_biga} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Caputo Saccorosso, {acqua_biga:360}g
+   A Mano #2: {acqua_impasto_finale} ├¿ "acqua" ma testo dice "farina"
+      ÔåÆ ... Caputo Integrale, {farina_integrale_imp
+   A Mano #2: {farina_integrale_impasto_finale} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... Caputo Saccorosso e 975g di acqua a tem
+   ­ƒöì Fixabile (dry-run)
+
+ÔÜá´©Å Pane Pugliese con Biga (pane/pane-pugliese-con-biga.json)
+   Spirale #1: {lievito_biga} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito in {acqua_biga:90}g di acqua
+   Spirale #4: {sale_impasto} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ... di sale. Subito dopo, iniziare ad aggiu
+   A Mano #1: {lievito_biga} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... di lievito in {acqua_biga:90}g di acqua
+   A Mano #4: {sale_impasto} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ... di sale sull'impasto. Aggiungere i rest
+
+ÔÜá´©Å Pinsa Romana (pizza/pinsa-romana.json)
+   Spirale #2: {lievito_fresco_impasto} ├¿ "lievito" ma testo dice "acqua"
+      ÔåÆ ... lievito di birra fresco sbriciolato + 7
+   Spirale #3: {sale_impasto} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ... sale + {olio_evo_impasto:20}g olio EVO 
+   Spirale #3: {olio_evo_impasto} ├¿ "olio" ma testo dice "acqua"
+      ÔåÆ ... olio EVO + {acqua_impasto:750}g acqua f
+   A Mano #3: {sale_impasto} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ... sale + {olio_evo_impasto:20}g olio + {a
+   A Mano #3: {olio_evo_impasto} ├¿ "olio" ma testo dice "acqua"
+      ÔåÆ ... olio + {acqua_impasto:750}g acqua final
+
+ÔÜá´©Å Pizza Contemporanea Canotto (pizza/pizza-contemporanea-canotto.json)
+   Spirale #1: {farina_biga} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... Saccorosso, {acqua_biga:375}g acqua fre
+   Spirale #4: {sale} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ... sale e {malto:9}g estratto di malto. In
+   Spirale #4: {malto} ├¿ "malto" ma testo dice "acqua"
+      ÔåÆ ... estratto di malto. Incorporare i restan
+   A Mano #1: {farina_biga} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... Saccorosso, {acqua_biga:375}g acqua tem
+
+ÔÜá´©Å Pizza Napoletana Antica Tradizione con Biga e Criscito (pizza/pizza-napoletana-biga-criscito.json)
+   Spirale #1: {farina_caputo_saccor_biga} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... di Caputo Saccorosso e {acqua_biga:400}
+   Spirale #2: {malto_impasto_finale} ├¿ "malto" ma testo dice "acqua"
+      ÔåÆ ...) e il 60% dell'acqua di rinfresco (circ
+   Spirale #4: {sale_impasto_finale} ├¿ "sale" ma testo dice "acqua"
+      ÔåÆ ...) e versare a filo l'acqua rimanente (ci
+   A Mano #1: {farina_caputo_saccor_biga} ├¿ "farina" ma testo dice "acqua"
+      ÔåÆ ... Saccorosso, {acqua_biga:400}g acqua fre
+
+ÔÜá´©Å Pizza Napoletana Verace STG (pizza/pizza-napoletana-verace-stg.json)
+   A Mano #1: {sale_impasto} ├¿ "sale" ma testo dice "farina"
+      ÔåÆ ...) e zucchero ({semola_impasto:5}g), mesc
+
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   RISULTATI
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   ­ƒôª Ricette scansionate: 25
+   ­ƒöì Token invertiti trovati: 96
+   ­ƒöº Ricette fixate: 6
+   ÔÜá´©Å  Non fixabili automaticamente: 87
+
+   ÔÜá´©Å  Cantuccini di Prato ÔåÆ A Mano #1: {uova_impasto} (uova) ma testo "farina"
+   ÔÜá´©Å  Cantuccini di Prato ÔåÆ A Mano #5: {uova_finitura} (uova) ma testo "acqua"
+   ÔÜá´©Å  Migliaccio Napoletano ÔåÆ A Mano #1: {latte_composto} (latte) ma testo "acqua"
+   ÔÜá´©Å  Migliaccio Napoletano ÔåÆ A Mano #1: {latte_composto} (latte) ma testo "sale"
+   ÔÜá´©Å  Migliaccio Napoletano ÔåÆ A Mano #2: {uova_composto} (uova) ma testo "farina"
+   ÔÜá´©Å  Focaccia Barese ÔåÆ Spirale #2: {farina_media_impasto} (farina) ma testo "acqua"
+   ÔÜá´©Å  Focaccia di Recco IGP ÔåÆ Spirale #1: {farina_forte_impasto} (farina) ma testo "acqua"
+   ÔÜá´©Å  Focaccia di Recco IGP ÔåÆ A Mano #1: {farina_forte_impasto} (farina) ma testo "acqua"
+   ÔÜá´©Å  Focaccia di Recco IGP ÔåÆ A Mano #1: {olio_evo_impasto} (olio) ma testo "acqua"
+   ÔÜá´©Å  Focaccia Genovese Classica ÔåÆ Spirale #1: {olio_evo_salamoia_e_fini} (olio) ma testo "acqua"
+   ÔÜá´©Å  Focaccia Genovese Classica ÔåÆ Spirale #7: {olio_evo_salamoia_e_fini} (olio) ma testo "sale"
+   ÔÜá´©Å  Focaccia Genovese Classica ÔåÆ A Mano #1: {olio_evo_salamoia_e_fini} (olio) ma testo "acqua"
+   ÔÜá´©Å  Focaccia Genovese Classica ÔåÆ A Mano #2: {lievito_impasto_finale} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Focaccia Genovese Classica ÔåÆ A Mano #7: {olio_evo_salamoia_e_fini} (olio) ma testo "sale"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ Spirale #1: {lievito_biga} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ Spirale #2: {farina_00_impasto} (farina) ma testo "sale"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ Spirale #2: {latte_impasto} (latte) ma testo "zucchero"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ Spirale #6: {latte_glassa} (latte) ma testo "sale"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ A Mano #1: {lievito_biga} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ A Mano #2: {latte_impasto} (latte) ma testo "zucchero"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ A Mano #2: {zucchero_impasto} (zucchero) ma testo "lievito"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ A Mano #2: {miele_impasto} (miele) ma testo "lievito"
+   ÔÜá´©Å  Burger Buns con Biga ÔåÆ A Mano #6: {latte_glassa} (latte) ma testo "sale"
+   ÔÜá´©Å  Burger Buns Professionali ÔåÆ Spirale #1: {lievito_biga} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Burger Buns Professionali ÔåÆ A Mano #1: {lievito_biga} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Cornetti Sfogliati Classici ÔåÆ Spirale #1: {lievito_fresco_impasto} (lievito) ma testo "farina"
+   ÔÜá´©Å  Cornetti Sfogliati Classici ÔåÆ Spirale #2: {uova_impasto} (uova) ma testo "farina"
+   ÔÜá´©Å  Cornetti Sfogliati Classici ÔåÆ Spirale #2: {miele_impasto} (miele) ma testo "latte"
+   ÔÜá´©Å  Cornetti Sfogliati Classici ÔåÆ A Mano #1: {lievito_fresco_impasto} (lievito) ma testo "farina"
+   ÔÜá´©Å  Cornetti Sfogliati Classici ÔåÆ A Mano #1: {farina_media_impasto} (farina) ma testo "latte"
+   ÔÜá´©Å  Cornetti Sfogliati Classici ÔåÆ A Mano #2: {uova_impasto} (uova) ma testo "zucchero"
+   ÔÜá´©Å  Panettone Classico ÔåÆ A Mano #1: {lievito_madre_base} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Panettone Classico ÔåÆ A Mano #1: {farina_rinfresco} (farina) ma testo "acqua"
+   ÔÜá´©Å  Panettone Classico ÔåÆ A Mano #3: {zucchero_primo} (zucchero) ma testo "malto"
+   ÔÜá´©Å  Panettone Classico ÔåÆ A Mano #6: {miele} (miele) ma testo "burro"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ Spirale #2: {farina_panettone_for_primo_impasto} (farina) ma testo "acqua"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ Spirale #2: {zucchero_secondo_impasto} (zucchero) ma testo "acqua"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ Spirale #2: {lievito_madre_primo_impasto} (lievito) ma testo "zucchero"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ Spirale #4: {miele_secondo_impasto} (miele) ma testo "malto"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ A Mano #2: {zucchero_secondo_impasto} (zucchero) ma testo "acqua"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ A Mano #2: {uova_secondo_impasto} (uova) ma testo "acqua"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ A Mano #2: {lievito_madre_primo_impasto} (lievito) ma testo "zucchero"
+   ÔÜá´©Å  Panettone Pere e Cioccolato ÔåÆ A Mano #4: {miele_secondo_impasto} (miele) ma testo "malto"
+   ÔÜá´©Å  Pasta Brioche Classica ÔåÆ Spirale #2: {lievito_fresco_impasto} (lievito) ma testo "latte"
+   ÔÜá´©Å  Pasta Brioche Classica ÔåÆ A Mano #9: {latte_impasto} (latte) ma testo "zucchero"
+   ÔÜá´©Å  Baguette Francese Tradizionale ÔåÆ Spirale #1: {farina_media_poolish} (farina) ma testo "acqua"
+   ÔÜá´©Å  Baguette Francese Tradizionale ÔåÆ Spirale #2: {farina_media_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Baguette Francese Tradizionale ÔåÆ Spirale #2: {farina_forte_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Baguette Francese Tradizionale ÔåÆ A Mano #1: {farina_media_poolish} (farina) ma testo "acqua"
+   ÔÜá´©Å  Baguette Francese Tradizionale ÔåÆ A Mano #2: {farina_media_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Baguette Francese Tradizionale ÔåÆ A Mano #2: {farina_forte_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ Spirale #1: {lievito_fresco_poolish} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ Spirale #1: {farina_media_poolish} (farina) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ Spirale #2: {farina_media_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ Spirale #2: {malto_impasto_finale} (malto) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ A Mano #1: {lievito_fresco_poolish} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ A Mano #1: {farina_media_poolish} (farina) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ A Mano #2: {farina_media_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ A Mano #2: {farina_media_poolish} (farina) ma testo "acqua"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ A Mano #3: {malto_impasto_finale} (malto) ma testo "sale"
+   ÔÜá´©Å  Ciabatta con Poolish ÔåÆ A Mano #3: {sale_impasto_finale} (sale) ma testo "olio"
+   ÔÜá´©Å  Pane alle Noci con Poolish ÔåÆ A Mano #2: {farina_media_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pane alle Noci con Poolish ÔåÆ A Mano #2: {lievito_fresco_impasto_finale} (lievito) ma testo "farina"
+   ÔÜá´©Å  Pane alle Noci con Poolish ÔåÆ A Mano #3: {olio_evo_impasto_finale} (olio) ma testo "acqua"
+   ÔÜá´©Å  Pane Integrale con Biga di Saccorosso e Miele ÔåÆ Spirale #1: {farina_caputo_saccor_biga} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pane Integrale con Biga di Saccorosso e Miele ÔåÆ Spirale #2: {farina_integrale_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pane Integrale con Biga di Saccorosso e Miele ÔåÆ Spirale #3: {miele_impasto_finale} (miele) ma testo "sale"
+   ÔÜá´©Å  Pane Integrale con Biga di Saccorosso e Miele ÔåÆ A Mano #1: {farina_caputo_saccor_biga} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pane Integrale con Biga di Saccorosso e Miele ÔåÆ A Mano #2: {farina_integrale_impasto_finale} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pane Pugliese con Biga ÔåÆ Spirale #1: {lievito_biga} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Pane Pugliese con Biga ÔåÆ Spirale #4: {sale_impasto} (sale) ma testo "acqua"
+   ÔÜá´©Å  Pane Pugliese con Biga ÔåÆ A Mano #1: {lievito_biga} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Pane Pugliese con Biga ÔåÆ A Mano #4: {sale_impasto} (sale) ma testo "acqua"
+   ÔÜá´©Å  Pinsa Romana ÔåÆ Spirale #2: {lievito_fresco_impasto} (lievito) ma testo "acqua"
+   ÔÜá´©Å  Pinsa Romana ÔåÆ Spirale #3: {sale_impasto} (sale) ma testo "acqua"
+   ÔÜá´©Å  Pinsa Romana ÔåÆ Spirale #3: {olio_evo_impasto} (olio) ma testo "acqua"
+   ÔÜá´©Å  Pinsa Romana ÔåÆ A Mano #3: {sale_impasto} (sale) ma testo "acqua"
+   ÔÜá´©Å  Pinsa Romana ÔåÆ A Mano #3: {olio_evo_impasto} (olio) ma testo "acqua"
+   ÔÜá´©Å  Pizza Contemporanea Canotto ÔåÆ Spirale #1: {farina_biga} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pizza Contemporanea Canotto ÔåÆ Spirale #4: {sale} (sale) ma testo "acqua"
+   ÔÜá´©Å  Pizza Contemporanea Canotto ÔåÆ Spirale #4: {malto} (malto) ma testo "acqua"
+   ÔÜá´©Å  Pizza Contemporanea Canotto ÔåÆ A Mano #1: {farina_biga} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pizza Napoletana Antica Tradizione con Biga e Criscito ÔåÆ Spirale #1: {farina_caputo_saccor_biga} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pizza Napoletana Antica Tradizione con Biga e Criscito ÔåÆ Spirale #2: {malto_impasto_finale} (malto) ma testo "acqua"
+   ÔÜá´©Å  Pizza Napoletana Antica Tradizione con Biga e Criscito ÔåÆ Spirale #4: {sale_impasto_finale} (sale) ma testo "acqua"
+   ÔÜá´©Å  Pizza Napoletana Antica Tradizione con Biga e Criscito ÔåÆ A Mano #1: {farina_caputo_saccor_biga} (farina) ma testo "acqua"
+   ÔÜá´©Å  Pizza Napoletana Verace STG ÔåÆ A Mano #1: {sale_impasto} (sale) ma testo "farina"
+
+   ­ƒÆí Per applicare: node fix-tokens.js
+

@@ -310,10 +310,7 @@ export function setupRoutes(app) {
                                 result.issues.forEach(i => ctx.log(`     ${i.severity} [${i.area}] ${i.message}`));
                             }
                             if (result.gemini) {
-                                ctx.log(`     🔴 Gemini: ${result.gemini.agreement}`);
-                                if (result.gemini.scoreAdjustment) {
-                                    ctx.log(`     Score adj: ${result.gemini.scoreAdjustment > 0 ? '+' : ''}${result.gemini.scoreAdjustment}`);
-                                }
+                                ctx.log(`     🤖 Gemini: ${result.gemini.score}/100 — ${result.gemini.verdict}`);
                             }
                             if (result.grounding) {
                                 ctx.log(`     🌐 Fonti: ${result.grounding.sourcesCount} (${result.grounding.sources.map(s => s.domain).join(', ')})`);

@@ -1,220 +1,246 @@
 /**
- * BATCH TOKEN FIX — Corregge automaticamente i token errati nelle ricette
+ * FIX-TOKENS — Correttore deterministico per token invertiti nei procedimenti
  * 
- * Analizza ogni ricetta, confronta i nomi dei token con gli ingredienti,
- * e corregge automaticamente dove il matching è ovvio.
+ * Problema: nelle ricette vecchie, i token {nome:valore} sono spesso associati
+ * al testo dell'ingrediente sbagliato (es. {acqua:300}g di sale).
  * 
- * Uso: node tools/fix-tokens.js [--dry-run] [--slug nome-ricetta]
+ * Questo script:
+ * 1. Scansiona tutti i JSON ricetta
+ * 2. Per ogni step, trova pattern {token:valore}g di TESTO
+ * 3. Verifica che il token corrisponda al testo
+ * 4. Se trova coppie invertite, le swappa
+ * 5. Salva backup + JSON corretto
+ * 
+ * ZERO costo API — puramente deterministico.
+ * 
+ * Uso: node fix-tokens.js --dry-run    (solo analisi)
+ *      node fix-tokens.js              (applica fix + backup)
+ *      node fix-tokens.js --verbose    (dettagli extra)
  */
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+
+import { readFileSync, writeFileSync, readdirSync, existsSync, copyFileSync, statSync } from 'fs';
 import { resolve, basename } from 'path';
 
-const RECIPES_DIR = resolve('Ricettario/ricette');
-const TOKEN_RE = /\{([a-z_]+):(\d+(?:\.\d+)?)(!)?\}/g;
+const RICETTARIO = resolve(process.cwd(), '../Ricettario/ricette');
 const DRY_RUN = process.argv.includes('--dry-run');
-const ONLY_SLUG = process.argv.find((a, i) => process.argv[i - 1] === '--slug');
+const VERBOSE = process.argv.includes('--verbose');
 
-// ── Mapping ingredienti → categorie semantiche ──
-const INGREDIENT_CATEGORIES = {
-    acqua: ['acqua', 'water'],
-    farina: ['farina', 'semola rimacinata', 'tipo 00', 'tipo 0', 'tipo 1', 'tipo 2', 'manitoba', 'nuvola', 'saccorosso', 'farro', 'integrale', 'segale'],
-    sale: ['sale'],
-    olio: ['olio', 'evo', 'extravergine', 'oliva'],
-    zucchero: ['zucchero', 'zucchero semolato', 'zucchero a velo'],
-    lievito: ['lievito', 'ldb', 'lievito di birra', 'lievito secco', 'lievito madre', 'criscito'],
-    burro: ['burro'],
-    uova: ['uova', 'uovo', 'tuorlo', 'tuorli', 'albume', 'albumi'],
-    latte: ['latte'],
-    miele: ['miele'],
-    malto: ['malto', 'estratto di malto'],
-    strutto: ['strutto', 'sugna'],
-    semola: ['semola'],
+// ── Mappa token-keyword → tipo ingrediente ──
+const TOKEN_KEYWORDS = {
+    acqua:    ['acqua', 'water'],
+    sale:     ['sale'],
+    olio:     ['olio', 'extravergine', 'evo'],
+    farina:   ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'saccorosso', 'integrale', 'caputo'],
+    lievito:  ['lievito'],
+    malto:    ['malto'],
+    zucchero: ['zucchero'],
+    burro:    ['burro'],
+    miele:    ['miele'],
+    latte:    ['latte'],
+    uova:     ['uova', 'uovo', 'tuorlo'],
+    strutto:  ['strutto'],
 };
 
-function categorizeIngredient(name) {
-    const lower = name.toLowerCase();
-    for (const [cat, keywords] of Object.entries(INGREDIENT_CATEGORIES)) {
-        if (keywords.some(k => lower.includes(k))) return cat;
+// Dato un token ID come "acqua_poolish" o "sale_impasto_finale", estrai il tipo
+function getTokenType(tokenId) {
+    const id = tokenId.toLowerCase();
+    for (const [type] of Object.entries(TOKEN_KEYWORDS)) {
+        if (id.startsWith(type)) return type;
     }
     return null;
 }
 
-function categorizeToken(tokenName) {
-    const lower = tokenName.toLowerCase();
-    for (const [cat, keywords] of Object.entries(INGREDIENT_CATEGORIES)) {
-        if (keywords.some(k => lower.includes(k))) return cat;
+// Dato un testo dopo il token, cerca di capire a quale ingrediente si riferisce
+function getTextType(textAfterToken) {
+    const t = textAfterToken.toLowerCase();
+    for (const [type, keywords] of Object.entries(TOKEN_KEYWORDS)) {
+        if (keywords.some(k => t.includes(k))) return type;
     }
-    // Fallback: check if the token name itself is a category
-    if (INGREDIENT_CATEGORIES[lower]) return lower;
     return null;
 }
 
-/**
- * Analizza il contesto testuale dopo un token per capire a cosa si riferisce realmente.
- */
-function getContextIngredient(text, tokenEnd) {
-    // Prendi i 60 caratteri dopo il token per capire il contesto
-    const after = text.substring(tokenEnd, tokenEnd + 60).toLowerCase();
+function analyzeStep(text) {
+    const issues = [];
+    const tokens = [];
     
-    // Pattern: "{token}g di INGREDIENTE" o "{token}g INGREDIENTE"
-    const contextMatch = after.match(/^g?\s*(?:di\s+)?(\w[\w\s']*?)(?:\s*[,.\(\{]|$)/);
-    if (!contextMatch) return null;
-    
-    const contextWord = contextMatch[1].trim();
-    return categorizeIngredient(contextWord);
-}
-
-function processRecipe(filePath) {
-    const raw = readFileSync(filePath, 'utf-8');
-    const recipe = JSON.parse(raw);
-    const slug = recipe.slug || basename(filePath, '.json');
-    
-    // Raccogli tutti gli ingredienti con i loro grammi
-    const ingredients = new Map(); // name → { grams, category, group }
-    for (const g of (recipe.ingredientGroups || [])) {
-        for (const item of (g.items || [])) {
-            const cat = categorizeIngredient(item.name);
-            ingredients.set(item.name, { grams: item.grams, category: cat, group: g.group });
+    const regex = /\{([^}:]+):([^}]+)\}g/g;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+        const tokenId = match[1];
+        const tokenValue = match[2];
+        const fullToken = match[0];
+        const pos = match.index;
+        
+        const afterPos = pos + fullToken.length;
+        const textAfter = text.substring(afterPos, afterPos + 80);
+        
+        const tokenType = getTokenType(tokenId);
+        const textType = getTextType(textAfter);
+        
+        tokens.push({ tokenId, tokenValue, fullToken, pos, afterPos, textAfter: textAfter.substring(0, 40), tokenType, textType });
+        
+        if (tokenType && textType && tokenType !== textType) {
+            issues.push({ tokenId, fullToken, tokenType, textType, textAfter: textAfter.substring(0, 40) });
         }
     }
-
-    const fixes = [];
-    const stepKeys = ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment'];
     
-    // Anche variants altSteps
-    const allStepArrays = [];
-    for (const k of stepKeys) {
-        if (recipe[k]?.length) allStepArrays.push({ key: k, steps: recipe[k] });
-    }
-    for (const v of (recipe.variants || [])) {
-        if (v.altSteps?.length) allStepArrays.push({ key: `variants[${v.id}].altSteps`, steps: v.altSteps });
-    }
+    return { tokens, issues };
+}
 
-    for (const { key, steps } of allStepArrays) {
-        for (let si = 0; si < steps.length; si++) {
-            const step = steps[si];
-            if (!step.text) continue;
+function fixStepText(text, issues) {
+    let fixed = text;
+    const swapped = new Set();
+    
+    // Strategia: trova coppie invertite e swappa i token
+    for (const issue of issues) {
+        if (swapped.has(issue.fullToken)) continue;
+        
+        const partner = issues.find(other => 
+            other !== issue &&
+            !swapped.has(other.fullToken) &&
+            other.tokenType === issue.textType &&
+            other.textType === issue.tokenType
+        );
+        
+        if (partner) {
+            const placeholder = '___SWAP_PLACEHOLDER___';
+            fixed = fixed.replace(issue.fullToken, placeholder);
+            fixed = fixed.replace(partner.fullToken, issue.fullToken);
+            fixed = fixed.replace(placeholder, partner.fullToken);
             
-            let newText = step.text;
-            let modified = false;
+            swapped.add(issue.fullToken);
+            swapped.add(partner.fullToken);
+        }
+    }
+    
+    return fixed;
+}
 
-            // Find all tokens and check context
-            const tokenRegex = new RegExp(TOKEN_RE.source, 'g');
-            let match;
-            const replacements = [];
+// ══════════════════════════════════════════
+// MAIN
+// ══════════════════════════════════════════
 
-            while ((match = tokenRegex.exec(step.text)) !== null) {
-                const [fullMatch, tokenName, tokenValue, fixedSuffix] = match;
-                const tokenCategory = categorizeToken(tokenName);
-                const contextCategory = getContextIngredient(step.text, match.index + fullMatch.length);
+console.log('');
+console.log('═══════════════════════════════════════════════════');
+console.log('   FIX-TOKENS — Correttore Token Invertiti');
+console.log('═══════════════════════════════════════════════════');
+console.log(`   Modalità: ${DRY_RUN ? '🔍 DRY-RUN (nessuna modifica)' : '🔧 FIX (con backup)'}`);
+console.log('');
+
+let totalRecipes = 0;
+let totalFixed = 0;
+let totalIssues = 0;
+let unfixable = [];
+
+const categories = readdirSync(RICETTARIO).filter(d => {
+    try { return statSync(resolve(RICETTARIO, d)).isDirectory(); } catch { return false; }
+});
+
+for (const cat of categories) {
+    const catDir = resolve(RICETTARIO, cat);
+    const files = readdirSync(catDir).filter(f => 
+        f.endsWith('.json') && 
+        !f.endsWith('.backup.json') && 
+        !f.endsWith('.pre-fix.json') &&
+        !f.endsWith('.qualita.json') &&
+        f !== 'index.json'
+    );
+    
+    for (const file of files) {
+        const filePath = resolve(catDir, file);
+        const raw = readFileSync(filePath, 'utf-8');
+        const recipe = JSON.parse(raw);
+        
+        totalRecipes++;
+        let recipeIssues = [];
+        let recipeFixed = false;
+        
+        const stepArrays = [
+            { key: 'stepsSpiral', label: 'Spirale' },
+            { key: 'stepsHand', label: 'A Mano' },
+            { key: 'stepsExtruder', label: 'Estrusore' },
+            { key: 'stepsCondiment', label: 'Condimento' },
+        ];
+        
+        for (const { key, label } of stepArrays) {
+            if (!recipe[key]?.length) continue;
+            
+            for (let i = 0; i < recipe[key].length; i++) {
+                const step = recipe[key][i];
+                if (!step.text) continue;
                 
-                if (contextCategory && tokenCategory && contextCategory !== tokenCategory) {
-                    // MISMATCH! Il token dice una cosa, il contesto dice un'altra
+                const { tokens, issues } = analyzeStep(step.text);
+                
+                if (issues.length > 0) {
+                    totalIssues += issues.length;
                     
-                    // Trova l'ingrediente giusto basandosi sul contesto + grammi
-                    const grams = parseFloat(tokenValue);
-                    let bestIngredient = null;
-                    let bestName = null;
-                    
-                    for (const [name, info] of ingredients) {
-                        if (info.category === contextCategory && info.grams === grams) {
-                            bestIngredient = info;
-                            bestName = name;
-                            break;
-                        }
+                    for (const issue of issues) {
+                        recipeIssues.push({ step: `${label} #${i + 1}`, ...issue });
                     }
                     
-                    if (!bestIngredient) {
-                        // Fallback: cerca solo per categoria
-                        for (const [name, info] of ingredients) {
-                            if (info.category === contextCategory) {
-                                bestIngredient = info;
-                                bestName = name;
-                                break;
+                    const fixedText = fixStepText(step.text, issues);
+                    
+                    if (fixedText !== step.text) {
+                        if (!DRY_RUN) {
+                            recipe[key][i].text = fixedText;
+                        }
+                        recipeFixed = true;
+                        
+                        // Verifica residui
+                        const recheck = analyzeStep(fixedText);
+                        if (recheck.issues.length > 0) {
+                            for (const remaining of recheck.issues) {
+                                unfixable.push({ recipe: recipe.title, slug: basename(file, '.json'), step: `${label} #${i + 1}`, ...remaining });
                             }
                         }
+                    } else {
+                        for (const issue of issues) {
+                            unfixable.push({ recipe: recipe.title, slug: basename(file, '.json'), step: `${label} #${i + 1}`, ...issue });
+                        }
                     }
-
-                    // Genera nuovo nome token
-                    const groupSuffix = bestIngredient?.group 
-                        ? '_' + bestIngredient.group.replace(/^Per\s+(la|il|lo|l'|i|le|gli)\s*/i, '').toLowerCase().replace(/[\s']+/g, '_').replace(/[^a-z0-9_]/g, '')
-                        : '';
-                    const newTokenName = contextCategory + groupSuffix;
-                    const newValue = bestIngredient?.grams ?? grams;
-                    const newToken = `{${newTokenName}:${newValue}${fixedSuffix || ''}}`;
-                    
-                    replacements.push({
-                        old: fullMatch,
-                        new: newToken,
-                        reason: `token "${tokenName}" (${tokenCategory}) → contesto "${contextCategory}" [${bestName || '?'}]`
-                    });
                 }
             }
-
-            // Applica le sostituzioni
-            for (const rep of replacements) {
-                newText = newText.replace(rep.old, rep.new);
-                modified = true;
-                fixes.push({
-                    step: `${key}[${si}] "${step.title}"`,
-                    old: rep.old,
-                    new: rep.new,
-                    reason: rep.reason
-                });
+        }
+        
+        if (recipeIssues.length > 0) {
+            const emoji = recipeFixed ? '🔧' : '⚠️';
+            console.log(`${emoji} ${recipe.title} (${cat}/${file})`);
+            for (const issue of recipeIssues) {
+                console.log(`   ${issue.step}: {${issue.tokenId}} è "${issue.tokenType}" ma testo dice "${issue.textType}"`);
+                if (VERBOSE) console.log(`      → ...${issue.textAfter}`);
             }
-
-            if (modified) {
-                step.text = newText;
+            
+            if (recipeFixed && !DRY_RUN) {
+                const backupPath = filePath.replace('.json', '.pre-fix.json');
+                copyFileSync(filePath, backupPath);
+                writeFileSync(filePath, JSON.stringify(recipe, null, 2), 'utf-8');
+                console.log(`   ✅ Fixato (backup: ${basename(backupPath)})`);
+                totalFixed++;
+            } else if (recipeFixed) {
+                console.log(`   🔍 Fixabile (dry-run)`);
+                totalFixed++;
             }
+            console.log('');
         }
     }
-
-    return { slug, recipe, fixes, raw };
 }
 
-// ── Main ──
-console.log(`\n🔧 Batch Token Fix ${DRY_RUN ? '(DRY RUN)' : '(LIVE)'}\n`);
+console.log('═══════════════════════════════════════════════════');
+console.log('   RISULTATI');
+console.log('═══════════════════════════════════════════════════');
+console.log(`   📦 Ricette scansionate: ${totalRecipes}`);
+console.log(`   🔍 Token invertiti trovati: ${totalIssues}`);
+console.log(`   🔧 Ricette fixate: ${totalFixed}`);
 
-let totalFixes = 0;
-let totalRecipes = 0;
-let fixedRecipes = 0;
-
-for (const cat of readdirSync(RECIPES_DIR)) {
-    const catDir = resolve(RECIPES_DIR, cat);
-    try {
-        for (const f of readdirSync(catDir)) {
-            if (!f.endsWith('.json') || f === 'index.json') continue;
-            
-            const filePath = resolve(catDir, f);
-            const slug = f.replace('.json', '');
-            
-            if (ONLY_SLUG && slug !== ONLY_SLUG) continue;
-            
-            totalRecipes++;
-            const { fixes, recipe } = processRecipe(filePath);
-            
-            if (fixes.length > 0) {
-                fixedRecipes++;
-                totalFixes += fixes.length;
-                
-                console.log(`\n📝 ${recipe.title || slug} — ${fixes.length} fix`);
-                for (const fix of fixes) {
-                    console.log(`   ${fix.step}`);
-                    console.log(`     ❌ ${fix.old}`);
-                    console.log(`     ✅ ${fix.new}`);
-                    console.log(`     💡 ${fix.reason}`);
-                }
-                
-                if (!DRY_RUN) {
-                    writeFileSync(filePath, JSON.stringify(recipe, null, 2) + '\n', 'utf-8');
-                    console.log(`   ✅ Salvato`);
-                }
-            }
-        }
-    } catch {}
+if (unfixable.length > 0) {
+    console.log(`   ⚠️  Non fixabili automaticamente: ${unfixable.length}`);
+    console.log('');
+    for (const u of unfixable) {
+        console.log(`   ⚠️  ${u.recipe} → ${u.step}: {${u.tokenId}} (${u.tokenType}) ma testo "${u.textType}"`);
+    }
 }
 
-console.log(`\n${'═'.repeat(50)}`);
-console.log(`📊 Risultati: ${totalFixes} fix su ${fixedRecipes}/${totalRecipes} ricette`);
-if (DRY_RUN) console.log(`⚠️  DRY RUN — Nessuna modifica applicata. Rimuovi --dry-run per applicare.`);
+console.log('');
+if (DRY_RUN) console.log('   💡 Per applicare: node fix-tokens.js');
+else console.log('   ✅ Completato! Backup in .pre-fix.json');
 console.log('');

@@ -305,6 +305,65 @@ function getSelectedGeminiModel() {
     return sel ? sel.value : 'gemini-2.5-pro';
 }
 
+const GEMINI_MODELS = [
+    { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro', tag: 'default' },
+    { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', tag: 'fast' },
+    { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro', tag: 'new' },
+    { id: 'gemini-2-flash', label: 'Gemini 2 Flash', tag: 'economy' },
+];
+
+function showModelDropdown(slug, anchorEl) {
+    // Rimuovi dropdown precedente
+    document.querySelector('.model-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'model-dropdown';
+
+    // Posizionamento: sopra se non c'è spazio sotto, altrimenti sotto
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 200) {
+        dd.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    } else {
+        dd.style.top = `${rect.bottom + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    }
+
+    dd.innerHTML = `
+        <div class="model-dropdown-title">Modello Gemini Challenge</div>
+        ${GEMINI_MODELS.map(m => `
+            <button class="model-dropdown-item" data-model="${m.id}">
+                <i data-lucide="sparkles"></i>
+                ${m.label}
+                <span class="model-tag ${m.tag === 'default' ? 'tag-default' : ''}">${m.tag}</span>
+            </button>
+        `).join('')}
+    `;
+
+    document.body.appendChild(dd);
+    lucide.createIcons();
+
+    // Click handler
+    dd.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.model-dropdown-item');
+        if (!btn) return;
+        const model = btn.dataset.model;
+        dd.remove();
+        apiPost('qualita', { slugs: [slug], geminiModel: model });
+    });
+
+    // Chiudi al click fuori
+    setTimeout(() => {
+        document.addEventListener('click', function closeMD(e) {
+            if (!dd.contains(e.target) && !anchorEl.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeMD);
+            }
+        });
+    }, 10);
+}
+
 async function runQualita(withGrounding = false) {
     if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
     await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding, geminiModel: getSelectedGeminiModel() });
@@ -345,6 +404,14 @@ async function runFix() {
     if (fixable.length === 0) return alert('Nessuna ricetta selezionata necessita di fix (tutte >= 85)');
     if (!confirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'} con problemi?\n\nVerrà creato un backup .backup.json per ogni file.`)) return;
     await apiPost('qualita/fix', { slugs: fixable });
+}
+
+async function runFixSingle(slug) {
+    const q = qualityIndex[slug];
+    if (!q) return alert('Esegui prima l\'analisi qualità su questa ricetta');
+    if (q.score >= 85) return alert(`Questa ricetta ha score ${q.score}/100 — non necessita di fix (>= 85)`);
+    if (!confirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nVerrà creato un backup .backup.json`)) return;
+    await apiPost('qualita/fix', { slugs: [slug] });
 }
 
 const CATEGORY_COLORS = {
@@ -625,7 +692,11 @@ function renderRecipeCard(r) {
                 <div class="recipe-card-actions" onclick="event.stopPropagation()">
                     <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
                     <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('qualita', {slugs:['${r.slug}']})" title="Analisi Qualità"><i data-lucide="shield-check"></i></button>
+                    <div class="btn-split" title="Analisi Qualità">
+                        <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
+                        <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
+                    </div>
+                    <button class="btn btn-secondary btn-sm btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (correggi problemi)"><i data-lucide="wrench"></i></button>
                     <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
             </div>
@@ -658,7 +729,11 @@ function renderRecipeRow(r) {
             <div class="recipe-row-actions" onclick="event.stopPropagation()">
                 <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
                 <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('qualita', {slugs:['${r.slug}']})" title="Analisi Qualità"><i data-lucide="shield-check"></i></button>
+                <div class="btn-split" title="Analisi Qualità">
+                    <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
+                    <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (correggi problemi)"><i data-lucide="wrench"></i></button>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>
@@ -771,12 +846,9 @@ function updateActionBar() {
         </div>
         <div class="action-bar-actions">
             <select id="gemini-model-select" class="action-bar-select" title="Modello Gemini per il challenge">
-                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
-                <option value="gemini-2-flash">Gemini 2 Flash</option>
+                ${GEMINI_MODELS.map(m => `<option value="${m.id}">${m.label}</option>`).join('')}
             </select>
-            <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Claude + Gemini)">
+            <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Gemini)">
                 <i data-lucide="shield-check"></i> Qualità
             </button>
             <button class="action-bar-btn action-bar-ai" onclick="runQualita(true)" title="Qualità + fonti web (SerpAPI grounding)">

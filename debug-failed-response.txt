@@ -1,25 +1,9 @@
+```json
 {
-  "agreement": "🟡 Parziale disaccordo",
-  "scoreAdjustment": -8,
-  "challengedIssues": [
-    {
-      "originalIssue": "Idratazione calcolata 62.5% vs 70% dichiarata - scarto significativo",
-      "verdict": "✅ Confermo",
-      "reason": "Ottima individuazione. La matematica è inequivocabile: 375g totali di acqua su 600g totali di farina generano un'idratazione del 62.5%, lontanissima dal 70% promesso nel setup."
-    },
-    {
-      "originalIssue": "Lievito biga 0.1% corretto ma molto basso per 18-24h a 20-22°C",
-      "verdict": "✅ Confermo",
-      "reason": "Tipicamente la biga classica richiede l'1% di lievito fresco a 18°C. Lo 0.1% è una quantità al limite per le temperature indicate, corretto segnalarlo come consiglio (💡)."
-    },
-    {
-      "originalIssue": "Tempo appretto diverso tra spirale (1.5-2h) e mano (2-2.5h)",
-      "verdict": "❌ Falso positivo",
-      "reason": "La differenza di tempo è tecnicamente sensata: l'impasto a mano genera molta meno energia meccanica (e quindi meno calore) rispetto a una spirale, portando a una temperatura al cuore leggermente inferiore che giustifica tempi di lievitazione lievemente più lunghi."
-    }
-  ],
-  "missedIssues": [
+  "score": 65,
+  "verdict": "🟡 Da migliorare",
+  "issues": [
     {
       "severity": "❌",
-      "area": "Logica di Scalabilità",
-      "message": "Agli step 6 e 15 c'è un errore logico legato al ricalcolo dosi: 'Dividere in 2 pezzi da {panetto_peso:485!}g'. Il token ha il blocco scala (!), quindi il peso rimane 485g. Se un utente raddoppia la ricetta (4 pani), il testo indicherà ancora di divid
+      "area": "Gruppi",
+      "message": "La Farina Manitoba (700g) è raggruppata interamente sotto 'Per la Biga'. Tuttavia, sia nello step 2 che nello step 11 il procedimento indica di prelevare solo 140g di Manitoba per il pre-impasto. Lasciare 700g di farina e 120g di acqua nella sezione Biga suggerirebbe un pre-impasto con un'idratazione impossibile del 17%.",

@@ -4,13 +4,13 @@
  * Architettura a 4 Layer (standard industria 2026):
  *   Layer 1: SCHEMA VALIDATION — checks deterministici sul JSON
  *   Layer 2: WEB GROUNDING    — fonti reali come contesto (opzionale)
- *   Layer 3: DUAL-LLM REVIEW  — Claude verifica + Gemini contesta
+ *   Layer 3: GEMINI REVIEW     — Gemini verifica (single-LLM, indipendente)
  *   Layer 4: SCORE & REPORT   — score composito + markdown report
  * 
  * Sostituisce verify.js (solo AI) + validator.js (solo web).
  * Toggle grounding: default OFF (veloce), ON per analisi profonda.
  */
-import { callClaude, callGemini, parseClaudeJson } from './utils/api.js';
+import { callGemini, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { resolve, basename } from 'path';
@@ -113,7 +113,7 @@ async function fetchGroundingContext(recipeName) {
             return null;
         }
 
-        // Formatta come contesto testuale per Claude
+        // Formatta come contesto testuale per il verificatore
         let context = '\n\n══════ FONTI WEB REALI (per cross-check) ══════\n';
         for (const [i, src] of scrapedData.entries()) {
             context += `\n── FONTE ${i + 1}: ${src.domain} ──\n`;
@@ -139,10 +139,10 @@ async function fetchGroundingContext(recipeName) {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// LAYER 3: DUAL-LLM REVIEW (Claude + Gemini, ~15s)
+// LAYER 3: GEMINI REVIEW (single-LLM, ~10s)
 // ══════════════════════════════════════════════════════════════════════
 
-const VERIFY_SYSTEM = `Sei un esperto tecnologo alimentare, panificatore e pastaio italiano con 30 anni di esperienza.
+const GEMINI_VERIFY_SYSTEM = `Sei un esperto tecnologo alimentare, panificatore e pastaio italiano con 30 anni di esperienza.
 Il tuo compito è VERIFICARE la correttezza di ricette, trovando errori e suggerendo miglioramenti.
 
 ⚠️ REGOLA FONDAMENTALE — ANTI-ALLUCINAZIONE:
@@ -187,11 +187,25 @@ CRITERI DI VERIFICA:
    - I raggruppamenti sono logici?
    - Ogni ingrediente è nel gruppo giusto?
 
-7. VERIFICA MATEMATICA IDRATAZIONE (CRITICO):
-   - Calcola FARINA TOTALE sommando tutte le farine in tutti i gruppi (biga + impasto + poolish)
-   - Calcola ACQUA TOTALE sommando tutta l'acqua in tutti i gruppi
-   - IDRATAZIONE REALE = (ACQUA TOTALE / FARINA TOTALE) × 100
-   - Se lo scarto tra idratazione dichiarata e calcolata è > 3%, segnala come ❌ errore critico
+7. ⚠️ VERIFICA MATEMATICA IDRATAZIONE (CRITICO — NON SALTARE MAI):
+   Il valore IDRATAZIONE DICHIARATA nella ricetta POTREBBE ESSERE SBAGLIATO. NON fidarti.
+   DEVI SEMPRE ricalcolarlo da zero seguendo questi step:
+
+   a) Elenca TUTTE le farine/semole in TUTTI i gruppi (inclusi pre-impasti come biga, poolish):
+      → es. Farina biga = 100g, Semola impasto = 500g
+   b) FARINA TOTALE = somma di (a)
+   c) Elenca TUTTA l'acqua in TUTTI i gruppi (inclusi pre-impasti E il bassinage):
+      → es. Acqua biga = 45g, Acqua impasto = 310g, Bassinage = 50g
+      ⚠️ Il BASSINAGE è acqua aggiunta successivamente durante l'impastamento — CONTA come acqua totale.
+   d) ACQUA TOTALE = somma di (c)
+   e) IDRATAZIONE REALE = (ACQUA TOTALE / FARINA TOTALE) × 100
+   f) Confronta con il valore DICHIARATO
+
+   ⚠️ SELF-CHECK: Se il tuo calcolo conferma il valore dichiarato (scarto ≤ 3%), l'idratazione è CORRETTA.
+   NON segnalare errore. SOLO se lo scarto è > 3%, segnala come ❌ errore critico.
+   Nella issue MOSTRA LA FORMULA COMPLETA (es. "375g/600g = 62.5% ≠ 70% dichiarato").
+   ATTENZIONE: NON contare l'ingrediente assemblato (es. "Biga Matura" 145g) come acqua o farina —
+   è il prodotto finito del pre-impasto, le sue componenti sono già listate nel gruppo biga/poolish.
 
 CONTESTO TECNICO RICETTARIO:
 - Le ricette usano token {nome_ingrediente:valore}g nel procedimento — sono placeholder per il calcolatore dosi frontend. NON segnalarli come errori.
@@ -205,41 +219,6 @@ RISPONDI con un JSON valido (NO markdown fences):
     {"severity": "❌|⚠️|💡", "area": "Dosi|Temperature|Tempi|Setup|Coerenza|Gruppi", "message": "Problema", "fix": "Correzione"}
   ],
   "summary": "Riepilogo 2-3 righe sulla qualità complessiva"
-}`;
-
-const GEMINI_CHALLENGE_SYSTEM = `Sei un revisore critico indipendente — un secondo parere esperto.
-Hai ricevuto:
-1. Una RICETTA originale
-2. Il VERDETTO DI UN ALTRO AI (Claude) che l'ha già verificata
-
-Il tuo compito è METTERE IN DISCUSSIONE il verdetto, NON ripeterlo passivamente.
-
-COSA DEVI FARE:
-- CONFERMA i problemi reali trovati dall'altro AI
-- CONTESTA le segnalazioni sbagliate o troppo punitive ("falsi positivi")
-- AGGIUNGI problemi che l'altro AI ha MANCATO
-- VALUTA se lo score è giusto, troppo alto o troppo basso
-
-CONTESTO TECNICO RICETTARIO:
-- Le ricette usano token nel procedimento con sintassi {nome_ingrediente:valore}g — questi sono placeholder per il calcolatore dosi frontend.
-- Token con suffisso ! (es. {panetto_peso:520!}g) sono TOKEN FISSI: il valore NON scala col moltiplicatore dosi. Il ! NON è un errore di battitura.
-- Non segnalare la presenza di token {nome:valore} come errore — sono parte del sistema.
-
-ATTENZIONE:
-- NON essere pignolo senza motivo — segnala solo problemi REALI
-- Se il verdetto è corretto, dillo chiaramente
-
-RISPONDI con un JSON valido (NO markdown fences):
-{
-  "agreement": "🟢 Confermo il verdetto|🟡 Parziale disaccordo|🔴 Forte disaccordo",
-  "scoreAdjustment": 0,
-  "challengedIssues": [
-    {"originalIssue": "Rif. problema Claude", "verdict": "✅ Confermo|❌ Falso positivo|⚠️ Parziale", "reason": "Spiegazione"}
-  ],
-  "missedIssues": [
-    {"severity": "❌|⚠️|💡", "area": "Area", "message": "Problema", "fix": "Correzione"}
-  ],
-  "summary": "Giudizio revisore (2-3 righe)"
 }`;
 
 /**
@@ -312,7 +291,7 @@ ${baking.tips?.length > 0 ? `- Suggerimenti:\n${baking.tips.map(t => `  • ${t}
 
     return `TITOLO: ${recipe.title}
 CATEGORIA: ${recipe.category}
-IDRATAZIONE: ${recipe.hydration}%
+IDRATAZIONE DICHIARATA: ${recipe.hydration}% ⚠️ (VERIFICA OBBLIGATORIA: ricalcola dalla somma ingredienti)
 TEMPERATURA TARGET: ${recipe.targetTemp || 'N/A'}
 LIEVITAZIONE: ${recipe.fermentation || 'N/A'}
 SETUP: ${setups.join(' + ') || 'N/A'}
@@ -330,49 +309,32 @@ ${recipe.proTips?.length > 0 ? `\nPRO TIPS:\n${recipe.proTips.map(t => `- ${t}`)
 }
 
 /**
- * Claude verifica + Gemini contesta (singolo passaggio, anti-loop)
+ * Gemini verifica la ricetta (single-LLM, indipendente dal generatore)
  */
-async function dualLlmReview(recipePrompt, groundingContext, geminiModel = 'gemini-2.5-pro') {
-    // Se ci sono fonti web, aggiungi una direttiva esplicita
+async function geminiReview(recipePrompt, groundingContext, geminiModel = 'gemini-2.5-pro') {
+    const MODEL_LABELS = {
+        'gemini-2.5-pro': 'Gemini 2.5 Pro',
+        'gemini-2.5-flash': 'Gemini 2.5 Flash',
+        'gemini-3.1-pro-preview': 'Gemini 3.1 Pro',
+        'gemini-2-flash': 'Gemini 2 Flash',
+    };
+    const modelLabel = MODEL_LABELS[geminiModel] || geminiModel;
+
     const groundingDirective = groundingContext
         ? `\n\nHai anche accesso a FONTI WEB REALI per cross-check. Confronta ingredienti e proporzioni della ricetta con le fonti. Segnala discrepanze significative come issues.`
         : '';
     const fullPrompt = `Verifica questa ricetta:\n\n${recipePrompt}${groundingContext?.text || ''}${groundingDirective}\n\nVerifica dosi, temperature, tempi, setup, coerenza ingredienti↔procedimento.`;
 
-    // ── Claude ──
-    log.info('   🔵 Layer 3: Claude sta verificando...');
-    const claudeText = await callClaude({
-        model: 'claude-sonnet-4-20250514',
-        maxTokens: 3000,
-        system: VERIFY_SYSTEM,
+    log.info(`   🤖 Layer 3: ${modelLabel} sta verificando...`);
+    const geminiText = await callGemini({
+        model: geminiModel,
+        maxTokens: 4096,
+        system: GEMINI_VERIFY_SYSTEM,
         messages: [{ role: 'user', content: fullPrompt }],
     });
-    const claude = parseClaudeJson(claudeText);
-    log.info(`   🔵 Claude: ${claude.score}/100 — ${claude.verdict}`);
-
-    // ── Gemini Challenge ──
-    let gemini = null;
-    if (process.env.GEMINI_API_KEY) {
-        try {
-            log.info('   🔴 Layer 3: Gemini sta contestando...');
-            const geminiPrompt = `RICETTA:\n${recipePrompt}\n\n══════════════════════════════════════\nVERDETTO CLAUDE:\n${JSON.stringify(claude, null, 2)}\n══════════════════════════════════════\n\nAnalizza CRITICAMENTE il verdetto.`;
-
-            const geminiText = await callGemini({
-                model: geminiModel,
-                maxTokens: 4096,
-                system: GEMINI_CHALLENGE_SYSTEM,
-                messages: [{ role: 'user', content: geminiPrompt }],
-            });
-            gemini = parseClaudeJson(geminiText);
-            log.info(`   🔴 Gemini: ${gemini.agreement}`);
-        } catch (err) {
-            log.warn(`   ⚠️ Gemini challenge fallito: ${err.message}`);
-        }
-    } else {
-        log.debug('   ⏭️ GEMINI_API_KEY non configurata, skip challenge');
-    }
-
-    return { claude, gemini };
+    const result = parseClaudeJson(geminiText);
+    log.info(`   🤖 ${modelLabel}: ${result.score}/100 — ${result.verdict}`);
+    return result;
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -380,18 +342,11 @@ async function dualLlmReview(recipePrompt, groundingContext, geminiModel = 'gemi
 // ══════════════════════════════════════════════════════════════════════
 
 /**
- * Calcola score finale composito:
- * - Schema (20%) + AI Claude (60%) + Gemini adjustment (20%)
- * Se grounding attivo, bonus/malus basato su conferma fonti
+ * Calcola score finale:
+ * - Gemini score diretto + schema penalty
  */
-function computeFinalScore(schema, claude, gemini, grounding) {
-    // Base: Claude score pesato
-    let score = claude.score;
-
-    // Gemini adjustment
-    if (gemini?.scoreAdjustment) {
-        score = Math.max(0, Math.min(100, score + gemini.scoreAdjustment));
-    }
+function computeFinalScore(schema, gemini) {
+    let score = gemini.score;
 
     // Schema penalty: se ci sono errori strutturali, penalizza
     if (!schema.pass) {
@@ -402,27 +357,11 @@ function computeFinalScore(schema, claude, gemini, grounding) {
 }
 
 /**
- * Merge issues da Claude + Gemini in lista unificata
+ * Genera report markdown
  */
-function mergeIssues(claude, gemini) {
-    const issues = [...(claude.issues || [])];
-
-    // Aggiungi issues mancanti trovate solo da Gemini
-    if (gemini?.missedIssues?.length > 0) {
-        for (const mi of gemini.missedIssues) {
-            issues.push({ ...mi, source: '🔴 Gemini' });
-        }
-    }
-
-    return issues;
-}
-
-/**
- * Genera report markdown unificato
- */
-function generateQualityReport(recipe, schema, claude, gemini, grounding, finalScore) {
+function generateQualityReport(recipe, schema, gemini, grounding, finalScore) {
     const emoji = finalScore >= 80 ? '🟢' : finalScore >= 60 ? '🟡' : '🔴';
-    const issues = mergeIssues(claude, gemini);
+    const issues = [...(gemini.issues || [])];
 
     let report = `# Qualità: ${recipe.title}\n\n`;
     report += `## ${emoji} Score Finale: ${finalScore}/100\n\n`;
@@ -430,18 +369,14 @@ function generateQualityReport(recipe, schema, claude, gemini, grounding, finalS
     // Score breakdown
     report += `| Layer | Score | Dettaglio |\n|---|---|---|\n`;
     report += `| Schema | ${schema.pass ? '✅ Pass' : '❌ Fail'} | ${schema.errors.length} errori, ${schema.warnings.length} warning |\n`;
-    report += `| Claude | ${claude.score}/100 | ${claude.verdict} |\n`;
-    if (gemini) {
-        const adj = gemini.scoreAdjustment ? ` (${gemini.scoreAdjustment > 0 ? '+' : ''}${gemini.scoreAdjustment})` : '';
-        report += `| Gemini | ${gemini.agreement}${adj} | ${gemini.summary?.substring(0, 60) || ''} |\n`;
-    }
+    report += `| Gemini | ${gemini.score}/100 | ${gemini.verdict} |\n`;
     if (grounding) {
         report += `| Grounding | ${grounding.sourcesCount} fonti | ${grounding.sources.map(s => s.domain).join(', ')} |\n`;
     }
     report += '\n';
 
     // Summary
-    report += `${claude.summary}\n\n`;
+    report += `${gemini.summary}\n\n`;
 
     // Schema errors
     if (schema.errors.length > 0 || schema.warnings.length > 0) {
@@ -454,30 +389,11 @@ function generateQualityReport(recipe, schema, claude, gemini, grounding, finalS
     // Issues
     if (issues.length > 0) {
         report += `## Problemi trovati\n\n`;
-        report += `| Sev. | Area | Problema | Correzione | Fonte |\n|------|------|----------|------------|-------|\n`;
+        report += `| Sev. | Area | Problema | Correzione |\n|------|------|----------|------------|\n`;
         issues.forEach(i => {
-            report += `| ${i.severity} | ${i.area} | ${i.message} | ${i.fix || ''} | ${i.source || '🔵 Claude'} |\n`;
+            report += `| ${i.severity} | ${i.area} | ${i.message} | ${i.fix || ''} |\n`;
         });
         report += '\n';
-    }
-
-    // Gemini Challenge
-    if (gemini) {
-        report += `## 🔴 Revisione Gemini\n\n`;
-        report += `**Verdetto**: ${gemini.agreement}\n`;
-        if (gemini.scoreAdjustment) {
-            report += `**Adjustment**: ${gemini.scoreAdjustment > 0 ? '+' : ''}${gemini.scoreAdjustment}\n`;
-        }
-        report += `\n${gemini.summary}\n\n`;
-
-        if (gemini.challengedIssues?.length > 0) {
-            report += `### Issues contestate\n\n`;
-            report += `| Problema | Verdetto | Motivo |\n|---|---|---|\n`;
-            gemini.challengedIssues.forEach(i => {
-                report += `| ${i.originalIssue} | ${i.verdict} | ${i.reason} |\n`;
-            });
-            report += '\n';
-        }
     }
 
     // Web grounding sources
@@ -490,7 +406,7 @@ function generateQualityReport(recipe, schema, claude, gemini, grounding, finalS
     }
 
     // Footer
-    report += `---\n*Generato: ${new Date().toISOString()} | Pipeline: Schema → ${grounding ? 'Grounding → ' : ''}Claude → Gemini*\n`;
+    report += `---\n*Generato: ${new Date().toISOString()} | Pipeline: Schema → ${grounding ? 'Grounding → ' : ''}Gemini*\n`;
 
     return report;
 }
@@ -527,14 +443,14 @@ export async function analyzeQuality(filePath, options = {}) {
         grounding = await fetchGroundingContext(recipe.title);
     }
 
-    // ── Layer 3: Dual-LLM Review ──
+    // ── Layer 3: Gemini Review ──
     const recipePrompt = buildRecipePrompt(recipe);
-    const { claude, gemini } = await dualLlmReview(recipePrompt, grounding, options.geminiModel);
+    const gemini = await geminiReview(recipePrompt, grounding, options.geminiModel);
 
     // ── Layer 4: Score & Report ──
-    const finalScore = computeFinalScore(schema, claude, gemini, grounding);
-    const issues = mergeIssues(claude, gemini);
-    const report = generateQualityReport(recipe, schema, claude, gemini, grounding, finalScore);
+    const finalScore = computeFinalScore(schema, gemini);
+    const issues = [...(gemini.issues || [])];
+    const report = generateQualityReport(recipe, schema, gemini, grounding, finalScore);
 
     // Salva report accanto alla ricetta
     const reportPath = filePath.replace('.json', '.qualita.md');
@@ -542,17 +458,14 @@ export async function analyzeQuality(filePath, options = {}) {
 
     const result = {
         score: finalScore,
-        verdict: claude.verdict,
+        verdict: gemini.verdict,
         issues,
         schema,
-        claude: { score: claude.score, verdict: claude.verdict, summary: claude.summary },
-        gemini: gemini ? {
-            agreement: gemini.agreement,
-            scoreAdjustment: gemini.scoreAdjustment || 0,
-            challengedIssues: gemini.challengedIssues || [],
-            missedIssues: gemini.missedIssues || [],
+        gemini: {
+            score: gemini.score,
+            verdict: gemini.verdict,
             summary: gemini.summary,
-        } : null,
+        },
         grounding: grounding ? {
             sourcesCount: grounding.sourcesCount,
             sources: grounding.sources,
@@ -565,7 +478,7 @@ export async function analyzeQuality(filePath, options = {}) {
     // Salva nello quality index per badge dashboard
     saveScoreToIndex(recipe.slug || basename(filePath, '.json'), {
         score: finalScore,
-        verdict: claude.verdict,
+        verdict: gemini.verdict,
         issueCount: issues.length,
         timestamp: new Date().toISOString(),
     });

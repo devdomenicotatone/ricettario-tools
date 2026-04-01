@@ -1143,6 +1143,125 @@ body {
     cursor: not-allowed;
 }
 
+/* ── SPLIT BUTTON (Quality Model Picker) ── */
+.btn-split {
+    display: inline-flex;
+    align-items: stretch;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    transition: all var(--transition);
+}
+
+.btn-split:hover {
+    border-color: var(--border-light);
+}
+
+.btn-split-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+    font-size: 12px;
+}
+.btn-split-main svg { width: 14px; height: 14px; }
+
+.btn-split-main:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.btn-split-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: none;
+    border-left: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 9px;
+}
+
+.btn-split-chevron:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+}
+
+/* Model Dropdown (anchored to split button) */
+.model-dropdown {
+    position: fixed;
+    z-index: 1000;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 6px;
+    min-width: 180px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+    animation: fadeInDD 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.model-dropdown-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 6px 12px 4px;
+}
+
+.model-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-align: left;
+    width: 100%;
+}
+.model-dropdown-item svg { width: 14px; height: 14px; }
+
+.model-dropdown-item:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+}
+
+.model-dropdown-item .model-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--bg-card);
+    color: var(--text-muted);
+}
+
+.model-dropdown-item .model-tag.tag-default {
+    background: var(--accent-glow);
+    color: var(--accent);
+}
+
 /* ── SELECTION SYSTEM ── */
 .recipe-checkbox {
     position: absolute;
@@ -1320,6 +1439,16 @@ body {
     background: linear-gradient(135deg, #d97706, #f59e0b);
     color: #fff;
     border-color: #d97706;
+}
+
+.btn-fix-card {
+    color: #f59e0b !important;
+    border-color: rgba(245, 158, 11, 0.25) !important;
+}
+.btn-fix-card:hover {
+    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    color: #fff !important;
+    border-color: #d97706 !important;
 }
 
 /* ── TERMINAL ── */
