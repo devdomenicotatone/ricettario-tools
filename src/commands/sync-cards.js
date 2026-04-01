@@ -92,7 +92,7 @@ export async function syncCards(args) {
     for (const dir of categoryDirs) {
         const categoryPath = join(ricettePath, dir);
         const jsonFiles = readdirSync(categoryPath)
-            .filter(f => f.endsWith('.json') && f !== 'index.json');
+            .filter(f => f.endsWith('.json') && f !== 'index.json' && !f.includes('.backup.') && !f.includes('.pre-fix.'));
 
         for (const file of jsonFiles) {
             const filePath = join(categoryPath, file);

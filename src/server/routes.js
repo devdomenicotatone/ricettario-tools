@@ -372,7 +372,7 @@ export function setupRoutes(app) {
 
     // ── Qualità Fix (applica correzioni AI alla ricetta) ──
     app.post('/api/qualita/fix', async (req, res) => {
-        const { slug, slugs } = req.body || {};
+        const { slug, slugs, geminiModel } = req.body || {};
         const batchSlugs = slugs || (slug ? [slug] : null);
         if (!batchSlugs?.length) return res.status(400).json({ error: 'Nessun slug' });
 
@@ -417,7 +417,7 @@ export function setupRoutes(app) {
                         const recipeJson = readFileSync(jsonFile, 'utf-8');
                         ctx.log(`  🔧 ${s}: invio a Claude per correzione...`);
 
-                        const fixPrompt = `Correggi questa ricetta JSON basandoti sul report di qualità.
+                        const fixPrompt = `Correggi questa ricetta JSON basandoti ESCLUSIVAMENTE sul report di qualità.
 
 ══ REPORT QUALITÀ ══
 ${report}
@@ -425,23 +425,28 @@ ${report}
 ══ RICETTA JSON ORIGINALE ══
 ${recipeJson}
 
-REGOLE TASSATIVE:
+REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
 1. Restituisci SOLO il JSON corretto, nessun testo prima o dopo
-2. NON cambiare la struttura del JSON (stessi campi, stessi nomi)
-3. Correggi SOLO i problemi segnalati nel report (severity ❌ e ⚠️)
-4. NON modificare aspetti non segnalati
-5. Se un ingrediente è nel gruppo sbagliato, spostalo
-6. Se mancano step di cottura nel procedimento, aggiungili basandoti sulla sezione baking
-7. Mantieni lo stesso stile e livello di dettaglio del testo originale`;
+2. NON cambiare la struttura del JSON (stessi campi, stessi nomi chiave)
+3. Correggi SOLO ed ESCLUSIVAMENTE i problemi segnalati nel report (severity ❌ e ⚠️)
+4. NON TOCCARE MAI questi campi a meno che il report non li menzioni esplicitamente come errore:
+   - hydration, totalFlour, targetTemp, fermentation
+   - grams degli ingredienti (NON cambiare le quantità!)
+   - slug, category, image, tags, imageKeywords
+5. Se il report segnala un problema di TESTO (token invertiti, refusi, istruzioni errate), correggi SOLO il testo specificato
+6. NON "migliorare" o "ottimizzare" la ricetta — il tuo compito è SOLO correggere gli errori segnalati
+7. Se un ingrediente è nel gruppo sbagliato, spostalo SENZA cambiarne la quantità
+8. Mantieni lo stesso stile e livello di dettaglio del testo originale
+9. OGNI campo non menzionato nel report DEVE restare IDENTICO byte per byte`;
 
                         const fixedText = await callClaude({
                             model: 'claude-sonnet-4-20250514',
                             maxTokens: 16000,
-                            system: 'Sei un correttore di ricette JSON. Correggi gli errori segnalati nel report e restituisci SOLO il JSON valido.',
+                            system: 'Sei un correttore chirurgico di ricette JSON. Il tuo UNICO compito è applicare le correzioni ESATTE descritte nel report di qualità. NON modificare NULLA che non sia esplicitamente segnalato come errore. NON cambiare quantità, idratazione, o metadata a meno che il report non lo richieda. Restituisci SOLO JSON valido.',
                             messages: [{ role: 'user', content: fixPrompt }],
                         });
 
-                        // Parsa e salva
+                        // Parsa e valida
                         const fixed = parseClaudeJson(fixedText);
                         if (!fixed?.title) throw new Error('JSON corretto non valido');
 
@@ -452,6 +457,17 @@ REGOLE TASSATIVE:
                         // Salva
                         writeFileSync(jsonFile, JSON.stringify(fixed, null, 2), 'utf-8');
                         ctx.log(`  ✅ ${s}: corretto (backup salvato)`);
+
+                        // Auto-revalidation: rilancia qualità per aggiornare report e badge
+                        try {
+                            const { analyzeQuality } = await import('../quality.js');
+                            ctx.log(`  🔄 ${s}: ri-validazione in corso...`);
+                            const { result } = await analyzeQuality(jsonFile, { geminiModel });
+                            const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
+                            ctx.log(`  ${emoji} ${s}: nuovo score ${result.score}/100`);
+                        } catch (revalErr) {
+                            ctx.log(`  ⚠️ ${s}: ri-validazione fallita — ${revalErr.message}`);
+                        }
                     } catch (err) {
                         ctx.log(`  ❌ ${s}: fix fallito — ${err.message}`);
                     }
@@ -570,6 +586,20 @@ REGOLE TASSATIVE:
                 ctx.log('🔄 Aggiornamento recipes.json...');
                 const { syncCards } = await import('../commands/sync-cards.js');
                 await syncCards({});
+
+                // Rimuovi entry fantasma da quality-index.json
+                try {
+                    const { loadQualityIndex, saveQualityIndex } = await import('../quality.js');
+                    const qi = loadQualityIndex();
+                    let cleaned = false;
+                    for (const s of slugs) {
+                        if (qi[s]) { delete qi[s]; cleaned = true; }
+                    }
+                    if (cleaned) {
+                        saveQualityIndex(qi);
+                        ctx.log('📊 quality-index.json aggiornato');
+                    }
+                } catch {}
 
                 ctx.log(`\n🎉 Eliminat${deleted === 1 ? 'a' : 'e'} ${deleted} ricett${deleted === 1 ? 'a' : 'e'}`);
             });

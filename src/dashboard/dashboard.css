@@ -1451,6 +1451,25 @@ body {
     border-color: #d97706 !important;
 }
 
+.btn-split-fix .btn-split-main.btn-fix-card {
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.25);
+}
+.btn-split-fix .btn-split-main.btn-fix-card:hover {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    color: #fff;
+    border-color: #d97706;
+}
+.btn-split-fix .btn-fix-chevron {
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.25);
+    border-left: 1px solid rgba(245, 158, 11, 0.2);
+}
+.btn-split-fix .btn-fix-chevron:hover {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+
 /* ── TERMINAL ── */
 .terminal-container {
     flex-shrink: 0;

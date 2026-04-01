@@ -364,6 +364,58 @@ function showModelDropdown(slug, anchorEl) {
     }, 10);
 }
 
+function showFixModelDropdown(slug, anchorEl, isBatch = false) {
+    document.querySelector('.model-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'model-dropdown';
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 200) {
+        dd.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    } else {
+        dd.style.top = `${rect.bottom + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    }
+
+    dd.innerHTML = `
+        <div class="model-dropdown-title">Modello Ri-validazione</div>
+        ${GEMINI_MODELS.map(m => `
+            <button class="model-dropdown-item" data-model="${m.id}">
+                <i data-lucide="sparkles"></i>
+                ${m.label}
+                <span class="model-tag ${m.tag === 'default' ? 'tag-default' : ''}">${m.tag}</span>
+            </button>
+        `).join('')}
+    `;
+
+    document.body.appendChild(dd);
+    lucide.createIcons();
+
+    dd.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.model-dropdown-item');
+        if (!btn) return;
+        const model = btn.dataset.model;
+        dd.remove();
+        if (isBatch) {
+            runFix(model);
+        } else {
+            runFixSingle(slug, model);
+        }
+    });
+
+    setTimeout(() => {
+        document.addEventListener('click', function closeFD(e) {
+            if (!dd.contains(e.target) && !anchorEl.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeFD);
+            }
+        });
+    }, 10);
+}
+
 async function runQualita(withGrounding = false) {
     if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
     await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding, geminiModel: getSelectedGeminiModel() });
@@ -397,21 +449,20 @@ function getQualityBadge(slug) {
         title="Qualità: ${q.score}/100 — ${q.issueCount} issue (${new Date(q.timestamp).toLocaleDateString()}) — Clicca per dettagli">${emoji} ${q.score}</span>`;
 }
 
-async function runFix() {
+async function runFix(geminiModel) {
     if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
-    // Filtra solo quelle con score < 85
     const fixable = [...selectedSlugs].filter(s => qualityIndex[s] && qualityIndex[s].score < 85);
     if (fixable.length === 0) return alert('Nessuna ricetta selezionata necessita di fix (tutte >= 85)');
     if (!confirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'} con problemi?\n\nVerrà creato un backup .backup.json per ogni file.`)) return;
-    await apiPost('qualita/fix', { slugs: fixable });
+    await apiPost('qualita/fix', { slugs: fixable, geminiModel: geminiModel || getSelectedGeminiModel() });
 }
 
-async function runFixSingle(slug) {
+async function runFixSingle(slug, geminiModel) {
     const q = qualityIndex[slug];
     if (!q) return alert('Esegui prima l\'analisi qualità su questa ricetta');
     if (q.score >= 85) return alert(`Questa ricetta ha score ${q.score}/100 — non necessita di fix (>= 85)`);
     if (!confirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nVerrà creato un backup .backup.json`)) return;
-    await apiPost('qualita/fix', { slugs: [slug] });
+    await apiPost('qualita/fix', { slugs: [slug], geminiModel: geminiModel || getSelectedGeminiModel() });
 }
 
 const CATEGORY_COLORS = {
@@ -696,7 +747,10 @@ function renderRecipeCard(r) {
                         <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                         <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
                     </div>
-                    <button class="btn btn-secondary btn-sm btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (correggi problemi)"><i data-lucide="wrench"></i></button>
+                    <div class="btn-split btn-split-fix" title="Fix AI">
+                        <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})"><i data-lucide="wrench"></i></button>
+                        <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione">▾</button>
+                    </div>
                     <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
             </div>
@@ -733,7 +787,10 @@ function renderRecipeRow(r) {
                     <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                     <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
                 </div>
-                <button class="btn btn-secondary btn-sm btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (correggi problemi)"><i data-lucide="wrench"></i></button>
+                <div class="btn-split btn-split-fix" title="Fix AI">
+                    <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})"><i data-lucide="wrench"></i></button>
+                    <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione">▾</button>
+                </div>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>
@@ -857,9 +914,12 @@ function updateActionBar() {
             <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera selezionate (da JSON esistente)">
                 <i data-lucide="refresh-cw"></i> Rigenera
             </button>
-            <button class="action-bar-btn action-bar-fix" onclick="runFix()" title="Applica fix AI alle ricette problematiche (< 85)">
-                <i data-lucide="wrench"></i> Fix AI
-            </button>
+            <div class="btn-split" style="display:inline-flex">
+                <button class="action-bar-btn action-bar-fix" onclick="runFix()" title="Applica fix AI alle ricette problematiche (< 85)">
+                    <i data-lucide="wrench"></i> Fix AI
+                </button>
+                <button class="action-bar-btn action-bar-fix btn-split-chevron" onclick="showFixModelDropdown(null, this.parentElement, true)" title="Scegli modello ri-validazione" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+            </div>
             <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
                 <i data-lucide="trash-2"></i> Elimina
             </button>

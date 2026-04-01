@@ -216,9 +216,12 @@ export function validateRecipeSchema(recipe) {
             for (const item of g.items || []) {
                 const name = (item.name || '').toLowerCase();
 
-                // Skip ingredienti assemblati (es. "Biga Matura", "Poolish")
+                // Skip ingredienti assemblati (es. "Biga Matura", "Poolish Maturo")
                 // Le loro componenti (farina + acqua) sono già listate nel gruppo pre-impasto
-                const isAssembled = assembledKeywords.some(kw => name.includes(kw));
+                // ATTENZIONE: NON escludere materie prime che menzionano il pre-impasto nel nome
+                // (es. "Acqua Poolish", "Farina per Biga" sono materie prime, non prodotti assemblati)
+                const isFlourOrWater = flourKeywords.some(kw => name.includes(kw)) || waterKeywords.some(kw => name.includes(kw));
+                const isAssembled = !isFlourOrWater && assembledKeywords.some(kw => name.includes(kw));
                 if (isAssembled) continue;
 
                 const isFlour = flourKeywords.some(kw => name.includes(kw));

@@ -507,7 +507,11 @@ function saveScoreToIndex(slug, data) {
     writeFileSync(QUALITY_INDEX_PATH, JSON.stringify(index, null, 2), 'utf-8');
 }
 
-export { loadQualityIndex };
+function saveQualityIndex(index) {
+    writeFileSync(QUALITY_INDEX_PATH, JSON.stringify(index, null, 2), 'utf-8');
+}
+
+export { loadQualityIndex, saveQualityIndex };
 
 /**
  * Calcola l'hash MD5 del contenuto del file per tracciabilità.
