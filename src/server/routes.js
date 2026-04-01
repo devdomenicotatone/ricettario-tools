@@ -440,7 +440,7 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
 9. OGNI campo non menzionato nel report DEVE restare IDENTICO byte per byte`;
 
                         const fixedText = await callClaude({
-                            model: 'claude-sonnet-4-20250514',
+                            model: 'claude-sonnet-4-6',
                             maxTokens: 16000,
                             system: 'Sei un correttore chirurgico di ricette JSON. Il tuo UNICO compito è applicare le correzioni ESATTE descritte nel report di qualità. NON modificare NULLA che non sia esplicitamente segnalato come errore. NON cambiare quantità, idratazione, o metadata a meno che il report non lo richieda. Restituisci SOLO JSON valido.',
                             messages: [{ role: 'user', content: fixPrompt }],
@@ -460,11 +460,18 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
 
                         // Auto-revalidation: rilancia qualità per aggiornare report e badge
                         try {
-                            const { analyzeQuality } = await import('../quality.js');
+                            const { analyzeQuality, loadQualityIndex, saveQualityIndex } = await import('../quality.js');
                             ctx.log(`  🔄 ${s}: ri-validazione in corso...`);
                             const { result } = await analyzeQuality(jsonFile, { geminiModel });
                             const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
                             ctx.log(`  ${emoji} ${s}: nuovo score ${result.score}/100`);
+
+                            // Marca come fixata nell'indice
+                            const qi = loadQualityIndex();
+                            if (qi[s]) {
+                                qi[s].fixed = true;
+                                saveQualityIndex(qi);
+                            }
                         } catch (revalErr) {
                             ctx.log(`  ⚠️ ${s}: ri-validazione fallita — ${revalErr.message}`);
                         }

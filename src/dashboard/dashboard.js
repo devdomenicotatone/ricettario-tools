@@ -451,16 +451,15 @@ function getQualityBadge(slug) {
 
 async function runFix(geminiModel) {
     if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
-    const fixable = [...selectedSlugs].filter(s => qualityIndex[s] && qualityIndex[s].score < 85);
-    if (fixable.length === 0) return alert('Nessuna ricetta selezionata necessita di fix (tutte >= 85)');
-    if (!confirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'} con problemi?\n\nVerrà creato un backup .backup.json per ogni file.`)) return;
+    const fixable = [...selectedSlugs].filter(s => qualityIndex[s]);
+    if (fixable.length === 0) return alert('Nessuna ricetta selezionata ha un report qualità. Esegui prima l\'analisi.');
+    if (!confirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'}?\n\nVerrà creato un backup .backup.json per ogni file.`)) return;
     await apiPost('qualita/fix', { slugs: fixable, geminiModel: geminiModel || getSelectedGeminiModel() });
 }
 
 async function runFixSingle(slug, geminiModel) {
     const q = qualityIndex[slug];
     if (!q) return alert('Esegui prima l\'analisi qualità su questa ricetta');
-    if (q.score >= 85) return alert(`Questa ricetta ha score ${q.score}/100 — non necessita di fix (>= 85)`);
     if (!confirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nVerrà creato un backup .backup.json`)) return;
     await apiPost('qualita/fix', { slugs: [slug], geminiModel: geminiModel || getSelectedGeminiModel() });
 }
@@ -704,7 +703,8 @@ function renderRecipes() {
 function getAiBadge(generatedBy) {
     if (!generatedBy) return '';
     const models = {
-        'claude': { label: 'Claude', icon: 'sparkles', color: '#a855f7' },
+        'claude': { label: 'Sonnet', icon: 'sparkles', color: '#a855f7' },
+        'claude-opus': { label: 'Opus', icon: 'sparkles', color: '#7c3aed' },
         'gemini': { label: 'Gemini', icon: 'sparkles', color: '#4285f4' },
         'gemini-3.1': { label: 'Gemini 3.1', icon: 'sparkles', color: '#34a853' },
     };
@@ -722,6 +722,11 @@ function renderRecipeCard(r) {
     const hydClass = getHydrationClass(hydNum);
     const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
     const isSelected = selectedSlugs.has(r.slug);
+    const qEntry = qualityIndex[r.slug];
+    const hasReport = !!qEntry;
+    const isFixed = qEntry?.fixed === true;
+    const fixDisabled = !hasReport || isFixed;
+    const fixTitle = !hasReport ? 'Esegui prima l\'analisi qualità' : isFixed ? 'Già fixata' : 'Fix AI';
 
     return `
         <div class="recipe-card${isSelected ? ' selected' : ''}" onclick="toggleSelect('${r.slug}', event)">
@@ -747,9 +752,9 @@ function renderRecipeCard(r) {
                         <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                         <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
                     </div>
-                    <div class="btn-split btn-split-fix" title="Fix AI">
-                        <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})"><i data-lucide="wrench"></i></button>
-                        <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione">▾</button>
+                    <div class="btn-split btn-split-fix${fixDisabled ? ' disabled' : ''}" title="${fixTitle}">
+                        <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
+                        <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                     </div>
                     <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
@@ -787,9 +792,9 @@ function renderRecipeRow(r) {
                     <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                     <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
                 </div>
-                <div class="btn-split btn-split-fix" title="Fix AI">
-                    <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})"><i data-lucide="wrench"></i></button>
-                    <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione">▾</button>
+                <div class="btn-split btn-split-fix${fixDisabled ? ' disabled' : ''}" title="${fixTitle}">
+                    <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
+                    <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                 </div>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>

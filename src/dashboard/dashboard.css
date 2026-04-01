@@ -1469,6 +1469,10 @@ body {
     background: rgba(245, 158, 11, 0.15);
     color: #fbbf24;
 }
+.btn-split-fix.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
 
 /* ── TERMINAL ── */
 .terminal-container {

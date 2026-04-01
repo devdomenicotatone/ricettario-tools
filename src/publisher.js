@@ -326,6 +326,15 @@ export async function publishRecipe(recipe, args, options = {}) {
         }
     }
 
+    // ── Step 7: Sync recipes.json ──
+    try {
+        const { syncCards } = await import('./commands/sync-cards.js');
+        await syncCards({});
+        log.info('🔄 recipes.json sincronizzato');
+    } catch (err) {
+        log.warn(`Sync cards fallito: ${err.message}`);
+    }
+
     log.header('COMPLETATO');
     log.info('Prossimi passi:');
     log.info('  1. Apri http://localhost:5173 e verifica il risultato');

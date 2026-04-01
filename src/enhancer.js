@@ -28,10 +28,14 @@ async function callAI(aiModel, { system, messages }) {
             messages,
         });
     }
+    // Claude models
+    const claudeModel = aiModel === 'claude-opus' 
+        ? { id: 'claude-opus-4-6', label: 'Claude Opus 4.6' }
+        : { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6' };
     
-    // Default: Claude
-    log.info(`🤖 Claude Sonnet sta elaborando...`);
+    log.info(`🤖 ${claudeModel.label} sta elaborando...`);
     return callClaude({
+        model: claudeModel.id,
         system,
         messages,
     });
@@ -384,7 +388,7 @@ export async function enhanceRecipe(rawRecipe, options = {}) {
   const sourceLabel = sourcesFound > 0
     ? `(arricchita con ${sourcesFound} fonti reali)`
     : '(senza fonti reali aggiuntive)';
-  const aiName = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro'}[options.aiModel] || 'Claude';
+  const aiName = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro', 'claude-opus': 'Claude Opus 4.6'}[options.aiModel] || 'Claude Sonnet 4.6';
   log.info(`${aiName} sta riscrivendo la ricetta ${sourceLabel}...`);
 
   const dataDirective = sourcesFound > 0
@@ -503,7 +507,7 @@ export async function generateRecipe(nome, options = {}) {
   const sourceLabel = sourcesFound > 0
     ? `(base: ${sourcesFound} fonti reali)`
     : '(senza fonti — usa conoscenza generale)';
-  const aiLabel = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro'}[options.aiModel] || 'Claude';
+  const aiLabel = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro', 'claude-opus': 'Claude Opus 4.6'}[options.aiModel] || 'Claude Sonnet 4.6';
   console.log(`\n🤖 ${aiLabel} sta creando la ricetta "${nome}" ${sourceLabel}...`);
 
   const dataDirective = sourcesFound > 0
@@ -815,7 +819,7 @@ export async function enhanceFromText(rawText, options = {}) {
   const sourceLabel = sourcesFound > 0
     ? `(con ${sourcesFound} fonti di riferimento)`
     : '(senza fonti aggiuntive)';
-  const aiName = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro'}[options.aiModel] || 'Claude';
+  const aiName = {'gemini': 'Gemini 2.5 Pro', 'gemini-3.1': 'Gemini 3.1 Pro', 'claude-opus': 'Claude Opus 4.6'}[options.aiModel] || 'Claude Sonnet 4.6';
   log.info(`${aiName} sta strutturando la ricetta ${sourceLabel}...`);
 
   const userPrompt = `L'utente ha inserito questa ricetta in formato TESTO LIBERO (appunti personali, note, copia-incolla).

@@ -28,20 +28,10 @@ const DEFAULT_RETRY = {
  * Ref: https://docs.anthropic.com/en/docs/about-claude/models
  */
 const MODEL_MAX_TOKENS = {
-    // Claude 4.6
-    'claude-opus-4-6-20260201': 128000,
-    'claude-sonnet-4-6-20260220': 64000,
-    // Claude 4.5
-    'claude-opus-4-5-20250918': 64000,
-    'claude-sonnet-4-5-20250929': 64000,
-    // Claude 4
-    'claude-sonnet-4-20250514': 64000,
-    'claude-opus-4-20250514': 64000,
-    // Alias latest
-    'claude-sonnet-4-5-latest': 64000,
-    'claude-opus-4-5-latest': 64000,
+    'claude-opus-4-6': 128000,
+    'claude-sonnet-4-6': 64000,
 };
-const DEFAULT_MAX_TOKENS = 64000;  // Safe fallback per modelli non in mappa
+const DEFAULT_MAX_TOKENS = 64000;  // Fallback per modelli non in mappa
 
 /**
  * Chiama Claude API con retry automatico e exponential backoff
@@ -55,7 +45,7 @@ const DEFAULT_MAX_TOKENS = 64000;  // Safe fallback per modelli non in mappa
  * @returns {Promise<string>} Testo della risposta
  */
 export async function callClaude({
-    model = 'claude-sonnet-4-5-20250929',
+    model = 'claude-sonnet-4-6',
     maxTokens,
     system,
     messages,
