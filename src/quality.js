@@ -71,6 +71,48 @@ function validateSchema(recipe, filePath) {
                     if (!override.ref) warnings.push(`ingredientOverride senza "ref" in variante "${variant.id}"`);
                     if (override.grams == null) warnings.push(`ingredientOverride "${override.ref}" senza "grams" in variante "${variant.id}"`);
                 }
+
+                // ── Validazione semantica: branchAfterStep vs token position ──
+                // Segnala SOLO se l'override cambia TIPO (nome/nota diversa), non solo quantità
+                // Quando l'override cambia solo i grams, il token inline si aggiorna automaticamente
+                if (variant.branchAfterStep != null) {
+                    const primaryKey = REQUIRED_STEP_KEYS.find(k => recipe[k]?.length > 0);
+                    const primarySteps = primaryKey ? (recipe[primaryKey] || []) : [];
+
+                    // Mappa tokenId → ingrediente originale per confronto
+                    const allIngredients = (recipe.ingredientGroups || []).flatMap(g => g.items || []);
+
+                    for (const override of variant.ingredientOverrides) {
+                        if (!override.ref) continue;
+                        const tokenPattern = `{${override.ref}:`;
+                        const firstStepIdx = primarySteps.findIndex(s => (s.text || '').includes(tokenPattern));
+                        if (firstStepIdx === -1 || variant.branchAfterStep <= firstStepIdx) continue;
+
+                        // Controlla se l'override cambia TIPO (nota indica ingrediente diverso)
+                        const original = allIngredients.find(i => i.tokenId === override.ref);
+                        const noteChangesType = override.note && original?.note &&
+                            !override.note.toLowerCase().includes('ridotto') &&
+                            !override.note.toLowerCase().includes('aumentato') &&
+                            override.note.toLowerCase() !== original.note.toLowerCase();
+
+                        if (noteChangesType) {
+                            warnings.push(
+                                `Variante "${variant.id}": ingredientOverride "${override.ref}" cambia tipo di ingrediente (da "${original?.note}" a "${override.note}") nello step ${firstStepIdx} ma branchAfterStep è ${variant.branchAfterStep} — il testo degli step pre-branch sarà incoerente`
+                            );
+                        }
+                    }
+                }
+            }
+
+            // ── Check coerenza biologica: variante con cambio tempi ma senza override lievito ──
+            if ((!variant.ingredientOverrides || variant.ingredientOverrides.length === 0) && variant.altSteps?.length > 0) {
+                const altTexts = variant.altSteps.map(s => (s.text || '').toLowerCase() + ' ' + (s.title || '').toLowerCase()).join(' ');
+                const hasTimeChange = /frigo|frigorifero|refriger|\b\d{2,}h\b|18-24|24\s*ore|lievitazione lunga|rapida|notturna/.test(altTexts);
+                if (hasTimeChange) {
+                    warnings.push(
+                        `Variante "${variant.id}": altSteps menzionano lievitazione in frigo/lunga ma ingredientOverrides è vuoto — il lievito probabilmente deve essere ridotto/aumentato`
+                    );
+                }
             }
         }
     }

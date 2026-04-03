@@ -384,6 +384,7 @@ export function setupRoutes(app) {
             const { CATEGORY_FOLDERS } = await import('../publisher.js');
             const { loadQualityIndex } = await import('../quality.js');
             const { callClaude, parseClaudeJson } = await import('../utils/api.js');
+            const { getSchemaPromptDescription, validateRecipeSchema } = await import('../recipe-schema.js');
             const ricettarioPath = getRicettarioPath();
             const qualityIndex = loadQualityIndex();
 
@@ -419,6 +420,16 @@ export function setupRoutes(app) {
 
                         const fixPrompt = `Correggi questa ricetta JSON basandoti ESCLUSIVAMENTE sul report di qualità.
 
+══ SCHEMA JSON OBBLIGATORIO — RISPETTA QUESTA STRUTTURA ══
+${getSchemaPromptDescription()}
+
+⚠️ STRUTTURA ingredientGroups (OBBLIGATORIA — mai inventare formati diversi):
+- Ogni gruppo DEVE avere: { "group": "Nome Gruppo", "items": [ { "name": "...", "grams": N, "note": "...", "tokenId": "..." } ] }
+- Il campo si chiama "group" (NON "label", NON "title")
+- Il campo items contiene gli oggetti ingrediente completi (NON array di stringhe, NON refs)
+- "ingredients" deve essere SEMPRE un array vuoto []
+- Se la ricetta ha un solo componente, usa ingredientGroups con un singolo gruppo
+
 ══ REPORT QUALITÀ ══
 ${report}
 
@@ -437,18 +448,28 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
 6. NON "migliorare" o "ottimizzare" la ricetta — il tuo compito è SOLO correggere gli errori segnalati
 7. Se un ingrediente è nel gruppo sbagliato, spostalo SENZA cambiarne la quantità
 8. Mantieni lo stesso stile e livello di dettaglio del testo originale
-9. OGNI campo non menzionato nel report DEVE restare IDENTICO byte per byte`;
+9. OGNI campo non menzionato nel report DEVE restare IDENTICO byte per byte
+10. Se il report indica che ingredientGroups deve avere almeno 1 gruppo, sposta gli ingredienti da "ingredients" dentro ingredientGroups e svuota ingredients`;
 
                         const fixedText = await callClaude({
                             model: 'claude-sonnet-4-6',
                             maxTokens: 16000,
-                            system: 'Sei un correttore chirurgico di ricette JSON. Il tuo UNICO compito è applicare le correzioni ESATTE descritte nel report di qualità. NON modificare NULLA che non sia esplicitamente segnalato come errore. NON cambiare quantità, idratazione, o metadata a meno che il report non lo richieda. Restituisci SOLO JSON valido.',
+                            system: 'Sei un correttore chirurgico di ricette JSON. Il tuo UNICO compito è applicare le correzioni ESATTE descritte nel report di qualità. NON modificare NULLA che non sia esplicitamente segnalato come errore. NON cambiare quantità, idratazione, o metadata a meno che il report non lo richieda. RISPETTA SEMPRE la struttura dello schema fornito — usa ESATTAMENTE i nomi dei campi indicati ("group" e "items" per ingredientGroups, MAI "label" o "refs"). Restituisci SOLO JSON valido.',
                             messages: [{ role: 'user', content: fixPrompt }],
                         });
 
                         // Parsa e valida
                         const fixed = parseClaudeJson(fixedText);
                         if (!fixed?.title) throw new Error('JSON corretto non valido');
+
+                        // Validazione schema post-fix: verifica che il fix non abbia peggiorato la situazione
+                        const postFixValidation = validateRecipeSchema(fixed);
+                        if (postFixValidation.errors.length > 0) {
+                            ctx.log(`  ⚠️ ${s}: Fix ha generato ${postFixValidation.errors.length} errori schema:`);
+                            postFixValidation.errors.forEach(e => ctx.log(`     ❌ ${e}`));
+                            ctx.log(`  ⏭️ ${s}: Fix RIFIUTATO — il JSON originale è mantenuto`);
+                            continue;
+                        }
 
                         // Backup
                         const backupPath = jsonFile.replace('.json', '.backup.json');

@@ -91,9 +91,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "targetTemp": "24-25°C",
   "fermentation": "~24h",
   "totalFlour": 1000,
-  "ingredients": [
-    { "name": "Nome Ingrediente", "note": "(nota tecnica setup primario)", "grams": 600, "setupNote": { "spirale": "(nota spirale)", "mano": "(nota mano)" } }
-  ],
+  "ingredients": [],
   "ingredientGroups": [
     {
       "group": "Per il Poolish",
@@ -158,14 +156,14 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "tags": ["tag1", "tag2", "tag3"]
 }
 
-REGOLA INGREDIENTI RAGGRUPPATI (ingredientGroups):
-- Se la ricetta ha 2+ COMPONENTI LOGICHE DISTINTE (es. Biga + Impasto, Poolish + Impasto, Frolla + Crema + Ganache, Impasto + Decorazione), USA "ingredientGroups" e lascia "ingredients" come array vuoto [].
-- Ogni gruppo ha un "group" (nome descrittivo: "Per il Poolish", "Per l'Impasto Finale", "Per la Decorazione") e un array "items" con gli ingredienti.
-- Se la ricetta ha UN SOLO componente logico (es. migliaccio, biscotti, pane senza prefermento), USA "ingredients" come array piatto e lascia "ingredientGroups" vuoto [] o omettilo.
-- NON usare ingredientGroups con un solo gruppo: usa direttamente "ingredients".
+REGOLA INGREDIENTI RAGGRUPPATI (ingredientGroups) — OBBLIGATORIO:
+- USA SEMPRE "ingredientGroups" per TUTTI gli ingredienti. Il campo "ingredients" deve essere SEMPRE un array vuoto [].
+- Se la ricetta ha 2+ COMPONENTI LOGICHE DISTINTE (es. Biga + Impasto, Poolish + Impasto, Frolla + Crema + Ganache), crea un gruppo per ciascuno con nomi descrittivi: "Per il Poolish", "Per l'Impasto Finale", "Per la Decorazione".
+- Se la ricetta ha UN SOLO componente logico (es. pane senza prefermento, biscotti, migliaccio), usa comunque ingredientGroups con UN SINGOLO gruppo chiamato "Impasto" (o il nome appropriato: "Per l'Impasto", "Per la Frolla", "Per i Biscotti").
+- Ogni gruppo DEVE avere un campo "group" (stringa, nome del gruppo) e un campo "items" (array di oggetti ingrediente con name, grams, note, tokenId, ecc.).
 
 CAMPO tokenId (OBBLIGATORIO per ogni ingrediente):
-- Ogni ingrediente (sia in "ingredients" che in "ingredientGroups.items") DEVE avere un campo "tokenId".
+- Ogni ingrediente in "ingredientGroups.items" DEVE avere un campo "tokenId".
 - Il tokenId è l'ESATTO nome del token usato nel procedimento per quell'ingrediente.
 - CONTRATTO: il tokenId di un ingrediente DEVE corrispondere al nome del token {tokenId:valore} usato negli step.
   Esempio: ingrediente { "name": "Acqua", "grams": 330, "tokenId": "acqua_impasto" } → nel procedimento: "{acqua_impasto:330}g di acqua".
@@ -294,7 +292,21 @@ VARIANTI DI PROCEDIMENTO (OPZIONALE):
 - ingredientOverrides.ref DEVE matchare un token id usato nel testo degli step (es. ref "lievito" matcha il token {lievito:1.8}).
 - I testi degli altSteps DEVONO usare i token {id:base} come gli step normali.
 - Ricette tipiche CON varianti: pizza/pane con lievitazione frigo vs temperatura ambiente, pasta con cottura in acqua vs al forno.
-- Ricette tipiche SENZA varianti: dolci, biscotti, pasta semplice, focaccia standard.`;
+- Ricette tipiche SENZA varianti: dolci, biscotti, pasta semplice, focaccia standard.
+
+⚠️ REGOLA CRITICA — branchAfterStep + ingredientOverrides (VIOLAZIONE = BUG FRONTEND):
+- Se una variante sovrascrive un ingrediente (ingredientOverrides), verifica IN QUALE STEP quel token viene PRIMA menzionato nel procedimento.
+- Il branchAfterStep DEVE essere ≤ all'indice dello step che MENZIONA PER PRIMO l'ingrediente overridato.
+- Se la variante cambia TIPO di ingrediente (es. lievito di birra → lievito madre), il testo degli step pre-branch diventa incoerente ("sciogliere il lievito" non ha senso per il lievito madre solido).
+- Esempio SBAGLIATO: il token {lievito:6} appare nello step 0 → branchAfterStep: 2 → step 0 mostra "Sciogliere 120g di lievito" (assurdo).
+- Esempio CORRETTO: il token {lievito:6} appare nello step 0 → branchAfterStep: 0 → tutti gli step sono sostituiti.
+- CHECKLIST: per ogni ingredientOverride, cerca il tokenId nel testo di tutti gli step. Il branchAfterStep NON può essere maggiore dell'indice del primo step che contiene quel token.
+
+⚠️ REGOLA COERENZA BIOLOGICA — ingredientOverrides e tempi di lievitazione:
+- Se una variante CAMBIA I TEMPI DI LIEVITAZIONE (es. da 2h a 24h in frigo, o viceversa), DEVE SEMPRE includere un ingredientOverride per il LIEVITO.
+- Lievitazione in frigo (18-24h) = MENO lievito (tipicamente 1/3 - 1/6 della dose base). Esempio: se la base usa 3g, la variante frigo deve avere ingredientOverrides con 0.5-1g.
+- Lievitazione rapida (2-3h) = PIÙ lievito rispetto alla base. Esempio: se la base usa 1.5g, la variante rapida potrebbe usare 5-6g.
+- NON lasciare MAI ingredientOverrides vuoto [] se la variante cambia significativamente i tempi. Questo causa un bug nel frontend (gli ingredienti non si aggiornano).`;
 
 /**
  * Riscrive una ricetta con Claude, arricchita da fonti reali

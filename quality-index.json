@@ -1,22 +1,4 @@
 {
-  "ciabatta-poolish": {
-    "score": 60,
-    "verdict": "🔴 Problematica",
-    "issueCount": 5,
-    "timestamp": "2026-04-01T01:45:21.095Z"
-  },
-  "pane-alle-noci-con-poolish": {
-    "score": 70,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 2,
-    "timestamp": "2026-04-01T01:45:44.452Z"
-  },
-  "pane-di-altamura-dop": {
-    "score": 90,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 2,
-    "timestamp": "2026-04-01T01:46:10.487Z"
-  },
   "pane-integrale-biga-saccorosso-miele": {
     "score": 60,
     "verdict": "🟡 Da migliorare",
@@ -160,5 +142,23 @@
     "verdict": "🟢 Buona",
     "issueCount": 2,
     "timestamp": "2026-04-01T23:04:17.758Z"
+  },
+  "ciabatta-con-poolish": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-03T21:00:58.457Z"
+  },
+  "pane-alle-noci-con-poolish": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-03T21:07:32.718Z"
+  },
+  "pane-di-altamura-dop": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-03T22:09:27.669Z"
   }
 }

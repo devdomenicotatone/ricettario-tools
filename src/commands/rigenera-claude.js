@@ -45,8 +45,14 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "targetTemp": "24-25°C",
   "fermentation": "~24h",
   "totalFlour": 1000,
-  "ingredients": [
-    { "name": "Nome Ingrediente", "note": "(nota tecnica)", "grams": 600, "setupNote": { "spirale": "nota spirale", "mano": "nota mano" } }
+  "ingredients": [],
+  "ingredientGroups": [
+    {
+      "group": "Per l'Impasto",
+      "items": [
+        { "name": "Nome Ingrediente", "note": "(nota tecnica)", "grams": 600, "tokenId": "nome_ingrediente", "setupNote": { "spirale": "nota spirale", "mano": "nota mano" } }
+      ]
+    }
   ],
   "suspensions": [
     { "name": "Nome Sospensione", "note": "(nota)", "grams": 160 }

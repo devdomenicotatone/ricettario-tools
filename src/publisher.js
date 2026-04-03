@@ -262,6 +262,22 @@ export async function publishRecipe(recipe, args, options = {}) {
 
         writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
         log.info(`💾 JSON salvato: ${jsonFile}`);
+
+        // ── Step 3b: Validazione schema pre-pubblicazione ──
+        try {
+            const { validateRecipeSchema } = await import('./recipe-schema.js');
+            const schemaResult = validateRecipeSchema(persistentJson);
+            if (!schemaResult.valid) {
+                log.warn(`⚠️  SCHEMA VALIDATION: ${schemaResult.errors.length} errori trovati nel JSON generato:`);
+                schemaResult.errors.forEach(e => log.warn(`   ❌ ${e}`));
+                log.warn(`   Il JSON è stato salvato ma potrebbe non renderizzarsi correttamente nel frontend.`);
+                log.warn(`   Esegui "Fix AI" dalla dashboard per correggere automaticamente.`);
+            } else if (schemaResult.warnings.length > 0) {
+                log.info(`📐 Schema OK con ${schemaResult.warnings.length} warning`);
+            }
+        } catch (schemaErr) {
+            log.warn(`⚠️  Validazione schema non riuscita: ${schemaErr.message}`);
+        }
     }
 
     // --dry-run: mostra JSON senza scrivere HTML
