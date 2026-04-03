@@ -79,25 +79,34 @@ export async function withOutputCapture(jobCtx, fn) {
     const origError = console.error;
     const origWarn = console.warn;
     const origWrite = process.stdout.write;
-    const origErrWrite = process.stderr.write;
+
+    // Flag per evitare doppio log: console.log → stdout.write
+    let _fromConsole = false;
 
     // Override console
     console.log = (...args) => {
         const text = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
         jobCtx.log(text);
+        _fromConsole = true;
         origLog.apply(console, args);
+        _fromConsole = false;
     };
     console.error = (...args) => {
         const text = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
         jobCtx.error(text);
+        _fromConsole = true;
         origError.apply(console, args);
+        _fromConsole = false;
     };
     console.warn = console.error;
 
-    // Override process.stdout.write (per process.stdout.write diretto)
+    // Cattura process.stdout.write diretto (es. log.step per nomi siti)
+    // Skippa se proviene da console.log (già catturato sopra)
     process.stdout.write = function (chunk, encoding, callback) {
-        const text = typeof chunk === 'string' ? chunk : chunk.toString();
-        if (text.trim()) jobCtx.log(text.trimEnd());
+        if (!_fromConsole) {
+            const text = typeof chunk === 'string' ? chunk : chunk.toString();
+            if (text.trim()) jobCtx.log(text.trimEnd());
+        }
         return origWrite.apply(process.stdout, arguments);
     };
 
@@ -110,6 +119,5 @@ export async function withOutputCapture(jobCtx, fn) {
         console.error = origError;
         console.warn = origWarn;
         process.stdout.write = origWrite;
-        process.stderr.write = origErrWrite;
     }
 }

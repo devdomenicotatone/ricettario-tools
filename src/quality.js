@@ -348,9 +348,10 @@ async function geminiReview(recipePrompt, groundingContext, geminiModel = 'gemin
 function computeFinalScore(schema, gemini) {
     let score = gemini.score;
 
-    // Schema penalty: se ci sono errori strutturali, penalizza
+    // Schema penalty: penalizza proporzionalmente agli errori
     if (!schema.pass) {
-        score = Math.min(score, 60); // Cap a 60 se schema rotto
+        const penalty = schema.errors.length * 15; // -15 per ogni errore schema
+        score = Math.max(20, score - penalty);      // floor a 20 (mai zero)
     }
 
     return Math.round(score);

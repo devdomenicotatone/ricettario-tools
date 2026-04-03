@@ -100,6 +100,7 @@ export const RECIPE_FIELDS = {
     // ── Opzionali ──
     imageAttribution: { type: 'string',  required: false, description: 'Attribuzione foto (crediti)' },
     _originalImageUrl:{ type: 'string',  required: false, description: 'URL originale immagine (interno)' },
+    _generatedBy:     { type: 'string',  required: false, description: 'Modello AI usato per la generazione (interno)' },
     variants:         { type: 'array',   required: false, description: 'Varianti ricetta [{id, label, description, ingredientOverrides, branchAfterStep, altSteps}]' },
 };
 
@@ -206,7 +207,17 @@ export function validateRecipeSchema(recipe) {
     // NOTA: excludeFromTotal è per il calcolatore dosi frontend, NON per l'idratazione.
     if (recipe.hydration && recipe.hydration > 0 && recipe.ingredientGroups?.length > 0) {
         const flourKeywords = ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'tipo 2', 'integrale', 'nuvola', 'saccorosso'];
-        const waterKeywords = ['acqua'];
+        // Liquidi con coefficiente idratazione (% di acqua nel liquido)
+        // Acqua=100%, Latte=87%, Uova intere=75%, Tuorli=50%, Albumi=90%
+        const liquidKeywords = [
+            { kw: 'acqua', coeff: 1.0 },
+            { kw: 'latte', coeff: 0.87 },
+            { kw: 'uova', coeff: 0.75 }, { kw: 'uovo', coeff: 0.75 },
+            { kw: 'tuorlo', coeff: 0.50 }, { kw: 'tuorli', coeff: 0.50 },
+            { kw: 'albume', coeff: 0.90 }, { kw: 'albumi', coeff: 0.90 },
+            { kw: 'birra', coeff: 0.92 },
+            { kw: 'succo', coeff: 0.88 },
+        ];
         // Ingredienti assemblati: prodotto finito di un pre-impasto, NON materie prime
         const assembledKeywords = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento', 'lievito madre', 'pasta madre'];
         let totalFlourGrams = 0;
@@ -218,22 +229,19 @@ export function validateRecipeSchema(recipe) {
 
                 // Skip ingredienti assemblati (es. "Biga Matura", "Poolish Maturo")
                 // Le loro componenti (farina + acqua) sono già listate nel gruppo pre-impasto
-                // ATTENZIONE: NON escludere materie prime che menzionano il pre-impasto nel nome
-                // (es. "Acqua Poolish", "Farina per Biga" sono materie prime, non prodotti assemblati)
-                const isFlourOrWater = flourKeywords.some(kw => name.includes(kw)) || waterKeywords.some(kw => name.includes(kw));
-                const isAssembled = !isFlourOrWater && assembledKeywords.some(kw => name.includes(kw));
+                const isFlour = flourKeywords.some(kw => name.includes(kw));
+                const matchedLiquid = liquidKeywords.find(l => name.includes(l.kw));
+                const isFlourOrLiquid = isFlour || !!matchedLiquid;
+                const isAssembled = !isFlourOrLiquid && assembledKeywords.some(kw => name.includes(kw));
                 if (isAssembled) continue;
 
-                const isFlour = flourKeywords.some(kw => name.includes(kw));
-                const isWater = waterKeywords.some(kw => name.includes(kw));
-
-                // Conta TUTTE le materie prime per baker's percentage
+                // Conta materie prime per baker's percentage
                 if (isFlour) totalFlourGrams += item.grams || 0;
-                if (isWater) totalWaterGrams += item.grams || 0;
+                if (matchedLiquid) totalWaterGrams += (item.grams || 0) * matchedLiquid.coeff;
             }
         }
 
-        // Validazione idratazione (baker's percentage su tutte le materie prime)
+        // Validazione idratazione (baker's percentage con liquidi pesati)
         if (totalFlourGrams > 0 && totalWaterGrams > 0) {
             const computedHydration = Math.round((totalWaterGrams / totalFlourGrams) * 100);
             const declared = recipe.hydration;
