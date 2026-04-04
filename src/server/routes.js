@@ -46,10 +46,13 @@ export function setupRoutes(app) {
                         if (file.endsWith('.json') && file !== 'index.json') {
                             try {
                                 const data = JSON.parse(readFileSync(resolve(catDir, file), 'utf-8'));
+                                const slug = file.replace('.json', '');
                                 recipes.push({
-                                    slug: file.replace('.json', ''),
+                                    slug,
                                     title: data.title,
                                     category: data.category || cat,
+                                    categoryDir: cat,
+                                    href: `ricette/${cat}/${slug}`,
                                     hydration: data.hydration,
                                     image: data.image,
                                     date: data.date,

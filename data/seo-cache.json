@@ -1,6 +1,6 @@
 {
   "Pane": {
-    "timestamp": 1774635226279,
+    "timestamp": 1775346826992,
     "suggestions": [
       {
         "keyword": "pane fatto in casa",
@@ -325,6 +325,20 @@
         "source": "dataforseo"
       },
       {
+        "keyword": "ricetta pane in cassetta",
+        "popularity": {
+          "score": 10,
+          "label": "1000/mese",
+          "emoji": "📊"
+        },
+        "volume": 1000,
+        "competition": "LOW",
+        "cpc": 0.3,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
         "keyword": "pane ad alta idratazione ricetta",
         "popularity": {
           "score": 10,
@@ -407,25 +421,11 @@
         "category": "Pane",
         "alreadyCreated": false,
         "source": "autocomplete"
-      },
-      {
-        "keyword": "pane ad alta idratazione fatto in casa",
-        "popularity": {
-          "score": 10,
-          "label": "Top 50",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
       }
     ]
   },
   "Pizza": {
-    "timestamp": 1774635239717,
+    "timestamp": 1775346878615,
     "suggestions": [
       {
         "keyword": "ricetta pizza fatta in casa",
@@ -458,8 +458,8 @@
       {
         "keyword": "impasto pizza alta idratazione troppo appiccicoso",
         "popularity": {
-          "score": 40,
-          "label": "Top 21",
+          "score": 37,
+          "label": "Top 22",
           "emoji": "📈"
         },
         "volume": null,
@@ -472,8 +472,8 @@
       {
         "keyword": "impasto pizza alta idratazione lievitazione veloce",
         "popularity": {
-          "score": 34,
-          "label": "Top 23",
+          "score": 31,
+          "label": "Top 24",
           "emoji": "📈"
         },
         "volume": null,
@@ -596,7 +596,7 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pizza in teglia ricetta con farina 00",
+        "keyword": "pizza in teglia ricetta farina 00",
         "popularity": {
           "score": 10,
           "label": "Top 50",
@@ -624,34 +624,6 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pizza in teglia ricetta benedetta",
-        "popularity": {
-          "score": 10,
-          "label": "Top 50",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
-        "keyword": "pizza in teglia ricetta giallo zafferano",
-        "popularity": {
-          "score": 10,
-          "label": "Top 50",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pizza",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
         "keyword": "pizza in teglia ricetta impasto",
         "popularity": {
           "score": 10,
@@ -666,7 +638,35 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pizza in teglia ricetta facile",
+        "keyword": "pizza in teglia ricetta benedetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta planetaria",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pizza",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pizza in teglia ricetta giallo zafferano",
         "popularity": {
           "score": 10,
           "label": "Top 50",

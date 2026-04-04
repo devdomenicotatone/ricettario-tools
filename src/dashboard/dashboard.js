@@ -478,6 +478,25 @@ const CATEGORY_ICONS = {
     'Lievitati': 'croissant', 'Pasta': 'utensils', 'Dolci': 'cake-slice',
 };
 
+const CATEGORY_DIR_MAP = {
+    'Pane': 'pane', 'Pizza': 'pizza', 'Focaccia': 'focaccia',
+    'Lievitati': 'lievitati', 'Pasta': 'pasta', 'Dolci': 'dolci',
+};
+
+function buildRecipeUrl(r) {
+    if (r.href) {
+        // Rimuovi .html se presente (SPA)
+        const cleanHref = r.href.replace(/\.html$/, '');
+        return `${siteBaseUrl}${cleanHref}`;
+    }
+    // Fallback: costruisci da categoria + slug
+    const dir = r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category || '').toLowerCase();
+    if (dir && r.slug) {
+        return `${siteBaseUrl}ricette/${dir}/${r.slug}`;
+    }
+    return '#';
+}
+
 function getHydrationNum(h) {
     if (!h) return 0;
     return parseFloat(String(h).replace('%', '')) || 0;
@@ -720,7 +739,7 @@ function renderRecipeCard(r) {
     const catIcon = CATEGORY_ICONS[cat] || 'folder';
     const hydNum = getHydrationNum(r.hydration);
     const hydClass = getHydrationClass(hydNum);
-    const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
+    const recipeUrl = buildRecipeUrl(r);
     const isSelected = selectedSlugs.has(r.slug);
     const qEntry = qualityIndex[r.slug];
     const hasReport = !!qEntry;
@@ -768,7 +787,7 @@ function renderRecipeRow(r) {
     const cat = r.category || '';
     const catColor = CATEGORY_COLORS[cat] || '#888';
     const catIcon = CATEGORY_ICONS[cat] || 'folder';
-    const recipeUrl = r.href ? `${siteBaseUrl}${r.href}` : '#';
+    const recipeUrl = buildRecipeUrl(r);
     const isSelected = selectedSlugs.has(r.slug);
 
     return `
