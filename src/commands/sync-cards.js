@@ -22,6 +22,7 @@ const CATEGORIES = {
     lievitati: { name: 'Lievitati', emoji: '🥐' },
     dolci: { name: 'Dolci', emoji: '🍪' },
     focaccia: { name: 'Focaccia', emoji: '🫓' },
+    conserve: { name: 'Conserve', emoji: '🫙' },
 };
 
 /**
@@ -110,7 +111,7 @@ export async function syncCards(args) {
 
     // Ordina per categoria e poi per titolo
     allRecipes.sort((a, b) => {
-        const catOrder = ['Pane', 'Pizza', 'Pasta', 'Lievitati', 'Dolci', 'Focaccia'];
+        const catOrder = ['Pane', 'Pizza', 'Pasta', 'Lievitati', 'Dolci', 'Focaccia', 'Conserve'];
         const catA = catOrder.indexOf(a.category);
         const catB = catOrder.indexOf(b.category);
         if (catA !== catB) return catA - catB;

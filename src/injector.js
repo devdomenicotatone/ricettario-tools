@@ -26,7 +26,7 @@ export function injectCard(recipe, ricettarioPath) {
     const r = recipe;
     const slug = r.slug || r.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const category = r.category || 'Pasta';
-    const categoryDir = { Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta', Lievitati: 'lievitati', Focaccia: 'focaccia' };
+    const categoryDir = { Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta', Lievitati: 'lievitati', Focaccia: 'focaccia', Dolci: 'dolci', Conserve: 'conserve' };
     const dir = categoryDir[category] || category.toLowerCase();
 
     // Verifica duplicati
@@ -72,7 +72,7 @@ export function injectCard(recipe, ricettarioPath) {
 
     // Ricalcola categorie
     const stats = {};
-    const emojiMap = { Pasta: '🍝', Pane: '🥖', Pizza: '🍕', Lievitati: '🥐', Focaccia: '🫓' };
+    const emojiMap = { Pasta: '🍝', Pane: '🥖', Pizza: '🍕', Lievitati: '🥐', Focaccia: '🫓', Dolci: '🍰', Conserve: '🫙' };
     data.recipes.forEach(rec => {
         stats[rec.category] = (stats[rec.category] || 0) + 1;
     });

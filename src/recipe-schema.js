@@ -12,13 +12,14 @@
 
 // ── Costanti ──
 
-export const VALID_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Pasta', 'Lievitati', 'Dolci'];
+export const VALID_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Pasta', 'Lievitati', 'Dolci', 'Conserve'];
 
 export const CATEGORIES_NEEDING_BAKING = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Dolci'];
 
 export const CATEGORY_EMOJI = {
     Pane: '🍞', Pizza: '🍕', Focaccia: '🫓',
     Pasta: '🍝', Lievitati: '🥐', Dolci: '🍰',
+    Conserve: '🫙',
 };
 
 // Token regex: {nome:valore} con suffisso opzionale ! per fissi
@@ -49,8 +50,14 @@ export const RECIPE_FIELDS = {
                     validate: (v) => (typeof v === 'number' && (v === 0 || (v >= 25 && v <= 100))) ? null : `Idratazione ${v}% fuori range (0 o 25-100)` },
     targetTemp:   { type: 'string',  required: true,  description: 'Temperatura target impasto (es. "24-26°C")' },
     fermentation: { type: 'string',  required: true,  description: 'Descrizione tempi fermentazione' },
-    totalFlour:   { type: 'number',  required: true,  description: 'Farina totale in grammi (base per ricalcolo dosi)',
-                    validate: v => (typeof v === 'number' && v > 0) ? null : 'totalFlour deve essere > 0' },
+    totalFlour:   { type: 'number',  required: true,  description: 'Farina totale in grammi (base per ricalcolo dosi, 0 per ricette senza farina)',
+                    validate: (v, recipe) => {
+                        if (typeof v !== 'number') return 'totalFlour deve essere un numero';
+                        // Categorie che possono non avere farina
+                        const NO_FLOUR_CATEGORIES = ['Conserve', 'Dolci'];
+                        if (NO_FLOUR_CATEGORIES.includes(recipe?.category)) return null; // 0 valido
+                        return v > 0 ? null : 'totalFlour deve essere > 0';
+                    }},
 
     // ── Ingredienti ──
     ingredients:     { type: 'array',  required: true,  description: 'Array legacy vuoto (deprecato, usare ingredientGroups)' },

@@ -105,7 +105,10 @@ function validateSchema(recipe, filePath) {
             }
 
             // ── Check coerenza biologica: variante con cambio tempi ma senza override lievito ──
-            if ((!variant.ingredientOverrides || variant.ingredientOverrides.length === 0) && variant.altSteps?.length > 0) {
+            // Skip per categorie senza lievito (es. Conserve) dove "frigo" = conservazione, non fermentazione
+            const NO_YEAST_CATEGORIES = ['Conserve'];
+            if (!NO_YEAST_CATEGORIES.includes(recipe.category) &&
+                (!variant.ingredientOverrides || variant.ingredientOverrides.length === 0) && variant.altSteps?.length > 0) {
                 const altTexts = variant.altSteps.map(s => (s.text || '').toLowerCase() + ' ' + (s.title || '').toLowerCase()).join(' ');
                 const hasTimeChange = /frigo|frigorifero|refriger|\b\d{2,}h\b|18-24|24\s*ore|lievitazione lunga|rapida|notturna/.test(altTexts);
                 if (hasTimeChange) {
