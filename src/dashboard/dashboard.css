@@ -895,6 +895,31 @@ body {
     margin-bottom: 10px;
 }
 
+.recipe-card-date-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+.recipe-card-date-badge svg { width: 11px; height: 11px; }
+.recipe-card:hover .recipe-card-date-badge {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .recipe-card-actions {
     display: flex;
     gap: 6px;
@@ -957,7 +982,7 @@ body {
 
 .recipe-list-header {
     display: grid;
-    grid-template-columns: 2fr 120px 60px 80px 1fr auto;
+    grid-template-columns: 2fr 120px 60px 80px 80px 90px auto;
     gap: 12px;
     padding: 8px 14px;
     font-size: 10px;
@@ -970,7 +995,7 @@ body {
 
 .recipe-row {
     display: grid;
-    grid-template-columns: 2fr 120px 60px 80px 1fr auto;
+    grid-template-columns: 2fr 120px 60px 80px 80px 90px auto;
     gap: 12px;
     align-items: center;
     padding: 10px 14px;
@@ -1040,6 +1065,14 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.recipe-row-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    opacity: 0.7;
+    font-feature-settings: 'tnum';
 }
 
 .recipe-row-actions {

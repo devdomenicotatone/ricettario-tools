@@ -64,6 +64,7 @@ export function injectCard(recipe, ricettarioPath) {
         time,
         temp,
         tool: '',
+        _createdAt: r._createdAt || new Date().toISOString(),
     };
 
     data.recipes.push(newEntry);

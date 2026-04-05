@@ -436,6 +436,7 @@ Trasforma questa ricetta nel formato JSON tecnico del Ricettario. I dati tecnici
   const recipe = parseClaudeJson(text);
   recipe._sourcesUsed = sourcesFound;
   recipe._generatedBy = options.aiModel || 'claude';
+  recipe._createdAt = new Date().toISOString();
   log.success(`Ricetta "${recipe.title}" elaborata con successo ${sourceLabel}`);
   return recipe;
 }
@@ -544,6 +545,7 @@ Genera la ricetta completa nel formato JSON del Ricettario. I dati devono riflet
   const recipe = parseClaudeJson(text);
   recipe._sourcesUsed = sourcesFound;
   recipe._generatedBy = options.aiModel || 'claude';
+  recipe._createdAt = new Date().toISOString();
   log.success(`Ricetta "${recipe.title}" generata ${sourceLabel}`);
   return recipe;
 }
@@ -861,6 +863,7 @@ Aggiungi glossario tecnico, proTips, flourTable e alert basandoti sulla tua espe
   recipe._sourcesUsed = sourcesFound;
   recipe._inputMode = 'testo-libero';
   recipe._generatedBy = options.aiModel || 'claude';
+  recipe._createdAt = new Date().toISOString();
   log.success(`Ricetta "${recipe.title}" strutturata con successo ${sourceLabel}`);
   return recipe;
 }

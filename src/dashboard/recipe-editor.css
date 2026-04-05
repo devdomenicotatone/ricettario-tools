@@ -1,0 +1,676 @@
+/* ═══════════════════════════════════════════════════════
+   RECIPE EDITOR — Ultra Pro Inline Editor
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Overlay ── */
+.recipe-editor-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.recipe-editor-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ── Main Container ── */
+.recipe-editor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 900px;
+    margin: 24px auto;
+    background: #1a1b2e;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: translateY(20px) scale(0.98);
+    transition: transform 0.3s ease;
+    max-height: calc(100vh - 48px);
+}
+.recipe-editor-overlay.active .recipe-editor {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Header / Toolbar ── */
+.re-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+.re-back-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    cursor: pointer; transition: all 0.15s;
+    flex-shrink: 0;
+}
+.re-back-btn:hover { background: rgba(255, 255, 255, 0.12); color: #f1f5f9; }
+.re-back-btn i { width: 16px; height: 16px; }
+
+.re-title-area {
+    flex: 1;
+    min-width: 0;
+}
+.re-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.re-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+.re-actions {
+    display: flex; gap: 6px; flex-shrink: 0;
+}
+.re-action-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    cursor: pointer; transition: all 0.15s;
+    position: relative;
+}
+.re-action-btn:hover { background: rgba(255, 255, 255, 0.12); color: #f1f5f9; }
+.re-action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.re-action-btn i { width: 15px; height: 15px; }
+.re-action-btn.re-save-btn { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+.re-action-btn.re-save-btn:hover { background: rgba(99, 102, 241, 0.35); }
+.re-action-btn.re-save-btn.dirty {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+    animation: re-pulse 2s infinite;
+}
+@keyframes re-pulse {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: 0 0 12px rgba(245, 158, 11, 0.3); }
+}
+
+/* ── Status Pill ── */
+.re-status-pill {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 10;
+}
+.re-status-pill.visible {
+    opacity: 1;
+    top: -28px;
+}
+.re-status-pill.saved { color: #4ade80; border-color: rgba(74, 222, 128, 0.2); }
+.re-status-pill.saving { color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); }
+.re-status-pill.error { color: #f87171; border-color: rgba(248, 113, 113, 0.2); }
+
+/* ── Tabs ── */
+.re-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 0 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+.re-tab {
+    padding: 10px 16px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+}
+.re-tab:hover { color: #94a3b8; }
+.re-tab.active {
+    color: #818cf8;
+    border-bottom-color: #818cf8;
+}
+.re-tab-icon { font-size: 14px; }
+
+/* ── Content ── */
+.re-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+}
+.re-content::-webkit-scrollbar { width: 6px; }
+.re-content::-webkit-scrollbar-track { background: transparent; }
+.re-content::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 3px; }
+
+.re-tab-panel { display: none; }
+.re-tab-panel.active { display: block; }
+
+/* ── Tab Content Fade-In ── */
+@keyframes re-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.re-content > * {
+    animation: re-fade-in 0.25s ease-out;
+}
+
+/* ── Loading State ── */
+.re-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+}
+.re-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(129, 140, 248, 0.15);
+    border-top-color: #818cf8;
+    border-radius: 50%;
+    animation: re-spin 0.8s linear infinite;
+}
+@keyframes re-spin {
+    to { transform: rotate(360deg); }
+}
+.re-loading-text {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* ── Form Elements ── */
+.re-field {
+    margin-bottom: 16px;
+}
+.re-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+.re-input, .re-textarea, .re-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+.re-input:focus, .re-textarea:focus, .re-select:focus {
+    outline: none;
+    border-color: rgba(129, 140, 248, 0.5);
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+}
+.re-input.re-input-sm { padding: 6px 10px; font-size: 12px; }
+.re-input.re-input-mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; }
+.re-textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+.re-select { cursor: pointer; }
+
+.re-row {
+    display: flex;
+    gap: 12px;
+}
+.re-row > .re-field {
+    flex: 1;
+}
+
+/* ── Section Headers ── */
+.re-section {
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.re-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+}
+.re-section-header:hover { background: rgba(255, 255, 255, 0.05); }
+.re-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e2e8f0;
+    display: flex; align-items: center; gap: 8px;
+}
+.re-section-title .emoji { font-size: 16px; }
+.re-section-chevron {
+    color: #475569;
+    transition: transform 0.25s ease;
+}
+.re-section.collapsed .re-section-chevron { transform: rotate(-90deg); }
+.re-section-body {
+    padding: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    transition: max-height 0.3s ease;
+}
+.re-section.collapsed .re-section-body { display: none; }
+
+/* ── Ingredient Row ── */
+.re-ingredient-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr 130px 40px 36px;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.re-ingredient-row:last-child { border-bottom: none; }
+.re-ingredient-row .re-input { padding: 6px 8px; font-size: 12px; }
+.re-ingredient-row:hover { background: rgba(255, 255, 255, 0.02); border-radius: 4px; }
+
+.re-row-delete {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 6px;
+    background: transparent;
+    color: #475569;
+    cursor: pointer; transition: all 0.15s;
+}
+.re-row-delete:hover { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.re-row-delete i { width: 14px; height: 14px; }
+
+/* Move buttons should NOT look like delete */
+.re-step-actions .re-row-delete:not(:last-child):hover {
+    background: rgba(129, 140, 248, 0.15);
+    color: #818cf8;
+}
+
+.re-add-btn {
+    display: flex;
+    align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: transparent;
+    color: #64748b;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 8px;
+}
+.re-add-btn:hover { border-color: rgba(129, 140, 248, 0.4); color: #818cf8; background: rgba(129, 140, 248, 0.05); }
+.re-add-btn i { width: 14px; height: 14px; }
+
+/* ── Step Row ── */
+.re-step {
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    position: relative;
+}
+.re-step-header {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+}
+.re-step-num {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(129, 140, 248, 0.15);
+    color: #818cf8;
+    border-radius: 6px;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+}
+.re-step-title-input {
+    flex: 1;
+    font-weight: 600;
+}
+.re-step-actions {
+    display: flex; gap: 4px;
+}
+
+/* Token Highlighting in Textarea Overlay */
+.re-step-text-wrap {
+    position: relative;
+}
+.re-step-text-highlight {
+    position: absolute;
+    inset: 0;
+    padding: 10px 12px;
+    pointer-events: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: transparent;
+    overflow: hidden;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+.re-step-text-highlight .token {
+    background: rgba(129, 140, 248, 0.2);
+    color: #818cf8;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+.re-step-textarea {
+    background: rgba(255, 255, 255, 0.04) !important;
+    caret-color: #e2e8f0;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Tags (chip editor) ── */
+.re-tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    min-height: 40px;
+    cursor: text;
+}
+.re-tag {
+    display: inline-flex;
+    align-items: center; gap: 4px;
+    padding: 3px 8px 3px 10px;
+    background: rgba(129, 140, 248, 0.15);
+    border: 1px solid rgba(129, 140, 248, 0.25);
+    border-radius: 14px;
+    color: #a5b4fc;
+    font-size: 12px;
+    animation: re-tag-in 0.2s ease;
+}
+@keyframes re-tag-in {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.re-tag-remove {
+    width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    cursor: pointer; font-size: 10px;
+    transition: all 0.1s;
+}
+.re-tag-remove:hover { background: rgba(239, 68, 68, 0.3); color: #f87171; }
+.re-tag-input {
+    border: none;
+    background: transparent;
+    color: #e2e8f0;
+    font-size: 12px;
+    outline: none;
+    min-width: 80px;
+    flex: 1;
+}
+
+/* ── Pro Tip / String List ── */
+.re-string-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+.re-string-item .re-textarea { min-height: 40px; flex: 1; }
+
+/* ── Glossary ── */
+.re-glossary-item {
+    display: grid;
+    grid-template-columns: 160px 1fr 36px;
+    gap: 8px;
+    align-items: start;
+    margin-bottom: 6px;
+}
+
+/* ── Validation Panel ── */
+.re-validation {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.re-validation-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+}
+.re-validation-item {
+    font-size: 12px;
+    padding: 4px 0;
+    color: #94a3b8;
+    display: flex; align-items: flex-start; gap: 6px;
+}
+.re-validation-item.error { color: #f87171; }
+.re-validation-item.warning { color: #fbbf24; }
+.re-validation-item.ok { color: #4ade80; }
+
+/* ── Checkbox ── */
+.re-checkbox-wrap {
+    display: flex; align-items: center; gap: 8px;
+}
+.re-checkbox {
+    width: 16px; height: 16px;
+    accent-color: #818cf8;
+    cursor: pointer;
+}
+
+/* ── Token Helper Sidebar ── */
+.re-token-helper {
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(129, 140, 248, 0.05);
+    border: 1px solid rgba(129, 140, 248, 0.12);
+    border-radius: 8px;
+}
+.re-token-helper-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #818cf8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+.re-token-chip {
+    display: inline-flex;
+    align-items: center; gap: 4px;
+    padding: 3px 8px;
+    margin: 2px;
+    background: rgba(129, 140, 248, 0.1);
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    border-radius: 6px;
+    color: #a5b4fc;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.re-token-chip:hover { background: rgba(129, 140, 248, 0.25); transform: scale(1.05); }
+.re-token-chip .value { color: #64748b; }
+
+/* ── Variant Editor ── */
+.re-variant {
+    border: 1px solid rgba(129, 140, 248, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+.re-variant-header {
+    padding: 10px 14px;
+    background: rgba(129, 140, 248, 0.06);
+    display: flex; align-items: center; gap: 8px;
+}
+.re-variant-label {
+    font-size: 13px; font-weight: 600; color: #a5b4fc;
+}
+.re-variant-body { padding: 14px; }
+
+/* ── Baking section ── */
+.re-baking-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* ── Footer/validation bar ── */
+.re-footer {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+.re-footer-info {
+    font-size: 11px;
+    color: #475569;
+    display: flex; align-items: center; gap: 8px;
+}
+.re-footer-score {
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+.re-footer-score.good { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+.re-footer-score.warn { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+.re-footer-score.bad { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+
+/* ── Edit button in recipe cards ── */
+.btn-edit-recipe {
+    background: rgba(129, 140, 248, 0.15) !important;
+    color: #818cf8 !important;
+}
+.btn-edit-recipe:hover {
+    background: rgba(129, 140, 248, 0.3) !important;
+}
+
+/* ── Flour table ── */
+.re-flour-row {
+    display: grid;
+    grid-template-columns: 1fr 100px 1fr 36px;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.re-flour-row:hover { background: rgba(255, 255, 255, 0.02); border-radius: 4px; }
+
+/* ── Ingredient Group Footer (totals) ── */
+.re-group-totals {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: rgba(129, 140, 248, 0.05);
+    border: 1px solid rgba(129, 140, 248, 0.1);
+    border-radius: 8px;
+    font-size: 11px;
+}
+.re-group-totals-label {
+    color: #64748b;
+    font-weight: 500;
+}
+.re-group-totals-value {
+    color: #a5b4fc;
+    font-weight: 700;
+    font-feature-settings: 'tnum';
+}
+
+/* ── Redo/Undo Count Badges ── */
+.re-action-btn .re-action-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #818cf8;
+    color: #1a1b2e;
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 0 4px;
+}
+
+/* ── Sticky Token Helper ── */
+.re-token-helper {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(129, 140, 248, 0.05);
+    border: 1px solid rgba(129, 140, 248, 0.12);
+    border-radius: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+}
+
+/* ── Image preview for meta tab ── */
+.re-image-preview {
+    margin-top: 6px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Keyboard shortcut hints ── */
+.re-kbd {
+    display: inline-flex;
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: 'Inter', sans-serif;
+    color: #64748b;
+    margin-left: 4px;
+}

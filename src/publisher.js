@@ -260,7 +260,7 @@ export async function publishRecipe(recipe, args, options = {}) {
         delete persistentJson._imageData;
         delete persistentJson._sourcesUsed;
         delete persistentJson._inputMode;
-        // NOTA: _generatedBy viene mantenuto nel JSON per tracciare il modello AI usato
+        // NOTA: _generatedBy e _createdAt vengono mantenuti nel JSON per tracciabilità
 
         writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
         log.info(`💾 JSON salvato: ${jsonFile}`);

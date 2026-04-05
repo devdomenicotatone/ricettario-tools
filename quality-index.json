@@ -35,18 +35,6 @@
     "issueCount": 2,
     "timestamp": "2026-04-01T01:49:41.090Z"
   },
-  "burger-buns-biga": {
-    "score": 40,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 9,
-    "timestamp": "2026-03-30T20:15:20.427Z"
-  },
-  "cornetti-sfogliati-classici": {
-    "score": 75,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 6,
-    "timestamp": "2026-03-30T21:39:10.087Z"
-  },
   "impasto-rosticceria-siciliana": {
     "score": 60,
     "verdict": "🔴 Problematica",
@@ -125,12 +113,6 @@
     "issueCount": 0,
     "timestamp": "2026-04-01T11:58:56.351Z"
   },
-  "burger-buns-con-biga": {
-    "score": 95,
-    "verdict": "🟢 Buona",
-    "issueCount": 2,
-    "timestamp": "2026-04-01T23:04:17.758Z"
-  },
   "ciabatta-con-poolish": {
     "score": 95,
     "verdict": "🟢 Buona",
@@ -149,16 +131,28 @@
     "issueCount": 2,
     "timestamp": "2026-04-03T22:09:27.669Z"
   },
-  "pane-integrale-con-biga": {
-    "score": 100,
-    "verdict": "🟢 Buona",
-    "issueCount": 0,
-    "timestamp": "2026-04-05T00:07:13.646Z"
-  },
   "dado-vegetale-fatto-in-casa": {
     "score": 95,
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-05T00:40:40.414Z"
+  },
+  "cornetti-sfogliati-classici": {
+    "score": 70,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-05T00:59:07.041Z"
+  },
+  "burger-buns-con-biga": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-05T01:47:59.790Z"
+  },
+  "pane-integrale-con-biga": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-05T02:08:58.898Z"
   }
 }

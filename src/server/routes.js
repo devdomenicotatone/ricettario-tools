@@ -70,6 +70,71 @@ export function setupRoutes(app) {
         }
     });
 
+    // ── Ricetta singola: GET (per editor) ──
+    app.get('/api/ricetta/:cat/:slug', (req, res) => {
+        try {
+            const { cat, slug } = req.params;
+            const ricettarioPath = getRicettarioPath();
+            const jsonFile = resolve(ricettarioPath, 'ricette', cat, `${slug}.json`);
+
+            if (!existsSync(jsonFile)) {
+                return res.status(404).json({ error: `Ricetta non trovata: ${cat}/${slug}` });
+            }
+
+            const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
+            res.json({ recipe, cat, slug, path: jsonFile });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
+    // ── Ricetta singola: PATCH (salvataggio editor) ──
+    app.patch('/api/ricetta/:cat/:slug', async (req, res) => {
+        try {
+            const { cat, slug } = req.params;
+            const { recipe: updatedRecipe, autoRegen } = req.body;
+            const ricettarioPath = getRicettarioPath();
+            const jsonFile = resolve(ricettarioPath, 'ricette', cat, `${slug}.json`);
+
+            if (!existsSync(jsonFile)) {
+                return res.status(404).json({ error: `Ricetta non trovata: ${cat}/${slug}` });
+            }
+
+            // Backup pre-edit
+            const backupFile = jsonFile.replace('.json', '.pre-edit.json');
+            const originalContent = readFileSync(jsonFile, 'utf-8');
+            writeFileSync(backupFile, originalContent, 'utf-8');
+
+            // Salva il JSON aggiornato
+            writeFileSync(jsonFile, JSON.stringify(updatedRecipe, null, 2), 'utf-8');
+
+            // Auto-rigenera HTML se richiesto
+            let regenOk = false;
+            if (autoRegen) {
+                try {
+                    const { rigenera } = await import('../commands/rigenera.js');
+                    const jobId = `rig-edit-${++jobCounter}`;
+                    const ctx = createJobContext(jobId, `Rigenera: ${slug}`);
+                    await withOutputCapture(ctx, () => rigenera({ rigenera: jsonFile }));
+                    ctx.end(true);
+                    regenOk = true;
+                } catch (regenErr) {
+                    console.error(`[PATCH] Rigenerazione fallita: ${regenErr.message}`);
+                }
+
+                // Sync cards
+                try {
+                    const { syncCards } = await import('../commands/sync-cards.js');
+                    await syncCards({});
+                } catch {}
+            }
+
+            res.json({ ok: true, slug, cat, regenOk });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
     // ── Genera da nome ──
     app.post('/api/genera', async (req, res) => {
         const { nome, url, tipo, note, noImage, preview, aiModel, keepExisting } = req.body;

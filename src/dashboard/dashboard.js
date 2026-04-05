@@ -502,6 +502,16 @@ function getHydrationNum(h) {
     return parseFloat(String(h).replace('%', '')) || 0;
 }
 
+function formatCreatedAt(iso) {
+    if (!iso) return '';
+    try {
+        const d = new Date(iso);
+        if (isNaN(d)) return '';
+        const mesi = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+        return `${d.getDate()} ${mesi[d.getMonth()]} ${d.getFullYear()}`;
+    } catch { return ''; }
+}
+
 function getHydrationClass(val) {
     if (val >= 75) return 'hydration-high';
     if (val >= 60) return 'hydration-mid';
@@ -711,7 +721,7 @@ function renderRecipes() {
         grid.innerHTML = `<div class="recipe-list-header">
             <span><input type="checkbox" class="recipe-checkbox-all" ${allChecked ? 'checked' : ''} 
                 onchange="toggleSelectAll(this.checked)"> Ricetta</span>
-            <span>Categoria</span><span>Qualità</span><span>Idratazione</span><span>Tempo</span><span>Azioni</span>
+            <span>Categoria</span><span>Qualità</span><span>Idratazione</span><span>Tempo</span><span>Data</span><span>Azioni</span>
         </div>` + filtered.map(r => renderRecipeRow(r)).join('');
     } else {
         grid.innerHTML = filtered.map(r => renderRecipeCard(r)).join('');
@@ -754,6 +764,7 @@ function renderRecipeCard(r) {
                 <img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.parentElement.style.display='none'">
                 <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
                     onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+                ${r._createdAt ? `<span class="recipe-card-date-badge"><i data-lucide="calendar"></i> ${formatCreatedAt(r._createdAt)}</span>` : ''}
             </div>` : `<div class="recipe-card-no-img"><span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span></div>`}
             <div class="recipe-card-body">
                 <div class="recipe-card-title">${title}</div>
@@ -775,6 +786,7 @@ function renderRecipeCard(r) {
                         <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
                         <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                     </div>
+                    <button class="btn btn-secondary btn-sm btn-edit-recipe" onclick="openRecipeEditor('${r.slug}', '${r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase()}')" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
                     <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
             </div>
@@ -804,6 +816,7 @@ function renderRecipeRow(r) {
             ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
             <span class="recipe-row-hydration">${r.hydration || '—'}</span>
             <span class="recipe-row-time">${r.time || '—'}</span>
+            <span class="recipe-row-date">${r._createdAt ? formatCreatedAt(r._createdAt) : '—'}</span>
             <div class="recipe-row-actions" onclick="event.stopPropagation()">
                 <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
                 <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
@@ -815,6 +828,7 @@ function renderRecipeRow(r) {
                     <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
                     <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                 </div>
+                <button class="btn btn-secondary btn-sm btn-edit-recipe" onclick="openRecipeEditor('${r.slug}', '${r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase()}')" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>

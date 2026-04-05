@@ -108,6 +108,7 @@ export const RECIPE_FIELDS = {
     imageAttribution: { type: 'string',  required: false, description: 'Attribuzione foto (crediti)' },
     _originalImageUrl:{ type: 'string',  required: false, description: 'URL originale immagine (interno)' },
     _generatedBy:     { type: 'string',  required: false, description: 'Modello AI usato per la generazione (interno)' },
+    _createdAt:       { type: 'string',  required: false, description: 'Data ISO di creazione della ricetta (interno)' },
     variants:         { type: 'array',   required: false, description: 'Varianti ricetta [{id, label, description, ingredientOverrides, branchAfterStep, altSteps}]' },
 };
 
@@ -231,12 +232,20 @@ export function validateRecipeSchema(recipe) {
         let totalWaterGrams = 0;
 
         for (const g of recipe.ingredientGroups) {
+            // Skip gruppi NON parte dell'impasto (doratura, decorazione, finitura, glassa)
+            const groupName = (g.group || '').toLowerCase();
+            const nonDoughGroups = ['doratura', 'decorazione', 'finitura', 'copertura', 'glassa', 'guarnizione', 'topping'];
+            if (nonDoughGroups.some(kw => groupName.includes(kw))) continue;
+
             for (const item of g.items || []) {
                 const name = (item.name || '').toLowerCase();
 
                 // Skip ingredienti assemblati (es. "Biga Matura", "Poolish Maturo")
                 // Le loro componenti (farina + acqua) sono già listate nel gruppo pre-impasto
-                const isFlour = flourKeywords.some(kw => name.includes(kw));
+                // Escludi falsi positivi: "Zucchero Semolato" contiene "semola" ma NON è farina
+                const notFlourKeywords = ['zucchero', 'sale', 'lievito', 'malto', 'miele'];
+                const isExcluded = notFlourKeywords.some(kw => name.includes(kw));
+                const isFlour = !isExcluded && flourKeywords.some(kw => name.includes(kw));
                 const matchedLiquid = liquidKeywords.find(l => name.includes(l.kw));
                 const isFlourOrLiquid = isFlour || !!matchedLiquid;
                 const isAssembled = !isFlourOrLiquid && assembledKeywords.some(kw => name.includes(kw));
@@ -266,6 +275,34 @@ export function validateRecipeSchema(recipe) {
             const flourDiff = Math.abs(recipe.totalFlour - totalFlourGrams);
             if (flourDiff > 5) {
                 errors.push(`totalFlour dichiarato ${recipe.totalFlour}g ma somma farine = ${totalFlourGrams}g (differenza: ${flourDiff}g)`);
+            }
+        }
+    }
+
+    // Validazione tokenId: ogni ingrediente DEVE avere un tokenId univoco
+    if (recipe.ingredientGroups?.length > 0) {
+        const allTokenIds = new Set();
+        for (const g of recipe.ingredientGroups) {
+            for (const item of g.items || []) {
+                if (!item.tokenId) {
+                    warnings.push(`Ingrediente \"${item.name}\" nel gruppo \"${g.group}\" senza tokenId — il calcolatore dosi e le varianti non funzioneranno correttamente`);
+                } else {
+                    if (allTokenIds.has(item.tokenId)) {
+                        errors.push(`tokenId duplicato: \"${item.tokenId}\" — ogni ingrediente deve avere un tokenId unico`);
+                    }
+                    allTokenIds.add(item.tokenId);
+                }
+            }
+        }
+
+        // Validazione ingredientOverride.ref: ogni ref DEVE corrispondere a un tokenId esistente
+        if (recipe.variants?.length > 0) {
+            for (const variant of recipe.variants) {
+                for (const override of (variant.ingredientOverrides || [])) {
+                    if (override.ref && !allTokenIds.has(override.ref)) {
+                        errors.push(`Variante \"${variant.id}\": ingredientOverride ref \"${override.ref}\" non corrisponde a nessun tokenId — l'override non funzionerà`);
+                    }
+                }
             }
         }
     }

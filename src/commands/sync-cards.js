@@ -10,7 +10,7 @@
  * Uso: node crea-ricetta.js --sync-cards
  */
 
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { resolve, basename, join } from 'path';
 import { log } from '../utils/logger.js';
 
@@ -34,6 +34,12 @@ function extractRecipeFromJson(jsonPath, categoryDir) {
 
     // Salta eventuali file index.json
     if (filename === 'index') return null;
+
+    // Fallback _createdAt: usa mtime del file se non c'è nel JSON
+    let createdAt = data._createdAt || null;
+    if (!createdAt) {
+        try { createdAt = statSync(jsonPath).mtime.toISOString(); } catch {}
+    }
 
     const slug = data.slug || filename;
     const category = data.category || CATEGORIES[categoryDir]?.name || categoryDir;
@@ -65,6 +71,7 @@ function extractRecipeFromJson(jsonPath, categoryDir) {
         temp,
         tool,
         _generatedBy: data._generatedBy || null,
+        _createdAt: createdAt,
     };
 }
 
@@ -93,7 +100,7 @@ export async function syncCards(args) {
     for (const dir of categoryDirs) {
         const categoryPath = join(ricettePath, dir);
         const jsonFiles = readdirSync(categoryPath)
-            .filter(f => f.endsWith('.json') && f !== 'index.json' && !f.includes('.backup.') && !f.includes('.pre-fix.'));
+            .filter(f => f.endsWith('.json') && f !== 'index.json' && !f.includes('.backup.') && !f.includes('.pre-fix.') && !f.includes('.pre-edit.'));
 
         for (const file of jsonFiles) {
             const filePath = join(categoryPath, file);

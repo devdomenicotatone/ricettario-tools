@@ -373,7 +373,7 @@ async function geminiReview(recipePrompt, groundingContext, geminiModel = 'gemin
     log.info(`   🤖 Layer 3: ${modelLabel} sta verificando...`);
     const geminiText = await callGemini({
         model: geminiModel,
-        maxTokens: 4096,
+        maxTokens: 8192,
         system: GEMINI_VERIFY_SYSTEM,
         messages: [{ role: 'user', content: fullPrompt }],
     });

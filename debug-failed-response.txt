@@ -1,9 +1,9 @@
 ```json
 {
-  "score": 65,
-  "verdict": "🟡 Da migliorare",
+  "score": 90,
+  "verdict": "🟢 Buona",
   "issues": [
     {
       "severity": "❌",
-      "area": "Gruppi",
-      "message": "La Farina Manitoba (700g) è raggruppata interamente sotto 'Per la Biga'. Tuttavia, sia nello step 2 che nello step 11 il procedimento indica di prelevare solo 140g di Manitoba per il pre-impasto. Lasciare 700g di farina e 120g di acqua nella sezione Biga suggerirebbe un pre-impasto con un'idratazione impossibile del 17%.",
+      "area": "Dosi",
+      "message": "L'idratazione dichiarata del 59% è errata. Calcolando la farina totale (100g Manitoba biga + 200g Manitoba impasto + 200g Tipo 00 = 500g) e i liquidi totali (45g acqua + 240g latte + 55g uovo = 340g), l'idratazione reale è del 68% (340g/
