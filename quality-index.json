@@ -1,10 +1,4 @@
 {
-  "pane-integrale-biga-saccorosso-miele": {
-    "score": 60,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 2,
-    "timestamp": "2026-04-01T01:46:36.875Z"
-  },
   "pane-pugliese-biga": {
     "score": 60,
     "verdict": "🟢 Buona",
@@ -160,5 +154,11 @@
     "verdict": "🟢 Buona",
     "issueCount": 2,
     "timestamp": "2026-04-03T22:09:27.669Z"
+  },
+  "pane-integrale-con-biga": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-05T00:07:13.646Z"
   }
 }
