@@ -108,28 +108,19 @@ export function setupRoutes(app) {
             // Salva il JSON aggiornato
             writeFileSync(jsonFile, JSON.stringify(updatedRecipe, null, 2), 'utf-8');
 
-            // Auto-rigenera HTML se richiesto
-            let regenOk = false;
+            // Sync cards (aggiorna recipes.json) — NO rigenerazione HTML (il sito è una SPA)
+            let syncOk = false;
             if (autoRegen) {
-                try {
-                    const { rigenera } = await import('../commands/rigenera.js');
-                    const jobId = `rig-edit-${++jobCounter}`;
-                    const ctx = createJobContext(jobId, `Rigenera: ${slug}`);
-                    await withOutputCapture(ctx, () => rigenera({ rigenera: jsonFile }));
-                    ctx.end(true);
-                    regenOk = true;
-                } catch (regenErr) {
-                    console.error(`[PATCH] Rigenerazione fallita: ${regenErr.message}`);
-                }
-
-                // Sync cards
                 try {
                     const { syncCards } = await import('../commands/sync-cards.js');
                     await syncCards({});
-                } catch {}
+                    syncOk = true;
+                } catch (syncErr) {
+                    console.error(`[PATCH] Sync cards fallito: ${syncErr.message}`);
+                }
             }
 
-            res.json({ ok: true, slug, cat, regenOk });
+            res.json({ ok: true, slug, cat, syncOk });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }

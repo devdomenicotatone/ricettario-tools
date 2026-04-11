@@ -135,8 +135,8 @@ class RecipeEditorState {
             this.isDirty = false;
             this.isSaving = false;
             this._emitChange();
-            const regenMsg = result.regenOk ? '✓ Salvata + HTML rigenerato' : '✓ Salvata (regen skip)';
-            this._emitStatus(regenMsg, 'saved');
+            const syncMsg = result.syncOk ? '✓ Salvata + cards sync' : '✓ Salvata';
+            this._emitStatus(syncMsg, 'saved');
         } catch (err) {
             this.isSaving = false;
             this._emitStatus(`Errore salvataggio: ${err.message}`, 'error');
