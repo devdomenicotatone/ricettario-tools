@@ -41,12 +41,6 @@
     "issueCount": 3,
     "timestamp": "2026-04-01T01:52:24.789Z"
   },
-  "panettone-classico": {
-    "score": 70,
-    "verdict": "🟢 Buona",
-    "issueCount": 6,
-    "timestamp": "2026-03-30T21:40:40.145Z"
-  },
   "panettone-pere-cioccolato": {
     "score": 92,
     "verdict": "🟢 Buona",
@@ -160,5 +154,17 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-08T09:15:22.612Z"
+  },
+  "panettone-fatto-in-casa-caputo": {
+    "score": 70,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-15T19:21:54.720Z"
+  },
+  "pasta-madre-solida-creazione-rinfresco": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-15T19:50:24.666Z"
   }
 }
