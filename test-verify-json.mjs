@@ -11,7 +11,7 @@ Verifica la correttezza di questa ricetta JSON. Analizza:
 1. DOSI: idratazione, % lievito, rapporti farina/acqua, sale (2-3% su farina)
 2. TEMPERATURE: forno max 280°C, impasto target 23-26°C
 3. TEMPI: coerenza lievitazione vs lievito
-4. SETUP: spirale vs mano vs estrusore — corretto per la categoria?
+4. COERENZA: ingredienti ↔ procedimento — ogni ingrediente menzionato negli step?
 5. ingredientGroups: i gruppi sono logici? Ogni ingrediente è nel gruppo giusto?
 6. Coerenza ingredienti ↔ procedimento: ogni ingrediente menzionato negli step?
 
@@ -73,7 +73,7 @@ ${flatIngredients.join('\n')}
 ${recipe.suspensions?.length ? `SOSPENSIONI:\n${recipe.suspensions.map(s => `${s.name} ${s.note || ''} ${s.grams}g`).join('\n')}` : ''}
 
 PROCEDIMENTO (titoli step):
-${(recipe.stepsSpiral || recipe.stepsHand || recipe.stepsExtruder || []).map((s, i) => `${i + 1}. ${s.title}`).join('\n')}`;
+${(recipe.steps || []).map((s, i) => `${i + 1}. ${s.title}`).join('\n')}`;
 
   // ── STEP 1: Claude ──
   console.log('🔵 CLAUDE sta verificando...\n');

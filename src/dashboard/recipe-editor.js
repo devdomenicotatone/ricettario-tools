@@ -184,8 +184,8 @@ class RecipeEditorState {
         }
 
         // Steps
-        if (!r.stepsHand?.length) errors.push('Almeno 1 step per "A mano"');
-        const allSteps = [...(r.stepsSpiral || []), ...(r.stepsHand || []), ...(r.stepsExtruder || []), ...(r.stepsCondiment || [])];
+        if (!r.steps?.length) errors.push('Almeno 1 step nel procedimento');
+        const allSteps = [...(r.steps || []), ...(r.stepsCondiment || [])];
         for (const s of allSteps) {
             if (!s.title || !s.text) errors.push(`Step senza title o text`);
         }
@@ -615,9 +615,7 @@ function renderIngredientsTab(container) {
 function renderStepsTab(container) {
     const r = state.currentRecipe;
     const sections = [
-        { key: 'stepsSpiral', label: '🔩 Spirale', icon: 'wrench' },
-        { key: 'stepsHand', label: '✋ A Mano', icon: 'hand' },
-        { key: 'stepsExtruder', label: '🍝 Estrusore', icon: 'utensils' },
+        { key: 'steps', label: '⚙️ Procedimento', icon: 'list-ordered' },
         { key: 'stepsCondiment', label: '🍅 Condimento', icon: 'salad' },
     ];
 
@@ -776,57 +774,6 @@ function renderSupportTab(container) {
         </div>
     `;
 
-    // Variants
-    const variants = r.variants || [];
-    if (variants.length) {
-        html += `
-            <div class="re-section">
-                <div class="re-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
-                    <div class="re-section-title"><span class="emoji">🔀</span> Varianti (${variants.length})</div>
-                    <span class="re-section-chevron">▸</span>
-                </div>
-                <div class="re-section-body">
-                    ${variants.map((v, vi) => `
-                        <div class="re-variant">
-                            <div class="re-variant-header">
-                                <span class="re-variant-label">${esc(v.label)}</span>
-                            </div>
-                            <div class="re-variant-body">
-                                <div class="re-row">
-                                    <div class="re-field"><label class="re-label">ID</label><input class="re-input re-input-sm re-input-mono" value="${esc(v.id)}" data-path="variants.${vi}.id"></div>
-                                    <div class="re-field"><label class="re-label">Label</label><input class="re-input re-input-sm" value="${esc(v.label)}" data-path="variants.${vi}.label"></div>
-                                </div>
-                                <div class="re-field"><label class="re-label">Descrizione</label><textarea class="re-textarea" data-path="variants.${vi}.description" rows="2">${esc(v.description)}</textarea></div>
-                                <div class="re-field"><label class="re-label">Branch After Step</label><input class="re-input re-input-sm" type="number" value="${v.branchAfterStep ?? ''}" data-path="variants.${vi}.branchAfterStep" data-type="number"></div>
-
-                                ${v.ingredientOverrides?.length ? `
-                                    <label class="re-label" style="margin-top:12px">Override Ingredienti</label>
-                                    ${v.ingredientOverrides.map((o, oi) => `
-                                        <div style="display:grid;grid-template-columns:1fr 80px 1fr 36px;gap:6px;margin-bottom:4px">
-                                            <input class="re-input re-input-sm" value="${esc(o.ref)}" data-path="variants.${vi}.ingredientOverrides.${oi}.ref" placeholder="ref">
-                                            <input class="re-input re-input-sm" type="number" value="${o.grams ?? ''}" data-path="variants.${vi}.ingredientOverrides.${oi}.grams" data-type="number">
-                                            <input class="re-input re-input-sm" value="${esc(o.note)}" data-path="variants.${vi}.ingredientOverrides.${oi}.note" placeholder="note">
-                                            <button class="re-row-delete" onclick="removeVariantOverride(${vi},${oi})"><i data-lucide="x"></i></button>
-                                        </div>
-                                    `).join('')}
-                                ` : ''}
-
-                                ${v.altSteps?.length ? `
-                                    <label class="re-label" style="margin-top:12px">Step Alternativi</label>
-                                    ${v.altSteps.map((as, asi) => `
-                                        <div class="re-step" style="margin-bottom:6px">
-                                            <input class="re-input re-input-sm" value="${esc(as.title)}" data-path="variants.${vi}.altSteps.${asi}.title" placeholder="Titolo" style="margin-bottom:4px">
-                                            <textarea class="re-textarea" data-path="variants.${vi}.altSteps.${asi}.text" rows="2">${esc(as.text)}</textarea>
-                                        </div>
-                                    `).join('')}
-                                ` : ''}
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
 
     // Image keywords
     html += `
@@ -1055,12 +1002,7 @@ window.removeGlossary = function (gi) {
     renderActiveTab();
 };
 
-window.removeVariantOverride = function (vi, oi) {
-    const variants = JSON.parse(JSON.stringify(state.currentRecipe.variants || []));
-    variants[vi].ingredientOverrides.splice(oi, 1);
-    state.update('variants', variants);
-    renderActiveTab();
-};
+
 
 // ── Token Inserter ──
 window.insertToken = function (tokenId, grams) {

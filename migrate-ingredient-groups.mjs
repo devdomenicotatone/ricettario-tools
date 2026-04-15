@@ -20,7 +20,7 @@ const FILTER = process.argv.includes('--filter') ? process.argv[process.argv.ind
 const MIGRATION_PROMPT = `Sei un esperto panificatore e pasticciere. Il tuo compito è RIORGANIZZARE gli ingredienti di una ricetta JSON dal formato piatto al formato con GRUPPI LOGICI.
 
 REGOLE:
-1. Analizza la ricetta: titolo, ingredienti, passaggi (stepsSpiral/stepsHand/stepsExtruder/stepsCondiment) per capire i COMPONENTI LOGICI della ricetta.
+1. Analizza la ricetta: titolo, ingredienti, passaggi (steps/stepsCondiment) per capire i COMPONENTI LOGICI della ricetta.
 
 2. Se la ricetta ha 2+ COMPONENTI LOGICHE DISTINTE, crea i gruppi. Esempi:
    - Pane con poolish: "Per il Poolish" + "Per l'Impasto Finale"
@@ -39,7 +39,7 @@ REGOLE:
 
 4. OGNI ingrediente deve finire in ESATTAMENTE un gruppo. Non duplicare, non omettere.
 
-5. L'oggetto di ogni ingrediente DEVE rimanere IDENTICO (name, note, grams, setupNote) — cambi solo la STRUTTURA di raggruppamento.
+5. L'oggetto di ogni ingrediente DEVE rimanere IDENTICO (name, note, grams) — cambi solo la STRUTTURA di raggruppamento.
 
 6. I nomi dei gruppi devono essere in italiano, con la preposizione "Per" davanti. Esempi:
    - "Per il Poolish", "Per la Biga", "Per l'Impasto Finale"
@@ -106,9 +106,7 @@ async function migrateRecipe(filePath) {
     ingredients: recipe.ingredients,
     suspensions: recipe.suspensions,
     // Passa i titoli degli step per dare contesto a Claude
-    stepsSpiral: recipe.stepsSpiral?.map(s => s.title) || [],
-    stepsHand: recipe.stepsHand?.map(s => s.title) || [],
-    stepsExtruder: recipe.stepsExtruder?.map(s => s.title) || [],
+    steps: recipe.steps?.map(s => s.title) || [],
     stepsCondiment: recipe.stepsCondiment?.map(s => s.title) || [],
   };
 

@@ -48,14 +48,11 @@ REGOLE:
 1. Riscrivere tutti gli ingredienti in formato tecnico: nome generico + caratteristica tecnica tra parentesi (es. "Farina Tipo 0 Media Forza (W 260–280)")
 2. Le dosi devono essere in GRAMMI, mai "cucchiai", "bicchieri" ecc. Se la fonte usa misure casalinghe, converti con precisione
 3. Calcolare SEMPRE: idratazione totale (% su farina), temperatura target impasto
-4. SETUP per categoria — REGOLA FONDAMENTALE: crea stepsSpiral SOLO se il procedimento prevede REALMENTE un impasto meccanico con impastatrice. NON forzare stepsSpiral per ricette che si fanno a mano (dolci, biscotti, frolla, creme, ecc.).
-   - PANE/PIZZA/LIEVITATI con impasto: Creare DUE procedimenti → "stepsSpiral" (impastatrice a spirale) + "stepsHand" (a mano)
-   - PASTA: Creare DUE procedimenti → "stepsExtruder" (estrusore con trafila Philips) + "stepsHand" (a mano, SOLO se il formato lo permette)
-     Formati pasta fattibili a mano: orecchiette, pici, tagliatelle, pappardelle, tajarin, malloreddus, cavatelli, trofie, fusilli al ferretto, fettuccine, lasagne, ravioli, tortellini, pizzoccheri
-     Formati SOLO estrusore: spaghetti, linguine, rigatoni, maccheroni, fusilli, penne, bucatini, paccheri
-   - DOLCI/BISCOTTI/TORTE/CREME: usare SOLO "stepsHand". NON creare "stepsSpiral" — queste ricette non prevedono impasto meccanico. Frolla, creme pasticcere, biscotti, torte, migliaccio, crumble ecc. si fanno esclusivamente a mano o con fruste/planetaria (che non è una spirale da panificazione).
-   - FOCACCIA: se l'impasto è impastabile a spirale, creare entrambi. Se è un impasto semplice senza necessità di glutine forte, valuta se ha senso un doppio setup.
-   - REGOLA: se la ricetta NON ha bisogno di impastatrice a spirale, NON inventare un "stepsSpiral" forzato. Lascia solo "stepsHand".
+4. PROCEDIMENTO: Crea UN SOLO procedimento nel campo "steps".
+   - Il procedimento è scritto per chi ha impastatrice a spirale (per pane/pizza/lievitati). Se la ricetta si fa solo a mano (dolci, biscotti, frolla, creme), scrivi il procedimento a mano.
+   - Per PASTA: il procedimento usa l'estrusore con trafila Philips.
+   - CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento, usa l'array separato "stepsCondiment".
+   - Il tono è da artigiano: indica velocità impastatrice, tempi precisi, tecniche specifiche.
 5. Se la ricetta ha sospensioni (noci, olive, uvetta, cioccolato ecc.), separarle dagli ingredienti base
 6. Se ci sono farine specifiche, creare la tabella "Consigli Farine" con tipo, forza W e marchi consigliati
 7. Generare un alert professionale pertinente (cosa NON fare)
@@ -69,15 +66,11 @@ REGOLE:
     - Tempo di cottura specifico
     - Suggerimenti: pietra refrattaria, vapore, posizione teglia, come riconoscere la cottura perfetta
 14. Le temperature dei forni devono SEMPRE essere per forni casalinghi (max 280°C). MAI suggerire temperature superiori.
-15. INGREDIENTI DINAMICI PER SETUP: Se un ingrediente ha caratteristiche diverse a seconda del setup (spirale vs mano), usa il campo opzionale "setupNote".
-    TEMPERATURA ACQUA — NON È UNA REGOLA FISSA, dipende dal contesto:
-    - Acqua GHIACCIATA (2-6°C) per spirale: SOLO quando ci sono impasti lunghi (>12-15 min) ad alta velocità (V6+) con farine forti (W>300) e alta idratazione (>72%). La spirale genera calore meccanico e serve compensare.
-    - Acqua FRESCA (16-20°C) per spirale: per impasti medi (8-12 min) con farine medie (W 240-300) e idratazione moderata (65-72%).
+15. TEMPERATURA ACQUA — NON È UNA REGOLA FISSA, dipende dal contesto:
+    - Acqua GHIACCIATA (2-6°C): SOLO quando ci sono impasti lunghi (>12-15 min) ad alta velocità (V6+) con farine forti (W>300) e alta idratazione (>72%).
+    - Acqua FRESCA (16-20°C): per impasti medi (8-12 min) con farine medie (W 240-300) e idratazione moderata (65-72%).
     - Acqua AMBIENTE (20-24°C): per impasti brevi (<8 min), farine deboli/integrali (W<240), basse idratazioni (<65%), o quando la ricetta sorgente NON specifica acqua fredda.
-    - A MANO: generalmente 2-4°C più calda rispetto alla spirale, perché le mani non generano lo stesso calore meccanico.
     REGOLA D'ORO: Se la ricetta sorgente specifica una temperatura acqua, RISPETTALA. Non inventare acqua ghiacciata se la fonte non la menziona.
-    Lievito: dosi diverse se impasto più lungo a mano (generalmente +20-30%).
-    Il campo "note" classico deve contenere la nota del setup PRIMARIO (spirale/estrusore). "setupNote" serve per le VARIAZIONI.
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
 {
@@ -105,21 +98,15 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
       "group": "Per l'Impasto Finale",
       "items": [
         { "name": "Farina Tipo 0", "note": "(W 280-320)", "grams": 700, "tokenId": "farina_impasto" },
-        { "name": "Acqua", "note": "(18-20°C)", "grams": 380, "tokenId": "acqua_impasto", "setupNote": { "spirale": "(18-20°C)", "mano": "(20-22°C)" } }
+        { "name": "Acqua", "note": "(18-20°C)", "grams": 380, "tokenId": "acqua_impasto" }
       ]
     }
   ],
   "suspensions": [
     { "name": "Nome Sospensione", "note": "(nota)", "grams": 160 }
   ],
-  "stepsSpiral": [
-    { "title": "Titolo Step", "text": "Descrizione dettagliata con tempi e velocità..." }
-  ],
-  "stepsHand": [
-    { "title": "Titolo Step", "text": "Descrizione dettagliata con tecniche manuali..." }
-  ],
-  "stepsExtruder": [
-    { "title": "Titolo Step", "text": "Per pasta: preparare l'impasto, inserire nel Philips 7000..." }
+  "steps": [
+    { "title": "Titolo Step", "text": "Descrizione dettagliata con tempi, velocità e tecniche..." }
   ],
   "stepsCondiment": [
     { "title": "Titolo Step", "text": "Istruzioni opzionali su come preparare il sugo/salsa di accompagnamento..." }
@@ -134,21 +121,6 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   },
   "glossary": [
     { "term": "Autolisi", "definition": "Riposo di farina e acqua senza lievito per 20-60 min" }
-  ],
-  "variants": [
-    {
-      "id": "cold-fermentation",
-      "label": "❄️ Lievitazione in Frigo 24-48h",
-      "description": "Maturazione lenta per sapore più complesso",
-      "ingredientOverrides": [
-        { "ref": "lievito", "grams": 1.3, "note": "(ridotto per maturazione lunga)" }
-      ],
-      "branchAfterStep": 4,
-      "altSteps": [
-        { "title": "Staglio Panetti", "text": "Testo con token {panetto_peso:285!}g (il ! rende il valore fisso, non scalabile)..." },
-        { "title": "Maturazione in Frigo", "text": "Istruzioni dettagliate..." }
-      ]
-    }
   ],
   "alert": "Testo dell'alert professionale (cosa NON fare e perché)",
   "proTips": ["Tip 1", "Tip 2"],
@@ -167,15 +139,14 @@ CAMPO tokenId (OBBLIGATORIO per ogni ingrediente):
 - Il tokenId è l'ESATTO nome del token usato nel procedimento per quell'ingrediente.
 - CONTRATTO: il tokenId di un ingrediente DEVE corrispondere al nome del token {tokenId:valore} usato negli step.
   Esempio: ingrediente { "name": "Acqua", "grams": 330, "tokenId": "acqua_impasto" } → nel procedimento: "{acqua_impasto:330}g di acqua".
-- Il tokenId serve come chiave univoca per: (1) il sistema dosi-calcolatore che aggiorna i valori nel procedimento, (2) le varianti ingredientOverrides.ref che modificano le dosi.
+- Il tokenId serve come chiave univoca per il sistema dosi-calcolatore che aggiorna i valori nel procedimento.
 - Il tokenId DEVE essere UNICO in tutta la ricetta (mai due ingredienti con lo stesso tokenId).
 - Formato: snake_case, descrittivo, con suffisso del gruppo se ci sono duplicati. Es: "lievito_biga" e "lievito_impasto" per distinguere il lievito della biga da quello dell'impasto finale.
 
 NOTE IMPORTANTI:
-- Per PASTA: usa "stepsExtruder" al posto di "stepsSpiral". "stepsHand" solo se il formato è fattibile a mano. Se non è fattibile, ometti "stepsHand" o lascialo come array vuoto.
-- CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento (es. "Preparazione" per le acciughe, sugo al pomodoro ecc.), usa l'array "stepsCondiment". Non inserire queste istruzioni dentro stepsExtruder o stepsHand.
-- Per PANE/PIZZA: usa "stepsSpiral" + "stepsHand". Aggiungi sempre "baking" con temperatura max 280°C.
-- Per DOLCI/BISCOTTI/TORTE: usa SOLO "stepsHand". NON creare "stepsSpiral". Aggiungi "baking" con temperatura e tempo di cottura.
+- CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento (es. "Preparazione" per le acciughe, sugo al pomodoro ecc.), usa l'array "stepsCondiment". Non inserire queste istruzioni dentro steps.
+- Per PANE/PIZZA: aggiungi sempre "baking" con temperatura max 280°C.
+- Per DOLCI/BISCOTTI/TORTE: aggiungi "baking" con temperatura e tempo di cottura.
 - Il "glossary" è OBBLIGATORIO: deve contenere TUTTI i termini tecnici usati nel procedimento.
 - "baking" è obbligatorio per Pane e Pizza, e per Dolci da forno. Opzionale per Pasta (cottura in acqua bollente).
 
@@ -191,7 +162,7 @@ FEDELTÀ ALLA FONTE:
 - Puoi AGGIUNGERE dettagli tecnici (W farina, marchi, glossario), ma NON ALTERARE la ricetta.
 
 TOKEN DOSI NEL PROCEDIMENTO (OBBLIGATORIO):
-- In TUTTI i testi degli step (stepsSpiral, stepsHand, stepsExtruder, altSteps), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}
+- In TUTTI i testi degli step (steps, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}
 - Il nome_generico DEVE essere un identificativo descrittivo dell'ingrediente (es. farina_biga, acqua_rinfresco, lievito, sale, malto, panetto_peso).
 - NON usare nomi di marchi nei token (NO saccorosso, SI farina_biga). Il token è un ID generico.
 - Il valore_base è il valore numerico in grammi senza unità.
@@ -260,9 +231,9 @@ TERMINOLOGIA TECNICA (OBBLIGATORIO):
    - Tecnica bassinage: aggiungere 75-80% dell'acqua inizialmente, il restante 20-25% a filo DOPO l'incordatura.
    - Nel procedimento, specificare SEMPRE la suddivisione (es. "300g acqua base + 80g bassinage").
 
-5. TEMPERATURA ACQUA — SPIRALE vs MANO:
-   - Spirale con impasto >10 min: acqua FREDDA (6-10°C) per compensare riscaldamento meccanico.
-   - A mano: acqua FRESCA (10-14°C) perché le mani generano meno calore.
+5. TEMPERATURA ACQUA:
+   - Impasti lunghi (>10 min) in spirale: acqua FREDDA (6-10°C) per compensare riscaldamento meccanico.
+   - Impasti brevi o a mano: acqua FRESCA a temperatura ambiente (16-22°C).
    - Target: temperatura impasto finale 24-26°C.
 
 CHECKLIST PRE-OUTPUT (OBBLIGATORIA — esegui i calcoli prima di generare il JSON):
@@ -283,30 +254,7 @@ INGREDIENTI DI PRE-IMPASTI E PESO TOTALE:
 - Quando una ricetta ha ingredientGroups con un pre-impasto (biga, poolish, lievitino, autolisi) il cui prodotto finale appare come ingrediente nel gruppo successivo (es. "Biga matura: 1205g"), gli ingredienti del gruppo pre-impasto DEVONO avere "excludeFromTotal": true.
 - Questo evita che il calcolo del peso totale impasto conti gli ingredienti due volte (sia come singoli che come prodotto assemblato).
 - Esempio: se il gruppo "Per la Biga" ha farina 830g, acqua 375g, lievito 1.8g, e nel gruppo "Per l'Impasto Finale" c'è "Biga matura: 1205g", allora i 3 ingredienti della biga devono avere "excludeFromTotal": true.
-- Se NON c'è un prodotto assemblato nel gruppo successivo (come nella ciabatta con poolish, dove il poolish non appare come riga unica nell'impasto finale), NON usare excludeFromTotal.
-
-VARIANTI DI PROCEDIMENTO (OPZIONALE):
-- Il campo "variants" è un array OPZIONALE. Aggiungilo SOLO quando la ricetta ha naturalmente varianti tecniche alternative (es. lievitazione rapida vs frigo, cottura forno vs padella).
-- NON forzare varianti su ricette che non ne hanno.
-- Ogni variante ha: id, label (con emoji), description, ingredientOverrides (array opzionale di override di ingredienti), branchAfterStep (indice 0-based dello step dopo il quale la variante si innesta), altSteps (step alternativi che sostituiscono quelli successivi).
-- ingredientOverrides.ref DEVE matchare un token id usato nel testo degli step (es. ref "lievito" matcha il token {lievito:1.8}).
-- I testi degli altSteps DEVONO usare i token {id:base} come gli step normali.
-- Ricette tipiche CON varianti: pizza/pane con lievitazione frigo vs temperatura ambiente, pasta con cottura in acqua vs al forno.
-- Ricette tipiche SENZA varianti: dolci, biscotti, pasta semplice, focaccia standard.
-
-⚠️ REGOLA CRITICA — branchAfterStep + ingredientOverrides (VIOLAZIONE = BUG FRONTEND):
-- Se una variante sovrascrive un ingrediente (ingredientOverrides), verifica IN QUALE STEP quel token viene PRIMA menzionato nel procedimento.
-- Il branchAfterStep DEVE essere ≤ all'indice dello step che MENZIONA PER PRIMO l'ingrediente overridato.
-- Se la variante cambia TIPO di ingrediente (es. lievito di birra → lievito madre), il testo degli step pre-branch diventa incoerente ("sciogliere il lievito" non ha senso per il lievito madre solido).
-- Esempio SBAGLIATO: il token {lievito:6} appare nello step 0 → branchAfterStep: 2 → step 0 mostra "Sciogliere 120g di lievito" (assurdo).
-- Esempio CORRETTO: il token {lievito:6} appare nello step 0 → branchAfterStep: 0 → tutti gli step sono sostituiti.
-- CHECKLIST: per ogni ingredientOverride, cerca il tokenId nel testo di tutti gli step. Il branchAfterStep NON può essere maggiore dell'indice del primo step che contiene quel token.
-
-⚠️ REGOLA COERENZA BIOLOGICA — ingredientOverrides e tempi di lievitazione:
-- Se una variante CAMBIA I TEMPI DI LIEVITAZIONE (es. da 2h a 24h in frigo, o viceversa), DEVE SEMPRE includere un ingredientOverride per il LIEVITO.
-- Lievitazione in frigo (18-24h) = MENO lievito (tipicamente 1/3 - 1/6 della dose base). Esempio: se la base usa 3g, la variante frigo deve avere ingredientOverrides con 0.5-1g.
-- Lievitazione rapida (2-3h) = PIÙ lievito rispetto alla base. Esempio: se la base usa 1.5g, la variante rapida potrebbe usare 5-6g.
-- NON lasciare MAI ingredientOverrides vuoto [] se la variante cambia significativamente i tempi. Questo causa un bug nel frontend (gli ingredienti non si aggiornano).`;
+- Se NON c'è un prodotto assemblato nel gruppo successivo (come nella ciabatta con poolish, dove il poolish non appare come riga unica nell'impasto finale), NON usare excludeFromTotal.`;
 
 /**
  * Riscrive una ricetta con Claude, arricchita da fonti reali
@@ -404,7 +352,7 @@ export async function enhanceRecipe(rawRecipe, options = {}) {
   log.info(`${aiName} sta riscrivendo la ricetta ${sourceLabel}...`);
 
   const dataDirective = sourcesFound > 0
-    ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali autorevoli. DEVI basare i dati tecnici (forza farina W, temperature impasto, temperature acqua, tempi, proporzioni) sui dati reali sotto. Se la fonte specifica una temperatura dell'acqua, RISPETTALA — non sostituirla con acqua ghiacciata a meno che il contesto tecnico lo richieda (vedi regola 15). Per gli ingredienti che cambiano tra setup spirale vs mano, compila il campo setupNote.`
+    ? `IMPORTANTE: Ho trovato ${sourcesFound} fonti reali autorevoli. DEVI basare i dati tecnici (forza farina W, temperature impasto, temperature acqua, tempi, proporzioni) sui dati reali sotto. Se la fonte specifica una temperatura dell'acqua, RISPETTALA — non sostituirla con acqua ghiacciata a meno che il contesto tecnico lo richieda (vedi regola 15).`
     : `Non ho trovato fonti reali. Basati sui dati scrappati e sulla tua conoscenza, ma sii conservativo.`;
 
   const userPrompt = `Ecco i dati grezzi di una ricetta scrappata da ${rawRecipe.sourceUrl || 'fonte web'}:
@@ -592,11 +540,10 @@ Esempio Struttura di ritorno:
       { "name": "Farina di semola", "note": "per l'impasto", "grams": 500 },
       { "name": "Olive nere", "note": "per la salsa", "grams": 50 }
     ],
-    "stepsExtruder": [
+    "steps": [
       { "title": "Setup Macchina", "text": "Montare la trafila Maccheroni." },
       { "title": "Impasto ed Estrusione", "text": "Versare i liquidi lentamente..." }
     ],
-    "stepsHand": [],
     "stepsCondiment": [
       { "title": "Preparazione Condimento", "text": "Lavate i pomodori, scolate le olive, ecc... Cuocere a fiamma viva." }
     ],
@@ -613,7 +560,7 @@ Esempio Struttura di ritorno:
 REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
 1. Category DEVE ESSERE sempre "Pasta"
 2. Dosi e ingredienti DEBBONO essere fedeli alle pagine. L'idratazione solitamente per Philips 7000 è molto bassa, calcolala come (liquidi / farine * 100) ma non andare MAI sotto il 30%.
-3. Usa SEMPRE "stepsExtruder" e includi nel primo step quale trafila va usata e nel suo testo come assemblare ("Montare la trafila...").
+3. Usa SEMPRE "steps" e includi nel primo step quale trafila va usata e nel suo testo come assemblare ("Montare la trafila...").
 4. CONDIMENTO/PREPARAZIONE: Se la pagina contiene indicazioni testuali su come preparare un SUGO, SALSA o CONDIMENTO (es. "Preparazione" come cucinare acciughe, melanzane, pomodori), DEVI aggiungerlo nell'array separato "stepsCondiment".
 5. Genera SEMPRE un pro tip (almeno) sulla pulizia della trafila o sulla ruvidezza.
 6. IMPORTANTE: Se non ci sono ricette, scrivi SOLO E SOLTANTO \`[]\`.
@@ -699,11 +646,10 @@ Struttura JSON di ritorno (array di oggetti):
       { "name": "Farina di semola", "note": "per l'impasto", "grams": 500 },
       { "name": "Pomodori", "note": "per la salsa", "grams": 300 }
     ],
-    "stepsExtruder": [
+    "steps": [
       { "title": "Setup Macchina", "text": "Montare la trafila Maccheroni." },
       { "title": "Impasto ed Estrusione", "text": "Versare le farine nella vasca..." }
     ],
-    "stepsHand": [],
     "stepsCondiment": [
       { "title": "Preparazione Condimento", "text": "Istruzioni esatte dal libro..." }
     ],
@@ -720,7 +666,7 @@ Struttura JSON di ritorno (array di oggetti):
 REGOLE:
 1. Category = sempre "Pasta". Lo slug DEVE finire con "-philips".
 2. INGREDIENTI: estrai SOLO quelli scritti esplicitamente nel testo italiano. Per l'impasto: farine + liquidi. Per la salsa: solo se indicata. Idratazione = (liquidi / farine × 100), minimo 30%.
-3. Usa SEMPRE "stepsExtruder" con nel primo step quale trafila usare.
+3. Usa SEMPRE "steps" con nel primo step quale trafila usare.
 4. Se c'è un condimento/salsa nel testo, mettilo in "stepsCondiment". Copia le istruzioni FEDELMENTE dal libro.
 5. Se NON ci sono ricette nel testo, restituisci SOLO [].
 6. CORREGGI solo errori OCR evidenti (es. "5OOg" → 500g, "tarlila" → "trafila").
@@ -728,7 +674,7 @@ REGOLE:
 8. DEDUPLICAZIONE: pagine marcate [CONTESTO] servono solo per completare ricette dal batch precedente. Non estrarre ricette che iniziano lì.
 9. RISPONDI SOLO con un JSON ARRAY valido. Niente markdown, niente note, SOLO [ e ].
 10. NON INVENTARE NULLA. Ogni dato deve provenire dal testo. Se un'informazione manca, omettila o usa valori vuoti.
-11. TOKEN DOSI: In TUTTI i testi degli step (stepsExtruder, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
+11. TOKEN DOSI: In TUTTI i testi degli step (steps, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
 
 TESTI OCR ESTRATTI:
 ${pagesText}`;

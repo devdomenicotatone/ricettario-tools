@@ -205,11 +205,11 @@ function extractRecipeContentFromJson(filePath) {
         return parts.join(' ');
     });
 
-    // Procedimento — prende da tutti i setup disponibili
+    // Procedimento
     const steps = [];
-    for (const key of ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment']) {
+    for (const key of ['steps', 'stepsCondiment']) {
         if (data[key]?.length > 0) {
-            steps.push(`── ${key} ──`);
+            steps.push(`── ${key === 'stepsCondiment' ? 'Condimento' : 'Procedimento'} ──`);
             for (const step of data[key]) {
                 const text = step.title + (step.text ? `: ${step.text}` : '');
                 steps.push(text);
@@ -218,11 +218,7 @@ function extractRecipeContentFromJson(filePath) {
     }
 
     // Setup detect
-    const setups = [];
-    if (data.stepsSpiral?.length) setups.push('Spirale');
-    if (data.stepsHand?.length) setups.push('A mano');
-    if (data.stepsExtruder?.length) setups.push('Estrusore');
-    const currentSetup = setups.join(' + ') || '';
+    const currentSetup = data.category?.toLowerCase() === 'pasta' ? 'Estrusore' : 'Impastatrice a spirale';
 
     // Alert e ProTips
     const alert = data.alert || '';

@@ -26,7 +26,7 @@ import { searchRealSources, scrapeRecipePage } from './validator.js';
 // ── Schema centralizzato (Single Source of Truth) ──
 import { validateRecipeSchema, TOKEN_REGEX, CATEGORIES_NEEDING_BAKING } from './recipe-schema.js';
 
-const REQUIRED_STEP_KEYS = ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment'];
+
 
 /**
  * Validazione deterministica dello schema JSON della ricetta.
@@ -42,83 +42,13 @@ function validateSchema(recipe, filePath) {
     // ── Check custom aggiuntivi (non nello schema base) ──
 
     // Token dosi dinamiche: warning se nessuno step contiene token
-    const allStepTexts = REQUIRED_STEP_KEYS
-        .flatMap(k => (recipe[k] || []).map(s => s.text || ''));
+    const allStepTexts = [...(recipe.steps || []), ...(recipe.stepsCondiment || [])]
+        .map(s => s.text || '');
     const hasTokens = allStepTexts.some(t => TOKEN_REGEX.test(t));
     if (!hasTokens && allStepTexts.length > 0) {
         warnings.push('Nessun token {id:base} trovato negli step — le dosi nel procedimento non saranno dinamiche');
     }
 
-    // Validazione struttura variants (se presente)
-    if (recipe.variants?.length > 0) {
-        for (const variant of recipe.variants) {
-            if (!variant.id) errors.push(`Variante senza "id"`);
-            if (!variant.label) warnings.push(`Variante "${variant.id || '?'}" senza "label"`);
-            if (variant.branchAfterStep == null) {
-                errors.push(`Variante "${variant.id || '?'}" senza "branchAfterStep"`);
-            } else {
-                const primaryKey = REQUIRED_STEP_KEYS.find(k => recipe[k]?.length > 0);
-                const primaryStepsLen = primaryKey ? recipe[primaryKey].length : 0;
-                if (variant.branchAfterStep < 0 || variant.branchAfterStep >= primaryStepsLen) {
-                    errors.push(`Variante "${variant.id}": branchAfterStep ${variant.branchAfterStep} fuori range (0-${primaryStepsLen - 1})`);
-                }
-            }
-            if (!variant.altSteps?.length) {
-                errors.push(`Variante "${variant.id || '?'}" senza altSteps`);
-            }
-            if (variant.ingredientOverrides?.length > 0) {
-                for (const override of variant.ingredientOverrides) {
-                    if (!override.ref) warnings.push(`ingredientOverride senza "ref" in variante "${variant.id}"`);
-                    if (override.grams == null) warnings.push(`ingredientOverride "${override.ref}" senza "grams" in variante "${variant.id}"`);
-                }
-
-                // ── Validazione semantica: branchAfterStep vs token position ──
-                // Segnala SOLO se l'override cambia TIPO (nome/nota diversa), non solo quantità
-                // Quando l'override cambia solo i grams, il token inline si aggiorna automaticamente
-                if (variant.branchAfterStep != null) {
-                    const primaryKey = REQUIRED_STEP_KEYS.find(k => recipe[k]?.length > 0);
-                    const primarySteps = primaryKey ? (recipe[primaryKey] || []) : [];
-
-                    // Mappa tokenId → ingrediente originale per confronto
-                    const allIngredients = (recipe.ingredientGroups || []).flatMap(g => g.items || []);
-
-                    for (const override of variant.ingredientOverrides) {
-                        if (!override.ref) continue;
-                        const tokenPattern = `{${override.ref}:`;
-                        const firstStepIdx = primarySteps.findIndex(s => (s.text || '').includes(tokenPattern));
-                        if (firstStepIdx === -1 || variant.branchAfterStep <= firstStepIdx) continue;
-
-                        // Controlla se l'override cambia TIPO (nota indica ingrediente diverso)
-                        const original = allIngredients.find(i => i.tokenId === override.ref);
-                        const noteChangesType = override.note && original?.note &&
-                            !override.note.toLowerCase().includes('ridotto') &&
-                            !override.note.toLowerCase().includes('aumentato') &&
-                            override.note.toLowerCase() !== original.note.toLowerCase();
-
-                        if (noteChangesType) {
-                            warnings.push(
-                                `Variante "${variant.id}": ingredientOverride "${override.ref}" cambia tipo di ingrediente (da "${original?.note}" a "${override.note}") nello step ${firstStepIdx} ma branchAfterStep è ${variant.branchAfterStep} — il testo degli step pre-branch sarà incoerente`
-                            );
-                        }
-                    }
-                }
-            }
-
-            // ── Check coerenza biologica: variante con cambio tempi ma senza override lievito ──
-            // Skip per categorie senza lievito (es. Conserve) dove "frigo" = conservazione, non fermentazione
-            const NO_YEAST_CATEGORIES = ['Conserve'];
-            if (!NO_YEAST_CATEGORIES.includes(recipe.category) &&
-                (!variant.ingredientOverrides || variant.ingredientOverrides.length === 0) && variant.altSteps?.length > 0) {
-                const altTexts = variant.altSteps.map(s => (s.text || '').toLowerCase() + ' ' + (s.title || '').toLowerCase()).join(' ');
-                const hasTimeChange = /frigo|frigorifero|refriger|\b\d{2,}h\b|18-24|24\s*ore|lievitazione lunga|rapida|notturna/.test(altTexts);
-                if (hasTimeChange) {
-                    warnings.push(
-                        `Variante "${variant.id}": altSteps menzionano lievitazione in frigo/lunga ma ingredientOverrides è vuoto — il lievito probabilmente deve essere ridotto/aumentato`
-                    );
-                }
-            }
-        }
-    }
 
     return {
         pass: errors.length === 0,
@@ -299,16 +229,13 @@ function buildRecipePrompt(recipe) {
         return parts.join(' ');
     });
 
-    // Steps: invia TUTTI i setup disponibili per validazione completa
-    // (il bug precedente inviava solo il primario, causando falsi positivi su stepsHand mancanti)
+    // Steps: invia il procedimento per validazione completa
     const steps = [];
     const STEP_LABELS = {
-        stepsSpiral: 'PROCEDIMENTO (Impastatrice a Spirale)',
-        stepsExtruder: 'PROCEDIMENTO (Estrusore)',
-        stepsHand: 'PROCEDIMENTO (A Mano)',
+        steps: 'PROCEDIMENTO',
         stepsCondiment: 'CONDIMENTO/SALSA',
     };
-    for (const key of ['stepsSpiral', 'stepsExtruder', 'stepsHand', 'stepsCondiment']) {
+    for (const key of ['steps', 'stepsCondiment']) {
         if (recipe[key]?.length > 0) {
             steps.push(`\n── ${STEP_LABELS[key]} ──`);
             for (const step of recipe[key]) {
@@ -318,11 +245,8 @@ function buildRecipePrompt(recipe) {
         }
     }
 
-    // Setup detect (labels allineate al system prompt)
-    const setups = [];
-    if (recipe.stepsSpiral?.length) setups.push('Impastatrice a spirale');
-    if (recipe.stepsHand?.length) setups.push('A mano');
-    if (recipe.stepsExtruder?.length) setups.push('Estrusore con trafila');
+    // Setup detect
+    const setup = recipe.category?.toLowerCase() === 'pasta' ? 'Estrusore con trafila' : 'Impastatrice a spirale';
 
     // Sezione cottura
     const baking = recipe.baking || recipe.bakingSection || recipe.cookingSection;
@@ -339,7 +263,7 @@ CATEGORIA: ${recipe.category}
 IDRATAZIONE DICHIARATA: ${recipe.hydration}% ⚠️ (VERIFICA OBBLIGATORIA: ricalcola dalla somma ingredienti)
 TEMPERATURA TARGET: ${recipe.targetTemp || 'N/A'}
 LIEVITAZIONE: ${recipe.fermentation || 'N/A'}
-SETUP: ${setups.join(' + ') || 'N/A'}
+SETUP: ${setup}
 
 INGREDIENTI:
 ${ingredients.map((i, idx) => `${idx + 1}. ${i}`).join('\n')}

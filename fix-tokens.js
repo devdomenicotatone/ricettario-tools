@@ -156,9 +156,7 @@ for (const cat of categories) {
         let recipeFixed = false;
         
         const stepArrays = [
-            { key: 'stepsSpiral', label: 'Spirale' },
-            { key: 'stepsHand', label: 'A Mano' },
-            { key: 'stepsExtruder', label: 'Estrusore' },
+            { key: 'steps', label: 'Procedimento' },
             { key: 'stepsCondiment', label: 'Condimento' },
         ];
         

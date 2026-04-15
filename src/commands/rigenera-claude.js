@@ -24,14 +24,12 @@ Se un campo non è presente nell'HTML, omettilo o usa un valore ragionevole basa
 
 REGOLE:
 1. Estrai TUTTI gli ingredienti con nome, nota e grammi esatti dall'HTML
-2. Estrai TUTTI gli step del procedimento (sia spirale/estrusore sia a mano se presenti)
+2. Estrai TUTTI gli step del procedimento in un UNICO campo "steps"
 3. Estrai tabella farine, glossario, cottura, alert, pro tips se presenti
 4. L'idratazione va calcolata come % acqua su farina totale
 5. Le dosi devono restare in GRAMMI come nell'HTML originale
 6. Se ci sono sospensioni (noci, olive, etc.), separale dagli ingredienti base
-7. SETUP: mantieni la struttura originale (stepsSpiral/stepsHand per pane/pizza, stepsExtruder/stepsHand per pasta)
-8. Se nell'HTML c'è un solo procedimento senza distinzione setup, mettilo in stepsSpiral (per pane/pizza) o stepsExtruder (per pasta) e genera tu il stepsHand adattato
-9. INGREDIENTI DINAMICI: Se trovi note diverse per setup diversi (data-setup-note-*), usa il campo "setupNote"
+7. Se ci sono step per condimento/salsa, mettili in "stepsCondiment"
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
 {
@@ -50,20 +48,16 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
     {
       "group": "Per l'Impasto",
       "items": [
-        { "name": "Nome Ingrediente", "note": "(nota tecnica)", "grams": 600, "tokenId": "nome_ingrediente", "setupNote": { "spirale": "nota spirale", "mano": "nota mano" } }
+        { "name": "Nome Ingrediente", "note": "(nota tecnica)", "grams": 600, "tokenId": "nome_ingrediente" }
       ]
     }
   ],
   "suspensions": [
     { "name": "Nome Sospensione", "note": "(nota)", "grams": 160 }
   ],
-  "stepsSpiral": [
+  "steps": [
     { "title": "Titolo Step", "text": "Descrizione dettagliata..." }
   ],
-  "stepsHand": [
-    { "title": "Titolo Step", "text": "Descrizione dettagliata..." }
-  ],
-  "stepsExtruder": [],
   "stepsCondiment": [],
   "flourTable": [
     { "type": "Tipo Farina", "w": "260-280", "brands": "Marchio1, Marchio2" }

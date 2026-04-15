@@ -15,19 +15,11 @@ function sanitizeText(text) {
     return text.replace(/<(?!\/|[a-zA-Z][a-zA-Z0-9]*[\s>]|!--|!DOCTYPE)/g, '&lt;');
 }
 /**
- * Genera una riga ingrediente con data-base e setupNote dinamiche
+ * Genera una riga ingrediente
  */
-function ingredientRow({ name, note, grams, setupNote }) {
-    // Costruisci nota HTML con data attributes per setup dinamico
+function ingredientRow({ name, note, grams }) {
     let noteHtml = '';
-    if (setupNote && typeof setupNote === 'object') {
-        const dataAttrs = Object.entries(setupNote)
-            .map(([setup, text]) => `data-setup-note-${setup}="(${text})"`)
-            .join(' ');
-        // Nota iniziale = setup primario (spirale/estrusore)
-        const primaryNote = setupNote.spirale || setupNote.estrusore || note || '';
-        noteHtml = ` <span class="ingredient-note" ${dataAttrs}>(${primaryNote})</span>`;
-    } else if (note) {
+    if (note) {
         noteHtml = ` <span class="ingredient-note">${note}</span>`;
     }
 
@@ -80,46 +72,8 @@ export function generateHtml(recipe) {
         : '';
 
 
-
-    // Setup dinamico basato sulla categoria e disponibilità step
-    const isPasta = (r.category || '').toLowerCase() === 'pasta';
-    
-    // Determina quali step esistono realmente
-    const hasSpiralSteps = (r.stepsSpiral || []).length > 0;
-    const hasExtruderSteps = (r.stepsExtruder || []).length > 0;
-    const hasHandSteps = (r.stepsHand || []).length > 0;
-    const hasMachineSteps = isPasta ? hasExtruderSteps : hasSpiralSteps;
-    
-    // Se non ci sono step "macchina" (spirale/estrusore), promuovi stepsHand a primario
-    // Questo è il caso tipico di Dolci, Focaccia senza impasto meccanico, ecc.
-    const isHandOnly = !hasMachineSteps && hasHandSteps;
-    
-    let primarySteps, secondarySteps, hasSecondary;
-    let primaryLabel, primaryBadge, primarySetupId;
-    
-    if (isHandOnly) {
-        // Solo procedimento a mano — nessun toggle setup
-        primarySteps = (r.stepsHand || []).map(stepItem).join('\n');
-        secondarySteps = '';
-        hasSecondary = false;
-        primaryLabel = '🤲 Procedimento';
-        primaryBadge = '🤲 A mano';
-        primarySetupId = 'mano';
-    } else if (isPasta) {
-        primarySteps = (r.stepsExtruder || r.stepsSpiral || []).map(stepItem).join('\n');
-        secondarySteps = (r.stepsHand || []).map(stepItem).join('\n');
-        hasSecondary = secondarySteps.trim().length > 0;
-        primaryLabel = '🍝 Pasta';
-        primaryBadge = '🍝 Pasta';
-        primarySetupId = 'estrusore';
-    } else {
-        primarySteps = (r.stepsSpiral || []).map(stepItem).join('\n');
-        secondarySteps = (r.stepsHand || []).map(stepItem).join('\n');
-        hasSecondary = secondarySteps.trim().length > 0;
-        primaryLabel = '🔧 Impastatrice a spirale';
-        primaryBadge = '🔧 Spirale';
-        primarySetupId = 'spirale';
-    }
+    // Step unificati
+    const primarySteps = (r.steps || []).map(stepItem).join('\n');
 
     const condimentSteps = (r.stepsCondiment || []).map(stepItem).join('\n');
     const hasCondiment = condimentSteps.trim().length > 0;
@@ -204,7 +158,6 @@ export function generateHtml(recipe) {
 
             <div class="recipe-hero__content">
                 <div class="recipe-hero__tags reveal">
-${!isHandOnly ? `                    <span class="tag tag--tool" id="hero-setup-tag">${primaryLabel}</span>` : ''}
                     <span class="tag tag--category">${r.emoji || '🥖'} ${r.category || 'Pane'}</span>
                 </div>
                 <h1 class="recipe-hero__title reveal reveal-delay-1">${r.title}</h1>
@@ -227,10 +180,6 @@ ${!isHandOnly ? `                    <span class="tag tag--tool" id="hero-setup-
             <div class="tech-badge">
                 ⏱️ Lievitazione: <span class="tech-badge__value">&nbsp;${r.fermentation}</span>
             </div>
-${!isHandOnly ? `            <div class="tech-badge tech-badge--toggle" id="setup-badge" role="button" tabindex="0"
-                aria-label="Cambia setup">
-                🔧 Setup: <span class="tech-badge__value" id="setup-badge-value">&nbsp;${isPasta ? 'Macchina Pasta' : 'A mano'}</span>
-            </div>` : ''}
         </div>
     </div>
 
@@ -285,37 +234,19 @@ ${r.proTips?.[0] ? `
                 <!-- COLONNA DESTRA: Procedimento -->
                 <div>
 
-                    <!-- ── Procedimento: Primario (Spirale o Estrusore) ── -->
-                    <div class="recipe-panel reveal reveal-delay-1" data-setup="${primarySetupId}" id="steps-${primarySetupId}">
+                    <!-- ── Procedimento ── -->
+                    <div class="recipe-panel reveal reveal-delay-1" id="steps-panel">
                         <h2 class="recipe-panel__title">
                             <span class="recipe-panel__title-icon">⚙️</span>
                             Procedimento
-                            <span class="recipe-panel__title-badge">${primaryBadge}</span>
                         </h2>
                         <ol class="steps-list">
 ${primarySteps}
                         </ol>
                     </div>
-${hasSecondary ? `
-                    <!-- ── Procedimento: A mano ── -->
-                    <div class="recipe-panel reveal reveal-delay-1" data-setup="mano" id="steps-mano"
-                        style="display: none;">
-                        <h2 class="recipe-panel__title">
-                            <span class="recipe-panel__title-icon">⚙️</span>
-                            Procedimento
-                            <span class="recipe-panel__title-badge">🤲 A mano</span>
-                        </h2>
-                        <ol class="steps-list">
-${secondarySteps}
-                        </ol>
-${r.proTips?.[1] ? `
-                        <div class="pro-tip-box" style="margin-top: 16px;">
-                            <p><strong>💡 PRO TIP:</strong> ${sanitizeText(r.proTips[1])}</p>
-                        </div>` : ''}
-                    </div>` : ''}
 ${hasCondiment ? `
                     <!-- ── Procedimento: Condimento ── -->
-                    <div class="recipe-panel reveal reveal-delay-2" data-setup="condimento" id="steps-condimento"
+                    <div class="recipe-panel reveal reveal-delay-2" id="steps-condimento"
                         style="margin-top: 32px;">
                         <h2 class="recipe-panel__title">
                             <span class="recipe-panel__title-icon">🍳</span>

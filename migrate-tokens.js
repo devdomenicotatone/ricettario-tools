@@ -18,7 +18,7 @@ import { resolve, join, relative } from 'path';
 
 const RECIPES_DIR = resolve(import.meta.dirname, '../Ricettario/ricette');
 const DRY_RUN = process.argv.includes('--dry-run');
-const STEP_KEYS = ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment'];
+const STEP_KEYS = ['steps', 'stepsCondiment'];
 
 // ── Token name generator ──
 function generateTokenId(ingredientName, groupName = '') {

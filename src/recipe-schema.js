@@ -61,7 +61,7 @@ export const RECIPE_FIELDS = {
 
     // ── Ingredienti ──
     ingredients:     { type: 'array',  required: true,  description: 'Array legacy vuoto (deprecato, usare ingredientGroups)' },
-    ingredientGroups:{ type: 'array',  required: true,  description: 'Gruppi ingredienti [{group, items: [{name, grams, note?, setupNote?, excludeFromTotal?}]}]',
+    ingredientGroups:{ type: 'array',  required: true,  description: 'Gruppi ingredienti [{group, items: [{name, grams, note?, excludeFromTotal?}]}]',
                        validate: (v) => {
                            if (!Array.isArray(v) || v.length === 0) return 'Deve avere almeno 1 gruppo ingredienti';
                            for (const g of v) {
@@ -77,9 +77,7 @@ export const RECIPE_FIELDS = {
     suspensions:     { type: 'array',  required: true,  description: 'Condimenti/sospensioni (vuoto se non applicabile)' },
 
     // ── Procedimento ──
-    stepsSpiral:   { type: 'array',  required: false, description: 'Step per impastatrice a spirale [{title, text}]' },
-    stepsHand:     { type: 'array',  required: true,  description: 'Step per impasto a mano [{title, text}]' },
-    stepsExtruder: { type: 'array',  required: false, description: 'Step per estrusore/macchina pasta (vuoto se N/A)' },
+    steps:         { type: 'array',  required: true,  description: 'Step procedimento [{title, text}]' },
     stepsCondiment:{ type: 'array',  required: false, description: 'Step per condimenti/creme/farciture' },
 
     // ── Supporto ──
@@ -109,7 +107,7 @@ export const RECIPE_FIELDS = {
     _originalImageUrl:{ type: 'string',  required: false, description: 'URL originale immagine (interno)' },
     _generatedBy:     { type: 'string',  required: false, description: 'Modello AI usato per la generazione (interno)' },
     _createdAt:       { type: 'string',  required: false, description: 'Data ISO di creazione della ricetta (interno)' },
-    variants:         { type: 'array',   required: false, description: 'Varianti ricetta [{id, label, description, ingredientOverrides, branchAfterStep, altSteps}]' },
+
 };
 
 
@@ -174,9 +172,8 @@ export function validateRecipeSchema(recipe) {
     }
 
     // Validazioni cross-field
-    if (recipe.stepsSpiral?.length > 0 || recipe.stepsHand?.length > 0) {
-        const allSteps = [...(recipe.stepsSpiral || []), ...(recipe.stepsHand || [])];
-        for (const step of allSteps) {
+    if (recipe.steps?.length > 0) {
+        for (const step of recipe.steps) {
             if (!step.title || !step.text) {
                 errors.push(`Step senza title o text: ${JSON.stringify(step).substring(0, 60)}`);
             }
@@ -184,16 +181,8 @@ export function validateRecipeSchema(recipe) {
     }
 
     // Validazione token nei procedimenti
-    if (recipe.stepsSpiral || recipe.stepsHand) {
-        const allSteps = [...(recipe.stepsSpiral || []), ...(recipe.stepsHand || [])];
-        const ingredientGrams = new Map();
-        for (const g of recipe.ingredientGroups || []) {
-            for (const item of g.items || []) {
-                ingredientGrams.set(item.name?.toLowerCase(), item.grams);
-            }
-        }
-
-        for (const step of allSteps) {
+    if (recipe.steps?.length > 0) {
+        for (const step of recipe.steps) {
             if (!step.text) continue;
             let match;
             const tokenRegex = new RegExp(TOKEN_REGEX.source, 'g');
@@ -329,7 +318,7 @@ export function validateRecipeSchema(recipe) {
         for (const g of recipe.ingredientGroups) {
             for (const item of g.items || []) {
                 if (!item.tokenId) {
-                    warnings.push(`Ingrediente \"${item.name}\" nel gruppo \"${g.group}\" senza tokenId — il calcolatore dosi e le varianti non funzioneranno correttamente`);
+                    warnings.push(`Ingrediente \"${item.name}\" nel gruppo \"${g.group}\" senza tokenId — il calcolatore dosi non funzionerà correttamente`);
                 } else {
                     if (allTokenIds.has(item.tokenId)) {
                         errors.push(`tokenId duplicato: \"${item.tokenId}\" — ogni ingrediente deve avere un tokenId unico`);
@@ -339,16 +328,7 @@ export function validateRecipeSchema(recipe) {
             }
         }
 
-        // Validazione ingredientOverride.ref: ogni ref DEVE corrispondere a un tokenId esistente
-        if (recipe.variants?.length > 0) {
-            for (const variant of recipe.variants) {
-                for (const override of (variant.ingredientOverrides || [])) {
-                    if (override.ref && !allTokenIds.has(override.ref)) {
-                        errors.push(`Variante \"${variant.id}\": ingredientOverride ref \"${override.ref}\" non corrisponde a nessun tokenId — l'override non funzionerà`);
-                    }
-                }
-            }
-        }
+
     }
 
     return {
@@ -373,10 +353,10 @@ export function getSchemaPromptDescription() {
         'Meta': ['title', 'slug', 'emoji', 'description', 'subtitle', 'category'],
         'Parametri Tecnici': ['hydration', 'targetTemp', 'fermentation', 'totalFlour'],
         'Ingredienti': ['ingredients', 'ingredientGroups', 'suspensions'],
-        'Procedimento': ['stepsSpiral', 'stepsHand', 'stepsExtruder', 'stepsCondiment'],
+        'Procedimento': ['steps', 'stepsCondiment'],
         'Supporto': ['flourTable', 'baking', 'glossary', 'alert', 'proTips'],
         'Media & SEO': ['image', 'imageKeywords', 'tags'],
-        'Opzionali': ['imageAttribution', '_originalImageUrl', 'variants'],
+        'Opzionali': ['imageAttribution', '_originalImageUrl'],
     };
 
     for (const [groupName, fields] of Object.entries(groups)) {
@@ -396,7 +376,6 @@ export function getSchemaPromptDescription() {
 
     lines.push('\n── Regole ingredientGroups ──');
     lines.push('  excludeFromTotal: true → sub-ingrediente di pre-impasto, i grams NON contano nel totale dosi (ma SI per idratazione)');
-    lines.push('  setupNote: { spirale: "...", mano: "..." } → note diverse per setup');
 
     return lines.join('\n');
 }

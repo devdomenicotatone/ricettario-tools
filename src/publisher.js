@@ -163,8 +163,8 @@ function showPreviewSummary(recipe) {
     if (recipe.fermentation) console.log(`  ⏱️  Lievitazione: ${recipe.fermentation}`);
     console.log(`  🧂 Ingredienti:  ${recipe.ingredients?.length || 0}`);
     if (recipe.suspensions?.length) console.log(`  🥜 Sospensioni:  ${recipe.suspensions.length}`);
-    if (recipe.stepsSpiral) console.log(`  🌀 Step spirale: ${recipe.stepsSpiral.length}`);
-    if (recipe.stepsHand) console.log(`  ✋ Step a mano:  ${recipe.stepsHand.length}`);
+    if (recipe.steps) console.log(`  📝 Step:         ${recipe.steps.length}`);
+    if (recipe.stepsCondiment?.length) console.log(`  🍅 Condimento:   ${recipe.stepsCondiment.length}`);
     if (recipe.image) console.log(`  🖼️  Immagine:     ✅`);
     else console.log(`  🖼️  Immagine:     ❌ nessuna`);
     if (recipe._validation?.score) {
@@ -304,9 +304,8 @@ export async function publishRecipe(recipe, args, options = {}) {
     if (recipe.hydration) log.info(`Idratazione: ${recipe.hydration}%`);
     if (recipe.targetTemp) log.info(`Temp target: ${recipe.targetTemp}`);
     log.info(`Ingredienti: ${recipe.ingredients?.length || 0}`);
-    if (recipe.stepsSpiral) log.info(`Step spirale: ${recipe.stepsSpiral.length}`);
-    if (recipe.stepsExtruder) log.info(`Step estrusore: ${recipe.stepsExtruder.length}`);
-    if (recipe.stepsHand) log.info(`Step a mano: ${recipe.stepsHand.length}`);
+    if (recipe.steps) log.info(`Step: ${recipe.steps.length}`);
+    if (recipe.stepsCondiment?.length) log.info(`Step condimento: ${recipe.stepsCondiment.length}`);
     if (recipe.image) log.info(`Immagine: ${recipe.image}`);
     if (!skipJson) log.info(`JSON: ${jsonFile}`);
 

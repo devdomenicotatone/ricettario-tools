@@ -46,11 +46,8 @@ for (const [dir, meta] of Object.entries(recipeDirs)) {
                 }
             }
 
-            // Determina tool/setup
+            // Tool non più tracciato (architettura lineare)
             let tool = '';
-            if (data.stepsSpiral?.length) tool = '🔧 Impastatrice a spirale';
-            else if (data.stepsExtruder?.length) tool = '🔧 Estrusore con trafila';
-            else if (data.stepsHand?.length) tool = '🤲 A mano';
 
             recipes.push({
                 title: data.title || slug.replace(/-/g, ' '),
