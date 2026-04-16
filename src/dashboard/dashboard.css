@@ -981,16 +981,7 @@ body {
 }
 
 .recipe-list-header {
-    display: grid;
-    grid-template-columns: minmax(280px, 3fr) minmax(120px, 1.5fr) minmax(140px, 1.5fr) minmax(90px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) 290px;
-    gap: 12px;
-    padding: 8px 14px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
+    display: none;
 }
 
 .recipe-row-badges {
@@ -1001,15 +992,16 @@ body {
 }
 
 .recipe-row {
-    display: grid;
-    grid-template-columns: minmax(280px, 3fr) minmax(120px, 1.5fr) minmax(140px, 1.5fr) minmax(90px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) 290px;
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
     align-items: center;
-    padding: 10px 14px;
+    padding: 12px;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     transition: all var(--transition);
+    position: relative;
 }
 
 .recipe-row:hover {
@@ -1022,6 +1014,7 @@ body {
     align-items: center;
     gap: 10px;
     min-width: 0;
+    flex: 1 1 100%;
 }
 
 .recipe-row-thumb {
@@ -1086,6 +1079,45 @@ body {
     display: flex;
     gap: 4px;
     flex-shrink: 0;
+    flex: 1 1 100%;
+    margin-top: 4px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+/* ── MEDIA QUERY DESKTOP / ULTRAWIDE ── */
+@media (min-width: 1024px) {
+    .recipe-list-header {
+        display: grid;
+        grid-template-columns: minmax(280px, 3fr) minmax(120px, 1.5fr) minmax(140px, 1.5fr) minmax(90px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) 290px;
+        gap: 12px;
+        padding: 8px 14px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .recipe-row {
+        display: grid;
+        grid-template-columns: minmax(280px, 3fr) minmax(120px, 1.5fr) minmax(140px, 1.5fr) minmax(90px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) 290px;
+        flex-wrap: nowrap;
+        padding: 10px 14px;
+    }
+    
+    .recipe-row-info {
+        flex: unset;
+    }
+    
+    .recipe-row-actions {
+        flex: unset;
+        margin-top: 0;
+        overflow-x: visible;
+        padding-bottom: 0;
+    }
 }
 
 .recipe-row-delete {
