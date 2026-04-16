@@ -144,27 +144,48 @@ export function setupRoutes(app) {
         }
     });
 
-    // ── Genera da nome ──
+    // ── Genera da nome o url(s) ──
     app.post('/api/genera', async (req, res) => {
-        const { nome, url, tipo, note, noImage, preview, aiModel, keepExisting } = req.body;
+        const { nome, url, urls, tipo, note, noImage, preview, aiModel, keepExisting } = req.body;
+        
+        const isBatch = Array.isArray(urls) && urls.length > 0;
+        const targetUrls = isBatch ? urls : (url ? [url] : []);
+        
         const jobId = `gen-${++jobCounter}`;
-        const jobName = nome ? `Genera: ${nome}` : `Scraping: ${url}`;
+        let jobName = '';
+        if (nome) jobName = `Genera: ${nome}`;
+        else if (isBatch) jobName = `Scraping: ${targetUrls.length} ricette`;
+        else jobName = `Scraping: ${url}`;
+        
         const ctx = createJobContext(jobId, jobName);
-
         res.json({ jobId, status: 'started' });
 
         try {
             const { genera } = await import('../commands/genera.js');
-            const args = {};
-            if (nome) args.nome = nome;
-            if (url) args.url = url;
-            if (tipo) args.tipo = tipo;
-            if (note) args.note = note;
-            if (noImage) args['no-image'] = true;
-            if (aiModel) args.aiModel = aiModel;
-            if (keepExisting) args.keepExisting = true;
-
-            await withOutputCapture(ctx, () => genera(args));
+            await withOutputCapture(ctx, async () => {
+                if (nome) {
+                    const args = { nome };
+                    if (tipo) args.tipo = tipo;
+                    if (note) args.note = note;
+                    if (noImage) args['no-image'] = true;
+                    if (aiModel) args.aiModel = aiModel;
+                    if (keepExisting) args.keepExisting = true;
+                    await genera(args);
+                } else if (targetUrls.length > 0) {
+                    if (isBatch) ctx.log(`🔄 Avvio batch scraping su ${targetUrls.length} URL...\n`);
+                    for (const u of targetUrls) {
+                        const args = { url: u };
+                        if (tipo) args.tipo = tipo;
+                        if (note) args.note = note;
+                        if (noImage) args['no-image'] = true;
+                        if (aiModel) args.aiModel = aiModel;
+                        if (keepExisting) args.keepExisting = true;
+                        
+                        if (isBatch) ctx.log(`\n🔜 Processo: ${u}...`);
+                        await genera(args);
+                    }
+                }
+            });
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
@@ -212,6 +233,18 @@ export function setupRoutes(app) {
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
             ctx.end(false);
+        }
+    });
+
+    // ── Scopri ricette (M-UI Synchronous REST endpoint) ──
+    app.post('/api/scopri-search', async (req, res) => {
+        const { query, quante } = req.body;
+        try {
+            const { discoverRecipes } = await import('../discovery.js');
+            const results = await discoverRecipes(query, Number(quante) || 10);
+            res.json({ results });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
         }
     });
 

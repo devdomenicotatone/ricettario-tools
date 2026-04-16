@@ -41,6 +41,11 @@ function extractJsonLd($) {
     return null;
 }
 
+function normalizeArray(val) {
+    if (!val) return [];
+    return Array.isArray(val) ? val : [val];
+}
+
 /**
  * Normalizza JSON-LD Recipe in formato interno
  */
@@ -48,9 +53,15 @@ function fromJsonLd(recipe) {
     return {
         title: recipe.name || '',
         description: recipe.description || '',
-        ingredients: (recipe.recipeIngredient || []).map(i => i.trim()),
-        steps: (recipe.recipeInstructions || []).map(step => {
+        ingredients: normalizeArray(recipe.recipeIngredient).map(i => {
+            if (typeof i === 'string') return i.trim();
+            return i.name?.trim() || i.text?.trim() || '';
+        }).filter(Boolean),
+        steps: normalizeArray(recipe.recipeInstructions).map(step => {
             if (typeof step === 'string') return step.trim();
+            if (step['@type'] === 'HowToSection' && Array.isArray(step.itemListElement)) {
+                return step.itemListElement.map(s => s?.text?.trim() || s?.name?.trim() || '').join('\n');
+            }
             return step.text?.trim() || step.name?.trim() || '';
         }).filter(Boolean),
         prepTime: recipe.prepTime || '',

@@ -193,5 +193,23 @@
     "issueCount": 6,
     "timestamp": "2026-04-16T20:06:24.069Z",
     "fixed": true
+  },
+  "pizza-romana-stesa-al-matterello": {
+    "score": 80,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 3,
+    "timestamp": "2026-04-16T21:59:48.261Z"
+  },
+  "pizza-in-teglia-romana-alta-idratazione": {
+    "score": 75,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T22:00:10.001Z"
+  },
+  "pizza-in-teglia-romana": {
+    "score": 83,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T22:00:36.541Z"
   }
 }

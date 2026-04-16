@@ -266,9 +266,10 @@
                             <span class="range-value" id="scopri-quante-val">5</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-lg" onclick="runScopri()">
+                    <button class="btn btn-primary btn-lg" onclick="runScopri()" id="btn-run-scopri">
                         <i data-lucide="search"></i> Scopri Ricette
                     </button>
+                    <div id="scopri-results-container"></div>
                 </div>
             </div>
 
@@ -362,6 +363,7 @@
                     <button class="terminal-btn" onclick="event.stopPropagation();toggleTerminalPin()"
                         title="Blocca aperto" id="terminalPinBtn"><i data-lucide="pin"
                             style="width:12px;height:12px"></i></button>
+                    <button class="terminal-btn" onclick="event.stopPropagation();toggleExpandTerminal()" title="Espandi"><i data-lucide="maximize-2"></i></button>
                     <button class="terminal-btn" onclick="event.stopPropagation();clearTerminal()" title="Pulisci"><i
                             data-lucide="trash-2"></i></button>
                     <button class="terminal-btn" onclick="event.stopPropagation();toggleTerminal()" title="Minimizza"
@@ -414,7 +416,7 @@
     </div>
 
     <script src="recipe-editor.js"></script>
-    <script src="dashboard.js?v=2.1"></script>
+    <script src="dashboard.js?v=2.2"></script>
     <script>lucide.createIcons();</script>
 </body>
 

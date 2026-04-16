@@ -1561,6 +1561,13 @@ body {
 .terminal-container.minimized { height: 36px; }
 .terminal-container.minimized .terminal-body { display: none; }
 
+.terminal-container.expanded {
+    height: 75vh;
+}
+.terminal-container.expanded .terminal-body {
+    max-height: calc(75vh - 36px);
+}
+
 .terminal-header {
     display: flex;
     align-items: center;
