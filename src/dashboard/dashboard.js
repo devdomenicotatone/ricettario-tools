@@ -557,8 +557,8 @@ async function runFix(geminiModel) {
 async function runFixSingle(slug, geminiModel) {
     const q = qualityIndex[slug];
     if (!q) return alert('Esegui prima l\'analisi qualità su questa ricetta');
-    if (!confirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nVerrà creato un backup .backup.json`)) return;
-    await apiPost('qualita/fix', { slugs: [slug], geminiModel: geminiModel || getSelectedGeminiModel() });
+    if (!confirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nAnche se lo score è alto, i suggerimenti verranno applicati.\nVerrà creato un backup .backup.json.`)) return;
+    await apiPost('qualita/fix', { slugs: [slug], force: true, geminiModel: geminiModel || getSelectedGeminiModel() });
 }
 
 const CATEGORY_COLORS = {
@@ -792,59 +792,8 @@ function renderRecipes() {
     const grid = document.getElementById('recipesGrid');
     const counterEl = document.getElementById('recipesCounter');
 
-    // Filter
-    let filtered = [...allRecipes];
-
-    if (recipeFilter.category !== 'all') {
-        filtered = filtered.filter(r => (r.category || '') === recipeFilter.category);
-    }
-
-    if (recipeFilter.search) {
-        const s = recipeFilter.search.toLowerCase();
-        filtered = filtered.filter(r =>
-            (r.title || r.name || '').toLowerCase().includes(s) ||
-            (r.description || '').toLowerCase().includes(s)
-        );
-    }
-
-    // Sort
-    const sortKey = recipeFilter.sort;
-    filtered.sort((a, b) => {
-        switch (sortKey) {
-            case 'name-asc':
-                return (a.title || '').localeCompare(b.title || '', 'it');
-            case 'name-desc':
-                return (b.title || '').localeCompare(a.title || '', 'it');
-            case 'hydration-asc':
-                return getHydrationNum(a.hydration) - getHydrationNum(b.hydration);
-            case 'hydration-desc':
-                return getHydrationNum(b.hydration) - getHydrationNum(a.hydration);
-            case 'category':
-                return (a.category || '').localeCompare(b.category || '', 'it') ||
-                       (a.title || '').localeCompare(b.title || '', 'it');
-            case 'quality-desc': {
-                const qa = qualityIndex[a.slug]?.score ?? -1;
-                const qb = qualityIndex[b.slug]?.score ?? -1;
-                return qb - qa;
-            }
-            case 'date-desc': {
-                const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
-                const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
-                return db - da;
-            }
-            case 'date-asc': {
-                const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
-                const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
-                return da - db;
-            }
-            case 'quality-asc': {
-                const qa = qualityIndex[a.slug]?.score ?? 999;
-                const qb = qualityIndex[b.slug]?.score ?? 999;
-                return qa - qb;
-            }
-            default: return 0;
-        }
-    });
+    // Filter & Sort centralized
+    const filtered = getFilteredRecipes();
 
     // Counter
     if (filtered.length === allRecipes.length) {
@@ -955,6 +904,11 @@ function renderRecipeRow(r) {
     const catIcon = CATEGORY_ICONS[cat] || 'folder';
     const recipeUrl = buildRecipeUrl(r);
     const isSelected = selectedSlugs.has(r.slug);
+    const qEntry = qualityIndex && qualityIndex[r.slug];
+    const hasReport = !!qEntry;
+    const isFixed = qEntry && qEntry.fixed === true;
+    const fixDisabled = !hasReport || isFixed;
+    const fixTitle = !hasReport ? 'Esegui prima l\'analisi qualità' : isFixed ? 'Già fixata' : 'Fix AI';
 
     return `
         <div class="recipe-row${isSelected ? ' selected' : ''}" onclick="toggleSelect('${r.slug}', event)">
@@ -966,8 +920,10 @@ function renderRecipeRow(r) {
             </div>
             <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
                 onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
-            ${getAiBadge(r._generatedBy)}
-            ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
+            <div class="recipe-row-badges">
+                ${getAiBadge(r._generatedBy)}
+                ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
+            </div>
             <span class="recipe-row-hydration">${r.hydration || '—'}</span>
             <span class="recipe-row-time">${r.time || '—'}</span>
             <span class="recipe-row-date">${r._createdAt ? formatCreatedAt(r._createdAt) : '—'}</span>
@@ -1072,6 +1028,46 @@ function getFilteredRecipes() {
             (r.description || '').toLowerCase().includes(s)
         );
     }
+    
+    // Applica subito l'ordinamento così indexOf() funziona correttamente nello shift-click
+    const sortKey = recipeFilter.sort;
+    filtered.sort((a, b) => {
+        switch (sortKey) {
+            case 'name-asc':
+                return (a.title || '').localeCompare(b.title || '', 'it');
+            case 'name-desc':
+                return (b.title || '').localeCompare(a.title || '', 'it');
+            case 'hydration-asc':
+                return getHydrationNum(a.hydration) - getHydrationNum(b.hydration);
+            case 'hydration-desc':
+                return getHydrationNum(b.hydration) - getHydrationNum(a.hydration);
+            case 'category':
+                return (a.category || '').localeCompare(b.category || '', 'it') ||
+                       (a.title || '').localeCompare(b.title || '', 'it');
+            case 'quality-desc': {
+                const qa = qualityIndex[a.slug]?.score ?? -1;
+                const qb = qualityIndex[b.slug]?.score ?? -1;
+                return qb - qa;
+            }
+            case 'date-desc': {
+                const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
+                const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
+                return db - da;
+            }
+            case 'date-asc': {
+                const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
+                const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
+                return da - db;
+            }
+            case 'quality-asc': {
+                const qa = qualityIndex[a.slug]?.score ?? 999;
+                const qb = qualityIndex[b.slug]?.score ?? 999;
+                return qa - qb;
+            }
+            default: return 0;
+        }
+    });
+    
     return filtered;
 }
 

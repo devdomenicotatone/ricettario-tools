@@ -437,7 +437,7 @@ export function setupRoutes(app) {
 
     // ── Qualità Fix (applica correzioni AI alla ricetta) ──
     app.post('/api/qualita/fix', async (req, res) => {
-        const { slug, slugs, geminiModel } = req.body || {};
+        const { slug, slugs, force, geminiModel } = req.body || {};
         const batchSlugs = slugs || (slug ? [slug] : null);
         if (!batchSlugs?.length) return res.status(400).json({ error: 'Nessun slug' });
 
@@ -458,7 +458,7 @@ export function setupRoutes(app) {
 
                 for (const s of batchSlugs) {
                     const scoreData = qualityIndex[s];
-                    if (!scoreData || scoreData.score >= 85) {
+                    if (!force && (!scoreData || scoreData.score >= 85)) {
                         ctx.log(`  ⏭️ ${s}: score ${scoreData?.score || '?'}/100 — skip (>= 85)`);
                         continue;
                     }
