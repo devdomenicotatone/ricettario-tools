@@ -117,8 +117,18 @@ export function parseClaudeJson(text) {
         return JSON.parse(text);
     } catch (e) { lastError = e; }
 
-    // 2. Strippa markdown fences (```json ... ``` in qualsiasi posizione)
-    let cleaned = text
+    // 1.5 Cerca esplicitamente blocchi markdown ```json ... ``` (ignora tutto il resto del testo)
+    const blockMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    let targetText = text;
+    if (blockMatch && blockMatch[1]) {
+        targetText = blockMatch[1];
+        try {
+            return JSON.parse(targetText.trim());
+        } catch (e) { lastError = e; }
+    }
+
+    // 2. Strippa markdown fences rimanenti per le altre strategie
+    let cleaned = targetText
         .replace(/```json\s*/gi, '')
         .replace(/```\s*/g, '')
         .trim();

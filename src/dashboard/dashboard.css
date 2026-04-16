@@ -1588,11 +1588,74 @@ body {
 .terminal-line.success { color: var(--success); }
 .terminal-line.job-start {
     color: var(--accent);
-    font-weight: 600;
-    border-top: 1px solid var(--border);
+    font-weight: 700;
     margin-top: 8px;
     padding-top: 8px;
+    border-top: 1px dashed rgba(255,255,255,0.1);
 }
+
+/* ── Terminal Jobs ── */
+.terminal-job {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border-left: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.02);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+.terminal-job.running { border-left-color: var(--accent); }
+.terminal-job.success { border-left-color: var(--success); }
+.terminal-job.failed { border-left-color: var(--error); background: rgba(248, 113, 113, 0.05); }
+
+.terminal-job-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    background: rgba(255,255,255,0.02);
+}
+.terminal-job-header:hover { background: rgba(255,255,255,0.05); }
+
+.job-status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+}
+.job-status-icon i { width: 14px; height: 14px; }
+.job-status-icon i.lucide-spin { animation: spin 1s linear infinite; }
+
+.job-name { flex: 1; font-weight: 600; color: #f1f5f9; }
+.terminal-job.failed .job-name { color: var(--error); }
+
+.job-badge {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text-muted);
+}
+.terminal-job.success .job-badge { color: var(--success); background: rgba(74, 222, 128, 0.1); }
+.terminal-job.running .job-badge { color: var(--accent); background: rgba(129, 140, 248, 0.1); }
+.terminal-job.failed .job-badge { color: var(--error); background: rgba(248, 113, 113, 0.1); }
+
+.job-chevron {
+    width: 14px; height: 14px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+}
+.terminal-job.collapsed .job-chevron { transform: rotate(-90deg); }
+
+.terminal-job-logs {
+    padding: 4px 10px 8px 10px;
+}
+.terminal-job.collapsed .terminal-job-logs { display: none; }
 
 /* ── IMAGE PICKER AREA ── */
 .image-picker-area { margin-top: 20px; }

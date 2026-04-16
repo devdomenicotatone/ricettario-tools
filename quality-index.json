@@ -6,10 +6,11 @@
     "timestamp": "2026-03-30T23:34:53.246Z"
   },
   "pinsa-romana": {
-    "score": 60,
-    "verdict": "🔴 Problematica",
-    "issueCount": 3,
-    "timestamp": "2026-04-01T01:47:06.219Z"
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T19:39:35.906Z",
+    "fixed": true
   },
   "pizza-contemporanea-canotto": {
     "score": 100,
@@ -24,10 +25,10 @@
     "timestamp": "2026-04-01T01:48:13.528Z"
   },
   "pizza-napoletana-verace-stg": {
-    "score": 85,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 3,
-    "timestamp": "2026-04-01T01:48:50.083Z"
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-16T20:21:40.967Z"
   },
   "gnocchi-di-patate": {
     "score": 85,
@@ -36,22 +37,16 @@
     "timestamp": "2026-04-01T01:49:41.090Z"
   },
   "impasto-rosticceria-siciliana": {
-    "score": 60,
-    "verdict": "🔴 Problematica",
-    "issueCount": 3,
-    "timestamp": "2026-04-01T01:52:24.789Z"
+    "score": 85,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:30:24.847Z"
   },
   "panettone-pere-cioccolato": {
     "score": 92,
     "verdict": "🟢 Buona",
     "issueCount": 5,
     "timestamp": "2026-03-30T21:40:56.755Z"
-  },
-  "pasta-brioche-classica": {
-    "score": 60,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 1,
-    "timestamp": "2026-04-01T01:54:07.519Z"
   },
   "cantuccini-di-prato": {
     "score": 100,
@@ -60,34 +55,35 @@
     "timestamp": "2026-04-01T01:54:31.904Z"
   },
   "cartocci-alla-crema-siciliani": {
-    "score": 60,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 1,
-    "timestamp": "2026-04-01T01:54:56.617Z"
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:31:40.982Z"
   },
   "migliaccio-napoletano": {
-    "score": 60,
+    "score": 95,
     "verdict": "🟢 Buona",
-    "issueCount": 3,
-    "timestamp": "2026-04-01T01:55:22.639Z"
+    "issueCount": 1,
+    "timestamp": "2026-04-16T19:32:05.095Z"
   },
   "focaccia-di-recco-igp": {
-    "score": 75,
-    "verdict": "🟡 Da migliorare",
+    "score": 95,
+    "verdict": "🟢 Buona",
     "issueCount": 2,
-    "timestamp": "2026-04-01T01:56:23.927Z"
+    "timestamp": "2026-04-16T19:43:07.687Z",
+    "fixed": true
   },
   "focaccia-genovese-fugassa": {
-    "score": 60,
-    "verdict": "🔴 Problematica",
-    "issueCount": 3,
-    "timestamp": "2026-04-01T01:56:55.770Z"
+    "score": 85,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-16T19:47:42.129Z"
   },
   "focaccia-genovese-classica": {
-    "score": 72,
+    "score": 85,
     "verdict": "🟡 Da migliorare",
-    "issueCount": 6,
-    "timestamp": "2026-03-30T21:42:55.147Z"
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:45:59.379Z"
   },
   "pane-pugliese-con-biga": {
     "score": 100,
@@ -132,10 +128,10 @@
     "timestamp": "2026-04-05T00:40:40.414Z"
   },
   "cornetti-sfogliati-classici": {
-    "score": 70,
+    "score": 95,
     "verdict": "🟢 Buona",
-    "issueCount": 0,
-    "timestamp": "2026-04-05T00:59:07.041Z"
+    "issueCount": 1,
+    "timestamp": "2026-04-16T19:58:25.263Z"
   },
   "burger-buns-con-biga": {
     "score": 100,
@@ -156,10 +152,10 @@
     "timestamp": "2026-04-08T09:15:22.612Z"
   },
   "panettone-fatto-in-casa-caputo": {
-    "score": 70,
+    "score": 90,
     "verdict": "🟢 Buona",
-    "issueCount": 0,
-    "timestamp": "2026-04-15T19:21:54.720Z"
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:34:02.578Z"
   },
   "pasta-madre-solida-creazione-rinfresco": {
     "score": 100,
@@ -168,21 +164,34 @@
     "timestamp": "2026-04-15T19:50:24.666Z"
   },
   "olio-al-basilico-verde-smeraldo": {
-    "score": 85,
-    "verdict": "🟡 Da migliorare",
+    "score": 100,
+    "verdict": "🟢 Buona",
     "issueCount": 2,
-    "timestamp": "2026-04-16T17:44:38.276Z"
+    "timestamp": "2026-04-16T18:48:22.291Z"
   },
   "olio-al-basilico": {
-    "score": 53,
+    "score": 100,
     "verdict": "🟢 Buona",
     "issueCount": 1,
-    "timestamp": "2026-04-16T18:10:09.371Z"
+    "timestamp": "2026-04-16T18:44:45.204Z"
   },
   "olio-extravergine-aromatizzato": {
     "score": 95,
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-16T18:19:50.885Z"
+  },
+  "pasta-brioche-classica": {
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-16T20:20:17.855Z"
+  },
+  "pasta-brioche-artigianale": {
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-16T20:06:24.069Z",
+    "fixed": true
   }
 }

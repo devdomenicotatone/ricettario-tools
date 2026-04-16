@@ -110,9 +110,10 @@
 /* ── Status Pill ── */
 .re-status-pill {
     position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 100%;
+    margin-right: 14px;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
     background: #1e293b;
     color: #94a3b8;
     padding: 3px 10px;
@@ -128,7 +129,7 @@
 }
 .re-status-pill.visible {
     opacity: 1;
-    top: -28px;
+    transform: translateY(-50%) translateX(0);
 }
 .re-status-pill.saved { color: #4ade80; border-color: rgba(74, 222, 128, 0.2); }
 .re-status-pill.saving { color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); }

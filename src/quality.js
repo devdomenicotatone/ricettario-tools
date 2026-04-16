@@ -10,7 +10,7 @@
  * Sostituisce verify.js (solo AI) + validator.js (solo web).
  * Toggle grounding: default OFF (veloce), ON per analisi profonda.
  */
-import { callGemini, parseClaudeJson } from './utils/api.js';
+import { callGemini, callClaude, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { resolve, basename } from 'path';
@@ -274,6 +274,8 @@ ${recipe.proTips?.length > 0 ? `\nPRO TIPS:\n${recipe.proTips.map(t => `- ${t}`)
  */
 async function geminiReview(recipePrompt, groundingContext, geminiModel = 'gemini-2.5-pro') {
     const MODEL_LABELS = {
+        'claude-sonnet-4-6': 'Claude Sonnet 4.6',
+        'claude-opus-4-6': 'Claude Opus 4.6',
         'gemini-2.5-pro': 'Gemini 2.5 Pro',
         'gemini-2.5-flash': 'Gemini 2.5 Flash',
         'gemini-3.1-pro-preview': 'Gemini 3.1 Pro',
@@ -287,13 +289,25 @@ async function geminiReview(recipePrompt, groundingContext, geminiModel = 'gemin
     const fullPrompt = `Verifica questa ricetta:\n\n${recipePrompt}${groundingContext?.text || ''}${groundingDirective}\n\nVerifica dosi, temperature, tempi, setup, coerenza ingredienti↔procedimento.`;
 
     log.info(`   🤖 Layer 3: ${modelLabel} sta verificando...`);
-    const geminiText = await callGemini({
-        model: geminiModel,
-        maxTokens: 8192,
-        system: GEMINI_VERIFY_SYSTEM,
-        messages: [{ role: 'user', content: fullPrompt }],
-    });
-    const result = parseClaudeJson(geminiText);
+    
+    let llmText;
+    if (geminiModel.startsWith('claude')) {
+        llmText = await callClaude({
+            model: geminiModel,
+            maxTokens: 8192,
+            system: GEMINI_VERIFY_SYSTEM,
+            messages: [{ role: 'user', content: fullPrompt }],
+        });
+    } else {
+        llmText = await callGemini({
+            model: geminiModel,
+            maxTokens: 8192,
+            system: GEMINI_VERIFY_SYSTEM,
+            messages: [{ role: 'user', content: fullPrompt }],
+        });
+    }
+    
+    const result = parseClaudeJson(llmText);
     log.info(`   🤖 ${modelLabel}: ${result.score}/100 — ${result.verdict}`);
     return result;
 }

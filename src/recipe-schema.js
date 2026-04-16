@@ -231,7 +231,8 @@ export function validateRecipeSchema(recipe) {
         const assembledKeywords = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento', 'lievito madre', 'pasta madre'];
         let totalFlourGrams = 0;
         let totalWaterGrams = 0;
-        let totalPureWaterGrams = 0;  // Solo acqua pura (coeff 1.0), per confronto alternativo
+        let totalPureWaterGrams = 0;  // Solo acqua pura (coeff 1.0)
+        let totalRawLiquidGrams = 0;  // Peso crudo di tutti i liquidi (uova, latte, ecc), convenzione spesso usata in panificazione ricca
 
         for (const g of recipe.ingredientGroups) {
             // Skip gruppi NON parte dell'impasto (doratura, decorazione, finitura, glassa)
@@ -279,33 +280,49 @@ export function validateRecipeSchema(recipe) {
                 // Conta materie prime per baker's percentage
                 if (isFlour) totalFlourGrams += item.grams || 0;
                 if (matchedLiquid) {
-                    const waterContrib = (item.grams || 0) * matchedLiquid.coeff;
+                    const reqGrams = (item.grams || 0);
+                    const waterContrib = reqGrams * matchedLiquid.coeff;
                     totalWaterGrams += waterContrib;
+                    totalRawLiquidGrams += reqGrams;
                     if (matchedLiquid.coeff === 1.0) totalPureWaterGrams += waterContrib;
                 }
             }
         }
 
         // Validazione idratazione (baker's percentage con liquidi pesati)
-        // Doppio confronto: idratazione "totale" (tutti i liquidi pesati) e "pura" (solo acqua)
-        // Per impasti arricchiti (panettone, brioche) il valore dichiarato corrisponde spesso
-        // all'idratazione "pura" (acqua/farina), non a quella con uova/latte
+        // Triplo confronto: idratazione "totale" (calcolata), "pura" (solo acqua) o "cruda" (somma pesi liquidi, es. brioche).
         if (totalFlourGrams > 0 && totalWaterGrams > 0) {
             const computedTotal = Math.round((totalWaterGrams / totalFlourGrams) * 100);
             const computedPure = totalPureWaterGrams > 0
                 ? Math.round((totalPureWaterGrams / totalFlourGrams) * 100) : null;
+            const computedRaw = totalRawLiquidGrams > 0
+                ? Math.round((totalRawLiquidGrams / totalFlourGrams) * 100) : null;
+            
             const declared = recipe.hydration;
             const diffTotal = Math.abs(computedTotal - declared);
             const diffPure = computedPure !== null ? Math.abs(computedPure - declared) : Infinity;
+            const diffRaw = computedRaw !== null ? Math.abs(computedRaw - declared) : Infinity;
 
-            // Usa il confronto più favorevole (evita falsi positivi su impasti arricchiti)
-            const bestDiff = Math.min(diffTotal, diffPure);
-            const bestComputed = diffTotal <= diffPure ? computedTotal : computedPure;
-            const bestWater = diffTotal <= diffPure ? Math.round(totalWaterGrams) : Math.round(totalPureWaterGrams);
-            const bestLabel = diffTotal <= diffPure ? '' : ' (solo acqua)';
+            const bestDiff = Math.min(diffTotal, diffPure, diffRaw);
+            let bestComputed;
+            let bestLabel = '';
+            let bestWater;
+            
+            if (bestDiff === diffTotal) {
+                bestComputed = computedTotal;
+                bestWater = Math.round(totalWaterGrams);
+            } else if (bestDiff === diffPure) {
+                bestComputed = computedPure;
+                bestLabel = ' (solo acqua)';
+                bestWater = Math.round(totalPureWaterGrams);
+            } else {
+                bestComputed = computedRaw;
+                bestLabel = ' (liquidi non pesati, es. brioche)';
+                bestWater = Math.round(totalRawLiquidGrams);
+            }
 
             if (bestDiff > 3) {
-                errors.push(`Idratazione dichiarata ${declared}% ma calcolata ${bestComputed}%${bestLabel} (${bestWater}g acqua / ${Math.round(totalFlourGrams)}g farina). Scarto: ${bestDiff}%`);
+                errors.push(`Idratazione dichiarata ${declared}% ma calcolata ${bestComputed}%${bestLabel} (${bestWater}g liquido / ${Math.round(totalFlourGrams)}g farina). Scarto: ${bestDiff}%`);
             } else if (bestDiff > 1) {
                 warnings.push(`Idratazione dichiarata ${declared}% vs calcolata ${bestComputed}%${bestLabel} (scarto ${bestDiff}%)`);
             }

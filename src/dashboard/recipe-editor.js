@@ -219,23 +219,47 @@ class RecipeEditorState {
             const flourKw = ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'tipo 2', 'integrale', 'nuvola', 'saccorosso'];
             const liquidKw = [{ kw: 'acqua', c: 1 }, { kw: 'latte', c: 0.87 }, { kw: 'uova', c: 0.75 }, { kw: 'uovo', c: 0.75 }, { kw: 'tuorlo', c: 0.5 }, { kw: 'tuorli', c: 0.5 }, { kw: 'albume', c: 0.9 }, { kw: 'albumi', c: 0.9 }];
             const assembled = ['biga', 'poolish', 'lievitino', 'prefermento', 'lievito madre', 'pasta madre'];
-            let flour = 0, water = 0;
+            let flour = 0, water = 0, pureWater = 0, rawLiquid = 0;
             for (const g of r.ingredientGroups) {
+                // skip non dough groups
+                const groupName = (g.group || '').toLowerCase();
+                const nonDoughGroups = ['doratura', 'decorazione', 'finitura', 'copertura', 'glassa', 'guarnizione', 'topping'];
+                if (nonDoughGroups.some(kw => groupName.includes(kw))) continue;
+
                 for (const it of (g.items || [])) {
+                    if (it.excludeFromTotal) continue;
+
                     const n = (it.name || '').toLowerCase();
-                    const isFL = flourKw.some(k => n.includes(k));
+                    const isExcluded = ['zucchero', 'sale', 'lievito', 'malto', 'miele'].some(kw => n.includes(kw));
+                    const isFL = !isExcluded && flourKw.some(k => n.includes(k));
                     const lq = liquidKw.find(l => n.includes(l.kw));
                     const isA = !isFL && !lq && assembled.some(k => n.includes(k));
                     if (isA) continue;
+                    
                     if (isFL) flour += it.grams || 0;
-                    if (lq) water += (it.grams || 0) * lq.c;
+                    if (lq) {
+                        const amount = it.grams || 0;
+                        water += amount * lq.c;
+                        rawLiquid += amount;
+                        if (lq.c === 1) pureWater += amount;
+                    }
                 }
             }
             if (flour > 0 && water > 0) {
-                const computed = Math.round((water / flour) * 100);
-                const diff = Math.abs(computed - r.hydration);
-                if (diff > 3) errors.push(`Idratazione dichiarata ${r.hydration}% ma calcolata ${computed}%`);
-                else if (diff > 1) warnings.push(`Idratazione: ${r.hydration}% vs calcolata ${computed}%`);
+                const computedTotal = Math.round((water / flour) * 100);
+                const computedPure = pureWater > 0 ? Math.round((pureWater / flour) * 100) : null;
+                const computedRaw = rawLiquid > 0 ? Math.round((rawLiquid / flour) * 100) : null;
+                
+                const dec = r.hydration;
+                const diffTotal = Math.abs(computedTotal - dec);
+                const diffPure = computedPure !== null ? Math.abs(computedPure - dec) : Infinity;
+                const diffRaw = computedRaw !== null ? Math.abs(computedRaw - dec) : Infinity;
+                
+                const bestDiff = Math.min(diffTotal, diffPure, diffRaw);
+                const bestComputed = bestDiff === diffTotal ? computedTotal : (bestDiff === diffPure ? computedPure : computedRaw);
+                
+                if (bestDiff > 3) errors.push(`Idratazione dichiarata ${dec}% ma calcolata ${bestComputed}%`);
+                else if (bestDiff > 1) warnings.push(`Idratazione: ${dec}% vs calcolata ${bestComputed}%`);
             }
         }
 

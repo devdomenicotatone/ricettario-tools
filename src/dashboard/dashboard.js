@@ -34,15 +34,14 @@ function handleWsMessage(data) {
             fetchStatus();
             break;
         case 'job:start':
-            appendTerminal(`\n▶ ${data.name}`, 'job-start');
+            getOrCreateJobContainer(data.jobId, data.name);
             setRunning(true);
             break;
         case 'job:output':
-            appendTerminal(data.text, data.stream);
+            appendTerminal(data.text, data.stream, data.jobId);
             break;
         case 'job:end':
-            const icon = data.success ? '✅' : '❌';
-            appendTerminal(`${icon} Job completato`, data.success ? 'success' : 'stderr');
+            finishJob(data.jobId, data.success);
             setRunning(false);
             // Refresh ricette se necessario
             if (document.getElementById('panel-ricette').classList.contains('active')) {
@@ -57,12 +56,56 @@ let terminalPinned = localStorage.getItem('terminalPinned') === 'true';
 let terminalAutoCollapseTimer = null;
 let terminalLineCount = 0;
 
-function appendTerminal(text, type = 'stdout') {
+function getOrCreateJobContainer(jobId, jobName) {
+    if (!jobId) return document.getElementById('terminal');
+    
+    let jobWrap = document.getElementById(`job-wrap-${jobId}`);
+    if (!jobWrap) {
+        const terminal = document.getElementById('terminal');
+        jobWrap = document.createElement('div');
+        jobWrap.id = `job-wrap-${jobId}`;
+        jobWrap.className = 'terminal-job running';
+        
+        jobWrap.innerHTML = `
+            <div class="terminal-job-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                <div class="job-status-icon"><i data-lucide="loader-2" class="lucide-spin" style="color: #818cf8"></i></div>
+                <div class="job-name">${jobName || jobId}</div>
+                <div class="job-badge">Running</div>
+                <i data-lucide="chevron-down" class="job-chevron"></i>
+            </div>
+            <div class="terminal-job-logs" id="job-logs-${jobId}"></div>
+        `;
+        terminal.appendChild(jobWrap);
+        lucide?.createIcons?.({ nodes: [jobWrap] });
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+    return document.getElementById(`job-logs-${jobId}`);
+}
+
+function finishJob(jobId, success) {
+    const wrap = document.getElementById(`job-wrap-${jobId}`);
+    if (wrap) {
+        wrap.classList.remove('running');
+        wrap.classList.add(success ? 'success' : 'failed');
+        wrap.querySelector('.job-status-icon').innerHTML = success ? '<i data-lucide="check-circle-2" style="color:#4ade80"></i>' : '<i data-lucide="x-circle" style="color:#f87171"></i>';
+        wrap.querySelector('.job-badge').textContent = success ? 'Done' : 'Error';
+        
+        if (success) {
+            wrap.classList.add('collapsed');
+        }
+        lucide?.createIcons?.({ nodes: [wrap] });
+    } else {
+        appendTerminal(`${success ? '✅' : '❌'} Job completato`, success ? 'success' : 'stderr');
+    }
+}
+
+function appendTerminal(text, type = 'stdout', jobId = null) {
+    const parent = jobId ? getOrCreateJobContainer(jobId, 'Job...') : document.getElementById('terminal');
     const terminal = document.getElementById('terminal');
     const line = document.createElement('div');
     line.className = `terminal-line ${type}`;
     line.textContent = text;
-    terminal.appendChild(line);
+    parent.appendChild(line);
     terminal.scrollTop = terminal.scrollHeight;
     terminalLineCount++;
 
@@ -302,15 +345,69 @@ async function runRigenera(tutte) {
 
 function getSelectedGeminiModel() {
     const sel = document.getElementById('gemini-model-select');
-    return sel ? sel.value : 'gemini-2.5-pro';
+    if (sel) return sel.value;
+    return window.selectedGlobalModel || 'gemini-2.5-pro';
 }
 
 const GEMINI_MODELS = [
+    { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6', tag: 'smart' },
+    { id: 'claude-opus-4-6', label: 'Claude Opus 4.6', tag: 'heavy' },
     { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro', tag: 'default' },
     { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', tag: 'fast' },
     { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro', tag: 'new' },
     { id: 'gemini-2-flash', label: 'Gemini 2 Flash', tag: 'economy' },
 ];
+
+window.selectedGlobalModel = 'gemini-2.5-pro';
+
+function showQualitaModelDropdown(anchorEl, withGrounding = false) {
+    document.querySelector('.model-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'model-dropdown';
+    
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 200) {
+        dd.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    } else {
+        dd.style.top = `${rect.bottom + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    }
+
+    dd.innerHTML = `
+        <div class="model-dropdown-title">Modello Analisi Qualità</div>
+        ${GEMINI_MODELS.map(m => `
+            <button class="model-dropdown-item" data-model="${m.id}">
+                <i data-lucide="sparkles"></i>
+                ${m.label}
+                <span class="model-tag ${m.tag === 'default' ? 'tag-default' : ''}">${m.tag}</span>
+            </button>
+        `).join('')}
+    `;
+
+    document.body.appendChild(dd);
+    if(window.lucide) lucide.createIcons();
+
+    dd.addEventListener('click', (e) => {
+        const btn = e.target.closest('.model-dropdown-item');
+        if (!btn) return;
+        const model = btn.dataset.model;
+        dd.remove();
+        window.selectedGlobalModel = model; // Salva la preferenza
+        runQualita(withGrounding, model);
+    });
+
+    setTimeout(() => {
+        document.addEventListener('click', function closeDD(e) {
+            if (!dd.contains(e.target) && !anchorEl.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeDD);
+            }
+        });
+    }, 10);
+}
 
 function showModelDropdown(slug, anchorEl) {
     // Rimuovi dropdown precedente
@@ -331,7 +428,7 @@ function showModelDropdown(slug, anchorEl) {
     }
 
     dd.innerHTML = `
-        <div class="model-dropdown-title">Modello Gemini Challenge</div>
+        <div class="model-dropdown-title">Modello Analisi Qualità</div>
         ${GEMINI_MODELS.map(m => `
             <button class="model-dropdown-item" data-model="${m.id}">
                 <i data-lucide="sparkles"></i>
@@ -416,9 +513,9 @@ function showFixModelDropdown(slug, anchorEl, isBatch = false) {
     }, 10);
 }
 
-async function runQualita(withGrounding = false) {
+async function runQualita(withGrounding = false, geminiModel = null) {
     if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
-    await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding, geminiModel: getSelectedGeminiModel() });
+    await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding, geminiModel: geminiModel || getSelectedGeminiModel() });
 }
 
 async function runSyncCards() {
@@ -997,15 +1094,21 @@ function updateActionBar() {
             <span class="action-bar-count"><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></i>${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
         </div>
         <div class="action-bar-actions">
-            <select id="gemini-model-select" class="action-bar-select" title="Modello Gemini per il challenge">
-                ${GEMINI_MODELS.map(m => `<option value="${m.id}">${m.label}</option>`).join('')}
-            </select>
-            <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Gemini)">
-                <i data-lucide="shield-check"></i> Qualità
-            </button>
-            <button class="action-bar-btn action-bar-ai" onclick="runQualita(true)" title="Qualità + fonti web (SerpAPI grounding)">
-                <i data-lucide="globe"></i> + Web
-            </button>
+            <!-- Pulsanti Qualità con split per la scelta del modello -->
+            <div class="btn-split" style="display:inline-flex">
+                <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Gemini)">
+                    <i data-lucide="shield-check"></i> Qualità
+                </button>
+                <button class="action-bar-btn btn-split-chevron" onclick="showQualitaModelDropdown(this, false)" title="Scegli modello" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+            </div>
+            
+            <div class="btn-split" style="display:inline-flex">
+                <button class="action-bar-btn action-bar-ai" onclick="runQualita(true)" title="Qualità + fonti web (SerpAPI grounding)">
+                    <i data-lucide="globe"></i> + Web
+                </button>
+                <button class="action-bar-btn action-bar-ai btn-split-chevron" onclick="showQualitaModelDropdown(this, true)" title="Scegli modello" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+            </div>
+            
             <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera selezionate (da JSON esistente)">
                 <i data-lucide="refresh-cw"></i> Rigenera
             </button>
