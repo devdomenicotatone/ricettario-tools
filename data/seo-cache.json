@@ -1,6 +1,6 @@
 {
   "Pane": {
-    "timestamp": 1775346826992,
+    "timestamp": 1776359894096,
     "suggestions": [
       {
         "keyword": "pane fatto in casa",
@@ -11,7 +11,7 @@
         },
         "volume": 18100,
         "competition": "LOW",
-        "cpc": 0.07,
+        "cpc": 0.05,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -25,7 +25,7 @@
         },
         "volume": 9900,
         "competition": "LOW",
-        "cpc": 0.02,
+        "cpc": 0.07,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -39,7 +39,7 @@
         },
         "volume": 8100,
         "competition": "LOW",
-        "cpc": 0.07,
+        "cpc": 0.04,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -53,7 +53,7 @@
         },
         "volume": 8100,
         "competition": "LOW",
-        "cpc": 0.07,
+        "cpc": 0.08,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -67,7 +67,7 @@
         },
         "volume": 6600,
         "competition": "LOW",
-        "cpc": 0.04,
+        "cpc": 0.05,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -75,13 +75,13 @@
       {
         "keyword": "pane fatto in casa veloce",
         "popularity": {
-          "score": 54,
-          "label": "5400/mese",
+          "score": 66,
+          "label": "6600/mese",
           "emoji": "📊"
         },
-        "volume": 5400,
+        "volume": 6600,
         "competition": "LOW",
-        "cpc": 0.02,
+        "cpc": 0.03,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -95,7 +95,7 @@
         },
         "volume": 4400,
         "competition": "LOW",
-        "cpc": 0.17,
+        "cpc": 0.67,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -108,8 +108,8 @@
           "emoji": "📊"
         },
         "volume": 3600,
-        "competition": "LOW",
-        "cpc": 0.25,
+        "competition": "MEDIUM",
+        "cpc": 0.2,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -129,6 +129,20 @@
         "source": "dataforseo"
       },
       {
+        "keyword": "ricetta pane azzimo",
+        "popularity": {
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
+        },
+        "volume": 2900,
+        "competition": "LOW",
+        "cpc": 0.1,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
         "keyword": "ricetta pane integrale",
         "popularity": {
           "score": 24,
@@ -137,7 +151,7 @@
         },
         "volume": 2400,
         "competition": "LOW",
-        "cpc": 0.05,
+        "cpc": 0.03,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -151,7 +165,7 @@
         },
         "volume": 2400,
         "competition": "LOW",
-        "cpc": 0.11,
+        "cpc": 0.22,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -165,7 +179,21 @@
         },
         "volume": 2400,
         "competition": "LOW",
-        "cpc": 0.03,
+        "cpc": 0.07,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta panettone semplice",
+        "popularity": {
+          "score": 19,
+          "label": "1900/mese",
+          "emoji": "📊"
+        },
+        "volume": 1900,
+        "competition": "LOW",
+        "cpc": 0.05,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -180,48 +208,6 @@
         "volume": 1900,
         "competition": "LOW",
         "cpc": 0.03,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
-      {
-        "keyword": "ricetta panettone semplice",
-        "popularity": {
-          "score": 19,
-          "label": "1900/mese",
-          "emoji": "📊"
-        },
-        "volume": 1900,
-        "competition": "LOW",
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
-      {
-        "keyword": "ricetta panettone sofficissimo",
-        "popularity": {
-          "score": 16,
-          "label": "1600/mese",
-          "emoji": "📊"
-        },
-        "volume": 1600,
-        "competition": "LOW",
-        "cpc": 0.11,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
-      {
-        "keyword": "ricetta panettone gastronomico",
-        "popularity": {
-          "score": 16,
-          "label": "1600/mese",
-          "emoji": "📊"
-        },
-        "volume": 1600,
-        "competition": "LOW",
-        "cpc": null,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -249,21 +235,7 @@
         },
         "volume": 1600,
         "competition": "LOW",
-        "cpc": 0.02,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
-      {
-        "keyword": "ricetta panettone salato",
-        "popularity": {
-          "score": 16,
-          "label": "1600/mese",
-          "emoji": "📊"
-        },
-        "volume": 1600,
-        "competition": "LOW",
-        "cpc": null,
+        "cpc": 0.04,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -277,7 +249,7 @@
         },
         "volume": 1600,
         "competition": "LOW",
-        "cpc": 0.04,
+        "cpc": 0.05,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -291,7 +263,7 @@
         },
         "volume": 1600,
         "competition": "LOW",
-        "cpc": 0.04,
+        "cpc": 0.06,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -305,7 +277,7 @@
         },
         "volume": 1300,
         "competition": "LOW",
-        "cpc": 0.03,
+        "cpc": 0.05,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -319,7 +291,7 @@
         },
         "volume": 1300,
         "competition": "LOW",
-        "cpc": 0.03,
+        "cpc": 0.06,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -333,10 +305,24 @@
         },
         "volume": 1000,
         "competition": "LOW",
-        "cpc": 0.3,
+        "cpc": 0.2,
         "category": "Pane",
         "alreadyCreated": false,
         "source": "dataforseo"
+      },
+      {
+        "keyword": "pane ad alta idratazione fulvio marino",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
       },
       {
         "keyword": "pane ad alta idratazione ricetta",
@@ -367,7 +353,7 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pane ad alta idratazione fulvio marino",
+        "keyword": "pane ad alta idratazione e lunga lievitazione",
         "popularity": {
           "score": 10,
           "label": "Top 50",
@@ -395,7 +381,7 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pane ad alta idratazione e lunga lievitazione",
+        "keyword": "pane ad alta idratazione senza lievito madre",
         "popularity": {
           "score": 10,
           "label": "Top 50",
@@ -409,7 +395,21 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pane ad alta idratazione senza lievito madre",
+        "keyword": "pane ad alta idratazione fatto in casa",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pane ad alta idratazione con lievito madre secco",
         "popularity": {
           "score": 10,
           "label": "Top 50",
@@ -2125,7 +2125,7 @@
     ]
   },
   "Dolci": {
-    "timestamp": 1774632532514,
+    "timestamp": 1776359906749,
     "suggestions": [
       {
         "keyword": "ricetta torta di mele",
@@ -2136,7 +2136,7 @@
         },
         "volume": 33100,
         "competition": "LOW",
-        "cpc": 0.04,
+        "cpc": 0.05,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2150,7 +2150,7 @@
         },
         "volume": 22200,
         "competition": "LOW",
-        "cpc": 0.09,
+        "cpc": 0.18,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2164,7 +2164,7 @@
         },
         "volume": 14800,
         "competition": "LOW",
-        "cpc": 0.04,
+        "cpc": 0.15,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2178,13 +2178,13 @@
         },
         "volume": 12100,
         "competition": "LOW",
-        "cpc": 0.34,
+        "cpc": 0.57,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
       },
       {
-        "keyword": "ricetta crostata di marmellata",
+        "keyword": "ricetta crostata marmellata",
         "popularity": {
           "score": 100,
           "label": "12.100/mese",
@@ -2192,7 +2192,7 @@
         },
         "volume": 12100,
         "competition": "LOW",
-        "cpc": 0.09,
+        "cpc": 0.19,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2206,7 +2206,7 @@
         },
         "volume": 12100,
         "competition": "LOW",
-        "cpc": 0.2,
+        "cpc": 0.21,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2220,7 +2220,7 @@
         },
         "volume": 9900,
         "competition": "LOW",
-        "cpc": 0.04,
+        "cpc": 0.37,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2234,7 +2234,7 @@
         },
         "volume": 9900,
         "competition": "LOW",
-        "cpc": 0.06,
+        "cpc": 0.05,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2262,13 +2262,13 @@
         },
         "volume": 8100,
         "competition": "LOW",
-        "cpc": 0.03,
+        "cpc": 0.4,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
       },
       {
-        "keyword": "ricetta biscotti natale",
+        "keyword": "tiramisù ricetta originale",
         "popularity": {
           "score": 81,
           "label": "8100/mese",
@@ -2276,21 +2276,7 @@
         },
         "volume": 8100,
         "competition": "LOW",
-        "cpc": 0.04,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
-      {
-        "keyword": "ricetta torta pasqualina",
-        "popularity": {
-          "score": 66,
-          "label": "6600/mese",
-          "emoji": "📊"
-        },
-        "volume": 6600,
-        "competition": "LOW",
-        "cpc": 0.12,
+        "cpc": 0.3,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2304,21 +2290,7 @@
         },
         "volume": 6600,
         "competition": "LOW",
-        "cpc": 0.05,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
-      {
-        "keyword": "ricetta biscotti al burro",
-        "popularity": {
-          "score": 66,
-          "label": "6600/mese",
-          "emoji": "📊"
-        },
-        "volume": 6600,
-        "competition": "LOW",
-        "cpc": 0.03,
+        "cpc": 0.08,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2332,7 +2304,7 @@
         },
         "volume": 6600,
         "competition": "LOW",
-        "cpc": 0.09,
+        "cpc": 0.2,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2346,21 +2318,21 @@
         },
         "volume": 6600,
         "competition": "LOW",
-        "cpc": 0.1,
+        "cpc": 0.21,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
       },
       {
-        "keyword": "tiramisù ricetta originale",
+        "keyword": "ricetta biscotti al burro",
         "popularity": {
-          "score": 54,
-          "label": "5400/mese",
+          "score": 66,
+          "label": "6600/mese",
           "emoji": "📊"
         },
-        "volume": 5400,
+        "volume": 6600,
         "competition": "LOW",
-        "cpc": 0.23,
+        "cpc": 0.07,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2374,7 +2346,7 @@
         },
         "volume": 4400,
         "competition": "LOW",
-        "cpc": 0.03,
+        "cpc": 0.05,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2388,7 +2360,7 @@
         },
         "volume": 4400,
         "competition": "LOW",
-        "cpc": 0.18,
+        "cpc": 0.19,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2402,24 +2374,10 @@
         },
         "volume": 4400,
         "competition": "LOW",
-        "cpc": 0.07,
+        "cpc": 0.38,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
-      },
-      {
-        "keyword": "dolci fatti in casa per bambini",
-        "popularity": {
-          "score": 37,
-          "label": "Top 22",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Dolci",
-        "alreadyCreated": false,
-        "source": "autocomplete"
       },
       {
         "keyword": "ricetta torta margherita",
@@ -2430,7 +2388,21 @@
         },
         "volume": 3600,
         "competition": "LOW",
-        "cpc": 0.77,
+        "cpc": 0.17,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta torta al limone",
+        "popularity": {
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
+        },
+        "volume": 2900,
+        "competition": "LOW",
+        "cpc": 0.02,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2444,7 +2416,7 @@
         },
         "volume": 2900,
         "competition": "LOW",
-        "cpc": 0.14,
+        "cpc": 0.21,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2458,7 +2430,7 @@
         },
         "volume": 2900,
         "competition": "LOW",
-        "cpc": 0.08,
+        "cpc": 0.1,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2472,7 +2444,7 @@
         },
         "volume": 2900,
         "competition": "LOW",
-        "cpc": null,
+        "cpc": 0.02,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2486,13 +2458,27 @@
         },
         "volume": 2400,
         "competition": "LOW",
-        "cpc": 0.11,
+        "cpc": 0.04,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
       },
       {
-        "keyword": "ricetta biscotti senza burro",
+        "keyword": "ricetta torta pan di stelle",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.61,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta biscotti caserecci della nonna",
         "popularity": {
           "score": 24,
           "label": "2400/mese",
@@ -2506,6 +2492,20 @@
         "source": "dataforseo"
       },
       {
+        "keyword": "ricetta biscotti senza burro",
+        "popularity": {
+          "score": 24,
+          "label": "2400/mese",
+          "emoji": "📊"
+        },
+        "volume": 2400,
+        "competition": "LOW",
+        "cpc": 0.5,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
         "keyword": "ricetta biscotti al cioccolato",
         "popularity": {
           "score": 24,
@@ -2514,7 +2514,7 @@
         },
         "volume": 2400,
         "competition": "LOW",
-        "cpc": 0.06,
+        "cpc": 0.47,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
@@ -2528,22 +2528,872 @@
         },
         "volume": 2400,
         "competition": "LOW",
-        "cpc": null,
+        "cpc": 0.09,
         "category": "Dolci",
         "alreadyCreated": false,
         "source": "dataforseo"
       },
       {
-        "keyword": "ricetta torta pasqualina con pasta sfoglia pronta",
+        "keyword": "dolci fatti in casa e colesterolo",
         "popularity": {
-          "score": 19,
-          "label": "1900/mese",
+          "score": 22,
+          "label": "Top 27",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Dolci",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      }
+    ]
+  },
+  "Condimenti": {
+    "timestamp": 1776360677470,
+    "suggestions": [
+      {
+        "keyword": "salse fatte in casa veloci",
+        "popularity": {
+          "score": 97,
+          "label": "Top 2",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per crostini",
+        "popularity": {
+          "score": 88,
+          "label": "Top 5",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per insalata",
+        "popularity": {
+          "score": 76,
+          "label": "Top 9",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per pollo",
+        "popularity": {
+          "score": 73,
+          "label": "Top 10",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa light",
+        "popularity": {
+          "score": 70,
+          "label": "Top 11",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per pollo fritto",
+        "popularity": {
+          "score": 67,
+          "label": "Top 12",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per pasta",
+        "popularity": {
+          "score": 64,
+          "label": "Top 13",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per bollito",
+        "popularity": {
+          "score": 61,
+          "label": "Top 14",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse fatte in casa per pesce",
+        "popularity": {
+          "score": 58,
+          "label": "Top 15",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato basilico ricetta",
+        "popularity": {
+          "score": 55,
+          "label": "Top 16",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pesto fatto in casa",
+        "popularity": {
+          "score": 54,
+          "label": "5400/mese",
           "emoji": "📊"
         },
-        "volume": 1900,
+        "volume": 5400,
+        "competition": "LOW",
+        "cpc": 0.07,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "olio piccante aromatizzato ricetta",
+        "popularity": {
+          "score": 52,
+          "label": "Top 17",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato arancia ricetta",
+        "popularity": {
+          "score": 49,
+          "label": "Top 18",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato rapanello ricetta",
+        "popularity": {
+          "score": 46,
+          "label": "Top 19",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "condimenti per pasta",
+        "popularity": {
+          "score": 44,
+          "label": "4400/mese",
+          "emoji": "📊"
+        },
+        "volume": 4400,
+        "competition": "LOW",
+        "cpc": 0.29,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "olio aromatizzato alla menta ricetta",
+        "popularity": {
+          "score": 31,
+          "label": "Top 24",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato alla cipolla ricetta",
+        "popularity": {
+          "score": 28,
+          "label": "Top 25",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato all'origano ricetta",
+        "popularity": {
+          "score": 25,
+          "label": "Top 26",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato al timo ricetta",
+        "popularity": {
+          "score": 22,
+          "label": "Top 27",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato al tartufo ricetta",
+        "popularity": {
+          "score": 19,
+          "label": "Top 28",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "olio aromatizzato alle erbe ricetta",
+        "popularity": {
+          "score": 16,
+          "label": "Top 29",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "condimenti per pasta veloci",
+        "popularity": {
+          "score": 16,
+          "label": "1600/mese",
+          "emoji": "📊"
+        },
+        "volume": 1600,
+        "competition": "LOW",
+        "cpc": 0.34,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "condimenti per pasta fredda",
+        "popularity": {
+          "score": 10,
+          "label": "1000/mese",
+          "emoji": "📊"
+        },
+        "volume": 1000,
+        "competition": "LOW",
+        "cpc": 0.18,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "condimenti per pasta di grano saraceno",
+        "popularity": {
+          "score": 10,
+          "label": "Top 42",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "condimenti per pasta bambini",
+        "popularity": {
+          "score": 10,
+          "label": "Top 43",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "salse per carne ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "pesto fatto in casa da benedetta",
+        "popularity": {
+          "score": 5.9,
+          "label": "590/mese",
+          "emoji": "📊"
+        },
+        "volume": 590,
+        "competition": "LOW",
+        "cpc": 0.38,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pesto fatto in casa senza aglio",
+        "popularity": {
+          "score": 3.9,
+          "label": "390/mese",
+          "emoji": "📊"
+        },
+        "volume": 390,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pesto fatto in casa quanto dura",
+        "popularity": {
+          "score": 2.6,
+          "label": "260/mese",
+          "emoji": "📊"
+        },
+        "volume": 260,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "condimenti per pasta leggeri",
+        "popularity": {
+          "score": 1.7,
+          "label": "170/mese",
+          "emoji": "📊"
+        },
+        "volume": 170,
+        "competition": "LOW",
+        "cpc": 0.32,
+        "category": "Condimenti",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      }
+    ]
+  },
+  "Conserve": {
+    "timestamp": 1776360718538,
+    "suggestions": [
+      {
+        "keyword": "conserve fatte in casa come evitare il botulino",
+        "popularity": {
+          "score": 70,
+          "label": "Top 11",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "conserve fatte in casa gravidanza",
+        "popularity": {
+          "score": 67,
+          "label": "Top 12",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "conserve fatte in casa sicure",
+        "popularity": {
+          "score": 64,
+          "label": "Top 13",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "conserve fatte in casa tappo",
+        "popularity": {
+          "score": 61,
+          "label": "Top 14",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "conserve fatte in casa iss",
+        "popularity": {
+          "score": 58,
+          "label": "Top 15",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "sottoli fatti in casa in gravidanza",
+        "popularity": {
+          "score": 55,
+          "label": "Top 16",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come evitare il botulino nei sottoli fatti in casa",
+        "popularity": {
+          "score": 46,
+          "label": "Top 19",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "sottoli fatti in casa rischi",
+        "popularity": {
+          "score": 43,
+          "label": "Top 20",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale ricetta benedetta rossi",
+        "popularity": {
+          "score": 31,
+          "label": "Top 24",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "passata di pomodoro fatta in casa",
+        "popularity": {
+          "score": 29,
+          "label": "2900/mese",
+          "emoji": "📊"
+        },
+        "volume": 2900,
         "competition": "LOW",
         "cpc": 0.26,
-        "category": "Dolci",
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "dado vegetale ricetta giallozafferano",
+        "popularity": {
+          "score": 28,
+          "label": "Top 25",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale ricetta rapanello",
+        "popularity": {
+          "score": 25,
+          "label": "Top 26",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale ricetta originale",
+        "popularity": {
+          "score": 22,
+          "label": "Top 27",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado brodo vegetale ricetta",
+        "popularity": {
+          "score": 16,
+          "label": "Top 29",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale granulare ricetta",
+        "popularity": {
+          "score": 13,
+          "label": "Top 30",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale bimby tm6 ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 32",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "cristina camorani dado vegetale ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 33",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale luisanna messeri ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 34",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "dado vegetale in polvere ricetta",
+        "popularity": {
+          "score": 10,
+          "label": "Top 35",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "passata di pomodoro fatta in casa valori nutrizionali",
+        "popularity": {
+          "score": 10,
+          "label": "Top 40",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "marmellata ricetta fai da te",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "passata di pomodoro fatta in casa a crudo",
+        "popularity": {
+          "score": 4.8,
+          "label": "480/mese",
+          "emoji": "📊"
+        },
+        "volume": 480,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "dado vegetale bimby ricetta libro base",
+        "popularity": {
+          "score": 3.2,
+          "label": "320/mese",
+          "emoji": "📊"
+        },
+        "volume": 320,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "passata di pomodoro fatta in casa botulino",
+        "popularity": {
+          "score": 2.1,
+          "label": "210/mese",
+          "emoji": "📊"
+        },
+        "volume": 210,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "conserve fatte in casa",
+        "popularity": {
+          "score": 2.1,
+          "label": "210/mese",
+          "emoji": "📊"
+        },
+        "volume": 210,
+        "competition": "MEDIUM",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "dado vegetale ricetta",
+        "popularity": {
+          "score": 1.7,
+          "label": "170/mese",
+          "emoji": "📊"
+        },
+        "volume": 170,
+        "competition": "LOW",
+        "cpc": 2.29,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "conserve fatte in casa botulino",
+        "popularity": {
+          "score": 1.4,
+          "label": "140/mese",
+          "emoji": "📊"
+        },
+        "volume": 140,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "passata di pomodoro fatta in casa quanto dura in frigo",
+        "popularity": {
+          "score": 0.5,
+          "label": "50/mese",
+          "emoji": "📊"
+        },
+        "volume": 50,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "passata di pomodoro fatta in casa da benedetta",
+        "popularity": {
+          "score": 0.5,
+          "label": "50/mese",
+          "emoji": "📊"
+        },
+        "volume": 50,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "conserve fatte in casa ministero della salute",
+        "popularity": {
+          "score": 0.4,
+          "label": "40/mese",
+          "emoji": "📊"
+        },
+        "volume": 40,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Conserve",
         "alreadyCreated": false,
         "source": "dataforseo"
       }

@@ -18,6 +18,24 @@ function getRicettarioPath(body) {
     );
 }
 
+function findRecipeJsonDynamic(ricettarioPath, CATEGORY_FOLDERS, slug) {
+    for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+        const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
+        if (existsSync(candidate)) return { jsonFile: candidate, category: cat };
+    }
+    const ricettePath = resolve(ricettarioPath, 'ricette');
+    if (existsSync(ricettePath)) {
+        for (const catDir of readdirSync(ricettePath)) {
+            const candidate = resolve(ricettePath, catDir, `${slug}.json`);
+            if (existsSync(candidate)) {
+                const fallbackCat = catDir.charAt(0).toUpperCase() + catDir.slice(1);
+                return { jsonFile: candidate, category: fallbackCat };
+            }
+        }
+    }
+    return { jsonFile: null, category: null };
+}
+
 export function setupRoutes(app) {
 
     // ── Ricette: lista tutte ──
@@ -43,7 +61,7 @@ export function setupRoutes(app) {
                     if (!statSync(catDir).isDirectory()) continue;
 
                     for (const file of readdirSync(catDir)) {
-                        if (file.endsWith('.json') && file !== 'index.json') {
+                        if (file.endsWith('.json') && file !== 'index.json' && !file.includes('.backup.') && !file.includes('.pre-')) {
                             try {
                                 const data = JSON.parse(readFileSync(resolve(catDir, file), 'utf-8'));
                                 const slug = file.replace('.json', '');
@@ -214,11 +232,7 @@ export function setupRoutes(app) {
                 // Cerca il file JSON reale per slug nelle cartelle categorie
                 const { CATEGORY_FOLDERS } = await import('../publisher.js');
                 const ricettarioPath = getRicettarioPath();
-                let jsonFile = null;
-                for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
-                    const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
-                    if (existsSync(candidate)) { jsonFile = candidate; break; }
-                }
+                let jsonFile = findRecipeJsonDynamic(ricettarioPath, CATEGORY_FOLDERS, slug).jsonFile;
                 if (!jsonFile) {
                     ctx.error(`❌ ${slug}: JSON non trovato`);
                     ctx.end(false);
@@ -249,17 +263,9 @@ export function setupRoutes(app) {
             const { CATEGORY_FOLDERS } = await import('../publisher.js');
 
             // Trova il JSON
-            let jsonFile = null;
-            let category = null;
-
-            for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
-                const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
-                if (existsSync(candidate)) {
-                    jsonFile = candidate;
-                    category = cat;
-                    break;
-                }
-            }
+            const found = findRecipeJsonDynamic(ricettarioPath, CATEGORY_FOLDERS, slug);
+            let jsonFile = found.jsonFile;
+            let category = found.category;
 
             if (!jsonFile) {
                 return res.status(404).json({ error: `JSON non trovato per "${slug}"` });
@@ -707,9 +713,8 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
             const { getSeoSuggestions, getAvailableCategories } = await import('../seo-keywords.js');
             const categories = getAvailableCategories();
 
-            if (!categories.includes(category)) {
-                return res.status(400).json({ error: `Categoria non valida. Disponibili: ${categories.join(', ')}` });
-            }
+            // Rimosso il check restrittivo: !categories.includes(category) 
+            // per abilitare generazioni dinamiche dall'AI
 
             const suggestions = await getSeoSuggestions(category, { forceRefresh });
             res.json({ category, suggestions, categories });

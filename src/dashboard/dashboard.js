@@ -471,16 +471,20 @@ const CATEGORY_COLORS = {
     'Lievitati': '#f39c12',
     'Pasta':     '#3498db',
     'Dolci':     '#e91e63',
+    'Condimenti':'#2ecc71',
+    'Conserve':  '#9b59b6',
 };
 
 const CATEGORY_ICONS = {
     'Pane': 'wheat', 'Pizza': 'pizza', 'Focaccia': 'sandwich',
     'Lievitati': 'croissant', 'Pasta': 'utensils', 'Dolci': 'cake-slice',
+    'Condimenti': 'leaf', 'Conserve': 'jar',
 };
 
 const CATEGORY_DIR_MAP = {
     'Pane': 'pane', 'Pizza': 'pizza', 'Focaccia': 'focaccia',
     'Lievitati': 'lievitati', 'Pasta': 'pasta', 'Dolci': 'dolci',
+    'Condimenti': 'condimenti', 'Conserve': 'conserve',
 };
 
 function buildRecipeUrl(r) {
@@ -519,7 +523,7 @@ function getHydrationClass(val) {
 }
 
 // ── Cambio Categoria One-Click ──
-const ALL_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci'];
+const ALL_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci', 'Condimenti', 'Conserve'];
 
 function showCategoryDropdown(slug, currentCategory, anchorEl) {
     // Rimuovi dropdown precedente
@@ -601,12 +605,55 @@ async function loadRecipes() {
             fetchQualityIndex(),
         ]);
         allRecipes = await resp.json();
+        ensureDynamicCategories();
         updateCategoryTabs();
         renderRecipes();
         updateActionBar();
     } catch (err) {
         grid.innerHTML = `<p class="empty-state">❌ Errore caricamento: ${err.message}</p>`;
     }
+}
+
+function ensureDynamicCategories() {
+    const uniqueCats = [...new Set(allRecipes.map(r => r.category).filter(Boolean))];
+    const selects = ['gen-tipo', 'url-tipo', 'testo-tipo'].map(id => document.getElementById(id)).filter(Boolean);
+    const seoTabsEl = document.getElementById('seoTabs');
+
+    uniqueCats.forEach(cat => {
+        // Update ALL_CATEGORIES
+        if (!ALL_CATEGORIES.includes(cat)) {
+            ALL_CATEGORIES.push(cat);
+        }
+        
+        // Update selects
+        selects.forEach(sel => {
+            const exists = Array.from(sel.options).some(opt => opt.value === cat);
+            if (!exists) {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = `📁 ${cat}`;
+                sel.appendChild(opt);
+            }
+        });
+
+        // Update SEO tabs
+        if (seoTabsEl) {
+            const exists = Array.from(seoTabsEl.querySelectorAll('.seo-tab')).some(btn => btn.dataset.category === cat);
+            if (!exists) {
+                const btn = document.createElement('button');
+                btn.className = 'seo-tab';
+                btn.dataset.category = cat;
+                btn.textContent = `📁 ${cat}`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.seo-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSeoCategory = cat;
+                    loadSeoSuggestions(cat);
+                };
+                seoTabsEl.appendChild(btn);
+            }
+        }
+    });
 }
 
 function updateCategoryTabs() {
@@ -682,6 +729,16 @@ function renderRecipes() {
                 const qa = qualityIndex[a.slug]?.score ?? -1;
                 const qb = qualityIndex[b.slug]?.score ?? -1;
                 return qb - qa;
+            }
+            case 'date-desc': {
+                const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
+                const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
+                return db - da;
+            }
+            case 'date-asc': {
+                const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
+                const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
+                return da - db;
             }
             case 'quality-asc': {
                 const qa = qualityIndex[a.slug]?.score ?? 999;

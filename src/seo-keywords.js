@@ -63,6 +63,20 @@ const CATEGORY_SEEDS = {
         'ricetta biscotti',
         'ricetta crostata',
         'tiramisù ricetta originale'
+    ],
+    Condimenti: [
+        'salse fatte in casa',
+        'olio aromatizzato ricetta',
+        'condimenti per pasta',
+        'salse per carne ricetta',
+        'pesto fatto in casa'
+    ],
+    Conserve: [
+        'conserve fatte in casa',
+        'marmellata ricetta fai da te',
+        'sottoli fatti in casa',
+        'dado vegetale ricetta',
+        'passata di pomodoro fatta in casa'
     ]
 };
 
@@ -307,9 +321,11 @@ export async function getSeoSuggestions(category, options = {}) {
         if (cached) return cached;
     }
 
-    const seeds = CATEGORY_SEEDS[category];
+    let seeds = CATEGORY_SEEDS[category];
     if (!seeds) {
-        throw new Error(`Categoria "${category}" non supportata. Categorie: ${Object.keys(CATEGORY_SEEDS).join(', ')}`);
+        // Dynamic fallback seeds for new AI categories
+        const catLow = category.toLowerCase();
+        seeds = [`ricetta ${catLow}`, `${catLow} fatti in casa`, `come preparare ${catLow}`];
     }
 
     log.info(`🔍 SEO: cerco suggerimenti per "${category}" (${seeds.length} seed)...`);
@@ -392,5 +408,8 @@ export async function getSeoSuggestions(category, options = {}) {
  * Categorie disponibili
  */
 export function getAvailableCategories() {
+    // Ritorna le categorie base note + caricate da loadExistingRecipes dinamicamente? 
+    // In realtà, questo viene ora saltato in routes.js come limite stringente,
+    // ma ritorna i default di base per sicurezza.
     return Object.keys(CATEGORY_SEEDS);
 }

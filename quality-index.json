@@ -166,5 +166,11 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-15T19:50:24.666Z"
+  },
+  "olio-al-basilico-verde-smeraldo": {
+    "score": 70,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T17:30:43.490Z"
   }
 }

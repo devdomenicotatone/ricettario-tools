@@ -42,8 +42,8 @@ export const RECIPE_FIELDS = {
     emoji:       { type: 'string',  required: true,  description: 'Emoji rappresentativa' },
     description: { type: 'string',  required: true,  description: 'Descrizione lunga SEO-friendly (80-200 char)' },
     subtitle:    { type: 'string',  required: true,  description: 'Sottotitolo breve' },
-    category:    { type: 'string',  required: true,  description: `Categoria: ${VALID_CATEGORIES.join(', ')}`,
-                   validate: v => VALID_CATEGORIES.includes(v) ? null : `Categoria "${v}" non valida. Usa: ${VALID_CATEGORIES.join(', ')}` },
+    category:    { type: 'string',  required: true,  description: `Categoria principale o nuova categoria personalizzata`,
+                   validate: v => typeof v === 'string' && v.trim().length > 0 ? null : `Categoria deve essere testuale` },
 
     // ── Parametri Tecnici ──
     hydration:    { type: 'number',  required: true,  description: 'Idratazione % (0 per dolci/pasta senza calcolo)',

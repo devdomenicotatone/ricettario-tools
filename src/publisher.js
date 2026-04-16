@@ -27,6 +27,7 @@ export const CATEGORY_FOLDERS = {
     Focaccia: 'focaccia',
     Dolci: 'dolci',
     Conserve: 'conserve',
+    Condimenti: 'condimenti',
 };
 
 /**
@@ -40,6 +41,7 @@ const CATEGORY_META = {
     Focaccia:  { emoji: '🫓', title: 'Focaccia Artigianale', desc: 'Focacce ad alta idratazione — genovese, barese, pugliese e varianti creative.' },
     Dolci:     { emoji: '🍰', title: 'Dolci e Pasticceria', desc: 'Dolci tradizionali, frolle, biscotti e pasticceria artigianale.' },
     Conserve:  { emoji: '🫙', title: 'Conserve e Preparazioni', desc: 'Conserve fatte in casa — dadi vegetali, salse, sottoli e preparazioni base.' },
+    Condimenti:{ emoji: '🌿', title: 'Condimenti e Salse', desc: 'Oli aromatizzati, salse e condimenti speciali.' },
 };
 
 /**
