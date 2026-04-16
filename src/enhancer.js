@@ -49,10 +49,10 @@ REGOLE:
 2. Le dosi devono essere in GRAMMI, mai "cucchiai", "bicchieri" ecc. Se la fonte usa misure casalinghe, converti con precisione
 3. Calcolare SEMPRE: idratazione totale (% su farina), temperatura target impasto
 4. PROCEDIMENTO: Crea UN SOLO procedimento nel campo "steps".
-   - Il procedimento è scritto per chi ha impastatrice a spirale (per pane/pizza/lievitati). Se la ricetta si fa solo a mano (dolci, biscotti, frolla, creme), scrivi il procedimento a mano.
-   - Per PASTA: il procedimento usa l'estrusore con trafila Philips.
+   - Attieniti SCRUPOLOSAMENTE agli strumenti o metodi indicati. Non forzare l'uso di impastatrice a spirale se la ricetta è a mano o se si tratta di un condimento.
+   - Per PASTA: il procedimento usa l'estrusore con trafila Philips (solo se menzionato o se pasta estrusa).
    - CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento, usa l'array separato "stepsCondiment".
-   - Il tono è da artigiano: indica velocità impastatrice, tempi precisi, tecniche specifiche.
+   - Il tono è da artigiano: indica velocità, attrezzature, tempi precisi e tecniche specifiche.
 5. Se la ricetta ha sospensioni (noci, olive, uvetta, cioccolato ecc.), separarle dagli ingredienti base
 6. Se ci sono farine specifiche, creare la tabella "Consigli Farine" con tipo, forza W e marchi consigliati
 7. Generare un alert professionale pertinente (cosa NON fare)
@@ -71,6 +71,7 @@ REGOLE:
     - Acqua FRESCA (16-20°C): per impasti medi (8-12 min) con farine medie (W 240-300) e idratazione moderata (65-72%).
     - Acqua AMBIENTE (20-24°C): per impasti brevi (<8 min), farine deboli/integrali (W<240), basse idratazioni (<65%), o quando la ricetta sorgente NON specifica acqua fredda.
     REGOLA D'ORO: Se la ricetta sorgente specifica una temperatura acqua, RISPETTALA. Non inventare acqua ghiacciata se la fonte non la menziona.
+16. CAMPI TECNICI PANE/PIZZA: Campi come "targetTemp", "fermentation" e "hydration" hanno senso per i lievitati. Se la preparazione (es. Olio, Sugo, Condimento) NON prevede lievitazione o misurazione della temperatura dell'impasto, OMETTI questi campi o lasciali vuoti (NON inserire "N/A" o stringhe fittizie, non inserirli affatto o metti "").
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
 {

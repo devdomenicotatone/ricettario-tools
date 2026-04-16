@@ -90,11 +90,6 @@ CRITERI DI VERIFICA:
    - Identifica tutti i termini che un hobbista potrebbe non conoscere
    - Genera un GLOSSARIO con spiegazioni brevi e chiare
 
-5. SETUP CORRETTO:
-   - PANE/PIZZA: "Impastatrice a spirale" + "A mano" = ✅
-   - PASTA: "Estrusore con trafila" + "A mano" (SOLO se il formato lo permette) = ✅
-   - PASTA con "Spirale" = ❌ ERRORE
-
 6. SEZIONE COTTURA (pane/pizza):
    - Deve essere presente con: temperatura, tempo, suggerimenti
    - Per forni casalinghi: pietra refrattaria, vapore nei primi minuti, posizione teglia
@@ -104,7 +99,7 @@ RISPONDI con un JSON valido (NO markdown fences):
   "score": 85,
   "verdict": "🟢 Buona|🟡 Da migliorare|🔴 Problematica",
   "issues": [
-    {"severity": "❌|⚠️|💡", "area": "Dosi|Temperature|Tempi|Setup|Cottura|Terminologia", "message": "Descrizione del problema", "fix": "Suggerimento di correzione"}
+    {"severity": "❌|⚠️|💡", "area": "Dosi|Temperature|Tempi|Cottura|Terminologia", "message": "Descrizione del problema", "fix": "Suggerimento di correzione"}
   ],
   "glossary": [
     {"term": "Autolisi", "definition": "Riposo di farina e acqua (senza lievito) per 20-60 min, permette alla farina di idratarsi e al glutine di formarsi spontaneamente"}
@@ -114,12 +109,6 @@ RISPONDI con un JSON valido (NO markdown fences):
     "temperature": "250°C",
     "time": "25-30 minuti",
     "tips": ["Preriscaldare con pietra refrattaria per 45 min", "Spruzzare acqua nei primi 5 min per creare vapore"]
-  },
-  "setupCorrection": {
-    "needed": false,
-    "currentSetup": "Spirale + A mano",
-    "correctSetup": "Estrusore + A mano",
-    "reason": "Le orecchiette sono un formato di pasta, non di pane"
   },
   "summary": "Breve riepilogo di 2-3 righe sulla qualità complessiva della ricetta"
 }`;
@@ -217,9 +206,6 @@ function extractRecipeContentFromJson(filePath) {
         }
     }
 
-    // Setup detect
-    const currentSetup = data.category?.toLowerCase() === 'pasta' ? 'Estrusore' : 'Impastatrice a spirale';
-
     // Alert e ProTips
     const alert = data.alert || '';
     const proTips = (data.proTips || []).map(t => typeof t === 'string' ? t : t.text || '');
@@ -238,7 +224,6 @@ function extractRecipeContentFromJson(filePath) {
         hydration: data.hydration ? `${data.hydration}%` : '',
         targetTemp: data.targetTemp || '',
         fermentation: data.fermentation || '',
-        currentSetup,
         alert,
         proTips,
     };
@@ -266,7 +251,6 @@ CATEGORIA: ${recipe.category}
 IDRATAZIONE: ${recipe.hydration}
 TEMPERATURA TARGET: ${recipe.targetTemp}
 LIEVITAZIONE: ${recipe.fermentation}
-SETUP ATTUALE: ${recipe.currentSetup}
 
 INGREDIENTI:
 ${recipe.ingredients.map((i, idx) => `${idx + 1}. ${i}`).join('\n')}
@@ -279,8 +263,7 @@ ${recipe.steps.map((s, idx) => `${idx + 1}. ${s}`).join('\n')}
 ${recipe.alert ? `ALERT: ${recipe.alert}` : ''}
 ${recipe.proTips.length > 0 ? `PRO TIPS: ${recipe.proTips.join(' | ')}` : ''}
 
-Verifica la correttezza di TUTTO: dosi, temperature, tempi, setup, termini tecnici.
-Per la categoria "${recipe.category}", il setup è corretto?
+Verifica la correttezza di TUTTO: dosi, temperature, tempi, termini tecnici.
 La ricetta ha una sezione cottura completa con temperatura, tempo e suggerimenti?`;
 
     // ── STEP 1: Claude verifica ──

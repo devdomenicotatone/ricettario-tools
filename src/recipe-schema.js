@@ -48,15 +48,12 @@ export const RECIPE_FIELDS = {
     // ── Parametri Tecnici ──
     hydration:    { type: 'number',  required: true,  description: 'Idratazione % (0 per dolci/pasta senza calcolo)',
                     validate: (v) => (typeof v === 'number' && (v === 0 || (v >= 25 && v <= 100))) ? null : `Idratazione ${v}% fuori range (0 o 25-100)` },
-    targetTemp:   { type: 'string',  required: true,  description: 'Temperatura target impasto (es. "24-26°C")' },
-    fermentation: { type: 'string',  required: true,  description: 'Descrizione tempi fermentazione' },
+    targetTemp:   { type: 'string',  required: false, description: 'Temperatura target impasto (es. "24-26°C")' },
+    fermentation: { type: 'string',  required: false, description: 'Descrizione tempi fermentazione' },
     totalFlour:   { type: 'number',  required: true,  description: 'Farina totale in grammi (base per ricalcolo dosi, 0 per ricette senza farina)',
-                    validate: (v, recipe) => {
+                    validate: (v) => {
                         if (typeof v !== 'number') return 'totalFlour deve essere un numero';
-                        // Categorie che possono non avere farina
-                        const NO_FLOUR_CATEGORIES = ['Conserve', 'Dolci'];
-                        if (NO_FLOUR_CATEGORIES.includes(recipe?.category)) return null; // 0 valido
-                        return v > 0 ? null : 'totalFlour deve essere > 0';
+                        return v >= 0 ? null : 'totalFlour deve essere >= 0';
                     }},
 
     // ── Ingredienti ──

@@ -148,21 +148,15 @@ CRITERI DI VERIFICA:
    - Cottura pizza casalinga: 5-12 min con pietra
    - ATTENZIONE: controlla la sezione COTTURA prima di segnalare tempi mancanti!
 
-4. SETUP:
-   - Il campo SETUP indica i metodi disponibili (Impastatrice a spirale, A mano, Estrusore)
-   - PANE/PIZZA con "Impastatrice a spirale" + "A mano" = ✅ CORRETTO
-   - PASTA con "Impastatrice a spirale" = ❌ ERRORE (pasta usa estrusore, non spirale)
-   - NON segnalare come errore la nomenclatura del setup (spirale = impastatrice a spirale)
-
-5. COERENZA INGREDIENTI ↔ PROCEDIMENTO:
+4. COERENZA INGREDIENTI ↔ PROCEDIMENTO:
    - Cerca ogni ingrediente nel TESTO COMPLETO del procedimento prima di segnalare come mancante
    - Cerca varianti del nome (es. "malto d'orzo" potrebbe essere citato come "malto")
 
-6. GRUPPI INGREDIENTI:
+5. GRUPPI INGREDIENTI:
    - I raggruppamenti sono logici?
    - Ogni ingrediente è nel gruppo giusto?
 
-7. ⚠️ VERIFICA MATEMATICA IDRATAZIONE (CRITICO — NON SALTARE MAI):
+6. ⚠️ VERIFICA MATEMATICA IDRATAZIONE (CRITICO — NON SALTARE MAI):
    Il valore IDRATAZIONE DICHIARATA nella ricetta POTREBBE ESSERE SBAGLIATO. NON fidarti.
    DEVI SEMPRE ricalcolarlo da zero seguendo questi step:
 
@@ -245,8 +239,7 @@ function buildRecipePrompt(recipe) {
         }
     }
 
-    // Setup detect
-    const setup = recipe.category?.toLowerCase() === 'pasta' ? 'Estrusore con trafila' : 'Impastatrice a spirale';
+    // Nessun tracciamento setup forzato, verrà desunto dalla ricetta.
 
     // Sezione cottura
     const baking = recipe.baking || recipe.bakingSection || recipe.cookingSection;
@@ -263,7 +256,6 @@ CATEGORIA: ${recipe.category}
 IDRATAZIONE DICHIARATA: ${recipe.hydration}% ⚠️ (VERIFICA OBBLIGATORIA: ricalcola dalla somma ingredienti)
 TEMPERATURA TARGET: ${recipe.targetTemp || 'N/A'}
 LIEVITAZIONE: ${recipe.fermentation || 'N/A'}
-SETUP: ${setup}
 
 INGREDIENTI:
 ${ingredients.map((i, idx) => `${idx + 1}. ${i}`).join('\n')}
