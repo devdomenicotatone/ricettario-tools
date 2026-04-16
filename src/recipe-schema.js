@@ -46,12 +46,24 @@ export const RECIPE_FIELDS = {
                    validate: v => typeof v === 'string' && v.trim().length > 0 ? null : `Categoria deve essere testuale` },
 
     // ── Parametri Tecnici ──
-    hydration:    { type: 'number',  required: true,  description: 'Idratazione % (0 per dolci/pasta senza calcolo)',
-                    validate: (v) => (typeof v === 'number' && (v === 0 || (v >= 25 && v <= 100))) ? null : `Idratazione ${v}% fuori range (0 o 25-100)` },
+    hydration:    { type: 'number',  required: false,  description: 'Idratazione % (0 per dolci/pasta senza calcolo)',
+                    validate: (v, recipe) => {
+                        if (v === undefined || v === null) {
+                            const needsDough = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci'].includes(recipe?.category);
+                            if (needsDough) return 'Idratazione obbligatoria per questa categoria (0 se non ha calcolo)';
+                            return null;
+                        }
+                        return (typeof v === 'number' && (v === 0 || (v >= 25 && v <= 100))) ? null : `Idratazione ${v}% fuori range (0 o 25-100)`;
+                    }},
     targetTemp:   { type: 'string',  required: false, description: 'Temperatura target impasto (es. "24-26°C")' },
     fermentation: { type: 'string',  required: false, description: 'Descrizione tempi fermentazione' },
-    totalFlour:   { type: 'number',  required: true,  description: 'Farina totale in grammi (base per ricalcolo dosi, 0 per ricette senza farina)',
-                    validate: (v) => {
+    totalFlour:   { type: 'number',  required: false,  description: 'Farina totale in grammi (base per ricalcolo dosi, 0 per ricette senza farina)',
+                    validate: (v, recipe) => {
+                        if (v === undefined || v === null) {
+                            const needsDough = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci'].includes(recipe?.category);
+                            if (needsDough) return 'totalFlour obbligatoria per questa categoria (0 se senza farina)';
+                            return null;
+                        }
                         if (typeof v !== 'number') return 'totalFlour deve essere un numero';
                         return v >= 0 ? null : 'totalFlour deve essere >= 0';
                     }},
@@ -71,7 +83,7 @@ export const RECIPE_FIELDS = {
                            }
                            return null;
                        }},
-    suspensions:     { type: 'array',  required: true,  description: 'Condimenti/sospensioni (vuoto se non applicabile)' },
+    suspensions:     { type: 'array',  required: false,  description: 'Condimenti/sospensioni (vuoto se non applicabile)' },
 
     // ── Procedimento ──
     steps:         { type: 'array',  required: true,  description: 'Step procedimento [{title, text}]' },

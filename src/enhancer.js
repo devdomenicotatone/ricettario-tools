@@ -71,7 +71,9 @@ REGOLE:
     - Acqua FRESCA (16-20°C): per impasti medi (8-12 min) con farine medie (W 240-300) e idratazione moderata (65-72%).
     - Acqua AMBIENTE (20-24°C): per impasti brevi (<8 min), farine deboli/integrali (W<240), basse idratazioni (<65%), o quando la ricetta sorgente NON specifica acqua fredda.
     REGOLA D'ORO: Se la ricetta sorgente specifica una temperatura acqua, RISPETTALA. Non inventare acqua ghiacciata se la fonte non la menziona.
-16. CAMPI TECNICI PANE/PIZZA: Campi come "targetTemp", "fermentation" e "hydration" hanno senso per i lievitati. Se la preparazione (es. Olio, Sugo, Condimento) NON prevede lievitazione o misurazione della temperatura dell'impasto, OMETTI questi campi o lasciali vuoti (NON inserire "N/A" o stringhe fittizie, non inserirli affatto o metti "").
+16. CAMPI TECNICI PANE/PIZZA:
+    - Campi testuali come "targetTemp" e "fermentation": se la preparazione (es. Olio, Sugo, Condimento) NON prevede lievitazione, OMETTILI o lasciali come stringa vuota "".
+    - Campi numerici "hydration" e "totalFlour": SONO OBBLIGATORI nello schema. Se la ricetta non prevede impasti, idratazione o uso di farina, DEVI obbligatoriamente impostarli a 0 (numero intero, non stringa). NON OMETTERLI MAI.
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
 {

@@ -172,5 +172,17 @@
     "verdict": "🟡 Da migliorare",
     "issueCount": 2,
     "timestamp": "2026-04-16T17:44:38.276Z"
+  },
+  "olio-al-basilico": {
+    "score": 53,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T18:10:09.371Z"
+  },
+  "olio-extravergine-aromatizzato": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T18:19:50.885Z"
   }
 }
