@@ -1441,11 +1441,17 @@ async function fetchStatus() {
             geminiLabel,
             status.hasPexels ? '<span class="pill active"><i data-lucide="camera"></i> Pexels</span>' : '',
             status.hasUnsplash ? '<span class="pill active"><i data-lucide="camera"></i> Unsplash</span>' : '',
+            status.hasPixabay ? '<span class="pill active"><i data-lucide="camera"></i> Pixabay</span>' : '',
+            status.hasSerpApi ? '<span class="pill active"><i data-lucide="search"></i> SerpAPI</span>' : '',
+            status.hasDataForSeo ? '<span class="pill active"><i data-lucide="bar-chart-2"></i> DataForSEO</span>' : '',
         ].filter(Boolean).join('');
         lucide.createIcons();
 
         // Update stats
-        const providerCount = [status.hasAnthropic, status.hasPexels, status.hasUnsplash, status.hasSerpApi].filter(Boolean).length;
+        const providerCount = [
+            status.hasAnthropic, status.hasGemini, status.hasPexels, 
+            status.hasUnsplash, status.hasPixabay, status.hasSerpApi, status.hasDataForSeo
+        ].filter(Boolean).length;
         document.getElementById('stat-provider').textContent = providerCount;
 
         // Mostra/nascondi key switcher se ci sono 2 chiavi

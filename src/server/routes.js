@@ -953,6 +953,7 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
             hasSerpApi: !!process.env.SERPAPI_KEY,
             hasPexels: !!process.env.PEXELS_API_KEY,
             hasUnsplash: !!process.env.UNSPLASH_ACCESS_KEY,
+            hasPixabay: !!process.env.PIXABAY_API_KEY,
             hasDataForSeo: !!(process.env.DATAFORSEO_LOGIN && process.env.DATAFORSEO_PASSWORD),
         });
     });
