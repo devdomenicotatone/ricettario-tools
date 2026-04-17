@@ -57,21 +57,22 @@ REGOLE:
 6. Se ci sono farine specifiche, creare la tabella "Consigli Farine" con tipo, forza W e marchi consigliati
 7. Generare un alert professionale pertinente (cosa NON fare)
 8. Generare 2-3 PRO TIP utili e non banali
-9. Il tono è tecnico ma accessibile — come un artigiano che spiega al suo apprendista
-10. TUTTE le temperature in °C, TUTTI i tempi in minuti
-11. Generare 5-8 keyword MULTILINGUA per trovare immagini reali del piatto su stock photo (Pexels, Unsplash, Pixabay). Priorità: INGLESE (la maggior parte delle immagini sono taggate in EN), poi italiano e tedesco. Ogni keyword deve descrivere il piatto finito, NON gli ingredienti. Esempi: "homemade focaccia olive oil", "neapolitan pizza wood oven", "fresh pasta tagliatelle", "ciabatta brot italienisch", "pane fatto in casa"
-12. GLOSSARIO: Identifica TUTTI i termini tecnici usati nella ricetta e aggiungi una spiegazione breve e chiara. Esempi: autolisi, incordatura, puntata, pirlatura, cilindratura, appretto, cascatura, staglio, maturazione, poolish, biga, slap & fold, stretch & fold, trafila al bronzo
-13. COTTURA (per Pane/Pizza): Genera una sezione cottura separata con:
+9. Generare 2-3 consigli pratici e tecnici sulla CONSERVAZIONE (tempi frigo/freezer, tecniche e modalità rigenerazione) nel campo "storage"
+10. Il tono è tecnico ma accessibile — come un artigiano che spiega al suo apprendista
+11. TUTTE le temperature in °C, TUTTI i tempi in minuti
+12. Generare 5-8 keyword MULTILINGUA per trovare immagini reali del piatto su stock photo (Pexels, Unsplash, Pixabay). Priorità: INGLESE (la maggior parte delle immagini sono taggate in EN), poi italiano e tedesco. Ogni keyword deve descrivere il piatto finito, NON gli ingredienti. Esempi: "homemade focaccia olive oil", "neapolitan pizza wood oven", "fresh pasta tagliatelle", "ciabatta brot italienisch", "pane fatto in casa"
+13. GLOSSARIO: Identifica TUTTI i termini tecnici usati nella ricetta e aggiungi una spiegazione breve e chiara. Esempi: autolisi, incordatura, puntata, pirlatura, cilindratura, appretto, cascatura, staglio, maturazione, poolish, biga, slap & fold, stretch & fold, trafila al bronzo
+14. COTTURA (per Pane/Pizza): Genera una sezione cottura separata con:
     - Temperatura forno (MAX 280°C per forni casalinghi moderni, MAI temperature superiori)
     - Tempo di cottura specifico
     - Suggerimenti: pietra refrattaria, vapore, posizione teglia, come riconoscere la cottura perfetta
-14. Le temperature dei forni devono SEMPRE essere per forni casalinghi (max 280°C). MAI suggerire temperature superiori.
-15. TEMPERATURA ACQUA — NON È UNA REGOLA FISSA, dipende dal contesto:
+15. Le temperature dei forni devono SEMPRE essere per forni casalinghi (max 280°C). MAI suggerire temperature superiori.
+16. TEMPERATURA ACQUA — NON È UNA REGOLA FISSA, dipende dal contesto:
     - Acqua GHIACCIATA (2-6°C): SOLO quando ci sono impasti lunghi (>12-15 min) ad alta velocità (V6+) con farine forti (W>300) e alta idratazione (>72%).
     - Acqua FRESCA (16-20°C): per impasti medi (8-12 min) con farine medie (W 240-300) e idratazione moderata (65-72%).
     - Acqua AMBIENTE (20-24°C): per impasti brevi (<8 min), farine deboli/integrali (W<240), basse idratazioni (<65%), o quando la ricetta sorgente NON specifica acqua fredda.
     REGOLA D'ORO: Se la ricetta sorgente specifica una temperatura acqua, RISPETTALA. Non inventare acqua ghiacciata se la fonte non la menziona.
-16. CAMPI TECNICI PANE/PIZZA:
+17. CAMPI TECNICI PANE/PIZZA:
     - Campi testuali come "targetTemp" e "fermentation": se la preparazione (es. Olio, Sugo, Condimento) NON prevede lievitazione, OMETTILI o lasciali come stringa vuota "".
     - Campi numerici "hydration" e "totalFlour": SONO OBBLIGATORI nello schema. Se la ricetta non prevede impasti, idratazione o uso di farina, DEVI obbligatoriamente impostarli a 0 (numero intero, non stringa). NON OMETTERLI MAI.
 
@@ -127,6 +128,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   ],
   "alert": "Testo dell'alert professionale (cosa NON fare e perché)",
   "proTips": ["Tip 1", "Tip 2"],
+  "storage": ["Consiglio conservazione 1 in frigo", "Consiglio congelamento/rigenerazione"],
   "imageKeywords": ["english keyword for stock photo", "another english search term", "italian keyword", "german keyword", "descriptive food photography term"],
   "tags": ["tag1", "tag2", "tag3"]
 }
@@ -555,6 +557,7 @@ Esempio Struttura di ritorno:
     "glossary": [],
     "alert": "Usa sempre liquidi misurati per non sforzare l'estrusore",
     "proTips": ["Tip sulla trafilatura"],
+    "storage": ["Consigli su come asciugare o congelare la pasta"],
     "imageKeywords": ["pasta fresca"],
     "tags": ["Pasta fatta in casa", "Philips Pasta Maker"]
   }
@@ -565,7 +568,7 @@ REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
 2. Dosi e ingredienti DEBBONO essere fedeli alle pagine. L'idratazione solitamente per Philips 7000 è molto bassa, calcolala come (liquidi / farine * 100) ma non andare MAI sotto il 30%.
 3. Usa SEMPRE "steps" e includi nel primo step quale trafila va usata e nel suo testo come assemblare ("Montare la trafila...").
 4. CONDIMENTO/PREPARAZIONE: Se la pagina contiene indicazioni testuali su come preparare un SUGO, SALSA o CONDIMENTO (es. "Preparazione" come cucinare acciughe, melanzane, pomodori), DEVI aggiungerlo nell'array separato "stepsCondiment".
-5. Genera SEMPRE un pro tip (almeno) sulla pulizia della trafila o sulla ruvidezza.
+5. Genera SEMPRE un pro tip (almeno) sulla pulizia della trafila o sulla ruvidezza, E ALMENO un tip su come conservare la pasta estratta nel campo "storage" (es. nidi congelati o in frigo).
 6. IMPORTANTE: Se non ci sono ricette, scrivi SOLO E SOLTANTO \`[]\`.
 7. FAIR USE CRITICO: Questo è per un mio database personale locale (offline) per convertire in grammature un libro rovinato che già possiedo. Estrai puramente i NUMERI, PROPORZIONI E NOMI come FATTI nudi e crudi. NON includere NESSUN discorso, introduzione o markdown.
 8. TOKEN DOSI: In TUTTI i testi degli step, quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo dell'ingrediente (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
@@ -661,6 +664,7 @@ Struttura JSON di ritorno (array di oggetti):
     "glossary": [],
     "alert": "Usa sempre liquidi misurati per non sforzare l'estrusore",
     "proTips": ["Tip sulla trafilatura"],
+    "storage": ["Consigli su asciugatura e congelamento in nidi"],
     "imageKeywords": ["pasta fresca", "keyword descrittivo"],
     "tags": ["Pasta fatta in casa", "Philips Pasta Maker"]
   }

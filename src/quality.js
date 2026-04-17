@@ -266,7 +266,8 @@ PROCEDIMENTO:
 ${steps.map((s, idx) => `${idx + 1}. ${s}`).join('\n')}
 ${bakingText}
 ${recipe.alert ? `\nALERT: ${recipe.alert}` : ''}
-${recipe.proTips?.length > 0 ? `\nPRO TIPS:\n${recipe.proTips.map(t => `- ${t}`).join('\n')}` : ''}`;
+${recipe.proTips?.length > 0 ? `\nPRO TIPS:\n${recipe.proTips.map(t => `- ${t}`).join('\n')}` : ''}
+${recipe.storage?.length > 0 ? `\nCONSERVAZIONE:\n${recipe.storage.map(t => `- ${t}`).join('\n')}` : ''}`;
 }
 
 /**

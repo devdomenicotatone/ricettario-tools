@@ -105,6 +105,7 @@ export const RECIPE_FIELDS = {
     glossary:    { type: 'array',  required: true,  description: 'Glossario [{term, definition}]' },
     alert:       { type: 'string', required: true,  description: 'Avvisi critici (cosa NON fare)' },
     proTips:     { type: 'array',  required: true,  description: 'Consigli pro [string]' },
+    storage:     { type: 'array',  required: true,  description: 'Consigli tecnici sulla conservazione [string]' },
 
     // ── Media & SEO ──
     image:         { type: 'string', required: true,  description: 'Path immagine relativo (images/ricette/cat/slug.webp)' },
@@ -380,7 +381,7 @@ export function getSchemaPromptDescription() {
         'Parametri Tecnici': ['hydration', 'targetTemp', 'fermentation', 'totalFlour'],
         'Ingredienti': ['ingredients', 'ingredientGroups', 'suspensions'],
         'Procedimento': ['steps', 'stepsCondiment'],
-        'Supporto': ['flourTable', 'baking', 'glossary', 'alert', 'proTips'],
+        'Supporto': ['flourTable', 'baking', 'glossary', 'alert', 'proTips', 'storage'],
         'Media & SEO': ['image', 'imageKeywords', 'tags'],
         'Opzionali': ['imageAttribution', '_originalImageUrl'],
     };

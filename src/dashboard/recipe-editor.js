@@ -787,6 +787,25 @@ function renderSupportTab(container) {
         </div>
     `;
 
+    // Storage
+    html += `
+        <div class="re-section">
+            <div class="re-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                <div class="re-section-title"><span class="emoji">📦</span> Conservazione</div>
+                <span class="re-section-chevron">▸</span>
+            </div>
+            <div class="re-section-body">
+                ${(r.storage || []).map((t, ti) => `
+                    <div class="re-string-item">
+                        <textarea class="re-textarea" data-path="storage.${ti}" rows="2">${esc(t)}</textarea>
+                        <button class="re-row-delete" onclick="removeStorage(${ti})"><i data-lucide="x"></i></button>
+                    </div>
+                `).join('')}
+                <button class="re-add-btn" onclick="addStorage()"><i data-lucide="plus"></i> Consigli Conservazione</button>
+            </div>
+        </div>
+    `;
+
     // Glossary
     html += `
         <div class="re-section">
@@ -1019,6 +1038,19 @@ window.removeProTip = function (ti) {
     const tips = [...(state.currentRecipe.proTips || [])];
     tips.splice(ti, 1);
     state.update('proTips', tips);
+    renderActiveTab();
+};
+
+window.addStorage = function () {
+    const tips = [...(state.currentRecipe.storage || []), ''];
+    state.update('storage', tips);
+    renderActiveTab();
+};
+
+window.removeStorage = function (ti) {
+    const tips = [...(state.currentRecipe.storage || [])];
+    tips.splice(ti, 1);
+    state.update('storage', tips);
     renderActiveTab();
 };
 
