@@ -224,7 +224,6 @@ const panelTitles = {
     scopri: 'Scopri Ricette Online',
     ricette: 'Le mie Ricette',
     immagini: 'Image Picker',
-    rigenera: 'Rigenera HTML',
     seo: 'SEO Ideas — Suggerimenti Ricette',
     valida: 'Validazione Ricette',
     verifica: 'Verifica Qualità AI',
@@ -434,10 +433,6 @@ async function generateSelectedScopri() {
         document.getElementById('scopri-results-container').innerHTML = '';
         showNotification({ type: 'success', message: `Batch job avviato per ${urls.length} ricette.` });
     }
-}
-
-async function runRigenera(tutte) {
-    await apiPost('rigenera', { tutte: true });
 }
 
 function getSelectedGeminiModel() {
@@ -981,7 +976,6 @@ function renderRecipeCard(r) {
                 ${r.description ? `<div class="recipe-card-desc">${r.description.substring(0, 90)}…</div>` : ''}
                 <div class="recipe-card-actions" onclick="event.stopPropagation()">
                     <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
-                    <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
                     <div class="btn-split" title="Analisi Qualità">
                         <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                         <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
@@ -1029,7 +1023,6 @@ function renderRecipeRow(r) {
             <span class="recipe-row-date">${r._createdAt ? formatCreatedAt(r._createdAt) : '—'}</span>
             <div class="recipe-row-actions" onclick="event.stopPropagation()">
                 <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
-                <button class="btn btn-secondary btn-sm" onclick="apiPost('rigenera', {slug:'${r.slug}'})" title="Rigenera HTML"><i data-lucide="refresh-cw"></i></button>
                 <div class="btn-split" title="Analisi Qualità">
                     <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                     <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
@@ -1204,10 +1197,6 @@ function updateActionBar() {
                 </button>
                 <button class="action-bar-btn action-bar-ai btn-split-chevron" onclick="showQualitaModelDropdown(this, true)" title="Scegli modello" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
             </div>
-            
-            <button class="action-bar-btn" onclick="batchRigenera()" title="Rigenera selezionate (da JSON esistente)">
-                <i data-lucide="refresh-cw"></i> Rigenera
-            </button>
             <div class="btn-split" style="display:inline-flex">
                 <button class="action-bar-btn action-bar-fix" onclick="runFix()" title="Applica fix AI alle ricette problematiche (< 85)">
                     <i data-lucide="wrench"></i> Fix AI
@@ -1223,14 +1212,6 @@ function updateActionBar() {
         </div>
     `;
     lucide.createIcons({ attrs: { 'width': 16, 'height': 16 } });
-}
-
-async function batchRigenera() {
-    const slugs = [...selectedSlugs];
-    appendTerminal(`\n🔄 Rigenerazione di ${slugs.length} ricette...`, 'job-start');
-    for (const slug of slugs) {
-        await apiPost('rigenera', { slug });
-    }
 }
 
 
@@ -1640,7 +1621,6 @@ const commands = [
     { icon: 'search', name: 'Scopri Ricette', panel: 'scopri' },
     { icon: 'book-open', name: 'Le mie Ricette', panel: 'ricette' },
     { icon: 'image', name: 'Image Picker', panel: 'immagini' },
-    { icon: 'refresh-cw', name: 'Rigenera Tutte', action: () => runRigenera(true) },
     { icon: 'shield-check', name: 'Qualità Ricette', action: () => runQualita() },
     { icon: 'globe', name: 'Qualità + Web', action: () => runQualita(true) },
     { icon: 'refresh-cw', name: 'Sync Cards', action: () => runSyncCards() },

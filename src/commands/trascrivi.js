@@ -5,7 +5,6 @@
 import { resolve } from 'path';
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { transcribePhilipsPdf } from '../verify.js';
-import { generateHtml } from '../template.js';
 import { injectCard } from '../injector.js';
 import { findAndDownloadImage } from '../image-finder.js';
 import { log } from '../utils/logger.js';
@@ -162,9 +161,8 @@ export async function trascriviImmagini(args) {
                         }
                     }
 
-                    const outputHtml = generateHtml(recipe);
-                    const outputFile = resolve(outputDir, `${recipe.slug}.html`);
-                    writeFileSync(outputFile, outputHtml, 'utf-8');
+                    const outputFile = resolve(outputDir, `${recipe.slug}.json`);
+                    writeFileSync(outputFile, JSON.stringify(recipe, null, 2), 'utf-8');
 
                     // Aggiungi alla mappa esistenti per dedup futuri batch
                     existingRecipes.set(recipe.slug, recipe.title);
@@ -174,7 +172,7 @@ export async function trascriviImmagini(args) {
                         catch { log.warn(`Errore inject card per ${recipe.title}.`); }
                     }
 
-                    log.success(`Salvata: ${recipe.title} -> ricette/pasta/${recipe.slug}.html`);
+                    log.success(`Salvata: ${recipe.title} -> ricette/pasta/${recipe.slug}.json`);
                 }
             } else {
                 log.info('Nessuna ricetta trovata in questo batch.');
@@ -230,15 +228,13 @@ function loadExistingRecipes(ricettarioPath) {
 
     for (const dir of recipeDirs) {
         if (!existsSync(dir)) continue;
-        const files = readdirSync(dir).filter(f => f.endsWith('.html'));
+        const files = readdirSync(dir).filter(f => f.endsWith('.json'));
         for (const file of files) {
-            const slug = file.replace('.html', '');
-            // Estrai titolo dal file HTML
+            const slug = file.replace('.json', '');
+            // Estrai titolo dal file JSON
             try {
-                const html = readFileSync(resolve(dir, file), 'utf-8');
-                const titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-                const title = titleMatch ? titleMatch[1].trim() : slug;
-                existing.set(slug, title);
+                const data = JSON.parse(readFileSync(resolve(dir, file), 'utf-8'));
+                existing.set(slug, data.title || slug);
             } catch {
                 existing.set(slug, slug);
             }

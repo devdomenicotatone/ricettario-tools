@@ -327,7 +327,6 @@ function createEditorDOM() {
                     <div class="re-status-pill" id="reStatusPill"></div>
                     <button class="re-action-btn" id="reUndoBtn" title="Undo (Ctrl+Z)" disabled><i data-lucide="undo-2"></i></button>
                     <button class="re-action-btn" id="reRedoBtn" title="Redo (Ctrl+Shift+Z)" disabled><i data-lucide="redo-2"></i></button>
-                    <button class="re-action-btn re-save-btn" id="reSaveBtn" title="Salva (Ctrl+S)"><i data-lucide="save"></i></button>
                     <button class="re-action-btn" id="reOpenBtn" title="Apri nel sito"><i data-lucide="external-link"></i></button>
                 </div>
             </div>
@@ -361,7 +360,6 @@ function createEditorDOM() {
 
     // Bind events
     document.getElementById('reCloseBtn').onclick = closeEditor;
-    document.getElementById('reSaveBtn').onclick = () => state.save();
     document.getElementById('reUndoBtn').onclick = () => { state.undo(); renderActiveTab(); };
     document.getElementById('reRedoBtn').onclick = () => { state.redo(); renderActiveTab(); };
     document.getElementById('reOpenBtn').onclick = () => {
@@ -400,7 +398,6 @@ function createEditorDOM() {
 
     // State listeners
     state.onChange((recipe, dirty) => {
-        document.getElementById('reSaveBtn').classList.toggle('dirty', dirty);
         document.getElementById('reUndoBtn').disabled = !state.undoStack.length;
         document.getElementById('reRedoBtn').disabled = !state.redoStack.length;
         if (recipe) {
@@ -457,11 +454,23 @@ window.openRecipeEditor = async function (slug, cat) {
     }
 };
 
-function closeEditor() {
-    if (state.isDirty && !confirm('Hai modifiche non salvate. Chiudere comunque?')) return;
+async function closeEditor() {
     if (state.saveTimeout) clearTimeout(state.saveTimeout);
+    
+    // Auto-save flush on close
+    if (state.isDirty) {
+        // Mostra brevemente lo stato per gli split-second di attesa
+        const pill = document.getElementById('reStatusPill');
+        if (pill) {
+            pill.textContent = 'Salvataggio...';
+            pill.className = 're-status-pill visible saving';
+        }
+        await state.save();
+    }
+
     editorOverlay?.classList.remove('active');
     document.body.style.overflow = '';
+    
     // Refresh recipe list
     if (typeof loadRecipes === 'function') loadRecipes();
 }
@@ -801,10 +810,10 @@ function renderSupportTab(container) {
 
     // Image keywords
     html += `
-        <div class="re-field" style="margin-top:16px">
-            <label class="re-label">Image Keywords</label>
-            <div class="re-tags-wrap" id="reImgKwWrap">
-                ${(r.imageKeywords || []).map((t, i) => `<span class="re-tag">${esc(t)}<button class="re-tag-remove" data-imgkw-idx="${i}">×</button></span>`).join('')}
+        <div class="re-token-helper">
+            <div class="re-token-helper-title" style="color:#a5b4fc;">🖼️ Image Keywords</div>
+            <div class="re-tags-wrap" id="reImgKwWrap" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:6px;min-height:36px;margin-bottom:0;">
+                ${(r.imageKeywords || []).map((t, i) => `<span class="re-tag" style="background:rgba(129,140,248,0.2)">${esc(t)}<button class="re-tag-remove" data-imgkw-idx="${i}">×</button></span>`).join('')}
                 <input class="re-tag-input" id="reImgKwInput" placeholder="Aggiungi keyword...">
             </div>
         </div>

@@ -17,7 +17,6 @@ import { resolve } from 'path';
 import { log } from '../utils/logger.js';
 import { searchAllProviders, downloadImage, buildAttribution } from '../image-finder.js';
 import { CATEGORY_FOLDERS } from '../publisher.js';
-import { generateHtml } from '../template.js';
 import { startImagePicker } from '../image-picker.js';
 
 export async function refreshImage(args) {
@@ -136,11 +135,6 @@ export async function refreshImage(args) {
 
     writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
 
-    // ── Rigenera HTML automaticamente ──
-    const htmlFile = jsonFile.replace('.json', '.html');
-    const html = generateHtml(recipe);
-    writeFileSync(htmlFile, html, 'utf-8');
-
     // ── Aggiorna recipes.json (card homepage + categoria) ──
     const { syncCards } = await import('./sync-cards.js');
     await syncCards({ output: args.output });
@@ -148,6 +142,5 @@ export async function refreshImage(args) {
     log.header('✅ COMPLETATO');
     log.info(`📸 Immagine: ${localPath}`);
     log.info(`💾 JSON: ${jsonFile}`);
-    log.info(`📄 HTML: ${htmlFile}`);
     log.info(`🔄 recipes.json aggiornato`);
 }

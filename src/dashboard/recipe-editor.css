@@ -246,6 +246,7 @@
 .re-input.re-input-mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; }
 .re-textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
 .re-select { cursor: pointer; }
+.re-select option { background-color: #1a1b2e; color: #e2e8f0; }
 
 .re-row {
     display: flex;
@@ -646,9 +647,12 @@
 .re-token-helper {
     margin-top: 12px;
     padding: 12px;
-    background: rgba(129, 140, 248, 0.05);
+    background: rgba(26, 27, 46, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(129, 140, 248, 0.12);
     border-radius: 10px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
     position: sticky;
     bottom: 0;
     z-index: 5;

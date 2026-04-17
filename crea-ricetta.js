@@ -7,7 +7,6 @@
  *   node crea-ricetta.js --url "https://giallozafferano.it/ricetta/Focaccia.html"
  *   node crea-ricetta.js --nome "Focaccia Barese" --idratazione 80
  *   node crea-ricetta.js --testo ricetta.txt
- *   node crea-ricetta.js --rigenera --tutte
  *   node crea-ricetta.js --scopri "focaccia pugliese" --quante 3
  *   node crea-ricetta.js --valida
  *   node crea-ricetta.js --verifica
@@ -60,8 +59,7 @@ Comandi:
   --valida                   Valida tutte le ricette (SerpAPI cross-check)
   --verifica                 Verifica qualità con Claude AI
   --verifica-ricetta <path>  Verifica singola ricetta
-  --rigenera <file.json>     Rigenera HTML da JSON (senza API)
-  --rigenera --tutte         Rigenera tutte le ricette da JSON
+  --verifica-ricetta <path>  Verifica singola ricetta
   --sync-cards               Ricostruisce recipes.json da tutte le ricette HTML
   --refresh-image <slug>     Rigenera solo l'immagine di copertina
   --trascrivi-philips        Trascrivi PDF Philips Serie 7000
@@ -91,7 +89,7 @@ async function main() {
     const args = parseArgs();
 
     // Help
-    if (!args.url && !args.nome && !args.testo && !args.rigenera && !args.scopri && !args.valida &&
+    if (!args.url && !args.nome && !args.testo && !args.scopri && !args.valida &&
         !args.verifica && !args['verifica-ricetta'] && !args['trascrivi-philips'] &&
         !args['trascrivi-immagini'] && !args['aggiorna-immagini'] && !args['sync-cards'] &&
         !args['refresh-image']) {
@@ -121,11 +119,6 @@ async function main() {
         process.exit(0);
     }
 
-    if (args.rigenera) {
-        const { rigenera } = await import('./src/commands/rigenera.js');
-        await rigenera(args);
-        process.exit(0);
-    }
 
     // API key necessaria per i comandi seguenti
     if (!process.env.ANTHROPIC_API_KEY) {

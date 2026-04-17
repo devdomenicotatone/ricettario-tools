@@ -248,39 +248,7 @@ export function setupRoutes(app) {
         }
     });
 
-    // ── Rigenera ──
-    app.post('/api/rigenera', async (req, res) => {
-        const { slug, tutte } = req.body;
-        const jobId = `rig-${++jobCounter}`;
-        const ctx = createJobContext(jobId, tutte ? 'Rigenera tutte' : `Rigenera: ${slug}`);
-        res.json({ jobId, status: 'started' });
 
-        try {
-            const { rigenera } = await import('../commands/rigenera.js');
-            const args = {};
-            if (tutte) {
-                args.rigenera = true;
-                args.tutte = true;
-            } else {
-                // Cerca il file JSON reale per slug nelle cartelle categorie
-                const { CATEGORY_FOLDERS } = await import('../publisher.js');
-                const ricettarioPath = getRicettarioPath();
-                let jsonFile = findRecipeJsonDynamic(ricettarioPath, CATEGORY_FOLDERS, slug).jsonFile;
-                if (!jsonFile) {
-                    ctx.error(`❌ ${slug}: JSON non trovato`);
-                    ctx.end(false);
-                    return;
-                }
-                args.rigenera = jsonFile;
-            }
-
-            await withOutputCapture(ctx, () => rigenera(args));
-            ctx.end(true);
-        } catch (err) {
-            ctx.error(`❌ Errore: ${err.message}`);
-            ctx.end(false);
-        }
-    });
 
 
     // ── Refresh Image (con image picker) ──

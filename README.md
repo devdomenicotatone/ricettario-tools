@@ -96,23 +96,7 @@ node crea-ricetta.js --testo mia-ricetta.txt --dry-run    # vedi JSON senza scri
 
 > ⚠️ Le dosi e gli ingredienti nel tuo testo hanno **priorità assoluta**: Claude non li modifica.
 
----
 
-### 🔄 `--rigenera` — Rigenera HTML da JSON (senza API)
-
-Dopo aver aggiornato il template, il CSS o il dose calculator, rigenera gli HTML **senza consumare API Claude**.
-
-```bash
-# Singola ricetta
-node crea-ricetta.js --rigenera ricette/pizza/pizza-canotto.json
-
-# Tutte le ricette
-node crea-ricetta.js --rigenera --tutte
-```
-
-**Prerequisito:** i file `.json` vengono salvati automaticamente accanto agli HTML quando generi una ricetta (Fase Publisher).
-
----
 
 ### 🔍 `--scopri` — Cerca ricette su Google
 
@@ -289,7 +273,6 @@ crea-ricetta.js          ← Dispatcher CLI
 ├── src/commands/
 │   ├── genera.js        ← Flusso principale (URL / nome)
 │   ├── testo.js         ← Inserimento da testo libero
-│   ├── rigenera.js      ← Rigenerazione HTML da JSON (senza API)
 │   ├── scopri.js        ← Ricerca Google + selezione interattiva
 │   ├── trascrivi.js     ← OCR Philips (PDF + immagini)
 │   ├── valida.js        ← Cross-check fonti reali
@@ -301,7 +284,6 @@ crea-ricetta.js          ← Dispatcher CLI
 │   ├── publisher.js     ← Pipeline unificata (validazione → JSON → HTML → inject)
 │   ├── scraper.js       ← Estrazione dati da URL (JSON-LD / CSS / Puppeteer)
 │   ├── enhancer.js      ← Claude AI: rewriting + strutturazione ricette
-│   ├── template.js      ← Generatore HTML dal JSON strutturato
 │   ├── image-finder.js  ← Ricerca immagini multi-provider con scoring
 │   ├── injector.js      ← Aggiornamento recipes.json
 │   ├── validator.js     ← SerpAPI search + scraping fonti + confronto
@@ -330,7 +312,7 @@ Per ogni ricetta, il sistema produce:
 | File | Posizione | Contenuto |
 |------|-----------|-----------|
 | **HTML** | `ricette/<categoria>/<slug>.html` | Pagina completa con hero, ingredienti, procedimenti, glossario |
-| **JSON** | `ricette/<categoria>/<slug>.json` | Dati strutturati (per rigenerazione senza API) |
+| **JSON** | `ricette/<categoria>/<slug>.json` | Dati strutturati della ricetta |
 | **Immagine** | `public/images/ricette/<categoria>/<slug>.jpg` | Foto stock scaricata |
 | **Entry JSON** | `public/recipes.json` | Metadati per il listing in homepage |
 | **Report validazione** | `ricette/<categoria>/<slug>.validazione.md` | Cross-check con fonti |
@@ -421,9 +403,6 @@ node crea-ricetta.js --verifica
 
 # Ricostruisci l'indice dopo modifiche manuali
 node crea-ricetta.js --sync-cards
-
-# Rigenera tutti gli HTML dopo aver aggiornato il template
-node crea-ricetta.js --rigenera --tutte
 
 # Aggiorna tutte le immagini
 node crea-ricetta.js --aggiorna-immagini
