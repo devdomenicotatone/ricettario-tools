@@ -190,7 +190,8 @@ export function validateRecipeSchema(recipe) {
         }
     }
 
-    // Validazione token nei procedimenti
+    // Validazione token nei procedimenti (e mappatura per cross-check)
+    const tokenValuesInSteps = {};
     if (recipe.steps?.length > 0) {
         for (const step of recipe.steps) {
             if (!step.text) continue;
@@ -201,6 +202,11 @@ export function validateRecipeSchema(recipe) {
                 const numVal = parseFloat(value);
                 if (isNaN(numVal) || numVal <= 0) {
                     warnings.push(`Token {${name}:${value}} ha valore non valido nello step "${step.title}"`);
+                } else if (!fixed) {
+                    if (tokenValuesInSteps[name] && tokenValuesInSteps[name] !== numVal) {
+                        warnings.push(`Token {${name}} usato con valori multipli diversi negli step (${tokenValuesInSteps[name]} vs ${numVal})`);
+                    }
+                    tokenValuesInSteps[name] = numVal;
                 }
             }
         }
@@ -351,6 +357,15 @@ export function validateRecipeSchema(recipe) {
                         errors.push(`tokenId duplicato: \"${item.tokenId}\" — ogni ingrediente deve avere un tokenId unico`);
                     }
                     allTokenIds.add(item.tokenId);
+
+                    // Cross-check: grams vs token value negli step
+                    if (tokenValuesInSteps[item.tokenId] !== undefined) {
+                        const stepVal = tokenValuesInSteps[item.tokenId];
+                        // tolleranza per arrotondamenti di virgola mobile (es. 0.01)
+                        if (Math.abs(stepVal - item.grams) > 0.05) {
+                            errors.push(`Mismatch dosi per token "${item.tokenId}": nel testo c'è {${item.tokenId}:${stepVal}}, ma negli ingredienti grams = ${item.grams}`);
+                        }
+                    }
                 }
             }
         }
