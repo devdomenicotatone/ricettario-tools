@@ -965,7 +965,11 @@ function renderRecipeCard(r) {
                 <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
                     onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
                 ${r._createdAt ? `<span class="recipe-card-date-badge"><i data-lucide="calendar"></i> ${formatCreatedAt(r._createdAt)}</span>` : ''}
-            </div>` : `<div class="recipe-card-no-img"><span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span></div>`}
+                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" onclick="event.stopPropagation()"><i data-lucide="external-link"></i></a>
+            </div>` : `<div class="recipe-card-no-img">
+                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" onclick="event.stopPropagation()"><i data-lucide="external-link"></i></a>
+            </div>`}
             <div class="recipe-card-body">
                 <div class="recipe-card-title">${title}</div>
                 <div class="recipe-card-badges">
@@ -987,7 +991,6 @@ function renderRecipeCard(r) {
                         <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                     </div>
                     <button class="btn btn-secondary btn-sm btn-edit-recipe" onclick="openRecipeEditor('${r.slug}', '${r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase()}')" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
-                    <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
                 </div>
             </div>
         </div>`;

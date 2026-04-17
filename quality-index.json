@@ -201,10 +201,11 @@
     "timestamp": "2026-04-16T21:59:48.261Z"
   },
   "pizza-in-teglia-romana-alta-idratazione": {
-    "score": 75,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 2,
-    "timestamp": "2026-04-16T22:00:10.001Z"
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-17T14:02:07.494Z",
+    "fixed": true
   },
   "pizza-in-teglia-romana": {
     "score": 83,
