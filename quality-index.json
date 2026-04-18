@@ -33,8 +33,8 @@
   "gnocchi-di-patate": {
     "score": 85,
     "verdict": "🟡 Da migliorare",
-    "issueCount": 2,
-    "timestamp": "2026-04-01T01:49:41.090Z"
+    "issueCount": 3,
+    "timestamp": "2026-04-18T00:26:41.751Z"
   },
   "impasto-rosticceria-siciliana": {
     "score": 85,
@@ -237,5 +237,17 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-17T23:43:16.100Z"
+  },
+  "pane-ai-cereali-semi": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-18T00:10:27.198Z"
+  },
+  "gnocchi-di-patate-v2": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-18T00:26:20.941Z"
   }
 }
