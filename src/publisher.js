@@ -210,11 +210,29 @@ export async function publishRecipe(recipe, args, options = {}) {
 
     let { ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args);
 
-    // ── Forza categoria da --tipo se specificata dall'utente ──
-    if (args.tipo && recipe.category !== args.tipo) {
-        log.warn(`Claude ha classificato come "${recipe.category}", forzato a "${args.tipo}" (da --tipo)`);
-        recipe.category = args.tipo;
+    // ── Normalizzazione e forzatura categoria ──
+    const validCategories = Object.keys(CATEGORY_FOLDERS);
+    
+    if (args.tipo) {
+        const normalizedTipo = validCategories.find(c => c.toLowerCase() === args.tipo.toLowerCase()) 
+            || (args.tipo.charAt(0).toUpperCase() + args.tipo.slice(1));
+            
+        if (recipe.category && recipe.category.toLowerCase() !== args.tipo.toLowerCase()) {
+            log.warn(`Claude ha classificato come "${recipe.category}", forzato a "${normalizedTipo}" (da --tipo)`);
+        }
+        recipe.category = normalizedTipo;
         // Ricalcola paths con la categoria corretta
+        ({ ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args));
+    } else if (recipe.category) {
+        // Normalizza la categoria generata da Claude se esiste in CATEGORY_FOLDERS
+        const normalizedCat = validCategories.find(c => c.toLowerCase() === recipe.category.toLowerCase());
+        if (normalizedCat && normalizedCat !== recipe.category) {
+            recipe.category = normalizedCat;
+        } else if (!normalizedCat) {
+            // Capitalizza la prima lettera se è una categoria nuova non censita
+            recipe.category = recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1);
+        }
+        // Ricalcola i paths nel caso in cui la normalizzazione influisca sul folder
         ({ ricettarioPath, outputDir, outputFile, jsonFile } = resolveOutputPaths(recipe, args));
     }
 

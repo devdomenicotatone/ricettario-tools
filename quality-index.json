@@ -249,5 +249,107 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-18T00:26:20.941Z"
+  },
+  "burro-maitre-d-hotel": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:36:29.669Z"
+  },
+  "burro-composto-acciughe-tartufo": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-19T20:36:45.965Z"
+  },
+  "caesar-dressing": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:37:06.595Z"
+  },
+  "dressing-miele-senape": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-19T20:37:20.567Z"
+  },
+  "vinaigrette-classica-e-citronette": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-19T20:37:36.584Z"
+  },
+  "salsa-bernese": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:38:01.291Z"
+  },
+  "salsa-bbq-artigianale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:38:28.384Z"
+  },
+  "chimichurri": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:38:45.556Z"
+  },
+  "guacamole": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:39:09.732Z"
+  },
+  "pesto-pomodori-secchi-mandorle-basilico": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:39:30.366Z"
+  },
+  "pesto-alla-genovese-tradizionale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:06.869Z"
+  },
+  "coulis-salsa-pomodoro-fresco": {
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:21.061Z"
+  },
+  "besciamella-classica": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:37.250Z"
+  },
+  "maionese-fatta-in-casa": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:55.080Z"
+  },
+  "salsa-allo-yogurt-ed-erba-cipollina": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:58:05.815Z"
+  },
+  "salsa-verde-piemontese-bagnet-verd": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:58:30.881Z"
+  },
+  "salsa-teriyaki-originale": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:58:45.366Z"
   }
 }
