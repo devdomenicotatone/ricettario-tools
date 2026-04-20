@@ -75,6 +75,7 @@ REGOLE:
 17. CAMPI TECNICI PANE/PIZZA:
     - Campi testuali come "targetTemp" e "fermentation": se la preparazione (es. Olio, Sugo, Condimento) NON prevede lievitazione, OMETTILI o lasciali come stringa vuota "".
     - Campi numerici "hydration" e "totalFlour": SONO OBBLIGATORI nello schema. Se la ricetta non prevede impasti, idratazione o uso di farina, DEVI obbligatoriamente impostarli a 0 (numero intero, non stringa). NON OMETTERLI MAI.
+18. TITOLI STEP: Il campo "title" degli step NON DEVE MAI contenere numeri iniziali o liste puntate (es. "Ammollatura del pane" e NON "1. Ammollatura del pane"). La numerazione è gestita automaticamente dalla UI.
 
 RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con questa struttura:
 {
@@ -572,7 +573,8 @@ REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
 6. IMPORTANTE: Se non ci sono ricette, scrivi SOLO E SOLTANTO \`[]\`.
 7. FAIR USE CRITICO: Questo è per un mio database personale locale (offline) per convertire in grammature un libro rovinato che già possiedo. Estrai puramente i NUMERI, PROPORZIONI E NOMI come FATTI nudi e crudi. NON includere NESSUN discorso, introduzione o markdown.
 8. TOKEN DOSI: In TUTTI i testi degli step, quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo dell'ingrediente (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
-9. DEVI RISPONDERE SOLO ED ESCLUSIVAMENTE CON UN JSON ARRAY VALIDO PURI CARATTERI. Niente \`\`\`json. Nessuna nota prima o dopo. SOLO \`[\` e \`]\`.`;
+9. TITOLI STEP: Il campo "title" non deve MAI contenere numeri o prefissi (es. "Setup Macchina", NON "1. Setup Macchina").
+10. DEVI RISPONDERE SOLO ED ESCLUSIVAMENTE CON UN JSON ARRAY VALIDO PURI CARATTERI. Niente \`\`\`json. Nessuna nota prima o dopo. SOLO \`[\` e \`]\`.`;
 
   contentArray.push({
     type: "text",
@@ -682,6 +684,7 @@ REGOLE:
 9. RISPONDI SOLO con un JSON ARRAY valido. Niente markdown, niente note, SOLO [ e ].
 10. NON INVENTARE NULLA. Ogni dato deve provenire dal testo. Se un'informazione manca, omettila o usa valori vuoti.
 11. TOKEN DOSI: In TUTTI i testi degli step (steps, stepsCondiment), quando menzioni un ingrediente con la sua dose, USA il formato token: {nome_generico:valore_base}. Esempio: "Versare {farina_semola:300}g di semola e {acqua:150}g di acqua". Il nome_generico deve essere un ID descrittivo (farina_semola, acqua, uova, olio). NON usare nomi di marchi. Per valori FISSI non scalabili (peso porzione, temperatura), aggiungi ! dopo il valore: {peso_porzione:200!}g.
+12. TITOLI STEP: Il campo "title" non deve MAI contenere numeri (es. "Setup Macchina", NON "1. Setup").
 
 TESTI OCR ESTRATTI:
 ${pagesText}`;

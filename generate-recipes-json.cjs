@@ -16,6 +16,8 @@ const recipeDirs = {
     lievitati: { emoji: '🥐', label: 'Lievitati', order: 4 },
     focaccia: { emoji: '🫓', label: 'Focaccia', order: 5 },
     dolci: { emoji: '🍪', label: 'Dolci', order: 6 },
+    conserve: { emoji: '🫙', label: 'Conserve', order: 7 },
+    condimenti: { emoji: '🌿', label: 'Condimenti', order: 8 },
 };
 
 const recipes = [];
