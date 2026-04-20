@@ -667,7 +667,7 @@ const CATEGORY_COLORS = {
 const CATEGORY_ICONS = {
     'Pane': 'wheat', 'Pizza': 'pizza', 'Focaccia': 'sandwich',
     'Lievitati': 'croissant', 'Pasta': 'utensils', 'Dolci': 'cake-slice',
-    'Condimenti': 'leaf', 'Conserve': 'jar',
+    'Condimenti': 'leaf', 'Conserve': 'archive',
 };
 
 const CATEGORY_DIR_MAP = {

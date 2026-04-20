@@ -762,6 +762,9 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
             const newImgWebp = resolve(newImgDir, `${slug}.webp`);
             const newImgAvif = resolve(newImgDir, `${slug}.avif`);
 
+            // Extra files that might exist
+            const extensionsToMove = ['.html', '.verifica.md', '.qualita.md', '.backup.json', '.pre-edit.json', '.md'];
+
             // Verifica che il JSON sorgente esista
             if (!existsSync(oldJsonFile)) {
                 ctx.error(`❌ JSON non trovato: ${oldJsonFile}`);
@@ -793,6 +796,15 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                 if (existsSync(oldImgAvif)) {
                     renameSync(oldImgAvif, newImgAvif);
                     ctx.log(`  ✅ ${slug}.avif`);
+                }
+
+                // 3.5 Sposta altri file (html, md, backup)
+                for (const ext of extensionsToMove) {
+                    const oldPath = resolve(ricettarioPath, 'ricette', oldFolder, `${slug}${ext}`);
+                    if (existsSync(oldPath)) {
+                        renameSync(oldPath, resolve(newRecipeDir, `${slug}${ext}`));
+                        ctx.log(`  ✅ ${slug}${ext}`);
+                    }
                 }
 
                 // 4. Aggiorna JSON — category + image path
