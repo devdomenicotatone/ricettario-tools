@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 import { log } from '../utils/logger.js';
 import { searchAllProviders, downloadImage, buildAttribution } from '../image-finder.js';
-import { CATEGORY_FOLDERS } from '../publisher.js';
+import { CATEGORY_FOLDERS } from '../constants.js';
 import { startImagePicker } from '../image-picker.js';
 
 export async function refreshImage(args) {

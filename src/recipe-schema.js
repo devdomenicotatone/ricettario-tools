@@ -12,14 +12,18 @@
 
 // ── Costanti ──
 
-export const VALID_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Pasta', 'Lievitati', 'Dolci', 'Conserve'];
+import { ALL_CATEGORIES } from './constants.js';
+
+// ── Costanti ──
+
+export const VALID_CATEGORIES = ALL_CATEGORIES;
 
 export const CATEGORIES_NEEDING_BAKING = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Dolci'];
 
 export const CATEGORY_EMOJI = {
     Pane: '🍞', Pizza: '🍕', Focaccia: '🫓',
     Pasta: '🍝', Lievitati: '🥐', Dolci: '🍰',
-    Conserve: '🫙',
+    Conserve: '🫙', Condimenti: '🌿'
 };
 
 // Token regex: {nome:valore} con suffisso opzionale ! per fissi

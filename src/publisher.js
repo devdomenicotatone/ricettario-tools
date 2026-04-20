@@ -15,20 +15,7 @@ import { injectCard } from './injector.js';
 import { findAndDownloadImage } from './image-finder.js';
 import { validateRecipe } from './validator.js';
 import { log } from './utils/logger.js';
-
-/**
- * Mappa categorie → sottocartelle (unica sorgente di verità)
- */
-export const CATEGORY_FOLDERS = {
-    Pane: 'pane',
-    Pizza: 'pizza',
-    Pasta: 'pasta',
-    Lievitati: 'lievitati',
-    Focaccia: 'focaccia',
-    Dolci: 'dolci',
-    Conserve: 'conserve',
-    Condimenti: 'condimenti',
-};
+import { CATEGORY_FOLDERS } from './constants.js';
 
 /**
  * Metadati per le pagine categoria (auto-generazione index.html)

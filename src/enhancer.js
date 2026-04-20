@@ -5,6 +5,7 @@
 
 import { callClaude, callGemini, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
+import { CATEGORY_REGEX_PATTERN } from './constants.js';
 
 /**
  * Helper: chiama il modello AI selezionato (claude o gemini)
@@ -84,7 +85,7 @@ RISPONDI ESCLUSIVAMENTE con un JSON valido (senza markdown code fences) con ques
   "emoji": "🍞",
   "description": "Descrizione breve per meta tag (max 160 caratteri)",
   "subtitle": "Sottotitolo tecnico della ricetta",
-  "category": "Pane|Lievitati|Pasta|Pizza|Dolci",
+  "category": "${CATEGORY_REGEX_PATTERN}",
   "hydration": 75,
   "targetTemp": "24-25°C",
   "fermentation": "~24h",

@@ -13,17 +13,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { resolve, basename, join } from 'path';
 import { log } from '../utils/logger.js';
-
-// Categorie supportate con emoji
-const CATEGORIES = {
-    pane: { name: 'Pane', emoji: '🥖' },
-    pizza: { name: 'Pizza', emoji: '🍕' },
-    pasta: { name: 'Pasta', emoji: '🍝' },
-    lievitati: { name: 'Lievitati', emoji: '🥐' },
-    dolci: { name: 'Dolci', emoji: '🍪' },
-    focaccia: { name: 'Focaccia', emoji: '🫓' },
-    conserve: { name: 'Conserve', emoji: '🫙' },
-};
+import { ALL_CATEGORIES, CATEGORIES_DATA } from '../constants.js';
 
 /**
  * Estrae i metadati di una ricetta dal file JSON
@@ -42,8 +32,8 @@ function extractRecipeFromJson(jsonPath, categoryDir) {
     }
 
     const slug = data.slug || filename;
-    const category = data.category || CATEGORIES[categoryDir]?.name || categoryDir;
-    const emoji = data.emoji || CATEGORIES[categoryDir]?.emoji || '🍝';
+    const category = data.category || CATEGORIES_DATA[categoryDir]?.label || categoryDir;
+    const emoji = data.emoji || CATEGORIES_DATA[categoryDir]?.emoji || '🍝';
 
     // Immagine: dal JSON, oppure path convenzionale
     const image = data.image || `images/ricette/${categoryDir}/${slug}.webp`;
@@ -118,10 +108,14 @@ export async function syncCards(args) {
 
     // Ordina per categoria e poi per titolo
     allRecipes.sort((a, b) => {
-        const catOrder = ['Pane', 'Pizza', 'Pasta', 'Lievitati', 'Dolci', 'Focaccia', 'Conserve'];
-        const catA = catOrder.indexOf(a.category);
-        const catB = catOrder.indexOf(b.category);
-        if (catA !== catB) return catA - catB;
+        const catA = ALL_CATEGORIES.indexOf(a.category);
+        const catB = ALL_CATEGORIES.indexOf(b.category);
+        
+        // Se una categoria non è in ALL_CATEGORIES (indexOf = -1), la mettiamo in fondo (valore alto)
+        const orderA = catA === -1 ? 999 : catA;
+        const orderB = catB === -1 ? 999 : catB;
+        
+        if (orderA !== orderB) return orderA - orderB;
         return a.title.localeCompare(b.title, 'it');
     });
 
@@ -130,11 +124,12 @@ export async function syncCards(args) {
     allRecipes.forEach(r => {
         stats[r.category] = (stats[r.category] || 0) + 1;
     });
-    const categories = Object.entries(stats).map(([name, count]) => ({
-        name,
-        count,
-        emoji: Object.values(CATEGORIES).find(c => c.name === name)?.emoji || '',
-    }));
+    const categories = Object.entries(stats).map(([name, count]) => {
+        // Cerca l'emoji trovando la chiave corrispondente in CATEGORIES_DATA (es: "Condimenti" -> "condimenti")
+        const key = Object.keys(CATEGORIES_DATA).find(k => CATEGORIES_DATA[k].label === name);
+        const emoji = key ? CATEGORIES_DATA[key].emoji : '';
+        return { name, count, emoji };
+    });
 
     // Scrivi recipes.json
     const data = {

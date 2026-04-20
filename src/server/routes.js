@@ -601,7 +601,7 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
         res.json({ jobId, status: 'started' });
 
         try {
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
             const { unlinkSync } = await import('fs');
             const ricettarioPath = getRicettarioPath();
 
