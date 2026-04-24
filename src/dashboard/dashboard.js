@@ -35,14 +35,13 @@ function handleWsMessage(data) {
             break;
         case 'job:start':
             getOrCreateJobContainer(data.jobId, data.name);
-            setRunning(true);
             break;
         case 'job:output':
             appendTerminal(data.text, data.stream, data.jobId);
             break;
         case 'job:end':
             finishJob(data.jobId, data.success);
-            setRunning(false);
+            // Non blocchiamo più l'interfaccia globalmente
             // Refresh ricette se necessario
             if (document.getElementById('panel-ricette').classList.contains('active')) {
                 loadRecipes();
@@ -207,13 +206,12 @@ if (terminalPinned) {
     });
 }
 
-// ── Running state ──
+// ── Running state (Deprecato: uso concorrente) ──
 let isRunning = false;
 function setRunning(running) {
+    // Non disabilitiamo più globalmente i tasti primari,
+    // in modo da permettere l'accodamento di job concorrenti in AsyncLocalStorage.
     isRunning = running;
-    document.querySelectorAll('.btn-primary').forEach(btn => {
-        btn.disabled = running;
-    });
 }
 
 // ── Navigation ──
@@ -313,8 +311,14 @@ async function apiPost(endpoint, body) {
 
 // ── Commands ──
 async function runGenera() {
+    const btn = document.getElementById('btn-run-genera') || document.querySelector('button[onclick="runGenera()"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Avvio...'; lucide?.createIcons?.(); }
+
     const nome = document.getElementById('gen-nome').value.trim();
-    if (!nome) return alert('Inserisci il nome della ricetta');
+    if (!nome) {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="wand-2"></i> Genera Ricetta'; lucide?.createIcons?.(); }
+        return alert('Inserisci il nome della ricetta');
+    }
 
     await apiPost('genera', {
         nome,
@@ -324,6 +328,11 @@ async function runGenera() {
         keepExisting: document.getElementById('gen-keep').checked,
         aiModel: document.getElementById('gen-model').value,
     });
+    
+    // Ripristina il bottone dopo 1 secondo per permettere job multipli ma evitare doppi click accidentali
+    setTimeout(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="wand-2"></i> Genera Ricetta'; lucide?.createIcons?.(); }
+    }, 1000);
 }
 
 async function runUrl() {

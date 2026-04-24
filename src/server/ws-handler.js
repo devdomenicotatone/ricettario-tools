@@ -70,54 +70,59 @@ export function createJobContext(jobId, jobName) {
     };
 }
 
-/**
- * Intercetta console.log/error per un blocco di codice async
- * e redirige l'output al job context.
- */
-export async function withOutputCapture(jobCtx, fn) {
-    const origLog = console.log;
-    const origError = console.error;
-    const origWarn = console.warn;
-    const origWrite = process.stdout.write;
+import { AsyncLocalStorage } from 'async_hooks';
 
-    // Flag per evitare doppio log: console.log → stdout.write
-    let _fromConsole = false;
+export const jobStorage = new AsyncLocalStorage();
 
-    // Override console
-    console.log = (...args) => {
+// Intercetta a livello globale UNA SOLA VOLTA per non sovrascrivere distruttivamente in concorrenza
+const origLog = console.log;
+const origError = console.error;
+const origWarn = console.warn;
+const origWrite = process.stdout.write;
+
+let _fromConsole = false;
+
+console.log = (...args) => {
+    const jobCtx = jobStorage.getStore();
+    if (jobCtx) {
         const text = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
         jobCtx.log(text);
-        _fromConsole = true;
-        origLog.apply(console, args);
-        _fromConsole = false;
-    };
-    console.error = (...args) => {
+    }
+    _fromConsole = true;
+    origLog.apply(console, args);
+    _fromConsole = false;
+};
+
+console.error = (...args) => {
+    const jobCtx = jobStorage.getStore();
+    if (jobCtx) {
         const text = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
         jobCtx.error(text);
-        _fromConsole = true;
-        origError.apply(console, args);
-        _fromConsole = false;
-    };
-    console.warn = console.error;
+    }
+    _fromConsole = true;
+    origError.apply(console, args);
+    _fromConsole = false;
+};
 
-    // Cattura process.stdout.write diretto (es. log.step per nomi siti)
-    // Skippa se proviene da console.log (già catturato sopra)
-    process.stdout.write = function (chunk, encoding, callback) {
-        if (!_fromConsole) {
+console.warn = console.error;
+
+process.stdout.write = function (chunk, encoding, callback) {
+    if (!_fromConsole) {
+        const jobCtx = jobStorage.getStore();
+        if (jobCtx) {
             const text = typeof chunk === 'string' ? chunk : chunk.toString();
             if (text.trim()) jobCtx.log(text.trimEnd());
         }
-        return origWrite.apply(process.stdout, arguments);
-    };
-
-    try {
-        const result = await fn();
-        return result;
-    } finally {
-        // Restore
-        console.log = origLog;
-        console.error = origError;
-        console.warn = origWarn;
-        process.stdout.write = origWrite;
     }
+    return origWrite.apply(process.stdout, arguments);
+};
+
+/**
+ * Esegue un blocco di codice all'interno del contesto AsyncLocalStorage,
+ * redirigendo magicamente i log senza distruggere i riferimenti globali.
+ */
+export async function withOutputCapture(jobCtx, fn) {
+    return jobStorage.run(jobCtx, async () => {
+        return await fn();
+    });
 }
