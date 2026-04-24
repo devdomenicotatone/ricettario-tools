@@ -261,7 +261,7 @@ export function setupRoutes(app) {
             const ricettarioPath = getRicettarioPath();
             // Importa searchAllProviders per restituire i risultati alla UI
             const { searchAllProviders } = await import('../image-finder.js');
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
 
             // Trova il JSON
             const found = findRecipeJsonDynamic(ricettarioPath, CATEGORY_FOLDERS, slug);
@@ -303,7 +303,7 @@ export function setupRoutes(app) {
         try {
             const ricettarioPath = getRicettarioPath();
             const { downloadImage, buildAttribution } = await import('../image-finder.js');
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
             const { writeFileSync } = await import('fs');
 
             const catFolder = CATEGORY_FOLDERS[category] || category?.toLowerCase() || 'pane';
@@ -351,7 +351,7 @@ export function setupRoutes(app) {
 
         try {
             if (batchSlugs) {
-                const { CATEGORY_FOLDERS } = await import('../publisher.js');
+                const { CATEGORY_FOLDERS } = await import('../constants.js');
                 const { analyzeQuality } = await import('../quality.js');
                 const ricettarioPath = getRicettarioPath();
 
@@ -422,7 +422,7 @@ export function setupRoutes(app) {
         const ricettarioPath = getRicettarioPath();
 
         try {
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
             for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
                 const reportPath = resolve(ricettarioPath, 'ricette', folder, `${slug}.qualita.md`);
                 if (existsSync(reportPath)) {
@@ -447,7 +447,7 @@ export function setupRoutes(app) {
         res.json({ jobId, status: 'started' });
 
         try {
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
             const { loadQualityIndex } = await import('../quality.js');
             const { callClaude, parseClaudeJson } = await import('../utils/api.js');
             const { getSchemaPromptDescription, validateRecipeSchema } = await import('../recipe-schema.js');
@@ -741,7 +741,7 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
         res.json({ jobId, status: 'started' });
 
         try {
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
             const { syncCards } = await import('../commands/sync-cards.js');
 
             const ricettarioPath = getRicettarioPath();
@@ -871,7 +871,7 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
         res.json({ jobId, status: 'started' });
 
         try {
-            const { CATEGORY_FOLDERS } = await import('../publisher.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
             const ricettarioPath = getRicettarioPath();
             const imageIndexFile = resolve(process.cwd(), 'data', 'used-images.json');
 

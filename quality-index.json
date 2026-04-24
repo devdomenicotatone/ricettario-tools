@@ -351,5 +351,18 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-19T20:58:45.366Z"
+  },
+  "treccia-di-pane-olio": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-23T23:22:18.860Z",
+    "fixed": true
+  },
+  "calzone-cipolla-barese-pugliese": {
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 5,
+    "timestamp": "2026-04-23T23:39:56.872Z"
   }
 }
