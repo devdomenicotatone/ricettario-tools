@@ -104,8 +104,16 @@ function appendTerminal(text, type = 'stdout', jobId = null) {
     const line = document.createElement('div');
     line.className = `terminal-line ${type}`;
     line.textContent = text;
+    // Controlla se l'utente è attualmente scrollato alla fine (con un margine di tolleranza di 50px)
+    const isAtBottom = (terminal.scrollHeight - terminal.scrollTop - terminal.clientHeight) < 50;
+
     parent.appendChild(line);
-    terminal.scrollTop = terminal.scrollHeight;
+    
+    // Auto-scrolla solo se l'utente stava già visualizzando l'ultima riga
+    if (isAtBottom) {
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+    
     terminalLineCount++;
 
     // Update badge counter
@@ -317,7 +325,7 @@ async function runGenera() {
     const nome = document.getElementById('gen-nome').value.trim();
     if (!nome) {
         if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="wand-2"></i> Genera Ricetta'; lucide?.createIcons?.(); }
-        return alert('Inserisci il nome della ricetta');
+        return showToast('Inserisci il nome della ricetta', 'warning');
     }
 
     await apiPost('genera', {
@@ -337,7 +345,7 @@ async function runGenera() {
 
 async function runUrl() {
     const url = document.getElementById('url-input').value.trim();
-    if (!url) return alert('Inserisci un URL');
+    if (!url) return showToast('Inserisci un URL', 'warning');
 
     await apiPost('genera', {
         url,
@@ -348,7 +356,7 @@ async function runUrl() {
 
 async function runTesto() {
     const text = document.getElementById('testo-input').value.trim();
-    if (!text) return alert('Inserisci il testo della ricetta');
+    if (!text) return showToast('Inserisci il testo della ricetta', 'warning');
 
     await apiPost('testo', {
         text,
@@ -359,7 +367,7 @@ async function runTesto() {
 
 async function runScopri() {
     const query = document.getElementById('scopri-query').value.trim();
-    if (!query) return alert('Inserisci una query di ricerca');
+    if (!query) return showToast('Inserisci una query di ricerca', 'warning');
 
     const quante = document.getElementById('scopri-quante').value;
     const btn = document.getElementById('btn-run-scopri');
@@ -426,7 +434,7 @@ async function generateSelectedScopri() {
     const urls = Array.from(checkboxes).map(cb => cb.value);
 
     if (urls.length === 0) {
-        return alert('Seleziona almeno un link da generare.');
+        return showToast('Seleziona almeno un link da generare.', 'warning');
     }
 
     const btn = document.querySelector('button[onclick="generateSelectedScopri()"]');
@@ -436,11 +444,11 @@ async function generateSelectedScopri() {
     try {
         await apiPost('genera', { urls });
     } catch (e) {
-        alert('Errore in accodamento job: ' + e.message);
+        showToast('Errore in accodamento job: ' + e.message, 'error');
     } finally {
         // Opzionale: puliamo i risultati dopo l'invio al background
         document.getElementById('scopri-results-container').innerHTML = '';
-        showNotification({ type: 'success', message: `Batch job avviato per ${urls.length} ricette.` });
+        showToast(`Batch job avviato per ${urls.length} ricette.`, 'success');
     }
 }
 
@@ -615,7 +623,7 @@ function showFixModelDropdown(slug, anchorEl, isBatch = false) {
 }
 
 async function runQualita(withGrounding = false, geminiModel = null) {
-    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
+    if (selectedSlugs.size === 0) return showToast('Seleziona almeno una ricetta', 'warning');
     await apiPost('qualita', { slugs: [...selectedSlugs], grounding: withGrounding, geminiModel: geminiModel || getSelectedGeminiModel() });
 }
 
@@ -648,18 +656,22 @@ function getQualityBadge(slug) {
 }
 
 async function runFix(geminiModel) {
-    if (selectedSlugs.size === 0) return alert('Seleziona almeno una ricetta');
+    if (selectedSlugs.size === 0) return showToast('Seleziona almeno una ricetta', 'warning');
     const fixable = [...selectedSlugs].filter(s => qualityIndex[s]);
-    if (fixable.length === 0) return alert('Nessuna ricetta selezionata ha un report qualità. Esegui prima l\'analisi.');
-    if (!confirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'}?\n\nVerrà creato un backup .backup.json per ogni file.`)) return;
-    await apiPost('qualita/fix', { slugs: fixable, geminiModel: geminiModel || getSelectedGeminiModel() });
+    if (fixable.length === 0) return showToast('Nessuna ricetta selezionata ha un report qualità. Esegui prima l\'analisi.', 'warning');
+    
+    showCustomConfirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'}?\n\nVerrà creato un backup .backup.json per ogni file.`, async () => {
+        await apiPost('qualita/fix', { slugs: fixable, geminiModel: geminiModel || getSelectedGeminiModel() });
+    });
 }
 
 async function runFixSingle(slug, geminiModel) {
     const q = qualityIndex[slug];
-    if (!q) return alert('Esegui prima l\'analisi qualità su questa ricetta');
-    if (!confirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nAnche se lo score è alto, i suggerimenti verranno applicati.\nVerrà creato un backup .backup.json.`)) return;
-    await apiPost('qualita/fix', { slugs: [slug], force: true, geminiModel: geminiModel || getSelectedGeminiModel() });
+    if (!q) return showToast('Esegui prima l\'analisi qualità su questa ricetta', 'warning');
+    
+    showCustomConfirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nAnche se lo score è alto, i suggerimenti verranno applicati.\nVerrà creato un backup .backup.json.`, async () => {
+        await apiPost('qualita/fix', { slugs: [slug], force: true, geminiModel: geminiModel || getSelectedGeminiModel() });
+    });
 }
 
 const CATEGORY_COLORS = {
@@ -1226,24 +1238,22 @@ function updateActionBar() {
 
 async function batchElimina() {
     const slugs = [...selectedSlugs];
-    const conferma = confirm(`⚠️ Eliminare ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}?\n\nQuesta azione è irreversibile!\n\n${slugs.join('\n')}`);
-    if (!conferma) return;
-
-    await apiPost('elimina', { slugs });
-    selectedSlugs.clear();
-    updateActionBar();
-    // Ricarica dopo un breve delay per dare tempo al sync
-    setTimeout(() => loadRecipes(), 1500);
+    showCustomConfirm(`⚠️ Eliminare ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}?\n\nQuesta azione è irreversibile!\n\n${slugs.slice(0, 5).join('\n')}${slugs.length > 5 ? '\n...' : ''}`, async () => {
+        await apiPost('elimina', { slugs });
+        selectedSlugs.clear();
+        updateActionBar();
+        // Ricarica dopo un breve delay per dare tempo al sync
+        setTimeout(() => loadRecipes(), 1500);
+    });
 }
 
 async function eliminaSingola(slug) {
-    const conferma = confirm(`⚠️ Eliminare "${slug}"?\n\nQuesta azione è irreversibile!`);
-    if (!conferma) return;
-
-    await apiPost('elimina', { slugs: [slug] });
-    selectedSlugs.delete(slug);
-    updateActionBar();
-    setTimeout(() => loadRecipes(), 1500);
+    showCustomConfirm(`⚠️ Eliminare "${slug}"?\n\nQuesta azione è irreversibile!`, async () => {
+        await apiPost('elimina', { slugs: [slug] });
+        selectedSlugs.delete(slug);
+        updateActionBar();
+        setTimeout(() => loadRecipes(), 1500);
+    });
 }
 
 // ── Recipes Event Handlers ──
@@ -1279,7 +1289,7 @@ async function loadRecipesForPicker() {
 
 async function runRefreshImage() {
     const slug = document.getElementById('img-slug').value;
-    if (!slug) return alert('Seleziona una ricetta');
+    if (!slug) return showToast('Seleziona una ricetta', 'warning');
     await runRefreshImageForSlug(slug);
 }
 
@@ -1587,17 +1597,18 @@ function showUsedImagesMenu(anchorEl) {
 }
 
 async function resetUsedImages() {
-    if (!confirm('⚠️ Resettare l\'index delle immagini usate?\n\nTutte le immagini saranno considerate "nuove" e potranno essere riproposte.')) return;
-    try {
-        const resp = await fetch('/api/used-images/reset', { method: 'POST' });
-        const data = await resp.json();
-        appendTerminal(`\n🗑️ Used Images: index resettato (${data.count} entries)`, 'success');
-        showToast('Index immagini resettato', 'success');
-        loadUsedImagesCount();
-    } catch (err) {
-        appendTerminal(`❌ Reset fallito: ${err.message}`, 'stderr');
-        showToast('Reset fallito', 'error');
-    }
+    showCustomConfirm('⚠️ Resettare l\'index delle immagini usate?\n\nTutte le immagini saranno considerate "nuove" e potranno essere riproposte.', async () => {
+        try {
+            const resp = await fetch('/api/used-images/reset', { method: 'POST' });
+            const data = await resp.json();
+            appendTerminal(`\n🗑️ Used Images: index resettato (${data.count} entries)`, 'success');
+            showToast('Index immagini resettato', 'success');
+            loadUsedImagesCount();
+        } catch (err) {
+            appendTerminal(`❌ Reset fallito: ${err.message}`, 'stderr');
+            showToast('Reset fallito', 'error');
+        }
+    });
 }
 
 async function rebuildUsedImages() {
@@ -1626,6 +1637,38 @@ function showToast(message, type = 'info') {
         toast.classList.add('removing');
         setTimeout(() => toast.remove(), 300);
     }, 4000);
+}
+
+// ── Custom Confirm Modal ──
+function showCustomConfirm(message, onConfirm) {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay active';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    
+    overlay.innerHTML = `
+        <div class="modal-content" style="max-width: 400px; padding: 24px; text-align: center; border-radius: 12px; background: var(--bg-elevated); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid var(--border);">
+            <div style="margin-bottom: 24px; color: var(--text-primary); font-size: 15px; white-space: pre-wrap; line-height: 1.5; font-weight: 500;">${message}</div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn btn-secondary" id="btnConfirmCancel" style="min-width: 100px;">Annulla</button>
+                <button class="btn btn-primary" id="btnConfirmOk" style="min-width: 100px;">Ok</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const close = () => {
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.remove(), 300);
+    };
+
+    overlay.querySelector('#btnConfirmCancel').addEventListener('click', close);
+    overlay.querySelector('#btnConfirmOk').addEventListener('click', () => {
+        close();
+        if (onConfirm) onConfirm();
+    });
 }
 
 // ── Command Palette (Ctrl+K) ──

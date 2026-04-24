@@ -1071,7 +1071,7 @@ window.removeGlossary = function (gi) {
 
 // ── Token Inserter ──
 window.insertToken = function (tokenId, grams) {
-    if (!activeTextarea) { alert('Clicca prima su un textarea del procedimento'); return; }
+    if (!activeTextarea) { showToast('Clicca prima su un textarea del procedimento', 'warning'); return; }
     const token = `{${tokenId}:${grams}}`;
     const start = activeTextarea.selectionStart;
     const end = activeTextarea.selectionEnd;
