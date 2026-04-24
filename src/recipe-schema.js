@@ -196,9 +196,18 @@ export function validateRecipeSchema(recipe) {
 
     // Validazione token nei procedimenti (e mappatura per cross-check)
     const tokenValuesInSteps = {};
-    if (recipe.steps?.length > 0) {
-        for (const step of recipe.steps) {
+    const allSteps = [...(recipe.steps || []), ...(recipe.stepsCondiment || [])];
+    
+    if (allSteps.length > 0) {
+        for (const step of allSteps) {
             if (!step.text) continue;
+            
+            // Check per token fissi malformati scritti testualmente invece che con le graffe (es. "285!g")
+            const malformedRegex = /\b\d+(?:\.\d+)?![a-zA-Z]*\b/g;
+            if (malformedRegex.test(step.text)) {
+                errors.push(`Token fisso malformato nello step "${step.title}": Trovato valore con "!" senza parentesi graffe. Usa il formato {nome:valore!}`);
+            }
+
             let match;
             const tokenRegex = new RegExp(TOKEN_REGEX.source, 'g');
             while ((match = tokenRegex.exec(step.text)) !== null) {

@@ -52,7 +52,7 @@ REGOLE:
 4. PROCEDIMENTO: Crea UN SOLO procedimento nel campo "steps".
    - Attieniti SCRUPOLOSAMENTE agli strumenti o metodi indicati. Non forzare l'uso di impastatrice a spirale se la ricetta è a mano o se si tratta di un condimento.
    - Per PASTA: il procedimento usa l'estrusore con trafila Philips (solo se menzionato o se pasta estrusa).
-   - CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento, usa l'array separato "stepsCondiment".
+   - CONDIMENTO/SALSA: "stepsCondiment" va usato SOLO se la ricetta appartiene a categorie primarie (es. Pasta) e ha un sugo d'accompagnamento. Se la ricetta STESSA appartiene alla categoria "Condimenti" o "Conserve" (es. Pesto), l'intera preparazione DEVE stare nell'array principale "steps" per logica cronologica.
    - Il tono è da artigiano: indica velocità, attrezzature, tempi precisi e tecniche specifiche.
 5. Se la ricetta ha sospensioni (noci, olive, uvetta, cioccolato ecc.), separarle dagli ingredienti base
 6. Se ci sono farine specifiche, creare la tabella "Consigli Farine" con tipo, forza W e marchi consigliati
@@ -151,7 +151,7 @@ CAMPO tokenId (OBBLIGATORIO per ogni ingrediente):
 - Formato: snake_case, descrittivo, con suffisso del gruppo se ci sono duplicati. Es: "lievito_biga" e "lievito_impasto" per distinguere il lievito della biga da quello dell'impasto finale.
 
 NOTE IMPORTANTI:
-- CONDIMENTO/SALSA: se la ricetta prevede la preparazione di un sugo o condimento (es. "Preparazione" per le acciughe, sugo al pomodoro ecc.), usa l'array "stepsCondiment". Non inserire queste istruzioni dentro steps.
+- CONDIMENTO/SALSA: Usa "stepsCondiment" SOLO come contorno per ricette primarie. Se stai creando una ricetta per la categoria "Condimenti" (es. Pesto, Salsa, Confettura), TUTTO il procedimento va in "steps". L'eventuale cottura di una pasta d'esempio andrà accodata alla fine di "steps".
 - Per PANE/PIZZA: aggiungi sempre "baking" con temperatura max 280°C.
 - Per DOLCI/BISCOTTI/TORTE: aggiungi "baking" con temperatura e tempo di cottura.
 - Il "glossary" è OBBLIGATORIO: deve contenere TUTTI i termini tecnici usati nel procedimento.
@@ -199,11 +199,12 @@ TOKEN DOSI NEL PROCEDIMENTO (OBBLIGATORIO):
 
   REGOLA: Se stai scrivendo "X di ACQUA", il token DEVE contenere "acqua". Se stai scrivendo "X di OLIO", il token DEVE contenere "olio". Mai incrociare.
 
-TOKEN FISSI (NON SCALABILI):
-- Per valori che NON devono cambiare quando l'utente moltiplica le dosi, aggiungi il suffisso ! al token: {nome:valore!}
-- Esempio: peso panetto pizza = misura standard fissa → {panetto_peso:285!}g — resta 285g anche a ×2 dosi (si fanno più panetti, non panetti più grandi)
-- Usa il suffisso ! per: peso singolo panetto/porzione, temperature in gradi, tempi in minuti, percentuali
-- NON usare ! per: quantità di ingredienti (farina, acqua, sale, lievito) — queste DEVONO scalare col moltiplicatore
+TOKEN FISSI (NON SCALABILI E SINTASSI OBBLIGATORIA):
+- Per valori che NON devono cambiare quando l'utente moltiplica le dosi, aggiungi il suffisso ! DENTRO il token: {nome:valore!}
+- ⚠️ CRITICO: Anche i token fissi DEVONO ESSERE SEMPRE racchiusi nelle parentesi graffe. NON scrivere mai il numero testuale puro come "285!g".
+- ✅ CORRETTO: "{panetto_peso:285!}g" oppure "{temperatura:180!}°C"
+- ❌ SBAGLIATO: "285!g" oppure "180!°C" (il software si romperà in mancanza di parentesi)
+- Usa il suffisso ! per: peso singolo panetto/porzione, temperature in gradi, tempi in minuti, percentuali. MAI per gli ingredienti che compongono l'impasto.
 
 TERMINOLOGIA TECNICA (OBBLIGATORIO):
 - "Autolisi" = SOLO farina + acqua, SENZA lievito o pre-impasto. Se l'impasto contiene già poolish/biga/lievito, NON è autolisi. Usa "Riposo per idratazione" o "Fermentolisi".
