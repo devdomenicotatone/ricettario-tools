@@ -325,6 +325,7 @@ function createEditorDOM() {
                 </div>
                 <div class="re-actions" style="position:relative">
                     <div class="re-status-pill" id="reStatusPill"></div>
+                    <button class="re-action-btn" id="reSensoryBtn" title="Genera Profilo Sensoriale AI"><i data-lucide="sparkles"></i></button>
                     <button class="re-action-btn" id="reUndoBtn" title="Undo (Ctrl+Z)" disabled><i data-lucide="undo-2"></i></button>
                     <button class="re-action-btn" id="reRedoBtn" title="Redo (Ctrl+Shift+Z)" disabled><i data-lucide="redo-2"></i></button>
                     <button class="re-action-btn" id="reOpenBtn" title="Apri nel sito"><i data-lucide="external-link"></i></button>
@@ -362,6 +363,7 @@ function createEditorDOM() {
     document.getElementById('reCloseBtn').onclick = closeEditor;
     document.getElementById('reUndoBtn').onclick = () => { state.undo(); renderActiveTab(); };
     document.getElementById('reRedoBtn').onclick = () => { state.redo(); renderActiveTab(); };
+    document.getElementById('reSensoryBtn').onclick = () => runSensoryProfile();
     document.getElementById('reOpenBtn').onclick = () => {
         const r = state.currentRecipe;
         if (r) window.open(buildRecipeUrl({ slug: state.slug, categoryDir: state.cat, category: r.category }), '_blank');
@@ -473,6 +475,33 @@ async function closeEditor() {
     
     // Refresh recipe list
     if (typeof loadRecipes === 'function') loadRecipes();
+}
+
+async function runSensoryProfile() {
+    if (state.isDirty) {
+        if (typeof showToast === 'function') showToast('Salva le modifiche prima di generare il profilo sensoriale.', 'warning');
+        return;
+    }
+    const slug = state.slug;
+    
+    // Mostriamo il terminale per far vedere l'output
+    if (typeof expandTerminal === 'function') expandTerminal();
+    
+    if (typeof showToast === 'function') showToast('Generazione profilo sensoriale in corso...', 'success');
+    
+    try {
+        const resp = await fetch('/api/qualita/sensory', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug }),
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        
+        const data = await resp.json();
+        console.log("Sensory job started", data.jobId);
+    } catch (err) {
+        if (typeof showToast === 'function') showToast(`Errore: ${err.message}`, 'error');
+    }
 }
 
 // ═══════════════════════════════════════════════════════

@@ -573,6 +573,64 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
             ctx.end(false);
         }
     });
+    // ── Profilo Sensoriale (AI) ──
+    app.post('/api/qualita/sensory', async (req, res) => {
+        const { slugs, slug } = req.body || {};
+        const targetSlugs = slugs || (slug ? [slug] : []);
+        
+        if (targetSlugs.length === 0) return res.status(400).json({ error: 'Nessun slug fornito' });
+
+        const jobId = `sns-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `Sensory: ${targetSlugs.length} ricette`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
+            const { generateSensoryProfile } = await import('../sensory.js');
+            const ricettarioPath = getRicettarioPath();
+
+            await withOutputCapture(ctx, async () => {
+                const { readFileSync, writeFileSync } = await import('fs');
+                
+                for (let i = 0; i < targetSlugs.length; i++) {
+                    const currentSlug = targetSlugs[i];
+                    ctx.log(`\n🧪 [${i+1}/${targetSlugs.length}] Inizio generazione per "${currentSlug}"...`);
+
+                    let jsonFile = null;
+                    for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
+                        const candidate = resolve(ricettarioPath, 'ricette', folder, `${currentSlug}.json`);
+                        if (existsSync(candidate)) { jsonFile = candidate; break; }
+                    }
+                    
+                    if (!jsonFile) {
+                        ctx.log(`❌ Ricetta non trovata: ${currentSlug}`);
+                        continue;
+                    }
+
+                    const recipeJson = readFileSync(jsonFile, 'utf-8');
+                    const recipeData = JSON.parse(recipeJson);
+
+                    // Call agent
+                    const profile = await generateSensoryProfile(recipeData);
+                    
+                    // Assing back to recipe data
+                    recipeData.sensoryProfile = profile;
+
+                    // Save
+                    const backupPath = jsonFile.replace('.json', '.backup.json');
+                    writeFileSync(backupPath, recipeJson, 'utf-8');
+                    writeFileSync(jsonFile, JSON.stringify(recipeData, null, 2), 'utf-8');
+                    
+                    ctx.log(`✅ Profilo aggiunto con successo a ${currentSlug}`);
+                }
+                ctx.log(`\n🎉 Processo completato per ${targetSlugs.length} ricette!`);
+            });
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
 
     // ── Sync Cards ──
 

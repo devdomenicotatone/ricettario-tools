@@ -1224,6 +1224,9 @@ function updateActionBar() {
                 </button>
                 <button class="action-bar-btn action-bar-fix btn-split-chevron" onclick="showFixModelDropdown(null, this.parentElement, true)" title="Scegli modello ri-validazione" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
             </div>
+            <button class="action-bar-btn" onclick="runSensoryBatch()" title="Genera Profilo Sensoriale AI" style="color: #fbbf24;">
+                <i data-lucide="sparkles"></i> Sensoriale
+            </button>
             <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
                 <i data-lucide="trash-2"></i> Elimina
             </button>
@@ -1235,6 +1238,20 @@ function updateActionBar() {
     lucide.createIcons({ attrs: { 'width': 16, 'height': 16 } });
 }
 
+async function runSensoryBatch() {
+    if (selectedSlugs.size === 0) return showToast('Seleziona almeno una ricetta', 'warning');
+    const slugs = [...selectedSlugs];
+    showCustomConfirm(`Generare Profilo Sensoriale AI per ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}?\n\nVerrà creato un .backup.json per ogni file.`, async () => {
+        expandTerminal();
+        showToast('Batch job Sensoriale avviato...', 'success');
+        try {
+            await apiPost('qualita/sensory', { slugs });
+            clearSelection();
+        } catch (e) {
+            showToast('Errore: ' + e.message, 'error');
+        }
+    });
+}
 
 async function batchElimina() {
     const slugs = [...selectedSlugs];

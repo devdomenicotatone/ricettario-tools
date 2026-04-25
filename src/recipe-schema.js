@@ -121,6 +121,18 @@ export const RECIPE_FIELDS = {
     _originalImageUrl:{ type: 'string',  required: false, description: 'URL originale immagine (interno)' },
     _generatedBy:     { type: 'string',  required: false, description: 'Modello AI usato per la generazione (interno)' },
     _createdAt:       { type: 'string',  required: false, description: 'Data ISO di creazione della ricetta (interno)' },
+    sensoryProfile:   { type: 'object',  required: false, description: 'Profilo sensoriale { summary: string, axes: [{label, value}] }',
+                        validate: (v) => {
+                            if (!v) return null;
+                            if (v.summary !== undefined && typeof v.summary !== 'string') return 'sensoryProfile.summary deve essere una stringa';
+                            if (!Array.isArray(v.axes)) return 'sensoryProfile.axes deve essere un array';
+                            if (v.axes.length < 4 || v.axes.length > 8) return 'Devono esserci tra 4 e 8 assi sensoriali';
+                            for (const axis of v.axes) {
+                                if (typeof axis.label !== 'string') return 'axis.label deve essere una stringa';
+                                if (typeof axis.value !== 'number' || axis.value < 0 || axis.value > 10) return `Valore per asse "${axis.label}" deve essere un numero tra 0 e 10`;
+                            }
+                            return null;
+                        }},
 
 };
 
@@ -411,7 +423,7 @@ export function getSchemaPromptDescription() {
         'Procedimento': ['steps', 'stepsCondiment'],
         'Supporto': ['flourTable', 'baking', 'glossary', 'alert', 'proTips', 'storage'],
         'Media & SEO': ['image', 'imageKeywords', 'tags'],
-        'Opzionali': ['imageAttribution', '_originalImageUrl'],
+        'Opzionali': ['imageAttribution', '_originalImageUrl', 'sensoryProfile'],
     };
 
     for (const [groupName, fields] of Object.entries(groups)) {
