@@ -669,7 +669,7 @@ async function runFixSingle(slug, geminiModel) {
     const q = qualityIndex[slug];
     if (!q) return showToast('Esegui prima l\'analisi qualità su questa ricetta', 'warning');
     
-    showCustomConfirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nAnche se lo score è alto, i suggerimenti verranno applicati.\nVerrà creato un backup .backup.json.`, async () => {
+    showCustomConfirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nVerrà creato un backup .backup.json.`, async () => {
         await apiPost('qualita/fix', { slugs: [slug], force: true, geminiModel: geminiModel || getSelectedGeminiModel() });
     });
 }
