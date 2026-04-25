@@ -133,7 +133,16 @@ export const RECIPE_FIELDS = {
                             }
                             return null;
                         }},
-
+    nutrition:        { type: 'object',  required: false, description: 'Valori nutrizionali stimati per 100g',
+                        validate: (v) => {
+                            if (!v) return null;
+                            if (typeof v.kcal_per_100g !== 'number') return 'nutrition.kcal_per_100g deve essere un numero';
+                            if (!v.macros || typeof v.macros !== 'object') return 'nutrition.macros deve essere un oggetto';
+                            if (typeof v.macros.carbs !== 'number') return 'macros.carbs deve essere un numero';
+                            if (typeof v.macros.protein !== 'number') return 'macros.protein deve essere un numero';
+                            if (typeof v.macros.fat !== 'number') return 'macros.fat deve essere un numero';
+                            return null;
+                        }},
 };
 
 

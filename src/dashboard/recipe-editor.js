@@ -325,7 +325,7 @@ function createEditorDOM() {
                 </div>
                 <div class="re-actions" style="position:relative">
                     <div class="re-status-pill" id="reStatusPill"></div>
-                    <button class="re-action-btn" id="reSensoryBtn" title="Genera Profilo Sensoriale AI"><i data-lucide="sparkles"></i></button>
+                    <button class="re-action-btn" id="reSensoryBtn" title="Genera Dati Tecnici AI (Sensoriale + Nutrizionale)"><i data-lucide="sparkles"></i></button>
                     <button class="re-action-btn" id="reUndoBtn" title="Undo (Ctrl+Z)" disabled><i data-lucide="undo-2"></i></button>
                     <button class="re-action-btn" id="reRedoBtn" title="Redo (Ctrl+Shift+Z)" disabled><i data-lucide="redo-2"></i></button>
                     <button class="re-action-btn" id="reOpenBtn" title="Apri nel sito"><i data-lucide="external-link"></i></button>

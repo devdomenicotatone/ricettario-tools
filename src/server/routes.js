@@ -586,7 +586,7 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
 
         try {
             const { CATEGORY_FOLDERS } = await import('../constants.js');
-            const { generateSensoryProfile } = await import('../sensory.js');
+            const { generateAnalyticsProfile } = await import('../sensory.js');
             const ricettarioPath = getRicettarioPath();
 
             await withOutputCapture(ctx, async () => {
@@ -611,10 +611,11 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                     const recipeData = JSON.parse(recipeJson);
 
                     // Call agent
-                    const profile = await generateSensoryProfile(recipeData);
+                    const analytics = await generateAnalyticsProfile(recipeData);
                     
-                    // Assing back to recipe data
-                    recipeData.sensoryProfile = profile;
+                    // Assign back to recipe data
+                    recipeData.sensoryProfile = analytics.sensory;
+                    recipeData.nutrition = analytics.nutrition;
 
                     // Save
                     const backupPath = jsonFile.replace('.json', '.backup.json');
