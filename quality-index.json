@@ -312,13 +312,6 @@
     "issueCount": 3,
     "timestamp": "2026-04-19T20:41:21.061Z"
   },
-  "besciamella-classica": {
-    "score": 100,
-    "verdict": "🟢 Buona",
-    "issueCount": 1,
-    "timestamp": "2026-04-26T19:41:47.250Z",
-    "fixed": true
-  },
   "maionese-fatta-in-casa": {
     "score": 95,
     "verdict": "🟢 Buona",

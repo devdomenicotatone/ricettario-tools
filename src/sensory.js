@@ -1,41 +1,64 @@
 import { callClaude, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 
-const SENSORY_SYSTEM_PROMPT = `Sei un esperto sommelier, tecnologo alimentare e nutrizionista di livello Masterclass.
-Il tuo compito è analizzare una ricetta fornita in formato JSON e determinare sia il profilo organolettico che i valori nutrizionali stimati per 100g.
-
-REGOLE TASSATIVE PER IL SENSORIALE:
-1. IDENTIFICA LA CATEGORIA LOGICA.
-2. DETERMINA ESATTAMENTE 5 ASSI DINAMICI sensoriali/tecnici rilevanti.
-3. ASSEGNA UN VALORE DA 0 A 10 (numerico) basandoti sui dati della ricetta.
-
-REGOLE TASSATIVE PER LA NUTRIZIONE:
-1. Calcola una STIMA ACCURATA dei valori nutrizionali per 100g di prodotto finale.
-2. Tieni conto del calo peso (es. nel pane l'acqua evapora al 20%, nell'olio infuso rimane quasi invariato).
-3. Restituisci Kcal (numero), Carboidrati (numero), Proteine (numero) e Grassi (numero) arrotondati.
-
-RISPONDI ESCLUSIVAMENTE CON UN JSON VALIDO avente questa esatta struttura:
-{
-  "sensory": {
-    "summary": "Breve nota di degustazione (2-3 frasi) in stile sommelier che descrive il profilo organolettico complessivo.",
-    "axes": [
-      { "label": "Nome Asse 1", "value": 8 },
-      { "label": "Nome Asse 2", "value": 5 },
-      { "label": "Nome Asse 3", "value": 7 },
-      { "label": "Nome Asse 4", "value": 2 },
-      { "label": "Nome Asse 5", "value": 9 }
+const CATEGORY_AXES = {
+    'Pane': [
+        'Croccantezza Crosta',
+        'Alveolatura Mollica',
+        'Complessità Fermentativa',
+        'Sapidità',
+        'Note Tostate / Cerealicole'
+    ],
+    'Pizza': [
+        'Croccantezza Esterna',
+        'Scioglievolezza Impasto',
+        'Sapidità / Umami',
+        'Equilibrio Condimento-Impasto',
+        'Complessità Aromatica'
+    ],
+    'Focaccia': [
+        'Croccantezza Esterna',
+        'Scioglievolezza Impasto',
+        'Sapidità / Umami',
+        'Equilibrio Condimento-Impasto',
+        'Complessità Aromatica'
+    ],
+    'Pasta': [
+        'Tenuta al Morso',
+        'Ruvidezza Superficie',
+        'Elasticità / Masticabilità',
+        'Sapore Cerealicolo',
+        'Assorbimento Condimento'
+    ],
+    'Lievitati': [
+        'Sofficezza / Alveolatura',
+        'Scioglievolezza',
+        'Ricchezza Burrosa / Lattica',
+        'Dolcezza Percepita',
+        'Complessità Aromatica'
+    ],
+    'Dolci': [
+        'Dolcezza Percepita',
+        'Friabilità / Croccantezza',
+        'Umidità / Cremosità',
+        'Intensità Aromatica',
+        'Ricchezza / Corpo'
+    ],
+    'Condimenti': [
+        'Sapidità / Umami',
+        'Acidità / Pungenza',
+        'Cremosità / Densità',
+        'Dolcezza / Rotondità',
+        'Intensità Aromatica'
+    ],
+    'Conserve': [
+        'Sapidità / Umami',
+        'Acidità / Pungenza',
+        'Cremosità / Densità',
+        'Dolcezza / Rotondità',
+        'Intensità Aromatica'
     ]
-  },
-  "nutrition": {
-    "kcal_per_100g": 250,
-    "macros": {
-      "carbs": 45,
-      "protein": 8,
-      "fat": 2
-    }
-  }
-}
-`;
+};
 
 /**
  * Genera un profilo analitico completo (Sensoriale + Nutrizionale)
@@ -59,10 +82,52 @@ export async function generateAnalyticsProfile(recipeData) {
 Ecco i dati:
 ${JSON.stringify(recipeContext, null, 2)}`;
 
+    const axes = CATEGORY_AXES[recipeData.category] || CATEGORY_AXES['Pane'];
+
+    const systemPrompt = `Sei un esperto sommelier, tecnologo alimentare e nutrizionista di livello Masterclass.
+Il tuo compito è analizzare una ricetta fornita in formato JSON e determinare sia il profilo organolettico che i valori nutrizionali stimati per 100g.
+
+REGOLE TASSATIVE PER IL SENSORIALE:
+1. IDENTIFICA LA CATEGORIA LOGICA (${recipeData.category}).
+2. UTILIZZA ESATTAMENTE I SEGUENTI 5 ASSI SENSORIALI, senza modificarne il nome in alcun modo:
+   - ${axes[0]}
+   - ${axes[1]}
+   - ${axes[2]}
+   - ${axes[3]}
+   - ${axes[4]}
+3. ASSEGNA UN VALORE DA 0 A 10 (numerico) a ciascun asse basandoti sui dati della ricetta.
+
+REGOLE TASSATIVE PER LA NUTRIZIONE:
+1. Calcola una STIMA ACCURATA dei valori nutrizionali per 100g di prodotto finale.
+2. Tieni conto del calo peso (es. nel pane l'acqua evapora al 20%, nell'olio infuso rimane quasi invariato).
+3. Restituisci Kcal (numero), Carboidrati (numero), Proteine (numero) e Grassi (numero) arrotondati.
+
+RISPONDI ESCLUSIVAMENTE CON UN JSON VALIDO avente questa esatta struttura:
+{
+  "sensory": {
+    "summary": "Breve nota di degustazione (2-3 frasi) in stile sommelier che descrive il profilo organolettico complessivo.",
+    "axes": [
+      { "label": "${axes[0]}", "value": 8 },
+      { "label": "${axes[1]}", "value": 5 },
+      { "label": "${axes[2]}", "value": 7 },
+      { "label": "${axes[3]}", "value": 2 },
+      { "label": "${axes[4]}", "value": 9 }
+    ]
+  },
+  "nutrition": {
+    "kcal_per_100g": 250,
+    "macros": {
+      "carbs": 45,
+      "protein": 8,
+      "fat": 2
+    }
+  }
+}`;
+
     try {
         const text = await callClaude({
             model: 'claude-sonnet-4-6',
-            system: SENSORY_SYSTEM_PROMPT,
+            system: systemPrompt,
             messages: [{ role: 'user', content: userPrompt }]
         });
 
