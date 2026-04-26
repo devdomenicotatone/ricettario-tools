@@ -19,7 +19,7 @@ export function startServer(port = 3500) {
     const server = createServer(app);
 
     // ── Middleware ──
-    app.use(express.json({ limit: '5mb' }));
+    app.use(express.json({ limit: '20mb' }));
     app.use(express.urlencoded({ extended: true }));
 
     // ── Static files (dashboard UI) ──

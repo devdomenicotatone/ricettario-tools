@@ -1132,6 +1132,97 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
         }
     });
 
+    // ── Upload Image (Drag & Drop / Clipboard Paste) ──
+    app.post('/api/upload-image', async (req, res) => {
+        const { slug, category, imageBase64, imageUrl } = req.body;
+
+        if (!slug || !category) {
+            return res.status(400).json({ error: 'slug e category sono obbligatori' });
+        }
+        if (!imageBase64 && !imageUrl) {
+            return res.status(400).json({ error: 'imageBase64 o imageUrl richiesto' });
+        }
+
+        const jobId = `upload-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `Upload Image: ${slug}`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const ricettarioPath = getRicettarioPath();
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
+            const sharp = (await import('sharp')).default;
+
+            const catFolder = CATEGORY_FOLDERS[category] || category?.toLowerCase() || 'pane';
+            const webpPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
+            const avifPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.avif`);
+            const jsonFile = resolve(ricettarioPath, 'ricette', catFolder, `${slug}.json`);
+
+            // Assicurati che la directory esista
+            const imgDir = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder);
+            if (!existsSync(imgDir)) mkdirSync(imgDir, { recursive: true });
+
+            await withOutputCapture(ctx, async () => {
+                let imageBuffer;
+
+                if (imageBase64) {
+                    // Decodifica Base64 (rimuovi header data:image/...;base64, se presente)
+                    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+                    imageBuffer = Buffer.from(base64Data, 'base64');
+                    ctx.log(`📦 Immagine ricevuta: ${(imageBuffer.length / 1024).toFixed(0)} KB`);
+                } else if (imageUrl) {
+                    // Download da URL (drag da browser)
+                    ctx.log(`⬇️ Download da URL: ${imageUrl}`);
+                    const { downloadImage } = await import('../image-finder.js');
+                    const tmpPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}-tmp-upload.jpg`);
+                    await downloadImage(imageUrl, tmpPath);
+                    imageBuffer = readFileSync(tmpPath);
+                    // Rimuovi il temporaneo
+                    try { (await import('fs')).unlinkSync(tmpPath); } catch {}
+                    ctx.log(`✅ Download completato: ${(imageBuffer.length / 1024).toFixed(0)} KB`);
+                }
+
+                // Sharp: resize + WebP + AVIF
+                ctx.log(`🔄 Ottimizzazione: WebP + AVIF...`);
+                await sharp(imageBuffer)
+                    .resize({ width: 1800, withoutEnlargement: true })
+                    .webp({ quality: 82 })
+                    .toFile(webpPath);
+
+                await sharp(imageBuffer)
+                    .resize({ width: 1800, withoutEnlargement: true })
+                    .avif({ quality: 50 })
+                    .toFile(avifPath);
+
+                ctx.log(`✅ WebP: ${webpPath.split(/[\\/]/).pop()}`);
+                ctx.log(`✅ AVIF: ${avifPath.split(/[\\/]/).pop()}`);
+
+                // Aggiorna JSON ricetta
+                if (existsSync(jsonFile)) {
+                    const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
+                    recipe.image = `images/ricette/${catFolder}/${slug}.webp`;
+                    recipe.imageAttribution = imageUrl
+                        ? `📷 Fonte: ${new URL(imageUrl).hostname}`
+                        : '📷 Foto: Caricata manualmente';
+                    recipe._originalImageUrl = imageUrl || '';
+                    writeFileSync(jsonFile, JSON.stringify(recipe, null, 2), 'utf-8');
+                    ctx.log(`💾 JSON aggiornato`);
+                } else {
+                    ctx.log(`⚠️ JSON non trovato: ${jsonFile}`);
+                }
+
+                // Sync cards
+                const { syncCards } = await import('../commands/sync-cards.js');
+                await syncCards({});
+                ctx.log(`🔄 recipes.json sincronizzato`);
+            });
+
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
     // ── Status / Health ──
     app.get('/api/status', async (req, res) => {
         // Leggi URL del sito Vite da env o usa default

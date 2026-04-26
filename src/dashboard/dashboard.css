@@ -2399,3 +2399,164 @@ body {
     border-color: var(--accent);
     color: var(--accent);
 }
+
+/* ══════════════════════════════════════════════════════
+   DRAG & DROP — Image Upload System
+   ══════════════════════════════════════════════════════ */
+
+/* Drag-over highlight on recipe card/row */
+.recipe-card.drag-over,
+.recipe-row.drag-over {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px var(--accent-glow), 0 0 20px var(--accent-glow-strong) !important;
+    transform: scale(1.02) !important;
+    transition: all 0.15s ease !important;
+}
+
+.recipe-card.drag-over::before,
+.recipe-row.drag-over::before {
+    content: '📷 Rilascia qui';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(230, 126, 34, 0.12);
+    border: 2px dashed var(--accent);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    z-index: 10;
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+}
+
+/* Preview Overlay */
+.drop-preview-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: rgba(10, 10, 15, 0.92);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    animation: overlayFadeIn 0.2s ease;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.drop-preview-img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--accent);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.drop-preview-info {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.4;
+}
+
+.drop-preview-info strong {
+    color: var(--accent);
+}
+
+.drop-preview-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.drop-preview-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.drop-preview-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.drop-preview-btn.confirm {
+    background: var(--accent);
+    color: #fff;
+}
+
+.drop-preview-btn.confirm:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.drop-preview-btn.cancel {
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.drop-preview-btn.cancel:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Upload Spinner Overlay */
+.upload-spinner-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    animation: overlayFadeIn 0.15s ease;
+}
+
+.upload-spinner-ring {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+.upload-spinner-overlay span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+}
+
+/* List view: fix position for overlay */
+.recipe-row {
+    position: relative;
+}
+

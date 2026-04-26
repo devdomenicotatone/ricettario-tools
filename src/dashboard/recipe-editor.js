@@ -7,7 +7,7 @@
 
 // ── Imports (schema validation è nello scope del browser, usiamo fetch) ──
 
-const VALID_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Pasta', 'Lievitati', 'Dolci', 'Conserve', 'Condimenti'];
+import { VALID_CATEGORY_NAMES as VALID_CATEGORIES } from '../../../Ricettario/js/categories.js';
 const TOKEN_REGEX = /\{([a-z_]+):(\d+(?:\.\d+)?)(!)?\}/g;
 
 // ═══════════════════════════════════════════════════════
@@ -98,7 +98,7 @@ class RecipeEditorState {
 
     undo() {
         if (!this.undoStack.length) return;
-        this.redoStack.push(JSON.parse(JSON.stringify(this.currentRecipe)));
+        this.redoStack.push(structuredClone(this.currentRecipe));
         this.currentRecipe = this.undoStack.pop();
         this.isDirty = JSON.stringify(this.currentRecipe) !== JSON.stringify(this.originalRecipe);
         this._emitChange();
@@ -109,7 +109,7 @@ class RecipeEditorState {
 
     redo() {
         if (!this.redoStack.length) return;
-        this.undoStack.push(JSON.parse(JSON.stringify(this.currentRecipe)));
+        this.undoStack.push(structuredClone(this.currentRecipe));
         this.currentRecipe = this.redoStack.pop();
         this.isDirty = JSON.stringify(this.currentRecipe) !== JSON.stringify(this.originalRecipe);
         this._emitChange();
