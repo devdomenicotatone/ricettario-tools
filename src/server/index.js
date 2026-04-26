@@ -43,6 +43,12 @@ export function startServer(port = 3500) {
         res.sendFile(resolve(ricettarioRoot, 'favicon.svg'));
     });
 
+    // ── Shared modules (Ricettario → Dashboard) ──
+    const ricettarioJs = resolve(ricettarioRoot, 'js');
+    app.use('/shared', express.static(ricettarioJs, {
+        setHeaders: (res) => res.setHeader('Content-Type', 'application/javascript'),
+    }));
+
     // ── API Routes ──
     setupRoutes(app);
 
