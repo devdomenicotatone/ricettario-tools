@@ -175,6 +175,51 @@ async function searchPixabay(query, limit = 15) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  PROVIDER 5: OPENVERSE
+// ══════════════════════════════════════════════════════════
+
+async function searchOpenverse(query, limit = 20) {
+    const params = new URLSearchParams({
+        q: query,
+        page_size: String(limit)
+    });
+
+    try {
+        // Openverse allows anonymous access!
+        const response = await fetch(`https://api.openverse.org/v1/images/?${params}`, {
+            headers: { 
+                'User-Agent': 'IlRicettarioBot/1.0',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.log(`      ⚠️  Openverse HTTP ${response.status}`);
+            return [];
+        }
+
+        const data = await response.json();
+        return (data.results || []).map(photo => ({
+            title: photo.title || query,
+            url: photo.url,
+            thumbUrl: photo.url, // Usa l'URL diretto bypassando il proxy /thumb/ di Openverse che spesso da 403/404
+            width: photo.width || 800,
+            height: photo.height || 600,
+            license: photo.license ? `CC ${photo.license.toUpperCase()}` : 'CC',
+            author: photo.creator || 'Openverse',
+            authorUrl: photo.creator_url || '',
+            description: photo.attribution || '',
+            provider: 'Openverse',
+            score: 0,
+        }));
+    } catch (err) {
+        console.log(`      ⚠️  Openverse errore: ${err.message}`);
+        return [];
+    }
+}
+
+
+// ══════════════════════════════════════════════════════════
 //  PROVIDER 4: WIKIMEDIA COMMONS (fallback)
 // ══════════════════════════════════════════════════════════
 
@@ -249,10 +294,25 @@ const FOOD_KEYWORDS = [
     'delicious', 'fresh', 'oven', 'biscuit', 'croissant', 'brioche', 'panettone',
     'chocolate', 'cream', 'butter', 'egg', 'sugar', 'almond', 'walnut', 'nut',
     'ciabatta', 'focaccia', 'rustic', 'artisan', 'sourdough', 'yeast', 'slice',
-    'loaf', 'crust', 'golden', 'warm', 'appetizing', 'garnish', 'served',
+    'loaf', 'crust', 'golden', 'warm', 'appetizing', 'garnish', 'served', 'baguette',
+    'sauce', 'dressing', 'pesto', 'mayonnaise', 'oil', 'vinegar', 'spice', 'herb',
+    'basil', 'tomato', 'garlic', 'onion', 'cheese', 'parmesan', 'meat', 'chicken',
+    'fish', 'vegetable', 'fruit', 'drink', 'beverage', 'cocktail', 'wine', 'beer',
+    'coffee', 'tea', 'breakfast', 'lunch', 'dinner', 'snack', 'appetizer', 'side',
+    'main', 'course', 'restaurant', 'cafe', 'menu', 'order', 'eat', 'hungry', 'tasty',
+    'yummy', 'flavor', 'taste', 'nutrition', 'healthy', 'organic', 'vegan', 'vegetarian',
+    'gluten-free', 'dairy-free', 'nut-free', 'sugar-free', 'low-carb', 'keto', 'paleo',
+    'diet', 'spoon', 'fork', 'knife', 'napkin', 'glass', 'cup', 'jar', 'bottle', 'can',
+    'box', 'bag', 'package', 'wrapper', 'container', 'pot', 'pan', 'skillet', 'wok',
     // IT
     'cibo', 'ricetta', 'dolce', 'pane', 'forno', 'cucina', 'piatto', 'impasto',
-    'lievitato', 'cornetto', 'cantuccini', 'biscotti', 'torta', 'farina',
+    'lievitato', 'cornetto', 'cantuccini', 'biscotti', 'torta', 'farina', 'salsa',
+    'condimento', 'olio', 'aceto', 'spezia', 'erba', 'basilico', 'pomodoro', 'aglio',
+    'cipolla', 'formaggio', 'parmigiano', 'carne', 'pollo', 'pesce', 'verdura', 'frutta',
+    'bevanda', 'cocktail', 'vino', 'birra', 'caffè', 'tè', 'colazione', 'pranzo',
+    'cena', 'spuntino', 'antipasto', 'contorno', 'piatto principale', 'ristorante',
+    'caffetteria', 'menù', 'ordinare', 'mangiare', 'affamato', 'gustoso', 'squisito',
+    'sapore', 'gusto', 'nutrizione', 'sano', 'biologico', 'vegano', 'vegetariano',
 ];
 
 // Keywords NON-FOOD che causano penalita severa
@@ -319,21 +379,21 @@ function buildSearchQueries(recipeName, category, aiKeywords) {
     const queries = [];
 
     // 1. Keywords AI multilingua (generate da Claude in EN/IT/DE)
-    if (aiKeywords.length > 0) {
-        queries.push(...aiKeywords.slice(0, 6));
+    if (aiKeywords && aiKeywords.length > 0) {
+        queries.push(...aiKeywords.slice(0, 4));
     }
 
-    // 2. Nome ricetta + "italian food" (fallback)
+    // 2. Nome ricetta semplificato
     const cleanName = recipeName.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-    const STOPWORDS = ['di', 'del', 'della', 'delle', 'dei', 'al', 'alla', 'alle', 'con', 'in', 'per', 'tipo'];
-    const significant = cleanName.toLowerCase().split(' ')
-        .filter(w => !STOPWORDS.includes(w) && w.length > 2)
-        .slice(0, 3).join(' ');
-    if (significant) queries.push(`${significant} italian food`);
-
-    // 3. Categoria come ultima risorsa
-    if (category) {
-        queries.push(`${category.toLowerCase()} italian traditional`);
+    const STOPWORDS = ['di', 'del', 'della', 'delle', 'dei', 'al', 'alla', 'alle', 'con', 'in', 'per', 'tipo', 'fatto', 'casa'];
+    const significantWords = cleanName.toLowerCase().split(' ')
+        .filter(w => !STOPWORDS.includes(w) && w.length > 2);
+    
+    if (significantWords.length > 0) {
+        queries.push(significantWords.slice(0, 3).join(' ')); // Fino a 3 parole chiave (es. "baguette francese tradizionale")
+        if (!aiKeywords || aiKeywords.length === 0) {
+            queries.push(significantWords.slice(0, 2).join(' ')); // Fallback a 2 parole
+        }
     }
 
     return [...new Set(queries)];
@@ -438,6 +498,7 @@ export async function searchAllProviders(recipeName, category = '', aiKeywords =
         { name: 'Unsplash', fn: searchUnsplash, emoji: '⬛' },
         { name: 'Pixabay', fn: searchPixabay, emoji: '🟢' },
         { name: 'Wikimedia', fn: searchWikimedia, emoji: '🌐' },
+        { name: 'Openverse', fn: searchOpenverse, emoji: '🪐' },
     ];
 
     const grouped = [];
@@ -575,12 +636,43 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
     const imageIndex = loadImageIndex();
     const persistentUrls = new Set([...usedUrls, ...Object.keys(imageIndex)]);
 
-    const image = await findRecipeImage(
+    // Utilizziamo searchAllProviders per popolare il database di candidati
+    const providerResults = await searchAllProviders(
         recipe.title,
         recipe.category,
-        recipe.imageKeywords || [],
-        persistentUrls
+        recipe.imageKeywords || []
     );
+
+    // Salviamo nel database
+    try {
+        const cachePath = resolve(__dirname, '../image-cache.json');
+        let cache = {};
+        if (existsSync(cachePath)) {
+            cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
+        }
+        cache[slug] = { providerResults, timestamp: Date.now() };
+        fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
+        console.log(`\n💾 Database immagini salvato in cache per "${slug}" (${providerResults.length} provider trovati).`);
+    } catch (e) {
+        console.error("⚠️ Impossibile salvare la cache delle immagini:", e.message);
+    }
+
+    // Seleziona la migliore immagine
+    let bestImage = null;
+    for (const group of providerResults) {
+        for (const img of group.images) {
+            // Ricalcola lo score escludendo quelle già usate
+            let currentScore = img.score;
+            if (persistentUrls.has(img.url)) currentScore -= 1000;
+            
+            if (currentScore > -500 && (!bestImage || currentScore > bestImage.score)) {
+                img.score = currentScore;
+                bestImage = img;
+            }
+        }
+    }
+
+    const image = bestImage;
 
     if (!image) return null;
 
@@ -611,6 +703,60 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
         console.log(`   ⚠️  Download fallito: ${err.message}`);
         return null;
     }
+}
+
+// ══════════════════════════════════════════════════════════
+//  AI IMAGE GENERATION (Gemini Imagen)
+// ══════════════════════════════════════════════════════════
+
+export async function generateImageWithGemini(prompt) {
+    const { getActiveGeminiKey } = await import('./utils/api.js');
+    const key = getActiveGeminiKey();
+    if (!key) throw new Error("API Key Gemini non configurata");
+
+    console.log(`   🤖 Generazione immagine con AI: "${prompt}"...`);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${key}`;
+    const payload = {
+        contents: [
+            {
+                role: 'user',
+                parts: [{ text: prompt }]
+            }
+        ],
+        generationConfig: {
+            responseModalities: ["IMAGE"],
+            imageConfig: { aspectRatio: "4:3" }
+        }
+    };
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Errore API Gemini (${response.status}): ${errText}`);
+    }
+
+    const data = await response.json();
+    let base64Str = null;
+
+    if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+        for (const part of data.candidates[0].content.parts) {
+            if (part.inlineData && part.inlineData.data) {
+                base64Str = part.inlineData.data;
+                break;
+            }
+        }
+    }
+
+    if (!base64Str) {
+        throw new Error("Risposta API Gemini non valida (nessuna immagine restituita nel payload inlineData)");
+    }
+
+    return Buffer.from(base64Str, 'base64');
 }
 
 function sleep(ms) {

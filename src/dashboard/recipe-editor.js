@@ -7,7 +7,7 @@
 
 // ── Imports (schema validation è nello scope del browser, usiamo fetch) ──
 
-const VALID_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Pasta', 'Lievitati', 'Dolci', 'Conserve'];
+const VALID_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Pasta', 'Lievitati', 'Dolci', 'Conserve', 'Condimenti'];
 const TOKEN_REGEX = /\{([a-z_]+):(\d+(?:\.\d+)?)(!)?\}/g;
 
 // ═══════════════════════════════════════════════════════
@@ -150,7 +150,7 @@ class RecipeEditorState {
         const warnings = [];
 
         // Required string checks
-        const requiredStrings = ['title', 'slug', 'emoji', 'description', 'subtitle', 'category', 'targetTemp', 'fermentation', 'alert'];
+        const requiredStrings = ['title', 'slug', 'emoji', 'description', 'subtitle', 'category'];
         for (const f of requiredStrings) {
             if (!r[f] || !String(r[f]).trim()) errors.push(`"${f}" è obbligatorio`);
         }

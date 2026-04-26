@@ -5,9 +5,13 @@
  * in un job context con output streaming via WebSocket.
  */
 
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
 import { existsSync, readdirSync, readFileSync, statSync, renameSync, mkdirSync, writeFileSync } from 'fs';
+import { fileURLToPath } from 'url';
 import { createJobContext, withOutputCapture } from './ws-handler.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let jobCounter = 0;
 
@@ -253,7 +257,7 @@ export function setupRoutes(app) {
 
     // ── Refresh Image (con image picker) ──
     app.post('/api/refresh-image', async (req, res) => {
-        const { slug, tipo } = req.body;
+        const { slug, forceRefresh } = req.body;
         const jobId = `img-${++jobCounter}`;
         const ctx = createJobContext(jobId, `Refresh Image: ${slug}`);
 
@@ -262,6 +266,8 @@ export function setupRoutes(app) {
             // Importa searchAllProviders per restituire i risultati alla UI
             const { searchAllProviders } = await import('../image-finder.js');
             const { CATEGORY_FOLDERS } = await import('../constants.js');
+            const { resolve } = await import('path');
+            const { existsSync, readFileSync, writeFileSync } = await import('fs');
 
             // Trova il JSON
             const found = findRecipeJsonDynamic(ricettarioPath, CATEGORY_FOLDERS, slug);
@@ -274,11 +280,36 @@ export function setupRoutes(app) {
 
             const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
 
+            // Gestione Cache
+            const cachePath = resolve(__dirname, '../../image-cache.json');
+            let cache = {};
+            if (existsSync(cachePath)) {
+                try { cache = JSON.parse(readFileSync(cachePath, 'utf-8')); } catch (e) {}
+            }
+
+            if (!forceRefresh && cache[slug] && cache[slug].providerResults) {
+                ctx.log('⚡ Immagini caricate istantaneamente dalla cache locale');
+                ctx.end();
+                return res.json({
+                    jobId,
+                    slug,
+                    category,
+                    jsonFile,
+                    recipeName: recipe.title,
+                    providerResults: cache[slug].providerResults,
+                });
+            }
+
             ctx.log('🔍 Ricerca su tutti i provider...');
             const providerResults = await withOutputCapture(ctx, () =>
                 searchAllProviders(recipe.title, recipe.category || category, recipe.imageKeywords || [])
             );
 
+            // Salva nella cache
+            cache[slug] = { providerResults, timestamp: Date.now() };
+            writeFileSync(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
+
+            ctx.end();
             res.json({
                 jobId,
                 slug,
@@ -289,6 +320,7 @@ export function setupRoutes(app) {
             });
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end();
             res.status(500).json({ error: err.message });
         }
     });
@@ -322,6 +354,104 @@ export function setupRoutes(app) {
                 recipe.imageAttribution = buildAttribution(image);
                 recipe._originalImageUrl = image.url;
                 writeFileSync(jsonFile, JSON.stringify(recipe, null, 2), 'utf-8');
+                ctx.log(`💾 JSON aggiornato`);
+
+                // Sync cards
+                const { syncCards } = await import('../commands/sync-cards.js');
+                await syncCards({});
+                ctx.log(`🔄 recipes.json sincronizzato`);
+            });
+
+            ctx.end(true);
+        } catch (err) {
+            ctx.error(`❌ Errore: ${err.message}`);
+            ctx.end(false);
+        }
+    });
+
+    // ── Genera immagine AI (Nano Banana 2 / Gemini) ──
+    app.post('/api/refresh-image/generate', async (req, res) => {
+        const { slug, prompt, category } = req.body;
+        const jobId = `img-ai-${++jobCounter}`;
+        const ctx = createJobContext(jobId, `AI Generate: ${slug}`);
+        res.json({ jobId, status: 'started' });
+
+        try {
+            const ricettarioPath = getRicettarioPath();
+            const { generateImageWithGemini } = await import('../image-finder.js');
+            const { CATEGORY_FOLDERS } = await import('../constants.js');
+            const { writeFileSync } = await import('fs');
+
+            const catFolder = CATEGORY_FOLDERS[category] || category?.toLowerCase() || 'pane';
+            const localPathTemp = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}-temp.jpg`);
+            const webpPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
+            const avifPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.avif`);
+            const jsonFile = resolve(ricettarioPath, 'ricette', catFolder, `${slug}.json`);
+
+            await withOutputCapture(ctx, async () => {
+                const { readFileSync } = await import('fs');
+                const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
+
+                ctx.log(`🧠 Analisi ricetta per crafting prompt avanzato...`);
+                const { callGemini } = await import('../utils/api.js');
+                
+                const sysPrompt = `You are an expert food photographer and AI image prompt engineer. 
+Your task is to write a highly detailed, visually descriptive prompt for Google Imagen 4.0 to generate a photo of the provided recipe. 
+Focus exclusively on the visual appearance, key ingredients visible on the plate, lighting, and mood. 
+CRITICAL RULES:
+- The prompt MUST be in English.
+- Keep it under 450 characters.
+- ONLY output the raw prompt, nothing else.
+- ALWAYS use exclusively POSITIVE framing. DO NOT use negative prompts (e.g., never write "NO salad" or "NO meat"), because image models suffer from the pink elephant paradox and will generate the forbidden items instead.
+- If the recipe is a sauce, dressing, or dough, emphasize isolation: "A close-up macro shot isolating only the sauce in a small bowl, filling the frame".
+- NEVER place whole raw ingredients (like a whole raw egg yolk or unpeeled garlic) on top of the dish unless explicitly instructed by the recipe. Plating must be authentic, mixed, and realistic to the recipe description.
+- Request professional food photography, high quality, cinematic lighting.`;
+
+                const recipeContext = `User suggestion: ${prompt}\n\nRecipe Name: ${recipe.title || recipe.name}\nIngredients: ${JSON.stringify(recipe.ingredients || recipe.ingredientsGroups)}\nDescription: ${recipe.description || ''}`;
+
+                let craftedPrompt = prompt; // Fallback
+                try {
+                    craftedPrompt = await callGemini({
+                        system: sysPrompt,
+                        messages: [{ role: 'user', content: recipeContext }]
+                    });
+                    ctx.log(`🎨 Prompt Generato: ${craftedPrompt}`);
+                } catch(e) {
+                    ctx.log(`⚠️ Impossibile craftare il prompt con Gemini: ${e.message}. Uso prompt base.`);
+                }
+
+                ctx.log(`🤖 Generazione in corso con Nano Banana 2...`);
+                const imageBuffer = await generateImageWithGemini(craftedPrompt);
+                ctx.log(`✅ Immagine generata con successo!`);
+                
+                // Salviamo l'originale temporaneo
+                writeFileSync(localPathTemp, imageBuffer);
+                ctx.log(`💾 Ottimizzazione formati...`);
+
+                try {
+                    const sharp = (await import('sharp')).default;
+                    await sharp(imageBuffer)
+                        .resize({ width: 1800, withoutEnlargement: true })
+                        .webp({ quality: 82 })
+                        .toFile(webpPath);
+                    await sharp(imageBuffer)
+                        .resize({ width: 1800, withoutEnlargement: true })
+                        .avif({ quality: 50 })
+                        .toFile(avifPath);
+                    
+                    const { unlinkSync } = await import('fs');
+                    unlinkSync(localPathTemp); // rimuove il temp
+                } catch (sharpErr) {
+                    ctx.log(`⚠️ Errore sharp: ${sharpErr.message}, salvo come webp direttamente`);
+                    writeFileSync(webpPath, imageBuffer); // fallback
+                }
+
+                // Aggiorna JSON
+                const currentRecipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
+                currentRecipe.image = `images/ricette/${catFolder}/${slug}.webp`;
+                currentRecipe.imageAttribution = "📷 Foto: Generata da AI (Nano Banana 2)";
+                currentRecipe._originalImageUrl = ""; // non c'è URL originale
+                writeFileSync(jsonFile, JSON.stringify(currentRecipe, null, 2), 'utf-8');
                 ctx.log(`💾 JSON aggiornato`);
 
                 // Sync cards

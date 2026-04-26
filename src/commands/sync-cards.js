@@ -60,6 +60,8 @@ function extractRecipeFromJson(jsonPath, categoryDir) {
         time,
         temp,
         tool,
+        hasSensory: !!data.sensoryProfile,
+        hasStorage: !!(data.storage && data.storage.length > 0),
         _generatedBy: data._generatedBy || null,
         _createdAt: createdAt,
     };

@@ -287,6 +287,12 @@
                     <input type="text" class="form-input search-input" id="recipes-search"
                         placeholder="Cerca ricetta...">
                     <div class="toolbar-controls">
+                        <select class="form-select toolbar-select" id="recipes-status" style="max-width: 180px;">
+                            <option value="all">Stato: Tutti</option>
+                            <option value="no-qa">Senza Qualità</option>
+                            <option value="no-fix">Senza Fix AI</option>
+                            <option value="no-tech">Senza Dati Tecnici</option>
+                        </select>
                         <select class="form-select toolbar-select" id="recipes-sort">
                             <option value="name-asc">Nome A→Z</option>
                             <option value="name-desc">Nome Z→A</option>

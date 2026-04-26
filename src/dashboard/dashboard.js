@@ -41,6 +41,9 @@ function handleWsMessage(data) {
             break;
         case 'job:end':
             finishJob(data.jobId, data.success);
+            if (data.success) {
+                window.imageCacheBuster = Date.now();
+            }
             // Non blocchiamo più l'interfaccia globalmente
             // Refresh ricette se necessario
             if (document.getElementById('panel-ricette').classList.contains('active')) {
@@ -635,7 +638,7 @@ async function runSyncCards() {
 let allRecipes = [];
 let siteBaseUrl = 'http://localhost:5173/Ricettario/';
 let selectedSlugs = new Set();
-let recipeFilter = { category: 'all', search: '', sort: 'name-asc', view: 'grid' };
+let recipeFilter = { category: 'all', search: '', sort: 'name-asc', view: 'grid', status: 'all' };
 let qualityIndex = {}; // slug → {score, verdict, issueCount, timestamp}
 
 async function fetchQualityIndex() {
@@ -957,9 +960,11 @@ function getAiBadge(generatedBy) {
     return `<span class="recipe-badge ai-badge" style="color:${m.color};border-color:${m.color}40;background:${m.color}15" title="Generata con ${m.label}"><i data-lucide="${m.icon}"></i> ${m.label}</span>`;
 }
 
+window.imageCacheBuster = window.imageCacheBuster || Date.now();
+
 function renderRecipeCard(r) {
     const title = r.title || r.name || r.slug;
-    const img = r.image ? `/${r.image}` : '';
+    const img = r.image ? `/${r.image}?t=${window.imageCacheBuster}` : '';
     const cat = r.category || '';
     const catColor = CATEGORY_COLORS[cat] || '#888';
     const catIcon = CATEGORY_ICONS[cat] || 'folder';
@@ -996,7 +1001,10 @@ function renderRecipeCard(r) {
                 </div>
                 ${r.description ? `<div class="recipe-card-desc">${r.description.substring(0, 90)}…</div>` : ''}
                 <div class="recipe-card-actions" onclick="event.stopPropagation()">
-                    <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
+                    <div class="btn-split" title="Cambia immagine">
+                        <button class="btn-split-main" onclick="runRefreshImageForSlug('${r.slug}')"><i data-lucide="image"></i></button>
+                        <button class="btn-split-chevron" onclick="showImageGenerateDropdown('${r.slug}', '${cat}', this.parentElement)">▾</button>
+                    </div>
                     <div class="btn-split" title="Analisi Qualità">
                         <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                         <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
@@ -1013,7 +1021,7 @@ function renderRecipeCard(r) {
 
 function renderRecipeRow(r) {
     const title = r.title || r.name || r.slug;
-    const img = r.image ? `/${r.image}` : '';
+    const img = r.image ? `/${r.image}?t=${window.imageCacheBuster}` : '';
     const cat = r.category || '';
     const catColor = CATEGORY_COLORS[cat] || '#888';
     const catIcon = CATEGORY_ICONS[cat] || 'folder';
@@ -1043,7 +1051,10 @@ function renderRecipeRow(r) {
             <span class="recipe-row-time">${r.time || '—'}</span>
             <span class="recipe-row-date">${r._createdAt ? formatCreatedAt(r._createdAt) : '—'}</span>
             <div class="recipe-row-actions" onclick="event.stopPropagation()">
-                <button class="btn btn-secondary btn-sm" onclick="runRefreshImageForSlug('${r.slug}')" title="Cambia immagine"><i data-lucide="image"></i></button>
+                <div class="btn-split" title="Cambia immagine">
+                    <button class="btn-split-main" onclick="runRefreshImageForSlug('${r.slug}')"><i data-lucide="image"></i></button>
+                    <button class="btn-split-chevron" onclick="showImageGenerateDropdown('${r.slug}', '${cat}', this.parentElement)">▾</button>
+                </div>
                 <div class="btn-split" title="Analisi Qualità">
                     <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
                     <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
@@ -1143,6 +1154,21 @@ function getFilteredRecipes() {
         );
     }
     
+    if (recipeFilter.status !== 'all') {
+        filtered = filtered.filter(r => {
+            if (recipeFilter.status === 'no-qa') {
+                return !qualityIndex[r.slug];
+            }
+            if (recipeFilter.status === 'no-fix') {
+                return qualityIndex[r.slug]?.fixed !== true;
+            }
+            if (recipeFilter.status === 'no-tech') {
+                return !r.hydration && !r.time && !r.temp && !r.hasSensory && !r.hasStorage;
+            }
+            return true;
+        });
+    }
+    
     // Applica subito l'ordinamento così indexOf() funziona correttamente nello shift-click
     const sortKey = recipeFilter.sort;
     filtered.sort((a, b) => {
@@ -1224,6 +1250,12 @@ function updateActionBar() {
                 </button>
                 <button class="action-bar-btn action-bar-fix btn-split-chevron" onclick="showFixModelDropdown(null, this.parentElement, true)" title="Scegli modello ri-validazione" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
             </div>
+            <div class="btn-split" style="display:inline-flex">
+                <button class="action-bar-btn" onclick="showToast('Usa la freccetta laterale per generare in blocco con AI!', 'info')" title="Gestione Immagini">
+                    <i data-lucide="image"></i> Immagini
+                </button>
+                <button class="action-bar-btn btn-split-chevron" onclick="showImageGenerateDropdownBatch(this.parentElement)" title="Opzioni Generazione Immagini" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+            </div>
             <button class="action-bar-btn" onclick="runSensoryBatch()" title="Genera Dati Tecnici AI (Sensoriale + Nutrizionale)" style="color: #fbbf24;">
                 <i data-lucide="sparkles"></i> Dati Tecnici
             </button>
@@ -1284,6 +1316,11 @@ document.getElementById('recipes-sort')?.addEventListener('change', (e) => {
     renderRecipes();
 });
 
+document.getElementById('recipes-status')?.addEventListener('change', (e) => {
+    recipeFilter.status = e.target.value;
+    renderRecipes();
+});
+
 document.getElementById('viewToggle')?.addEventListener('click', (e) => {
     const btn = e.target.closest('.view-btn');
     if (!btn) return;
@@ -1310,7 +1347,7 @@ async function runRefreshImage() {
     await runRefreshImageForSlug(slug);
 }
 
-async function runRefreshImageForSlug(slug) {
+async function runRefreshImageForSlug(slug, forceRefresh = false) {
     appendTerminal(`\n🖼️ Ricerca immagini per "${slug}"...`, 'job-start');
     setRunning(true);
 
@@ -1318,7 +1355,7 @@ async function runRefreshImageForSlug(slug) {
         const resp = await fetch('/api/refresh-image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ slug }),
+            body: JSON.stringify({ slug, forceRefresh }),
         });
         const data = await resp.json();
 
@@ -1343,17 +1380,20 @@ function showImagePickerModal(data) {
     const modal = document.getElementById('imageModal');
     const tabsEl = document.getElementById('modalTabs');
     const bodyEl = document.getElementById('modalBody');
-    document.getElementById('modalTitle').textContent = `🖼️ Immagine per: ${data.recipeName}`;
+    document.getElementById('modalTitle').innerHTML = `🖼️ Immagine per: ${data.recipeName} 
+        <button class="btn btn-sm" onclick="runRefreshImageForSlug('${data.slug}', true)" style="margin-left: 15px; padding: 4px 8px; font-size: 0.8rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; border-radius: 4px;">🔄 Forza Refresh API</button>
+        <input type="text" id="modalImageSearch" placeholder="🔍 Cerca tra i risultati (es. focaccia)..." onkeyup="filterModalImages(this.value)" style="margin-left: 15px; padding: 4px 12px; font-size: 0.9rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); width: 250px;">
+    `;
 
     const providers = data.providerResults.filter(p => p.images.length > 0);
 
     // Tabs
     tabsEl.innerHTML = providers.map((p, i) =>
         `<button class="modal-tab${i === 0 ? ' active' : ''}" data-idx="${i}">${p.emoji} ${p.provider} (${p.images.length})</button>`
-    ).join('');
+    ).join('') + `<button class="modal-tab${providers.length === 0 ? ' active' : ''}" data-idx="ai">🍌 Genera AI</button>`;
 
     // Grids
-    const gridsHtml = providers.map((p, i) =>
+    let gridsHtml = providers.map((p, i) =>
         `<div class="modal-grid" data-idx="${i}" style="display:${i === 0 ? 'grid' : 'none'}">
             ${p.images.map(img => `
                 <div class="modal-img-card" onclick='confirmImageSelection(${JSON.stringify({
@@ -1362,6 +1402,7 @@ function showImagePickerModal(data) {
                     width: img.width, height: img.height,
                 }).replace(/'/g, "&#39;")}, "${data.slug}", "${data.category}")'>
                     <img src="${img.thumbUrl || img.url}" alt="${(img.title || '').substring(0, 40)}" loading="lazy">
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 6px 8px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${(img.title || '').replace(/"/g, '&quot;')}">${img.title || 'Senza titolo'}</div>
                     <div class="modal-img-card-info">
                         <span class="modal-img-card-score">⭐${img.score}</span> · ${img.width}×${img.height} · ${img.author || '?'}
                     </div>
@@ -1370,7 +1411,27 @@ function showImagePickerModal(data) {
         </div>`
     ).join('');
 
+    // AI Panel
+    gridsHtml += `
+        <div class="modal-grid" data-idx="ai" style="display:${providers.length === 0 ? 'block' : 'none'}; padding: 20px;">
+            <div style="max-width: 500px; margin: 0 auto; text-align: center;">
+                <p style="margin-bottom: 15px; color: var(--text-secondary);">Descrivi l'immagine che vuoi generare. Usa parole chiave descrittive.</p>
+                <textarea id="ai-prompt-input" class="form-textarea" rows="3" style="width: 100%; margin-bottom: 15px; resize: none;"></textarea>
+                <button class="btn btn-primary" onclick="generateAiImage('${data.slug}', '${data.category}')" id="ai-generate-btn" style="width: 100%; justify-content: center;">
+                    <i data-lucide="sparkles"></i> Genera Immagine
+                </button>
+            </div>
+        </div>
+    `;
+
     bodyEl.innerHTML = gridsHtml;
+
+    // Set initial textarea value if AI tab is opened
+    setTimeout(() => {
+        const ta = document.getElementById('ai-prompt-input');
+        if (ta) ta.value = data.recipeName + ", food photography, high quality, professional lighting";
+        lucide.createIcons();
+    }, 10);
 
     // Tab switching
     tabsEl.querySelectorAll('.modal-tab').forEach(tab => {
@@ -1378,12 +1439,35 @@ function showImagePickerModal(data) {
             tabsEl.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             bodyEl.querySelectorAll('.modal-grid').forEach(g => g.style.display = 'none');
-            bodyEl.querySelector(`.modal-grid[data-idx="${tab.dataset.idx}"]`).style.display = 'grid';
+            const targetGrid = bodyEl.querySelector(`.modal-grid[data-idx="${tab.dataset.idx}"]`);
+            if (targetGrid) targetGrid.style.display = tab.dataset.idx === 'ai' ? 'block' : 'grid';
         });
     });
 
     modal.classList.add('active');
+
+    setTimeout(() => {
+        const searchInput = document.getElementById('modalImageSearch');
+        if (searchInput) searchInput.focus();
+    }, 100);
 }
+
+// Funzione globale per filtrare le immagini
+window.filterModalImages = function(query) {
+    const q = query.toLowerCase().trim();
+    const cards = document.querySelectorAll('.modal-img-card');
+    
+    cards.forEach(card => {
+        const titleEl = card.querySelector('div[title]');
+        const text = titleEl ? titleEl.getAttribute('title').toLowerCase() : '';
+        
+        if (q === '' || text.includes(q)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+};
 
 async function confirmImageSelection(image, slug, category) {
     closeImageModal();
@@ -1392,8 +1476,140 @@ async function confirmImageSelection(image, slug, category) {
     await apiPost('refresh-image/confirm', { slug, image, category });
 }
 
+async function generateAiImage(slug, category) {
+    const prompt = document.getElementById('ai-prompt-input').value.trim();
+    if (!prompt) return showToast('Inserisci un prompt', 'warning');
+
+    const btn = document.getElementById('ai-generate-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="lucide-icon spin"></i> Generazione...';
+    lucide.createIcons();
+
+    closeImageModal();
+    appendTerminal(`🤖 Generazione immagine AI per "${slug}"...`, 'job-start');
+
+    try {
+        await apiPost('refresh-image/generate', { slug, category, prompt });
+    } catch (e) {
+        showToast('Errore durante la generazione', 'error');
+        appendTerminal(`❌ Errore AI: ${e.message}`, 'stderr');
+    }
+}
+
 function closeImageModal() {
     document.getElementById('imageModal').classList.remove('active');
+}
+
+// ── Image Generation Dropdowns & Batch ──
+
+function showImageGenerateDropdown(slug, cat, anchorEl) {
+    document.querySelector('.model-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'model-dropdown';
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 100) {
+        dd.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    } else {
+        dd.style.top = `${rect.bottom + 4}px`;
+        dd.style.left = `${rect.left}px`;
+    }
+
+    dd.innerHTML = `
+        <div class="model-dropdown-title">Generazione Immagine</div>
+        <button class="model-dropdown-item" onclick="document.querySelector('.model-dropdown')?.remove(); quickGenerateAiImage('${slug}', '${cat}')">
+            <i data-lucide="sparkles"></i>
+            Genera con Nano Banana 2
+            <span class="model-tag tag-new" style="margin-left: 8px">AI</span>
+        </button>
+    `;
+
+    document.body.appendChild(dd);
+    lucide.createIcons();
+
+    setTimeout(() => {
+        document.addEventListener('click', function closeMD(e) {
+            if (!dd.contains(e.target) && !anchorEl.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeMD);
+            }
+        });
+    }, 10);
+}
+
+function showImageGenerateDropdownBatch(anchorEl) {
+    document.querySelector('.model-dropdown')?.remove();
+
+    const rect = anchorEl.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'model-dropdown';
+
+    dd.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+    dd.style.left = `${rect.left}px`;
+
+    dd.innerHTML = `
+        <div class="model-dropdown-title">Azione Batch Immagini</div>
+        <button class="model-dropdown-item" onclick="document.querySelector('.model-dropdown')?.remove(); runBatchGenerateAiImage()">
+            <i data-lucide="sparkles"></i>
+            Genera in blocco (Nano Banana 2)
+            <span class="model-tag tag-new" style="margin-left: 8px">AI</span>
+        </button>
+    `;
+
+    document.body.appendChild(dd);
+    lucide.createIcons();
+
+    setTimeout(() => {
+        document.addEventListener('click', function closeMD(e) {
+            if (!dd.contains(e.target) && !anchorEl.contains(e.target)) {
+                dd.remove();
+                document.removeEventListener('click', closeMD);
+            }
+        });
+    }, 10);
+}
+
+async function quickGenerateAiImage(slug, category) {
+    const r = allRecipes.find(x => x.slug === slug);
+    const title = r ? (r.title || r.name) : slug;
+    const prompt = title + ", food photography, high quality, professional lighting";
+
+    appendTerminal(`🤖 Generazione immagine AI per "${slug}" (Nano Banana 2)...`, 'job-start');
+    showToast(`Generazione immagine per ${title}...`, 'info');
+
+    try {
+        await apiPost('refresh-image/generate', { slug, category, prompt });
+        // Il job proseguirà in background, il websocket aggiornerà UI e card.
+    } catch (e) {
+        showToast('Errore durante la generazione', 'error');
+        appendTerminal(`❌ Errore AI: ${e.message}`, 'stderr');
+    }
+}
+
+async function runBatchGenerateAiImage() {
+    if (selectedSlugs.size === 0) return showToast('Seleziona almeno una ricetta', 'warning');
+    const slugs = [...selectedSlugs];
+    showCustomConfirm(`🤖 Generare immagini AI (Nano Banana 2) per ${slugs.length} ricett${slugs.length === 1 ? 'a' : 'e'}?\n\nVerranno usati i titoli come prompt in background.`, async () => {
+        expandTerminal();
+        for(const slug of slugs) {
+            const r = allRecipes.find(x => x.slug === slug);
+            const title = r ? (r.title || r.name) : slug;
+            const category = r ? (r.category) : '';
+            const prompt = title + ", food photography, high quality, professional lighting";
+            appendTerminal(`🤖 Generazione immagine AI per "${slug}"...`, 'job-start');
+            try {
+                await apiPost('refresh-image/generate', { slug, category, prompt });
+                appendTerminal(`✅ Immagine generata per "${slug}"`, 'success');
+            } catch (e) {
+                appendTerminal(`❌ Errore API per "${slug}": ${e.message}`, 'stderr');
+            }
+        }
+        // Il batch andrà in background.
+        clearSelection();
+    });
 }
 
 // Close modal on backdrop click
@@ -1467,26 +1683,25 @@ async function fetchStatus() {
         // Salva URL del sito Vite per i link "Apri nel sito"
         if (status.siteUrl) siteBaseUrl = status.siteUrl;
 
-        const geminiLabel = status.hasGemini
-            ? `<span class="pill active"><i data-lucide="shield-check"></i> Gemini <small>(Key ${status.geminiSlot || 1})</small></span>`
-            : '';
-
         const pills = document.getElementById('statusPills');
+        
+        const hasTesto = status.hasAnthropic || status.hasGemini;
+        const hasImmaginiGen = status.hasGemini; 
+        const hasRicercaFoto = status.hasPexels || status.hasUnsplash || status.hasPixabay || true; // Wikimedia e Openverse sempre attivi
+        const hasSEO = status.hasSerpApi || status.hasDataForSeo;
+
         pills.innerHTML = [
-            status.hasAnthropic ? '<span class="pill active"><i data-lucide="sparkles"></i> Claude</span>' : '<span class="pill"><i data-lucide="sparkles"></i> No Claude</span>',
-            geminiLabel,
-            status.hasPexels ? '<span class="pill active"><i data-lucide="camera"></i> Pexels</span>' : '',
-            status.hasUnsplash ? '<span class="pill active"><i data-lucide="camera"></i> Unsplash</span>' : '',
-            status.hasPixabay ? '<span class="pill active"><i data-lucide="camera"></i> Pixabay</span>' : '',
-            status.hasSerpApi ? '<span class="pill active"><i data-lucide="search"></i> SerpAPI</span>' : '',
-            status.hasDataForSeo ? '<span class="pill active"><i data-lucide="bar-chart-2"></i> DataForSEO</span>' : '',
+            hasTesto ? '<span class="pill active"><i data-lucide="bot"></i> AI Testuale</span>' : '<span class="pill"><i data-lucide="bot"></i> No AI Testuale</span>',
+            hasImmaginiGen ? '<span class="pill active"><i data-lucide="image-plus"></i> Creazione Immagini</span>' : '',
+            hasRicercaFoto ? '<span class="pill active"><i data-lucide="images"></i> Ricerca Immagini</span>' : '',
+            hasSEO ? '<span class="pill active"><i data-lucide="bar-chart-2"></i> Ricerca SEO</span>' : '',
         ].filter(Boolean).join('');
+        
         lucide.createIcons();
 
         // Update stats
         const providerCount = [
-            status.hasAnthropic, status.hasGemini, status.hasPexels, 
-            status.hasUnsplash, status.hasPixabay, status.hasSerpApi, status.hasDataForSeo
+            hasTesto, hasImmaginiGen, hasRicercaFoto, hasSEO
         ].filter(Boolean).length;
         document.getElementById('stat-provider').textContent = providerCount;
 

@@ -248,6 +248,11 @@ export function getActiveGeminiSlot() {
     return _activeGeminiSlot;
 }
 
+/** Ritorna la chiave API Gemini attiva (plaintext) utile per le chiamate REST dirette (come Imagen) */
+export function getActiveGeminiKey() {
+    return _activeGeminiSlot === 2 ? process.env.GEMINI_API_KEY2 : process.env.GEMINI_API_KEY;
+}
+
 /**
  * Chiama Gemini API con retry automatico
  *

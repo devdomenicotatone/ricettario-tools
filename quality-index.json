@@ -170,12 +170,6 @@
     "issueCount": 2,
     "timestamp": "2026-04-16T18:48:22.291Z"
   },
-  "olio-extravergine-aromatizzato": {
-    "score": 95,
-    "verdict": "🟢 Buona",
-    "issueCount": 1,
-    "timestamp": "2026-04-16T18:19:50.885Z"
-  },
   "pasta-brioche-classica": {
     "score": 88,
     "verdict": "🟢 Buona",
@@ -190,10 +184,11 @@
     "fixed": true
   },
   "pizza-romana-stesa-al-matterello": {
-    "score": 80,
-    "verdict": "🟡 Da migliorare",
-    "issueCount": 3,
-    "timestamp": "2026-04-16T21:59:48.261Z"
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-26T15:40:18.710Z",
+    "fixed": true
   },
   "pizza-in-teglia-romana-alta-idratazione": {
     "score": 100,
@@ -203,10 +198,11 @@
     "fixed": true
   },
   "pizza-in-teglia-romana": {
-    "score": 83,
+    "score": 85,
     "verdict": "🟡 Da migliorare",
-    "issueCount": 2,
-    "timestamp": "2026-04-16T22:00:36.541Z"
+    "issueCount": 3,
+    "timestamp": "2026-04-26T15:42:17.440Z",
+    "fixed": true
   },
   "marinatura-menta-aceto-verdure-grigliate": {
     "score": 100,
@@ -317,10 +313,11 @@
     "timestamp": "2026-04-19T20:41:21.061Z"
   },
   "besciamella-classica": {
-    "score": 95,
+    "score": 100,
     "verdict": "🟢 Buona",
-    "issueCount": 3,
-    "timestamp": "2026-04-19T20:41:37.250Z"
+    "issueCount": 1,
+    "timestamp": "2026-04-26T19:41:47.250Z",
+    "fixed": true
   },
   "maionese-fatta-in-casa": {
     "score": 95,
@@ -335,10 +332,10 @@
     "timestamp": "2026-04-19T20:58:05.815Z"
   },
   "salsa-verde-piemontese-bagnet-verd": {
-    "score": 95,
+    "score": 100,
     "verdict": "🟢 Buona",
-    "issueCount": 2,
-    "timestamp": "2026-04-19T20:58:30.881Z"
+    "issueCount": 0,
+    "timestamp": "2026-04-26T19:34:53.914Z"
   },
   "salsa-teriyaki-originale": {
     "score": 98,
@@ -444,36 +441,42 @@
     "timestamp": "2026-04-24T14:46:17.948Z",
     "fixed": true
   },
-  "olio-peperone-crusco-paprika": {
+  "olio-peperone-crusco-rosso-rubino": {
     "score": 95,
     "verdict": "🟢 Buona",
     "issueCount": 2,
     "timestamp": "2026-04-24T23:20:41.512Z",
     "fixed": true
   },
-  "olio-al-cavolo-viola-condimento": {
+  "olio-cavolo-viola-elettrico": {
     "score": 95,
     "verdict": "🟢 Buona",
     "issueCount": 2,
     "timestamp": "2026-04-24T23:31:21.724Z",
     "fixed": true
   },
-  "olio-aglio-nero-carbone-vegetale": {
+  "olio-aglio-nero-ossidiana": {
     "score": 95,
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-24T23:58:44.002Z"
   },
-  "olio-curcuma-zafferano": {
+  "olio-curcuma-zafferano-giallo-oro": {
     "score": 95,
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-24T23:59:02.423Z"
   },
-  "olio-carota-zenzero": {
+  "olio-carota-zenzero-arancio-fluo": {
     "score": 100,
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-24T23:59:21.924Z"
+  },
+  "olio-extravergine-aromatizzato-verde-dorato": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T18:19:50.885Z"
   }
 }
