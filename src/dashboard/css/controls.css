@@ -63,6 +63,10 @@
     cursor: not-allowed;
 }
 
+.cat-dropdown-danger {
+    --cat-color: #e74c3c;
+}
+
 /* ── SPLIT BUTTON (Quality Model Picker) ── */
 .btn-split {
     display: inline-flex;
@@ -393,3 +397,25 @@
     opacity: 0.3;
     pointer-events: none;
 }
+
+/* ── Action Bar Split & Chevron (replaces inline styles) ── */
+.action-bar-split {
+    display: inline-flex;
+}
+
+.action-bar-chevron {
+    padding: 0 6px;
+    border-left: 1px solid rgba(255,255,255,0.2);
+}
+
+.action-bar-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: -3px;
+    margin-right: 4px;
+}
+
+.action-bar-sensory {
+    color: #fbbf24;
+}
+

@@ -13,6 +13,9 @@ import { RecipeEditorState } from './editor/editor-state.js';
 import { installValidation } from './editor/editor-validation.js';
 import { renderActiveTab } from './editor/editor-tabs.js';
 import { installCrudActions } from './editor/editor-actions.js';
+import { showToast } from './modules/toast.js';
+import { loadRecipes } from './modules/recipe-list.js';
+import { expandTerminal } from './modules/terminal.js';
 
 // ═══════════════════════════════════════════════════════
 //  INIT
@@ -200,18 +203,18 @@ async function closeEditor() {
     editorOverlay?.classList.remove('active');
     document.body.style.overflow = '';
     
-    if (typeof loadRecipes === 'function') loadRecipes();
+    loadRecipes();
 }
 
 async function runSensoryProfile() {
     if (state.isDirty) {
-        if (typeof showToast === 'function') showToast('Salva le modifiche prima di generare il profilo sensoriale.', 'warning');
+        showToast('Salva le modifiche prima di generare il profilo sensoriale.', 'warning');
         return;
     }
     const slug = state.slug;
     
-    if (typeof expandTerminal === 'function') expandTerminal();
-    if (typeof showToast === 'function') showToast('Generazione profilo sensoriale in corso...', 'success');
+    expandTerminal();
+    showToast('Generazione profilo sensoriale in corso...', 'success');
     
     try {
         const resp = await fetch('/api/qualita/sensory', {
@@ -224,6 +227,6 @@ async function runSensoryProfile() {
         const data = await resp.json();
         console.log("Sensory job started", data.jobId);
     } catch (err) {
-        if (typeof showToast === 'function') showToast(`Errore: ${err.message}`, 'error');
+        showToast(`Errore: ${err.message}`, 'error');
     }
 }

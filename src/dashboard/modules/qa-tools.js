@@ -41,7 +41,7 @@ export function getQualityBadge(slug) {
     const cls = q.score >= 80 ? 'quality-good' : q.score >= 60 ? 'quality-warn' : 'quality-bad';
     const emoji = q.score >= 80 ? '🟢' : q.score >= 60 ? '🟡' : '🔴';
     return `<span class="quality-badge ${cls} clickable" 
-        onclick="event.stopPropagation(); showQualityReport('${slug}')" 
+        data-action="show-quality-report" data-slug="${slug}"
         title="Qualità: ${q.score}/100 — ${q.issueCount} issue (${new Date(q.timestamp).toLocaleDateString()}) — Clicca per dettagli">${emoji} ${q.score}</span>`;
 }
 

@@ -157,3 +157,9 @@
     padding: 4px 10px 8px 10px;
 }
 .terminal-job.collapsed .terminal-job-logs { display: none; }
+
+/* ── Job status icon colors (replaces inline styles) ── */
+.job-icon-running { color: #818cf8; }
+.job-icon-success { color: #4ade80; }
+.job-icon-error { color: #f87171; }
+

@@ -278,3 +278,74 @@
 
 /* ── IMAGE PICKER AREA ── */
 .image-picker-area { margin-top: 20px; }
+
+/* ── SCOPRI RESULTS ── */
+.scopri-results {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.scopri-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color var(--transition);
+}
+
+.scopri-card:hover {
+    border-color: var(--accent);
+}
+
+.scopri-checkbox {
+    margin-top: 4px;
+}
+
+.scopri-card-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.scopri-card-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.scopri-card-source {
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 6px;
+}
+
+.scopri-card-snippet {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.scopri-actions {
+    margin-top: 16px;
+}
+
+.btn-full-width {
+    width: 100%;
+}
+
+/* ── Inline feedback states ── */
+.feedback-error {
+    color: var(--danger);
+    padding: 10px;
+}
+
+.feedback-empty {
+    padding: 15px;
+    color: var(--text-muted);
+}
+

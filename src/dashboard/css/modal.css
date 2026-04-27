@@ -214,3 +214,57 @@
 .quality-report-content .quality-table tr:hover td {
     background: var(--bg-hover);
 }
+
+/* ── Image Picker Modal extras (replaces inline styles) ── */
+.modal-refresh-btn {
+    margin-left: 15px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modal-search-input {
+    margin-left: 15px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    width: 250px;
+}
+
+.modal-img-title {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 6px 8px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.modal-grid-ai {
+    padding: 20px;
+}
+
+.modal-ai-form {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.modal-ai-desc {
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+}
+
+.modal-ai-textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    resize: none;
+}
+

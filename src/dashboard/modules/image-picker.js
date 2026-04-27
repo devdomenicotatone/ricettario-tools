@@ -55,9 +55,14 @@ function showImagePickerModal(data) {
     const tabsEl = document.getElementById('modalTabs');
     const bodyEl = document.getElementById('modalBody');
     document.getElementById('modalTitle').innerHTML = `🖼️ Immagine per: ${data.recipeName} 
-        <button class="btn btn-sm" onclick="runRefreshImageForSlug('${data.slug}', true)" style="margin-left: 15px; padding: 4px 8px; font-size: 0.8rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; border-radius: 4px;">🔄 Forza Refresh API</button>
-        <input type="text" id="modalImageSearch" placeholder="🔍 Cerca tra i risultati..." onkeyup="filterModalImages(this.value)" style="margin-left: 15px; padding: 4px 12px; font-size: 0.9rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); width: 250px;">
+        <button class="btn btn-sm modal-refresh-btn" data-action="force-refresh" data-slug="${data.slug}">🔄 Forza Refresh API</button>
+        <input type="text" id="modalImageSearch" placeholder="🔍 Cerca tra i risultati..." class="modal-search-input">
     `;
+    
+    // Attach event listeners for modal header
+    document.getElementById('modalTitle').querySelector('[data-action="force-refresh"]')
+        ?.addEventListener('click', () => runRefreshImageForSlug(data.slug, true));
+    document.getElementById('modalImageSearch')?.addEventListener('keyup', (e) => filterModalImages(e.target.value));
 
     const providers = data.providerResults.filter(p => p.images.length > 0);
 
@@ -67,14 +72,10 @@ function showImagePickerModal(data) {
 
     let gridsHtml = providers.map((p, i) =>
         `<div class="modal-grid" data-idx="${i}" style="display:${i === 0 ? 'grid' : 'none'}">
-            ${p.images.map(img => `
-                <div class="modal-img-card" onclick='confirmImageSelection(${JSON.stringify({
-                    url: img.url, thumbUrl: img.thumbUrl, title: img.title,
-                    author: img.author, license: img.license, provider: img.provider,
-                    width: img.width, height: img.height,
-                }).replace(/'/g, "&#39;")}, "${data.slug}", "${data.category}")'>
+            ${p.images.map((img, imgIdx) => `
+                <div class="modal-img-card" data-action="select-image" data-provider-idx="${i}" data-img-idx="${imgIdx}">
                     <img src="${img.thumbUrl || img.url}" alt="${(img.title || '').substring(0, 40)}" loading="lazy">
-                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 6px 8px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${(img.title || '').replace(/"/g, '&quot;')}">${img.title || 'Senza titolo'}</div>
+                    <div class="modal-img-title" title="${(img.title || '').replace(/"/g, '&quot;')}">${img.title || 'Senza titolo'}</div>
                     <div class="modal-img-card-info">
                         <span class="modal-img-card-score">⭐${img.score}</span> · ${img.width}×${img.height} · ${img.author || '?'}
                     </div>
@@ -84,17 +85,35 @@ function showImagePickerModal(data) {
     ).join('');
 
     gridsHtml += `
-        <div class="modal-grid" data-idx="ai" style="display:${providers.length === 0 ? 'block' : 'none'}; padding: 20px;">
-            <div style="max-width: 500px; margin: 0 auto; text-align: center;">
-                <p style="margin-bottom: 15px; color: var(--text-secondary);">Descrivi l'immagine che vuoi generare. Usa parole chiave descrittive.</p>
-                <textarea id="ai-prompt-input" class="form-textarea" rows="3" style="width: 100%; margin-bottom: 15px; resize: none;"></textarea>
-                <button class="btn btn-primary" onclick="generateAiImage('${data.slug}', '${data.category}')" id="ai-generate-btn" style="width: 100%; justify-content: center;">
+        <div class="modal-grid modal-grid-ai" data-idx="ai" style="display:${providers.length === 0 ? 'block' : 'none'}">
+            <div class="modal-ai-form">
+                <p class="modal-ai-desc">Descrivi l'immagine che vuoi generare. Usa parole chiave descrittive.</p>
+                <textarea id="ai-prompt-input" class="form-textarea modal-ai-textarea" rows="3"></textarea>
+                <button class="btn btn-primary btn-full-width" data-action="generate-ai" data-slug="${data.slug}" data-category="${data.category}" id="ai-generate-btn">
                     <i data-lucide="sparkles"></i> Genera Immagine
                 </button>
             </div>
         </div>
     `;
     bodyEl.innerHTML = gridsHtml;
+    
+    // Store provider data for click delegation
+    bodyEl._providerData = { providers, slug: data.slug, category: data.category };
+    
+    // Event delegation for image selection and AI generate
+    bodyEl.addEventListener('click', function modalBodyClick(e) {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+        
+        if (target.dataset.action === 'select-image') {
+            const pIdx = parseInt(target.dataset.providerIdx);
+            const iIdx = parseInt(target.dataset.imgIdx);
+            const img = bodyEl._providerData.providers[pIdx]?.images[iIdx];
+            if (img) confirmImageSelection(img, bodyEl._providerData.slug, bodyEl._providerData.category);
+        } else if (target.dataset.action === 'generate-ai') {
+            generateAiImage(target.dataset.slug, target.dataset.category);
+        }
+    });
 
     setTimeout(() => {
         const ta = document.getElementById('ai-prompt-input');
@@ -173,12 +192,16 @@ export function showImageGenerateDropdown(slug, cat, anchorEl) {
 
     dd.innerHTML = `
         <div class="model-dropdown-title">Generazione Immagine</div>
-        <button class="model-dropdown-item" onclick="document.querySelector('.model-dropdown')?.remove(); quickGenerateAiImage('${slug}', '${cat}')">
+        <button class="model-dropdown-item" data-action="quick-generate">
             <i data-lucide="sparkles"></i>
             Genera con Nano Banana 2
-            <span class="model-tag tag-new" style="margin-left: 8px">AI</span>
+            <span class="model-tag tag-new">AI</span>
         </button>
     `;
+    dd.querySelector('[data-action="quick-generate"]').addEventListener('click', () => {
+        dd.remove();
+        quickGenerateAiImage(slug, cat);
+    });
     document.body.appendChild(dd);
     if (window.lucide) lucide.createIcons();
 
@@ -202,12 +225,16 @@ export function showImageGenerateDropdownBatch(anchorEl) {
 
     dd.innerHTML = `
         <div class="model-dropdown-title">Azione Batch Immagini</div>
-        <button class="model-dropdown-item" onclick="document.querySelector('.model-dropdown')?.remove(); runBatchGenerateAiImage()">
+        <button class="model-dropdown-item" data-action="batch-generate">
             <i data-lucide="sparkles"></i>
             Genera in blocco (Nano Banana 2)
-            <span class="model-tag tag-new" style="margin-left: 8px">AI</span>
+            <span class="model-tag tag-new">AI</span>
         </button>
     `;
+    dd.querySelector('[data-action="batch-generate"]').addEventListener('click', () => {
+        dd.remove();
+        runBatchGenerateAiImage();
+    });
     document.body.appendChild(dd);
     if (window.lucide) lucide.createIcons();
 

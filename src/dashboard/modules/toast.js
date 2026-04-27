@@ -27,18 +27,14 @@ export function showToast(message, type = 'info') {
 // ── Custom Confirm Modal ──
 export function showCustomConfirm(message, onConfirm) {
     const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay active';
-    overlay.style.zIndex = '9999';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
+    overlay.className = 'modal-overlay confirm-overlay active';
     
     overlay.innerHTML = `
-        <div class="modal-content" style="max-width: 400px; padding: 24px; text-align: center; border-radius: 12px; background: var(--bg-elevated); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid var(--border);">
-            <div style="margin-bottom: 24px; color: var(--text-primary); font-size: 15px; white-space: pre-wrap; line-height: 1.5; font-weight: 500;">${message}</div>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="btn btn-secondary" id="btnConfirmCancel" style="min-width: 100px;">Annulla</button>
-                <button class="btn btn-primary" id="btnConfirmOk" style="min-width: 100px;">Ok</button>
+        <div class="confirm-box">
+            <div class="confirm-message">${message}</div>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" data-action="confirm-cancel">Annulla</button>
+                <button class="btn btn-primary" data-action="confirm-ok">Ok</button>
             </div>
         </div>
     `;
@@ -49,8 +45,8 @@ export function showCustomConfirm(message, onConfirm) {
         setTimeout(() => overlay.remove(), 300);
     };
 
-    overlay.querySelector('#btnConfirmCancel').addEventListener('click', close);
-    overlay.querySelector('#btnConfirmOk').addEventListener('click', () => {
+    overlay.querySelector('[data-action="confirm-cancel"]').addEventListener('click', close);
+    overlay.querySelector('[data-action="confirm-ok"]').addEventListener('click', () => {
         close();
         if (onConfirm) onConfirm();
     });

@@ -134,13 +134,21 @@ export function showUsedImagesMenu(anchorEl) {
     dd.style.minWidth = '220px';
 
     dd.innerHTML = `
-        <button class="cat-dropdown-item" onclick="rebuildUsedImages(); this.closest('.cat-dropdown').remove()">
+        <button class="cat-dropdown-item" data-action="rebuild-images">
             <i data-lucide="database"></i> 🔄 Ricostruisci da ricette
         </button>
-        <button class="cat-dropdown-item" style="--cat-color:#e74c3c" onclick="resetUsedImages(); this.closest('.cat-dropdown').remove()">
+        <button class="cat-dropdown-item cat-dropdown-danger" data-action="reset-images">
             <i data-lucide="trash-2"></i> 🗑️ Reset (svuota tutto)
         </button>
     `;
+    
+    dd.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        dd.remove();
+        if (btn.dataset.action === 'rebuild-images') rebuildUsedImages();
+        else if (btn.dataset.action === 'reset-images') resetUsedImages();
+    });
 
     document.body.appendChild(dd);
     if (window.lucide) lucide.createIcons();
@@ -176,8 +184,6 @@ export async function rebuildUsedImages() {
     setTimeout(() => loadUsedImagesCount(), 2000);
 }
 
-// Global expose
-window.switchGeminiKey = switchGeminiKey;
-window.showUsedImagesMenu = showUsedImagesMenu;
-window.resetUsedImages = resetUsedImages;
+// Global expose — only for cross-module usage
 window.rebuildUsedImages = rebuildUsedImages;
+

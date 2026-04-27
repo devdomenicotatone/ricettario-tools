@@ -51,3 +51,41 @@
     from { opacity: 1; transform: translateX(0); }
     to { opacity: 0; transform: translateX(100px); }
 }
+
+/* ── Confirm Dialog ── */
+.confirm-overlay {
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-box {
+    max-width: 400px;
+    padding: 24px;
+    text-align: center;
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+}
+
+.confirm-message {
+    margin-bottom: 24px;
+    color: var(--text-primary);
+    font-size: 15px;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.confirm-actions .btn {
+    min-width: 100px;
+}
+

@@ -1,21 +1,7 @@
 {
   "Pane": {
-    "timestamp": 1776359894096,
+    "timestamp": 1777293128002,
     "suggestions": [
-      {
-        "keyword": "pane fatto in casa",
-        "popularity": {
-          "score": 100,
-          "label": "18.100/mese",
-          "emoji": "📊"
-        },
-        "volume": 18100,
-        "competition": "LOW",
-        "cpc": 0.05,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "dataforseo"
-      },
       {
         "keyword": "ricetta panettone",
         "popularity": {
@@ -32,6 +18,20 @@
       },
       {
         "keyword": "ricetta pane fatto in casa",
+        "popularity": {
+          "score": 81,
+          "label": "8100/mese",
+          "emoji": "📊"
+        },
+        "volume": 8100,
+        "competition": "LOW",
+        "cpc": 0.04,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "pane fatto in casa ricetta",
         "popularity": {
           "score": 81,
           "label": "8100/mese",
@@ -311,20 +311,6 @@
         "source": "dataforseo"
       },
       {
-        "keyword": "pane ad alta idratazione fulvio marino",
-        "popularity": {
-          "score": 10,
-          "label": "Top 50",
-          "emoji": "📈"
-        },
-        "volume": null,
-        "competition": null,
-        "cpc": null,
-        "category": "Pane",
-        "alreadyCreated": false,
-        "source": "autocomplete"
-      },
-      {
         "keyword": "pane ad alta idratazione ricetta",
         "popularity": {
           "score": 10,
@@ -353,6 +339,20 @@
         "source": "autocomplete"
       },
       {
+        "keyword": "pane ad alta idratazione bimby",
+        "popularity": {
+          "score": 10,
+          "label": "Top 50",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Pane",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
         "keyword": "pane ad alta idratazione e lunga lievitazione",
         "popularity": {
           "score": 10,
@@ -367,7 +367,7 @@
         "source": "autocomplete"
       },
       {
-        "keyword": "pane ad alta idratazione bimby",
+        "keyword": "pane ad alta idratazione fulvio marino",
         "popularity": {
           "score": 10,
           "label": "Top 50",

@@ -284,3 +284,9 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+
+.seo-card-existing {
+    font-size: 11px;
+    color: var(--success);
+}
+

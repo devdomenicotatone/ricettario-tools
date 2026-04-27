@@ -53,8 +53,7 @@ function renderCommands(filter) {
 
     results.innerHTML = filtered.map((cmd, i) => `
         <div class="command-item${i === cmdSelectedIdx ? ' selected' : ''}"
-             onmouseenter="window.cmdHoverIdx(${i}, '${filter.replace(/'/g, "\\'")}')"
-             onclick="window.executeCommand(${commands.indexOf(cmd)})">
+             data-cmd-idx="${commands.indexOf(cmd)}" data-filter-idx="${i}">
             <span class="command-item-icon"><i data-lucide="${cmd.icon}"></i></span>
             <span class="command-item-name">${cmd.name}</span>
         </div>
@@ -62,12 +61,7 @@ function renderCommands(filter) {
     if (window.lucide) lucide.createIcons();
 }
 
-window.cmdHoverIdx = function(idx, filter) {
-    cmdSelectedIdx = idx;
-    renderCommands(filter);
-};
-
-window.executeCommand = function(idx) {
+function executeCommand(idx) {
     const cmd = commands[idx];
     closeCommandPalette();
 
@@ -81,7 +75,7 @@ window.executeCommand = function(idx) {
     }
 
     showToast(`${cmd.icon} ${cmd.name}`, 'info');
-};
+}
 
 export function initCommandPalette() {
     document.getElementById('cmdInput')?.addEventListener('input', (e) => {
@@ -105,11 +99,26 @@ export function initCommandPalette() {
             renderCommands(filter);
         } else if (e.key === 'Enter' && filtered.length > 0) {
             e.preventDefault();
-            window.executeCommand(commands.indexOf(filtered[cmdSelectedIdx]));
+            executeCommand(commands.indexOf(filtered[cmdSelectedIdx]));
         } else if (e.key === 'Escape') {
             closeCommandPalette();
         }
     });
+
+    // Event delegation for command items
+    const cmdResults = document.getElementById('cmdResults');
+    cmdResults?.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-cmd-idx]');
+        if (item) executeCommand(parseInt(item.dataset.cmdIdx));
+    });
+    cmdResults?.addEventListener('mouseenter', (e) => {
+        const item = e.target.closest('[data-filter-idx]');
+        if (item) {
+            cmdSelectedIdx = parseInt(item.dataset.filterIdx);
+            const filter = document.getElementById('cmdInput')?.value || '';
+            renderCommands(filter);
+        }
+    }, true);
 
     document.getElementById('commandPalette')?.addEventListener('click', (e) => {
         if (e.target.classList.contains('command-palette-overlay')) closeCommandPalette();

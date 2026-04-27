@@ -281,7 +281,7 @@ export function setupRoutes(app) {
             const recipe = JSON.parse(readFileSync(jsonFile, 'utf-8'));
 
             // Gestione Cache
-            const cachePath = resolve(__dirname, '../../image-cache.json');
+            const cachePath = resolve(process.cwd(), 'data', 'image-cache.json');
             let cache = {};
             if (existsSync(cachePath)) {
                 try { cache = JSON.parse(readFileSync(cachePath, 'utf-8')); } catch (e) {}

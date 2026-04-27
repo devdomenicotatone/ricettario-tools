@@ -490,5 +490,11 @@
     "verdict": "🟢 Buona",
     "issueCount": 0,
     "timestamp": "2026-04-27T08:54:58.797Z"
+  },
+  "pure-di-patate": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T17:45:46.907Z"
   }
 }

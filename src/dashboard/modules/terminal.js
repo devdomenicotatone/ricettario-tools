@@ -75,14 +75,17 @@ function getOrCreateJobContainer(jobId, jobName) {
         jobWrap.className = 'terminal-job running';
         
         jobWrap.innerHTML = `
-            <div class="terminal-job-header" onclick="this.parentElement.classList.toggle('collapsed')">
-                <div class="job-status-icon"><i data-lucide="loader-2" class="lucide-spin" style="color: #818cf8"></i></div>
+            <div class="terminal-job-header" data-action="toggle-collapse">
+                <div class="job-status-icon"><i data-lucide="loader-2" class="lucide-spin job-icon-running"></i></div>
                 <div class="job-name">${jobName || jobId}</div>
                 <div class="job-badge">Running</div>
                 <i data-lucide="chevron-down" class="job-chevron"></i>
             </div>
             <div class="terminal-job-logs" id="job-logs-${jobId}"></div>
         `;
+        jobWrap.querySelector('[data-action="toggle-collapse"]').addEventListener('click', (e) => {
+            e.currentTarget.parentElement.classList.toggle('collapsed');
+        });
         terminal.appendChild(jobWrap);
         lucide?.createIcons?.({ nodes: [jobWrap] });
         terminal.scrollTop = terminal.scrollHeight;
@@ -95,7 +98,7 @@ function finishJob(jobId, success) {
     if (wrap) {
         wrap.classList.remove('running');
         wrap.classList.add(success ? 'success' : 'failed');
-        wrap.querySelector('.job-status-icon').innerHTML = success ? '<i data-lucide="check-circle-2" style="color:#4ade80"></i>' : '<i data-lucide="x-circle" style="color:#f87171"></i>';
+        wrap.querySelector('.job-status-icon').innerHTML = success ? '<i data-lucide="check-circle-2" class="job-icon-success"></i>' : '<i data-lucide="x-circle" class="job-icon-error"></i>';
         wrap.querySelector('.job-badge').textContent = success ? 'Done' : 'Error';
         
         if (success) {
@@ -219,10 +222,7 @@ export function restoreTerminalState() {
     }
 }
 
-// Expose globally for onclick handlers in HTML
-window.toggleTerminal = toggleTerminal;
-window.toggleTerminalPin = toggleTerminalPin;
-window.toggleExpandTerminal = toggleExpandTerminal;
-window.clearTerminal = clearTerminal;
+// Expose globally — only for functions used by other modules
 window.expandTerminal = expandTerminal;
 window.appendTerminal = appendTerminal;
+

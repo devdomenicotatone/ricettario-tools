@@ -156,7 +156,7 @@ export function renderRecipes() {
         grid.innerHTML = `<div class="empty-state-pro">
             <div class="empty-state-icon">📭</div>
             <p>Nessuna ricetta${catName ? ` in "${catName}"` : ''}</p>
-            <button class="btn btn-primary" onclick="document.querySelector('[data-panel=genera]').click()">
+            <button class="btn btn-primary" data-action="go-genera">
                 🔥 Crea la prima!
             </button>
         </div>`;
@@ -279,19 +279,20 @@ function renderRecipeCard(r) {
     const isFixed = qEntry?.fixed === true;
     const fixDisabled = !hasReport || isFixed;
     const fixTitle = !hasReport ? 'Esegui prima l\'analisi qualità' : isFixed ? 'Già fixata' : 'Fix AI';
+    const catDir = r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase();
 
     return `
-        <div class="recipe-card${isSelected ? ' selected' : ''}" data-slug="${r.slug}" data-category="${cat}" onclick="toggleSelect('${r.slug}', event)">
-            <button class="recipe-delete-btn" onclick="event.stopPropagation(); eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
+        <div class="recipe-card${isSelected ? ' selected' : ''}" data-slug="${r.slug}" data-category="${cat}" data-action="toggle-select">
+            <button class="recipe-delete-btn" data-action="elimina" data-slug="${r.slug}" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             ${img ? `<div class="recipe-card-img-wrap">
                 <img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.parentElement.style.display='none'">
                 <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
-                    onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+                    data-action="show-category-dropdown" data-slug="${r.slug}" data-current-cat="${cat}"><i data-lucide="${catIcon}"></i> ${cat}</span>
                 ${r._createdAt ? `<span class="recipe-card-date-badge"><i data-lucide="calendar"></i> ${formatCreatedAt(r._createdAt)}</span>` : ''}
-                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" onclick="event.stopPropagation()"><i data-lucide="external-link"></i></a>
+                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" data-action="stop-only"><i data-lucide="external-link"></i></a>
             </div>` : `<div class="recipe-card-no-img">
-                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
-                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" onclick="event.stopPropagation()"><i data-lucide="external-link"></i></a>
+                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" data-action="show-category-dropdown" data-slug="${r.slug}" data-current-cat="${cat}"><i data-lucide="${catIcon}"></i> ${cat}</span>
+                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" data-action="stop-only"><i data-lucide="external-link"></i></a>
             </div>`}
             <div class="recipe-card-body">
                 <div class="recipe-card-title">${title}</div>
@@ -302,20 +303,20 @@ function renderRecipeCard(r) {
                     ${r.time ? `<span class="recipe-badge recipe-badge-time"><i data-lucide="clock"></i> ${r.time}</span>` : ''}
                 </div>
                 ${r.description ? `<div class="recipe-card-desc">${r.description.substring(0, 90)}…</div>` : ''}
-                <div class="recipe-card-actions" onclick="event.stopPropagation()">
+                <div class="recipe-card-actions" data-action="stop-only">
                     <div class="btn-split" title="Cambia immagine">
-                        <button class="btn-split-main" onclick="runRefreshImageForSlug('${r.slug}')"><i data-lucide="image"></i></button>
-                        <button class="btn-split-chevron" onclick="showImageGenerateDropdown('${r.slug}', '${cat}', this.parentElement)">▾</button>
+                        <button class="btn-split-main" data-action="refresh-image" data-slug="${r.slug}"><i data-lucide="image"></i></button>
+                        <button class="btn-split-chevron" data-action="image-generate-dropdown" data-slug="${r.slug}" data-cat="${cat}">▾</button>
                     </div>
                     <div class="btn-split" title="Analisi Qualità">
-                        <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
-                        <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
+                        <button class="btn-split-main" data-action="qualita" data-slug="${r.slug}" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
+                        <button class="btn-split-chevron" data-action="model-dropdown" data-slug="${r.slug}" title="Scegli modello">▾</button>
                     </div>
                     <div class="btn-split btn-split-fix${fixDisabled ? ' disabled' : ''}" title="${fixTitle}">
-                        <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
-                        <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
+                        <button class="btn-split-main btn-fix-card" data-action="fix-single" data-slug="${r.slug}" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
+                        <button class="btn-split-chevron btn-fix-chevron" data-action="fix-model-dropdown" data-slug="${r.slug}" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                     </div>
-                    <button class="btn btn-secondary btn-sm btn-edit-recipe" onclick="openRecipeEditor('${r.slug}', '${r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase()}')" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
+                    <button class="btn btn-secondary btn-sm btn-edit-recipe" data-action="open-editor" data-slug="${r.slug}" data-cat-dir="${catDir}" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
                 </div>
             </div>
         </div>`;
@@ -334,17 +335,18 @@ function renderRecipeRow(r) {
     const isFixed = qEntry && qEntry.fixed === true;
     const fixDisabled = !hasReport || isFixed;
     const fixTitle = !hasReport ? 'Esegui prima l\'analisi qualità' : isFixed ? 'Già fixata' : 'Fix AI';
+    const catDir = r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase();
 
     return `
-        <div class="recipe-row${isSelected ? ' selected' : ''}" data-slug="${r.slug}" data-category="${cat}" onclick="toggleSelect('${r.slug}', event)">
+        <div class="recipe-row${isSelected ? ' selected' : ''}" data-slug="${r.slug}" data-category="${cat}" data-action="toggle-select">
             <div class="recipe-row-info">
                 <input type="checkbox" class="recipe-checkbox" ${isSelected ? 'checked' : ''}
-                    onchange="toggleSelect('${r.slug}', event)" onclick="event.stopPropagation()">
+                    data-action="toggle-checkbox" data-slug="${r.slug}">
                 ${img ? `<img class="recipe-row-thumb" src="${img}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<div class="recipe-row-thumb-empty"></div>'}
                 <span class="recipe-row-title">${title}</span>
             </div>
             <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
-                onclick="event.stopPropagation(); showCategoryDropdown('${r.slug}', '${cat}', this)"><i data-lucide="${catIcon}"></i> ${cat}</span>
+                data-action="show-category-dropdown" data-slug="${r.slug}" data-current-cat="${cat}"><i data-lucide="${catIcon}"></i> ${cat}</span>
             <div class="recipe-row-badges">
                 ${getAiBadge(r._generatedBy)}
                 ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
@@ -352,22 +354,22 @@ function renderRecipeRow(r) {
             <span class="recipe-row-hydration">${r.hydration || '—'}</span>
             <span class="recipe-row-time">${r.time || '—'}</span>
             <span class="recipe-row-date">${r._createdAt ? formatCreatedAt(r._createdAt) : '—'}</span>
-            <div class="recipe-row-actions" onclick="event.stopPropagation()">
+            <div class="recipe-row-actions" data-action="stop-only">
                 <div class="btn-split" title="Cambia immagine">
-                    <button class="btn-split-main" onclick="runRefreshImageForSlug('${r.slug}')"><i data-lucide="image"></i></button>
-                    <button class="btn-split-chevron" onclick="showImageGenerateDropdown('${r.slug}', '${cat}', this.parentElement)">▾</button>
+                    <button class="btn-split-main" data-action="refresh-image" data-slug="${r.slug}"><i data-lucide="image"></i></button>
+                    <button class="btn-split-chevron" data-action="image-generate-dropdown" data-slug="${r.slug}" data-cat="${cat}">▾</button>
                 </div>
                 <div class="btn-split" title="Analisi Qualità">
-                    <button class="btn-split-main" onclick="apiPost('qualita', {slugs:['${r.slug}'], geminiModel: getSelectedGeminiModel()})" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
-                    <button class="btn-split-chevron" onclick="showModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello">▾</button>
+                    <button class="btn-split-main" data-action="qualita" data-slug="${r.slug}" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
+                    <button class="btn-split-chevron" data-action="model-dropdown" data-slug="${r.slug}" title="Scegli modello">▾</button>
                 </div>
                 <div class="btn-split btn-split-fix${fixDisabled ? ' disabled' : ''}" title="${fixTitle}">
-                    <button class="btn-split-main btn-fix-card" onclick="runFixSingle('${r.slug}')" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
-                    <button class="btn-split-chevron btn-fix-chevron" onclick="showFixModelDropdown('${r.slug}', this.parentElement)" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
+                    <button class="btn-split-main btn-fix-card" data-action="fix-single" data-slug="${r.slug}" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
+                    <button class="btn-split-chevron btn-fix-chevron" data-action="fix-model-dropdown" data-slug="${r.slug}" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                 </div>
-                <button class="btn btn-secondary btn-sm btn-edit-recipe" onclick="openRecipeEditor('${r.slug}', '${r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase()}')" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
+                <button class="btn btn-secondary btn-sm btn-edit-recipe" data-action="open-editor" data-slug="${r.slug}" data-cat-dir="${catDir}" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
                 <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
-                <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" onclick="eliminaSingola('${r.slug}')" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
+                <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" data-action="elimina" data-slug="${r.slug}" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>
         </div>`;
 }
@@ -450,44 +452,64 @@ function updateActionBar() {
 
     bar.innerHTML = `
         <div class="action-bar-info">
-            <span class="action-bar-count"><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></i>${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
+            <span class="action-bar-count"><i data-lucide="check-square" class="action-bar-icon"></i>${selectedSlugs.size} selezionat${selectedSlugs.size === 1 ? 'a' : 'e'}</span>
         </div>
         <div class="action-bar-actions">
-            <div class="btn-split" style="display:inline-flex">
-                <button class="action-bar-btn" onclick="runQualita()" title="Analisi qualità (Schema + Gemini)">
+            <div class="btn-split action-bar-split">
+                <button class="action-bar-btn" data-action="bar-qualita" title="Analisi qualità (Schema + Gemini)">
                     <i data-lucide="shield-check"></i> Qualità
                 </button>
-                <button class="action-bar-btn btn-split-chevron" onclick="showQualitaModelDropdown(this, false)" title="Scegli modello" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+                <button class="action-bar-btn btn-split-chevron action-bar-chevron" data-action="bar-qualita-model" data-grounding="false" title="Scegli modello">▾</button>
             </div>
-            <div class="btn-split" style="display:inline-flex">
-                <button class="action-bar-btn action-bar-ai" onclick="runQualita(true)" title="Qualità + fonti web (SerpAPI grounding)">
+            <div class="btn-split action-bar-split">
+                <button class="action-bar-btn action-bar-ai" data-action="bar-qualita-web" title="Qualità + fonti web (SerpAPI grounding)">
                     <i data-lucide="globe"></i> + Web
                 </button>
-                <button class="action-bar-btn action-bar-ai btn-split-chevron" onclick="showQualitaModelDropdown(this, true)" title="Scegli modello" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+                <button class="action-bar-btn action-bar-ai btn-split-chevron action-bar-chevron" data-action="bar-qualita-model" data-grounding="true" title="Scegli modello">▾</button>
             </div>
-            <div class="btn-split" style="display:inline-flex">
-                <button class="action-bar-btn action-bar-fix" onclick="runFix()" title="Applica fix AI alle ricette problematiche (< 85)">
+            <div class="btn-split action-bar-split">
+                <button class="action-bar-btn action-bar-fix" data-action="bar-fix" title="Applica fix AI alle ricette problematiche (< 85)">
                     <i data-lucide="wrench"></i> Fix AI
                 </button>
-                <button class="action-bar-btn action-bar-fix btn-split-chevron" onclick="showFixModelDropdown(null, this.parentElement, true)" title="Scegli modello ri-validazione" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+                <button class="action-bar-btn action-bar-fix btn-split-chevron action-bar-chevron" data-action="bar-fix-model" title="Scegli modello ri-validazione">▾</button>
             </div>
-            <div class="btn-split" style="display:inline-flex">
-                <button class="action-bar-btn" onclick="showToast('Usa la freccetta laterale per generare in blocco con AI!', 'info')" title="Gestione Immagini">
+            <div class="btn-split action-bar-split">
+                <button class="action-bar-btn" data-action="bar-images-info" title="Gestione Immagini">
                     <i data-lucide="image"></i> Immagini
                 </button>
-                <button class="action-bar-btn btn-split-chevron" onclick="if(window.showImageGenerateDropdownBatch) window.showImageGenerateDropdownBatch(this.parentElement)" title="Opzioni Generazione Immagini" style="padding:0 6px;border-left:1px solid rgba(255,255,255,0.2)">▾</button>
+                <button class="action-bar-btn btn-split-chevron action-bar-chevron" data-action="bar-images-batch" title="Opzioni Generazione Immagini">▾</button>
             </div>
-            <button class="action-bar-btn" onclick="runSensoryBatch()" title="Genera Dati Tecnici AI (Sensoriale + Nutrizionale)" style="color: #fbbf24;">
+            <button class="action-bar-btn action-bar-sensory" data-action="bar-sensory" title="Genera Dati Tecnici AI (Sensoriale + Nutrizionale)">
                 <i data-lucide="sparkles"></i> Dati Tecnici
             </button>
-            <button class="action-bar-btn action-bar-danger" onclick="batchElimina()" title="Elimina selezionate">
+            <button class="action-bar-btn action-bar-danger" data-action="bar-elimina" title="Elimina selezionate">
                 <i data-lucide="trash-2"></i> Elimina
             </button>
-            <button class="action-bar-btn action-bar-close" onclick="clearSelection()" title="Deseleziona">
+            <button class="action-bar-btn action-bar-close" data-action="bar-clear" title="Deseleziona">
                 <i data-lucide="x"></i>
             </button>
         </div>
     `;
+    
+    // Event delegation for action bar
+    bar.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+        const action = target.dataset.action;
+        switch (action) {
+            case 'bar-qualita': runQualita(); break;
+            case 'bar-qualita-web': runQualita(true); break;
+            case 'bar-qualita-model': showQualitaModelDropdown(target, target.dataset.grounding === 'true'); break;
+            case 'bar-fix': runFix(); break;
+            case 'bar-fix-model': showFixModelDropdown(null, target.closest('.btn-split'), true); break;
+            case 'bar-images-info': showToast('Usa la freccetta laterale per generare in blocco con AI!', 'info'); break;
+            case 'bar-images-batch': if (window.showImageGenerateDropdownBatch) window.showImageGenerateDropdownBatch(target.closest('.btn-split')); break;
+            case 'bar-sensory': runSensoryBatch(); break;
+            case 'bar-elimina': batchElimina(); break;
+            case 'bar-clear': clearSelection(); break;
+        }
+    });
+    
     if (window.lucide) lucide.createIcons({ attrs: { 'width': 16, 'height': 16 } });
 }
 
@@ -609,15 +631,83 @@ export function initRecipeFilters() {
         btn.classList.add('active');
         renderRecipes();
     });
+
+    // ── Master event delegation for recipe grid ──
+    const grid = document.getElementById('recipesGrid');
+    grid?.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+        
+        const action = target.dataset.action;
+        const slug = target.dataset.slug || target.closest('[data-slug]')?.dataset.slug;
+        
+        // Stop propagation for actions inside cards
+        if (['stop-only', 'elimina', 'refresh-image', 'image-generate-dropdown', 
+             'qualita', 'model-dropdown', 'fix-single', 'fix-model-dropdown', 
+             'open-editor', 'show-category-dropdown', 'toggle-checkbox'].includes(action)) {
+            e.stopPropagation();
+        }
+        
+        switch (action) {
+            case 'stop-only': 
+                e.stopPropagation(); 
+                break;
+            case 'toggle-select':
+                toggleSelect(slug, e);
+                break;
+            case 'toggle-checkbox':
+                e.stopPropagation();
+                toggleSelect(slug, e);
+                break;
+            case 'elimina':
+                eliminaSingola(slug);
+                break;
+            case 'refresh-image':
+                if (window.runRefreshImageForSlug) window.runRefreshImageForSlug(slug);
+                break;
+            case 'image-generate-dropdown':
+                if (window.showImageGenerateDropdown) window.showImageGenerateDropdown(slug, target.dataset.cat, target.closest('.btn-split'));
+                break;
+            case 'qualita':
+                apiPost('qualita', { slugs: [slug], geminiModel: getSelectedGeminiModel() });
+                break;
+            case 'model-dropdown':
+                showModelDropdown(slug, target.closest('.btn-split'));
+                break;
+            case 'fix-single':
+                runFixSingle(slug);
+                break;
+            case 'fix-model-dropdown':
+                showFixModelDropdown(slug, target.closest('.btn-split'));
+                break;
+            case 'open-editor':
+                if (window.openRecipeEditor) window.openRecipeEditor(slug, target.dataset.catDir);
+                break;
+            case 'show-category-dropdown':
+                e.stopPropagation();
+                showCategoryDropdown(slug, target.dataset.currentCat, target);
+                break;
+            case 'go-genera':
+                document.querySelector('[data-panel=genera]')?.click();
+                break;
+            case 'show-quality-report':
+                e.stopPropagation();
+                if (window.showQualityReport) window.showQualityReport(slug);
+                break;
+        }
+    });
+
+    // Handle checkbox change events separately
+    grid?.addEventListener('change', (e) => {
+        const target = e.target.closest('[data-action="toggle-checkbox"]');
+        if (target) {
+            e.stopPropagation();
+            toggleSelect(target.dataset.slug, e);
+        }
+    });
 }
 
-// Global exposes for HTML onclicks
+// Global exposes — only for functions used by other modules
 window.loadRecipes = loadRecipes;
-window.toggleSelectAll = toggleSelectAll;
-window.toggleSelect = toggleSelect;
-window.clearSelection = clearSelection;
-window.runSensoryBatch = runSensoryBatch;
-window.batchElimina = batchElimina;
-window.eliminaSingola = eliminaSingola;
-window.showCategoryDropdown = showCategoryDropdown;
 window.buildRecipeUrl = buildRecipeUrl;
+

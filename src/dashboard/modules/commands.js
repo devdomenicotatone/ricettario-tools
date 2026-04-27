@@ -9,7 +9,7 @@ import { apiPost, navigateToPanel } from './navigation.js';
 import { appendTerminal } from './terminal.js';
 
 export async function runGenera() {
-    const btn = document.getElementById('btn-run-genera') || document.querySelector('button[onclick="runGenera()"]');
+    const btn = document.getElementById('btn-run-genera');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Avvio...'; lucide?.createIcons?.(); }
 
     const nome = document.getElementById('gen-nome').value.trim();
@@ -78,7 +78,7 @@ export async function runScopri() {
         if (data.error) throw new Error(data.error);
         renderScopriResults(data.results || []);
     } catch (e) {
-        container.innerHTML = `<div style="color:var(--danger); padding:10px;">Errore: ${e.message}</div>`;
+        container.innerHTML = `<div class="feedback-error">Errore: ${e.message}</div>`;
     } finally {
         btn.innerHTML = orgHtml;
         btn.disabled = false;
@@ -89,31 +89,36 @@ export async function runScopri() {
 function renderScopriResults(results) {
     const container = document.getElementById('scopri-results-container');
     if (!results || results.length === 0) {
-        container.innerHTML = '<div style="padding:15px;color:var(--text-muted)">Nessun risultato trovato.</div>';
+        container.innerHTML = '<div class="feedback-empty">Nessun risultato trovato.</div>';
         return;
     }
 
-    let html = `<div class="scopri-results" style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">`;
+    let html = `<div class="scopri-results">`;
     results.forEach((r, idx) => {
         html += `
-            <label class="scopri-card" style="display:flex; gap:12px; padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:8px; cursor:pointer; align-items:flex-start;">
-                <input type="checkbox" class="scopri-checkbox" value="${r.url}" style="margin-top:4px;" checked>
-                <div style="flex:1; min-width:0;">
-                    <div style="font-weight:600; font-size:14px; margin-bottom:4px; color:var(--text-primary);">${r.title}</div>
-                    <div style="font-size:11px; color:var(--accent); margin-bottom:6px;">${r.source}</div>
-                    <div style="font-size:12px; color:var(--text-secondary); line-height:1.4;">${r.snippet}</div>
+            <label class="scopri-card">
+                <input type="checkbox" class="scopri-checkbox" value="${r.url}" checked>
+                <div class="scopri-card-body">
+                    <div class="scopri-card-title">${r.title}</div>
+                    <div class="scopri-card-source">${r.source}</div>
+                    <div class="scopri-card-snippet">${r.snippet}</div>
                 </div>
             </label>
         `;
     });
     html += `</div>
-    <div style="margin-top:16px;">
-        <button class="btn btn-primary" onclick="generateSelectedScopri()" style="width:100%;">
+    <div class="scopri-actions">
+        <button class="btn btn-primary btn-full-width" data-action="generate-scopri">
             <i data-lucide="wand-2"></i> Genera Selezionate
         </button>
     </div>`;
 
     container.innerHTML = html;
+    
+    // Event delegation instead of onclick
+    container.querySelector('[data-action="generate-scopri"]')
+        ?.addEventListener('click', generateSelectedScopri);
+    
     lucide.createIcons();
 }
 
@@ -125,9 +130,11 @@ export async function generateSelectedScopri() {
         return showToast('Seleziona almeno un link da generare.', 'warning');
     }
 
-    const btn = document.querySelector('button[onclick="generateSelectedScopri()"]');
-    btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Avvio generazione...';
-    btn.disabled = true;
+    const btn = document.querySelector('[data-action="generate-scopri"]');
+    if (btn) {
+        btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Avvio generazione...';
+        btn.disabled = true;
+    }
 
     try {
         await apiPost('genera', { urls });
@@ -139,9 +146,6 @@ export async function generateSelectedScopri() {
     }
 }
 
-// Expose globally for onclick in HTML
-window.runGenera = runGenera;
-window.runUrl = runUrl;
-window.runTesto = runTesto;
-window.runScopri = runScopri;
+// Global expose — only for cross-module usage
 window.generateSelectedScopri = generateSelectedScopri;
+

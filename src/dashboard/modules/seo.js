@@ -86,8 +86,8 @@ function renderSeoCards(container, suggestions) {
                 <div class="seo-card-footer">
                     <span class="seo-card-source">${s.source || 'autocomplete'}</span>
                     ${s.alreadyCreated
-                        ? '<span style="font-size:11px;color:var(--success)">Già nel Ricettario</span>'
-                        : `<button class="seo-gen-btn" onclick="generateFromSeo('${escapeHtml(s.keyword)}', '${s.category}')">
+                        ? '<span class="seo-card-existing">Già nel Ricettario</span>'
+                        : `<button class="seo-gen-btn" data-action="generate-seo" data-keyword="${escapeHtml(s.keyword)}" data-category="${s.category}">
                             🔥 Genera
                            </button>`
                     }
@@ -95,6 +95,12 @@ function renderSeoCards(container, suggestions) {
             </div>
         `;
     }).join('');
+    
+    // Event delegation for generate buttons
+    container.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action="generate-seo"]');
+        if (btn) generateFromSeo(btn.dataset.keyword, btn.dataset.category);
+    });
 }
 
 function escapeHtml(text) {
@@ -130,6 +136,6 @@ export function initSeoPanel() {
     });
 }
 
-// Global exposes
+// Global expose — only for cross-module usage
 window.loadSeoSuggestions = loadSeoSuggestions;
-window.generateFromSeo = generateFromSeo;
+
