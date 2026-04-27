@@ -1,0 +1,46 @@
+/* ═══════════════════════════════════════════════════
+   DASHBOARD — Design Tokens & Reset
+   ═══════════════════════════════════════════════════ */
+
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #111118;
+    --bg-card: #16161f;
+    --bg-elevated: #1c1c28;
+    --bg-hover: #22222f;
+    --border: #2a2a3a;
+    --border-light: #333345;
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888a0;
+    --text-muted: #55556a;
+    --accent: #e67e22;
+    --accent-hover: #d35400;
+    --accent-glow: rgba(230, 126, 34, 0.15);
+    --accent-glow-strong: rgba(230, 126, 34, 0.3);
+    --success: #27ae60;
+    --error: #e74c3c;
+    --warning: #f39c12;
+    --sidebar-width: 240px;
+    --topbar-height: 56px;
+    --terminal-height: 240px;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --transition: 0.2s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }

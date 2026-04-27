@@ -1,0 +1,216 @@
+/* ═══════════════════════════════════════════════════
+   MODAL — Image Picker + Quality Report
+   ═══════════════════════════════════════════════════ */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.modal-lg { width: 90vw; max-width: 1200px; }
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+}
+.modal-header h3 { font-size: 16px; }
+.modal-close {
+    background: var(--bg-elevated);
+    border: none;
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+}
+.modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+.modal-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-tab {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.modal-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.modal-img-card {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--transition);
+    background: var(--bg-elevated);
+}
+.modal-img-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230,126,34,0.2);
+}
+
+.modal-img-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.modal-img-card-info {
+    padding: 8px 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+.modal-img-card-score {
+    font-weight: 700;
+    color: var(--success);
+}
+
+/* ── QUALITY REPORT MODAL ── */
+.quality-report-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.quality-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.quality-error {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--error);
+    font-size: 14px;
+}
+
+.quality-report-content {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+}
+
+.quality-report-content h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 24px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.quality-report-content h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 18px 0 8px;
+}
+
+.quality-report-content h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 14px 0 6px;
+}
+
+.quality-report-content p {
+    margin: 6px 0;
+    color: var(--text-secondary);
+}
+
+.quality-report-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.quality-report-content ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 8px 0;
+}
+
+.quality-report-content li {
+    padding: 4px 0 4px 20px;
+    position: relative;
+    color: var(--text-secondary);
+}
+
+.quality-report-content li::before {
+    content: '▸';
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.quality-report-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+}
+
+.quality-report-content .quality-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+}
+
+.quality-report-content .quality-table td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.quality-report-content .quality-table tr:first-child td {
+    background: var(--bg-elevated);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.quality-report-content .quality-table tr:hover td {
+    background: var(--bg-hover);
+}

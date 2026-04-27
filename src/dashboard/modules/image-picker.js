@@ -264,6 +264,7 @@ export function initImageModal() {
 }
 
 // Global exposes
+window.closeImageModal = closeImageModal;
 window.runRefreshImage = runRefreshImage;
 window.runRefreshImageForSlug = runRefreshImageForSlug;
 window.confirmImageSelection = confirmImageSelection;
@@ -272,3 +273,4 @@ window.showImageGenerateDropdown = showImageGenerateDropdown;
 window.showImageGenerateDropdownBatch = showImageGenerateDropdownBatch;
 window.quickGenerateAiImage = quickGenerateAiImage;
 window.runBatchGenerateAiImage = runBatchGenerateAiImage;
+

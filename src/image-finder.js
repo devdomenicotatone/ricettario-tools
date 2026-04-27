@@ -643,15 +643,15 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
         recipe.imageKeywords || []
     );
 
-    // Salviamo nel database
+    // Salviamo nel database dei candidati
     try {
-        const cachePath = resolve(__dirname, '../image-cache.json');
+        const cachePath = resolve(process.cwd(), 'data', 'image-cache.json');
         let cache = {};
         if (existsSync(cachePath)) {
-            cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
+            cache = JSON.parse(readFileSync(cachePath, 'utf-8'));
         }
         cache[slug] = { providerResults, timestamp: Date.now() };
-        fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
+        writeFileSync(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
         console.log(`\n💾 Database immagini salvato in cache per "${slug}" (${providerResults.length} provider trovati).`);
     } catch (e) {
         console.error("⚠️ Impossibile salvare la cache delle immagini:", e.message);

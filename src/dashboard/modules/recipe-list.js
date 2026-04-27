@@ -195,7 +195,7 @@ function getFilteredRecipes() {
         filtered = filtered.filter(r => {
             if (recipeFilter.status === 'no-qa') return !qualityIndex[r.slug];
             if (recipeFilter.status === 'no-fix') return qualityIndex[r.slug]?.fixed !== true;
-            if (recipeFilter.status === 'no-tech') return !r.hydration && !r.time && !r.temp && !r.hasSensory && !r.hasStorage;
+            if (recipeFilter.status === 'no-tech') return !r.hydration && !r.time && !r.temp && !r.hasSensory;
             return true;
         });
     }

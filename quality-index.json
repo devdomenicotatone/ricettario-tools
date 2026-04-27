@@ -123,10 +123,10 @@
     "timestamp": "2026-04-03T22:09:27.669Z"
   },
   "dado-vegetale-fatto-in-casa": {
-    "score": 95,
+    "score": 100,
     "verdict": "🟢 Buona",
-    "issueCount": 1,
-    "timestamp": "2026-04-05T00:40:40.414Z"
+    "issueCount": 2,
+    "timestamp": "2026-04-27T08:04:55.149Z"
   },
   "cornetti-sfogliati-classici": {
     "score": 95,
@@ -380,10 +380,11 @@
     "timestamp": "2026-04-24T13:11:30.553Z"
   },
   "burro-chiarificato": {
-    "score": 98,
+    "score": 100,
     "verdict": "🟢 Buona",
-    "issueCount": 1,
-    "timestamp": "2026-04-24T13:11:49.854Z"
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:07:03.812Z",
+    "fixed": true
   },
   "salsa-allo-yogurt": {
     "score": 100,
@@ -471,5 +472,23 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-04-16T18:19:50.885Z"
+  },
+  "crema-al-parmigiano": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:36:54.512Z"
+  },
+  "fumetto-di-crostacei": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:36:54.516Z"
+  },
+  "crema-di-peperoni": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:54:58.797Z"
   }
 }

@@ -63,3 +63,5 @@ function renderMarkdown(md) {
 
 // Global expose
 window.showQualityReport = showQualityReport;
+window.closeQualityModal = closeQualityModal;
+

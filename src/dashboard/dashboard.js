@@ -13,6 +13,8 @@ import { initQualityModal } from './modules/quality-modal.js';
 import { initCommandPalette } from './modules/command-palette.js';
 import { initSeoPanel } from './modules/seo.js';
 import { initDragAndDrop } from './modules/drag-drop.js';
+// Side-effect import: registra window.runGenera, runUrl, runTesto, runScopri
+import './modules/commands.js';
 
 // ── Inizializzazione ──
 document.addEventListener('DOMContentLoaded', () => {
