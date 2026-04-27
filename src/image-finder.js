@@ -709,18 +709,39 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
 //  AI IMAGE GENERATION (Gemini Imagen)
 // ══════════════════════════════════════════════════════════
 
-export async function generateImageWithGemini(prompt) {
+export async function generateImageWithGemini(prompt, referenceImageBase64 = null) {
     const { getActiveGeminiKey } = await import('./utils/api.js');
     const key = getActiveGeminiKey();
     if (!key) throw new Error("API Key Gemini non configurata");
 
-    console.log(`   🤖 Generazione immagine con AI: "${prompt}"...`);
+    const hasReference = !!referenceImageBase64;
+    console.log(`   🤖 Generazione immagine con AI${hasReference ? ' + riferimento visivo' : ''}: "${prompt}"...`);
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${key}`;
+
+    // Build multimodal parts array
+    const parts = [];
+
+    if (hasReference) {
+        // Add the reference image first
+        parts.push({
+            inlineData: {
+                mimeType: 'image/jpeg',
+                data: referenceImageBase64
+            }
+        });
+        // Wrap prompt with style reference instructions
+        parts.push({
+            text: `Using the provided reference image as a visual style guide for lighting, composition, angle, and plating style, generate a professional food photograph of: ${prompt}. The result should look like a photo taken in the same setting and style as the reference, but featuring the described dish.`
+        });
+    } else {
+        parts.push({ text: prompt });
+    }
+
     const payload = {
         contents: [
             {
                 role: 'user',
-                parts: [{ text: prompt }]
+                parts
             }
         ],
         generationConfig: {

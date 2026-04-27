@@ -24,12 +24,6 @@
     "issueCount": 2,
     "timestamp": "2026-04-01T01:48:13.528Z"
   },
-  "pizza-napoletana-verace-stg": {
-    "score": 88,
-    "verdict": "🟢 Buona",
-    "issueCount": 6,
-    "timestamp": "2026-04-16T20:21:40.967Z"
-  },
   "gnocchi-di-patate": {
     "score": 85,
     "verdict": "🟡 Da migliorare",
@@ -496,5 +490,18 @@
     "verdict": "🟢 Buona",
     "issueCount": 0,
     "timestamp": "2026-04-27T17:45:46.907Z"
+  },
+  "spare-ribs-salsa-bbq": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-27T21:54:26.826Z"
+  },
+  "pizza-napoletana-verace-stg": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-27T22:06:19.574Z",
+    "fixed": true
   }
 }

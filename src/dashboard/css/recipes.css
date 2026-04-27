@@ -7,11 +7,9 @@
     display: flex;
     gap: 6px;
     margin-bottom: 14px;
-    overflow-x: auto;
+    flex-wrap: wrap;
     padding-bottom: 4px;
-    scrollbar-width: none;
 }
-.recipes-category-tabs::-webkit-scrollbar { display: none; }
 
 .recipe-cat-tab {
     display: inline-flex;

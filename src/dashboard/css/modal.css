@@ -268,3 +268,100 @@
     resize: none;
 }
 
+/* ── AI Reference Image Zone ── */
+.ai-reference-section {
+    margin-bottom: 16px;
+}
+
+.ai-reference-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 13px;
+    transition: all var(--transition);
+    background: transparent;
+}
+.ai-reference-zone:hover {
+    border-color: var(--accent);
+    color: var(--text-secondary);
+    background: rgba(230, 126, 34, 0.04);
+}
+.ai-reference-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(230, 126, 34, 0.08);
+    color: var(--accent);
+}
+.ai-reference-zone svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.ai-reference-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    position: relative;
+}
+.ai-reference-preview img {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+.ai-reference-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+}
+.ai-reference-info span:first-child {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ai-reference-info span:last-child {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.ai-reference-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+}
+.ai-reference-remove:hover {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+.ai-reference-remove svg {
+    width: 14px;
+    height: 14px;
+}

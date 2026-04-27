@@ -4,7 +4,7 @@
  * Gestione stato ricette, filtraggio, ordinamento, selezione e rendering cards/rows.
  */
 
-import { showToast, showCustomConfirm } from './toast.js';
+import { showToast, showCustomConfirm, showDeleteCategoryConfirm } from './toast.js';
 import { apiPost, setRunning } from './navigation.js';
 import { appendTerminal } from './terminal.js';
 import { qualityIndex, getQualityBadge, getSelectedGeminiModel, showQualitaModelDropdown, showModelDropdown, showFixModelDropdown, runQualita, runFix, runFixSingle, fetchQualityIndex, setSelectedSlugsRef } from './qa-tools.js';
@@ -587,17 +587,156 @@ export function showCategoryDropdown(slug, currentCategory, anchorEl) {
                 ${isCurrent ? 'disabled' : ''}>
                 <i data-lucide="${icon}"></i> ${cat}${isCurrent ? ' ✓' : ''}
             </button>`;
-        }).join('');
+        }).join('') + `
+        <div class="cat-dropdown-divider"></div>
+        <button class="cat-dropdown-item cat-dropdown-add-btn" data-action="add-category">
+            <i data-lucide="plus-circle"></i> Nuova categoria...
+        </button>
+        <div class="cat-dropdown-form" style="display:none">
+            <input type="text" class="cat-dropdown-input" placeholder="Nome categoria..." maxlength="30" autofocus>
+            <button class="cat-dropdown-submit" data-action="confirm-add">
+                <i data-lucide="check"></i>
+            </button>
+        </div>
+        <div class="cat-dropdown-divider"></div>
+        <button class="cat-dropdown-item cat-dropdown-delete-btn" data-action="delete-category">
+            <i data-lucide="trash-2"></i> Elimina "${currentCategory}"...
+        </button>`;
 
     document.body.appendChild(dd);
     if (window.lucide) lucide.createIcons();
 
     dd.addEventListener('click', async (e) => {
-        const btn = e.target.closest('.cat-dropdown-item');
-        if (!btn || btn.disabled) return;
-        const newCat = btn.dataset.cat;
-        dd.remove();
-        await changeCategory(slug, currentCategory, newCat);
+        const target = e.target.closest('[data-action], .cat-dropdown-item');
+        if (!target) return;
+
+        const action = target.dataset.action;
+
+        // ── Elimina categoria ──
+        if (action === 'delete-category') {
+            e.stopPropagation();
+            dd.remove();
+
+            // Conta ricette nella categoria corrente
+            const recipesInCat = allRecipes.filter(r => r.category === currentCategory).length;
+            const otherCats = ALL_CATEGORIES.filter(c => c !== currentCategory);
+
+            showDeleteCategoryConfirm(currentCategory, recipesInCat, otherCats, async (moveTo) => {
+                appendTerminal(`\n🗑️ Rimozione categoria: "${currentCategory}"...`, 'job-start');
+                setRunning(true);
+                try {
+                    const resp = await fetch('/api/rimuovi-categoria', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: currentCategory, moveTo }),
+                    });
+                    const data = await resp.json();
+                    if (data.error) throw new Error(data.error);
+
+                    showToast(`Categoria "${currentCategory}" eliminata`, 'success');
+
+                    // Aggiorna stato locale
+                    const idx = ALL_CATEGORIES.indexOf(currentCategory);
+                    if (idx !== -1) ALL_CATEGORIES.splice(idx, 1);
+                    delete CATEGORY_COLORS[currentCategory];
+                    delete CATEGORY_ICONS[currentCategory];
+                    delete CATEGORY_DIR_MAP[currentCategory];
+
+                    setTimeout(() => loadRecipes(), 2000);
+                } catch (err) {
+                    showToast(`Errore: ${err.message}`, 'error');
+                } finally {
+                    setRunning(false);
+                }
+            });
+            return;
+        }
+
+        // ── Mostra form inline ──
+        if (action === 'add-category') {
+            e.stopPropagation();
+            target.style.display = 'none';
+            const form = dd.querySelector('.cat-dropdown-form');
+            form.style.display = 'flex';
+            const input = form.querySelector('.cat-dropdown-input');
+            setTimeout(() => input.focus(), 50);
+            return;
+        }
+
+        // ── Conferma nuova categoria ──
+        if (action === 'confirm-add') {
+            e.stopPropagation();
+            const input = dd.querySelector('.cat-dropdown-input');
+            const name = input.value.trim();
+            if (!name) { input.classList.add('shake'); setTimeout(() => input.classList.remove('shake'), 500); return; }
+
+            // Disabilita form durante la creazione
+            input.disabled = true;
+            target.disabled = true;
+            target.innerHTML = '<i data-lucide="loader" class="spin"></i>';
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                const resp = await fetch('/api/aggiungi-categoria', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name }),
+                });
+                const data = await resp.json();
+                if (data.error) throw new Error(data.error);
+
+                dd.remove();
+                showToast(`Categoria "${name}" in creazione...`, 'success');
+
+                // Aspetta il completamento del job e poi aggiorna la UI
+                const checkJob = async () => {
+                    await new Promise(r => setTimeout(r, 3000));
+                    // Aggiorna liste locali con dati di fallback
+                    if (!ALL_CATEGORIES.includes(name)) ALL_CATEGORIES.push(name);
+                    if (!CATEGORY_COLORS[name]) CATEGORY_COLORS[name] = '#1abc9c';
+                    if (!CATEGORY_ICONS[name]) CATEGORY_ICONS[name] = 'folder';
+                    const catSlug = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                    if (!CATEGORY_DIR_MAP[name]) CATEGORY_DIR_MAP[name] = catSlug;
+
+                    // Se c'era un slug ricetta, sposta nella nuova categoria
+                    if (slug && currentCategory !== name) {
+                        // Attendi che il job di creazione finisca
+                        await new Promise(r => setTimeout(r, 5000));
+                        await changeCategory(slug, currentCategory, name);
+                    }
+
+                    loadRecipes();
+                };
+                checkJob();
+
+            } catch (err) {
+                showToast(`Errore: ${err.message}`, 'error');
+                input.disabled = false;
+                target.disabled = false;
+                target.innerHTML = '<i data-lucide="check"></i>';
+                if (window.lucide) lucide.createIcons();
+            }
+            return;
+        }
+
+        // ── Cambio categoria esistente ──
+        if (target.classList.contains('cat-dropdown-item') && !target.disabled && target.dataset.cat) {
+            const newCat = target.dataset.cat;
+            dd.remove();
+            await changeCategory(slug, currentCategory, newCat);
+        }
+    });
+
+    // Enter per confermare nel campo input
+    dd.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            dd.querySelector('[data-action="confirm-add"]')?.click();
+        }
+        if (e.key === 'Escape') {
+            dd.remove();
+        }
     });
 
     setTimeout(() => {

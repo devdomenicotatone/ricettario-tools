@@ -12,7 +12,8 @@ export const ALL_CATEGORIES = [
     'Lievitati', 
     'Dolci', 
     'Conserve', 
-    'Condimenti'
+    'Condimenti',
+    'Secondi Piatti'
 ];
 
 // Mapping per ottenere l'ID (cartella) dalla Label (Categoria Utente)
@@ -24,7 +25,8 @@ export const CATEGORY_FOLDERS = {
     'Lievitati': 'lievitati',
     'Dolci': 'dolci',
     'Conserve': 'conserve',
-    'Condimenti': 'condimenti'
+    'Condimenti': 'condimenti',
+    'Secondi Piatti': 'secondi-piatti'
 };
 
 // Dati estesi delle categorie (Usato in sync-cards, UI index dashboard, ecc)
@@ -37,6 +39,7 @@ export const CATEGORIES_DATA = {
     dolci: { emoji: '🍪', label: 'Dolci', order: 6 },
     conserve: { emoji: '🫙', label: 'Conserve', order: 7 },
     condimenti: { emoji: '🌿', label: 'Condimenti', order: 8 },
+    secondi_piatti: { emoji: '🍲', label: 'Secondi Piatti', order: 9 },
 };
 
 // Costruisce la Regex (es. Pane|Lievitati|Pasta...) per prompt AI e validatori

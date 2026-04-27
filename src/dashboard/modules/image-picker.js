@@ -89,8 +89,27 @@ function showImagePickerModal(data) {
             <div class="modal-ai-form">
                 <p class="modal-ai-desc">Descrivi l'immagine che vuoi generare. Usa parole chiave descrittive.</p>
                 <textarea id="ai-prompt-input" class="form-textarea modal-ai-textarea" rows="3"></textarea>
+
+                <div class="ai-reference-section">
+                    <div class="ai-reference-zone" id="ai-reference-zone">
+                        <i data-lucide="image-plus"></i>
+                        <span>Trascina o clicca per aggiungere un riferimento</span>
+                        <input type="file" id="ai-reference-input" accept="image/*" hidden>
+                    </div>
+                    <div class="ai-reference-preview" id="ai-reference-preview" style="display:none">
+                        <img id="ai-reference-thumb" alt="Riferimento">
+                        <div class="ai-reference-info">
+                            <span id="ai-reference-name"></span>
+                            <span id="ai-reference-size"></span>
+                        </div>
+                        <button class="ai-reference-remove" id="ai-reference-remove" title="Rimuovi riferimento">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <button class="btn btn-primary btn-full-width" data-action="generate-ai" data-slug="${data.slug}" data-category="${data.category}" id="ai-generate-btn">
-                    <i data-lucide="sparkles"></i> Genera Immagine
+                    <i data-lucide="sparkles"></i> <span id="ai-generate-label">Genera Immagine</span>
                 </button>
             </div>
         </div>
@@ -119,6 +138,9 @@ function showImagePickerModal(data) {
         const ta = document.getElementById('ai-prompt-input');
         if (ta) ta.value = data.recipeName + ", food photography, high quality, professional lighting";
         if (window.lucide) lucide.createIcons();
+
+        // ── Reference image drop zone setup ──
+        initReferenceImageZone();
     }, 10);
 
     tabsEl.querySelectorAll('.modal-tab').forEach(tab => {
@@ -162,14 +184,99 @@ export async function generateAiImage(slug, category) {
     btn.innerHTML = '<i data-lucide="loader-2" class="lucide-icon spin"></i> Generazione...';
     if (window.lucide) lucide.createIcons();
 
+    // Read reference image base64 if present
+    const referenceImage = window._aiReferenceBase64 || null;
+
     closeImageModal();
-    appendTerminal(`🤖 Generazione immagine AI per "${slug}"...`, 'job-start');
+    appendTerminal(`🤖 Generazione immagine AI per "${slug}"${referenceImage ? ' (con riferimento visivo)' : ''}...`, 'job-start');
     try {
-        await apiPost('refresh-image/generate', { slug, category, prompt });
+        await apiPost('refresh-image/generate', { slug, category, prompt, referenceImage });
     } catch (e) {
         showToast('Errore durante la generazione', 'error');
         appendTerminal(`❌ Errore AI: ${e.message}`, 'stderr');
+    } finally {
+        window._aiReferenceBase64 = null;
     }
+}
+
+// ── Reference Image Zone (drag & drop + click to browse) ──
+function initReferenceImageZone() {
+    const zone = document.getElementById('ai-reference-zone');
+    const input = document.getElementById('ai-reference-input');
+    const preview = document.getElementById('ai-reference-preview');
+    if (!zone || !input) return;
+
+    // Click to browse
+    zone.addEventListener('click', (e) => {
+        if (e.target === input) return;
+        input.click();
+    });
+
+    // File selected via input
+    input.addEventListener('change', () => {
+        if (input.files.length > 0) handleReferenceFile(input.files[0]);
+    });
+
+    // Drag & drop
+    zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) handleReferenceFile(file);
+    });
+
+    // Remove button
+    const removeBtn = document.getElementById('ai-reference-remove');
+    if (removeBtn) {
+        removeBtn.addEventListener('click', clearReferenceImage);
+    }
+}
+
+function handleReferenceFile(file) {
+    const zone = document.getElementById('ai-reference-zone');
+    const preview = document.getElementById('ai-reference-preview');
+    const thumb = document.getElementById('ai-reference-thumb');
+    const nameEl = document.getElementById('ai-reference-name');
+    const sizeEl = document.getElementById('ai-reference-size');
+    const label = document.getElementById('ai-generate-label');
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        // Show preview
+        thumb.src = e.target.result;
+        nameEl.textContent = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+        sizeEl.textContent = (file.size / 1024).toFixed(0) + ' KB';
+        zone.style.display = 'none';
+        preview.style.display = 'flex';
+
+        // Store raw base64 (strip data URL prefix)
+        window._aiReferenceBase64 = e.target.result.split(',')[1];
+
+        // Update button label
+        if (label) label.textContent = 'Genera con Riferimento';
+        if (window.lucide) lucide.createIcons();
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearReferenceImage() {
+    const zone = document.getElementById('ai-reference-zone');
+    const preview = document.getElementById('ai-reference-preview');
+    const input = document.getElementById('ai-reference-input');
+    const label = document.getElementById('ai-generate-label');
+
+    window._aiReferenceBase64 = null;
+    if (zone) zone.style.display = '';
+    if (preview) preview.style.display = 'none';
+    if (input) input.value = '';
+    if (label) label.textContent = 'Genera Immagine';
 }
 
 export function closeImageModal() {
@@ -197,10 +304,26 @@ export function showImageGenerateDropdown(slug, cat, anchorEl) {
             Genera con Nano Banana 2
             <span class="model-tag tag-new">AI</span>
         </button>
+        <button class="model-dropdown-item" data-action="generate-with-ref">
+            <i data-lucide="image-plus"></i>
+            Genera con Riferimento
+            <span class="model-tag" style="background:rgba(52,152,219,0.15);color:#3498db">REF</span>
+        </button>
     `;
     dd.querySelector('[data-action="quick-generate"]').addEventListener('click', () => {
         dd.remove();
         quickGenerateAiImage(slug, cat);
+    });
+    dd.querySelector('[data-action="generate-with-ref"]').addEventListener('click', () => {
+        dd.remove();
+        // Open the image picker modal and switch to AI tab
+        runRefreshImageForSlug(slug).then(() => {
+            // Switch to AI tab after modal opens
+            setTimeout(() => {
+                const aiTab = document.querySelector('.modal-tab[data-idx="ai"]');
+                if (aiTab) aiTab.click();
+            }, 500);
+        });
     });
     document.body.appendChild(dd);
     if (window.lucide) lucide.createIcons();

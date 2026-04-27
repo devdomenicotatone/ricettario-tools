@@ -67,6 +67,179 @@
     --cat-color: #e74c3c;
 }
 
+/* ── ADD CATEGORY (inline form) ── */
+.cat-dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+}
+
+.cat-dropdown-add-btn {
+    color: var(--accent) !important;
+    font-weight: 600 !important;
+}
+.cat-dropdown-add-btn:hover {
+    background: var(--accent-glow) !important;
+    color: var(--accent) !important;
+}
+
+.cat-dropdown-form {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    animation: fadeInDD 0.15s ease;
+}
+
+.cat-dropdown-input {
+    flex: 1;
+    padding: 7px 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--transition);
+    min-width: 0;
+}
+.cat-dropdown-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(232, 160, 72, 0.2);
+}
+.cat-dropdown-input.shake {
+    animation: shakeInput 0.4s ease;
+    border-color: #e74c3c;
+}
+
+.cat-dropdown-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: all var(--transition);
+    flex-shrink: 0;
+}
+.cat-dropdown-submit:hover { filter: brightness(1.15); }
+.cat-dropdown-submit:disabled { opacity: 0.6; cursor: wait; }
+.cat-dropdown-submit svg { width: 16px; height: 16px; }
+
+@keyframes shakeInput {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+/* ── DELETE CATEGORY (dropdown button + confirm dialog) ── */
+.cat-dropdown-delete-btn {
+    color: #e74c3c !important;
+    font-weight: 500 !important;
+    opacity: 0.7;
+    transition: all var(--transition);
+}
+.cat-dropdown-delete-btn:hover {
+    opacity: 1;
+    background: rgba(231, 76, 60, 0.1) !important;
+    color: #e74c3c !important;
+}
+.cat-dropdown-delete-btn svg { width: 14px; height: 14px; }
+
+.confirm-delete-cat { max-width: 420px; }
+
+.confirm-recipe-count {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.confirm-recipe-count.confirm-empty {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.confirm-move-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 14px 0;
+    padding: 14px;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+.confirm-action-choice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.confirm-action-choice label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.confirm-action-choice .text-danger {
+    color: #e74c3c;
+}
+.confirm-move-select {
+    flex: 1;
+    min-width: 120px;
+    padding: 6px 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    border-radius: 4px;
+    outline: none;
+    color-scheme: dark;
+    font-size: 13px;
+    transition: border-color var(--transition);
+}
+.confirm-move-select:focus {
+    border-color: var(--accent);
+}
+.confirm-move-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.confirm-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(52, 152, 219, 0.08);
+    border: 1px solid rgba(52, 152, 219, 0.2);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: #3498db;
+    margin-bottom: 14px;
+}
+.confirm-info svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.btn-danger {
+    background: #e74c3c;
+    color: #fff;
+    border: 1px solid #c0392b;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    transition: all var(--transition);
+}
+.btn-danger:hover {
+    background: #c0392b;
+    box-shadow: 0 2px 12px rgba(231, 76, 60, 0.4);
+}
+.btn-danger svg { width: 14px; height: 14px; }
+
 /* ── SPLIT BUTTON (Quality Model Picker) ── */
 .btn-split {
     display: inline-flex;
