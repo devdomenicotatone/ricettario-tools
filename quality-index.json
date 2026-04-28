@@ -503,5 +503,17 @@
     "issueCount": 2,
     "timestamp": "2026-04-27T22:06:19.574Z",
     "fixed": true
+  },
+  "pizza-margherita-verace-disciplinare-avpn": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-28T21:28:06.404Z"
+  },
+  "pizza-marinara-napoletana-verace": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-28T21:28:36.590Z"
   }
 }
