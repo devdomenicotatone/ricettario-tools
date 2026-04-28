@@ -70,10 +70,38 @@
     flex-wrap: wrap;
 }
 
-.recipes-toolbar-pro .search-input {
+.search-input-wrapper {
+    position: relative;
     flex: 1;
     min-width: 200px;
 }
+.recipes-toolbar-pro .search-input {
+    width: 100%;
+    padding-right: 36px;
+}
+.search-clear-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--border-light, rgba(255,255,255,0.1));
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.search-clear-btn:hover {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+.search-clear-btn svg { width: 13px; height: 13px; }
 
 .toolbar-controls {
     display: flex;

@@ -141,6 +141,7 @@
                             <option value="Dolci">🍰 Dolci</option>
                             <option value="Condimenti">🌿 Condimenti</option>
                             <option value="Conserve">🫙 Conserve</option>
+                            <option value="Secondi Piatti">🍽️ Secondi Piatti</option>
                         </select>
                     </div>
                     <div class="form-row">
@@ -192,6 +193,7 @@
                             <option value="Dolci">🍰 Dolci</option>
                             <option value="Condimenti">🌿 Condimenti</option>
                             <option value="Conserve">🫙 Conserve</option>
+                            <option value="Secondi Piatti">🍽️ Secondi Piatti</option>
                         </select>
                     </div>
                     <div class="form-row">
@@ -232,6 +234,7 @@
                             <option value="Dolci">🍰 Dolci</option>
                             <option value="Condimenti">🌿 Condimenti</option>
                             <option value="Conserve">🫙 Conserve</option>
+                            <option value="Secondi Piatti">🍽️ Secondi Piatti</option>
                         </select>
                     </div>
                     <div class="form-row">
@@ -284,8 +287,13 @@
 
                 <!-- Toolbar: Search + Sort + View -->
                 <div class="recipes-toolbar-pro">
-                    <input type="text" class="form-input search-input" id="recipes-search"
-                        placeholder="Cerca ricetta...">
+                    <div class="search-input-wrapper">
+                        <input type="text" class="form-input search-input" id="recipes-search"
+                            placeholder="Cerca ricetta...">
+                        <button class="search-clear-btn" id="searchClearBtn" title="Cancella ricerca" style="display:none">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
                     <div class="toolbar-controls">
                         <select class="form-select toolbar-select" id="recipes-status" style="max-width: 180px;">
                             <option value="all">Stato: Tutti</option>

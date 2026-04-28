@@ -84,6 +84,10 @@ export function showDeleteCategoryConfirm(categoryName, recipeCount, otherCatego
                         <span class="text-danger">🗑️ Elimina anche tutte le ricette</span>
                     </label>
                 </div>
+            </div>
+            <div class="confirm-danger-zone" style="display:none">
+                <p class="confirm-danger-text">⚠️ Stai per eliminare <strong>${recipeCount}</strong> ricett${recipeCount === 1 ? 'a' : 'e'}. Digita <strong>"${categoryName}"</strong> per confermare:</p>
+                <input type="text" class="confirm-danger-input" placeholder="${categoryName}" autocomplete="off" spellcheck="false">
             </div>` : ''}
             <div class="confirm-info">
                 <i data-lucide="archive"></i>
@@ -100,12 +104,35 @@ export function showDeleteCategoryConfirm(categoryName, recipeCount, otherCatego
     document.body.appendChild(overlay);
     if (window.lucide) lucide.createIcons();
 
-    // Toggle select disabled state based on radio
-    const radios = overlay.querySelectorAll('input[name="cat-action"]');
     const select = overlay.querySelector('[data-field="moveTo"]');
-    radios.forEach(r => r.addEventListener('change', () => {
-        if (select) select.disabled = (r.value === 'delete');
-    }));
+    const deleteBtn = overlay.querySelector('[data-action="confirm-delete"]');
+    const dangerZone = overlay.querySelector('.confirm-danger-zone');
+    const dangerInput = overlay.querySelector('.confirm-danger-input');
+
+    // Toggle between move/delete modes
+    if (recipeCount > 0) {
+        overlay.querySelectorAll('input[name="cat-action"]').forEach(r => r.addEventListener('change', () => {
+            const isDelete = overlay.querySelector('input[name="cat-action"]:checked')?.value === 'delete';
+            if (select) select.disabled = isDelete;
+            if (dangerZone) {
+                dangerZone.style.display = isDelete ? 'block' : 'none';
+                if (isDelete) {
+                    dangerInput.value = '';
+                    dangerInput.focus();
+                    deleteBtn.disabled = true;
+                } else {
+                    deleteBtn.disabled = false;
+                }
+            }
+        }));
+
+        // Live validation: enable button only when typed text matches category name
+        if (dangerInput) {
+            dangerInput.addEventListener('input', () => {
+                deleteBtn.disabled = dangerInput.value.trim() !== categoryName;
+            });
+        }
+    }
 
     const close = () => {
         overlay.classList.remove('active');
@@ -113,12 +140,14 @@ export function showDeleteCategoryConfirm(categoryName, recipeCount, otherCatego
     };
 
     overlay.querySelector('[data-action="confirm-cancel"]').addEventListener('click', close);
-    overlay.querySelector('[data-action="confirm-delete"]').addEventListener('click', () => {
+    deleteBtn.addEventListener('click', () => {
         let moveTo = null;
         if (recipeCount > 0) {
             const actionNode = overlay.querySelector('input[name="cat-action"]:checked');
             if (actionNode && actionNode.value === 'move' && select) {
                 moveTo = select.value;
+            } else if (actionNode && actionNode.value === 'delete') {
+                if (dangerInput.value.trim() !== categoryName) return;
             }
         }
         close();

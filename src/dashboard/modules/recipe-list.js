@@ -30,18 +30,24 @@ export const CATEGORY_COLORS = {
 };
 
 export const CATEGORY_ICONS = {
-    'Pane': 'wheat', 'Pizza': 'pizza', 'Focaccia': 'sandwich',
-    'Lievitati': 'croissant', 'Pasta': 'utensils', 'Dolci': 'cake-slice',
-    'Condimenti': 'leaf', 'Conserve': 'archive',
+    'Pane': 'wheat',           // Fluent: baguette-bread
+    'Pizza': 'pizza',          // Fluent: pizza ✅
+    'Focaccia': 'wheat',       // Fluent: flatbread
+    'Lievitati': 'croissant',  // Fluent: croissant ✅
+    'Pasta': 'utensils-crossed', // Fluent: spaghetti
+    'Dolci': 'cake-slice',     // Fluent: shortcake ✅
+    'Condimenti': 'leaf',      // Fluent: herb ✅
+    'Conserve': 'package',     // Fluent: canned-food
+    'Secondi Piatti': 'utensils', // Fluent: fork-and-knife
 };
 
 export const CATEGORY_DIR_MAP = {
     'Pane': 'pane', 'Pizza': 'pizza', 'Focaccia': 'focaccia',
     'Lievitati': 'lievitati', 'Pasta': 'pasta', 'Dolci': 'dolci',
-    'Condimenti': 'condimenti', 'Conserve': 'conserve',
+    'Condimenti': 'condimenti', 'Conserve': 'conserve', 'Secondi Piatti': 'secondi-piatti',
 };
 
-export const ALL_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci', 'Condimenti', 'Conserve'];
+export const ALL_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci', 'Condimenti', 'Conserve', 'Secondi Piatti'];
 
 window.imageCacheBuster = window.imageCacheBuster || Date.now();
 
@@ -750,8 +756,17 @@ export function showCategoryDropdown(slug, currentCategory, anchorEl) {
 }
 
 export function initRecipeFilters() {
-    document.getElementById('recipes-search')?.addEventListener('input', (e) => {
+    const searchInput = document.getElementById('recipes-search');
+    const clearBtn = document.getElementById('searchClearBtn');
+    searchInput?.addEventListener('input', (e) => {
         recipeFilter.search = e.target.value;
+        if (clearBtn) clearBtn.style.display = e.target.value ? 'flex' : 'none';
+        renderRecipes();
+    });
+    clearBtn?.addEventListener('click', () => {
+        if (searchInput) { searchInput.value = ''; searchInput.focus(); }
+        recipeFilter.search = '';
+        clearBtn.style.display = 'none';
         renderRecipes();
     });
     document.getElementById('recipes-sort')?.addEventListener('change', (e) => {

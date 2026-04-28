@@ -285,17 +285,18 @@ export async function callGemini({
             // Converti messaggi nel formato Gemini
             const history = messages.slice(0, -1).map(m => ({
                 role: m.role === 'assistant' ? 'model' : m.role,
-                parts: [{ text: m.content }],
+                parts: m.parts || [{ text: m.content }],
             }));
 
             const lastMessage = messages[messages.length - 1];
+            const contentOrParts = lastMessage.parts || lastMessage.content;
 
             if (history.length > 0) {
                 const chat = genModel.startChat({ history });
-                const result = await chat.sendMessage(lastMessage.content);
+                const result = await chat.sendMessage(contentOrParts);
                 return result.response.text().trim();
             } else {
-                const result = await genModel.generateContent(lastMessage.content);
+                const result = await genModel.generateContent(contentOrParts);
                 return result.response.text().trim();
             }
         } catch (err) {

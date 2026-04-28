@@ -615,13 +615,10 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
     const ext = 'webp';
     const slug = recipe.slug || recipe.title.toLowerCase().replace(/\s+/g, '-');
 
-    // Mappa categoria → sottocartella (unica sorgente di verità: publisher.js)
-    const categoryFolders = {
-        Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta',
-        Lievitati: 'lievitati', Focaccia: 'focaccia', Dolci: 'dolci',
-    };
+    // Mappa categoria → sottocartella (sorgente di verità: constants.js)
+    const { CATEGORY_FOLDERS } = await import('./constants.js');
     const category = recipe.category || 'pane';
-    const catFolder = categoryFolders[category] || category.toLowerCase();
+    const catFolder = CATEGORY_FOLDERS[category] || category.toLowerCase();
     const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.${ext}`);
 
     // ── Blocklist per slug: se il file esiste già, skippa ──
@@ -643,15 +640,14 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
         recipe.imageKeywords || []
     );
 
-    // Salviamo nel database dei candidati
+    // Salviamo nel database dei candidati (mutex-protected)
     try {
-        const cachePath = resolve(process.cwd(), 'data', 'image-cache.json');
-        let cache = {};
-        if (existsSync(cachePath)) {
-            cache = JSON.parse(readFileSync(cachePath, 'utf-8'));
-        }
-        cache[slug] = { providerResults, timestamp: Date.now() };
-        writeFileSync(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
+        const { withCacheLock, readImageCache, writeImageCache } = await import('./server/routes/_helpers.js');
+        await withCacheLock(() => {
+            const cache = readImageCache();
+            cache[slug] = { providerResults, timestamp: Date.now() };
+            writeImageCache(cache);
+        });
         console.log(`\n💾 Database immagini salvato in cache per "${slug}" (${providerResults.length} provider trovati).`);
     } catch (e) {
         console.error("⚠️ Impossibile salvare la cache delle immagini:", e.message);
@@ -709,7 +705,7 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
 //  AI IMAGE GENERATION (Gemini Imagen)
 // ══════════════════════════════════════════════════════════
 
-export async function generateImageWithGemini(prompt, referenceImageBase64 = null) {
+export async function generateImageWithGemini(prompt, referenceImageBase64 = null, referenceImageMimeType = 'image/jpeg') {
     const { getActiveGeminiKey } = await import('./utils/api.js');
     const key = getActiveGeminiKey();
     if (!key) throw new Error("API Key Gemini non configurata");
@@ -725,7 +721,7 @@ export async function generateImageWithGemini(prompt, referenceImageBase64 = nul
         // Add the reference image first
         parts.push({
             inlineData: {
-                mimeType: 'image/jpeg',
+                mimeType: referenceImageMimeType,
                 data: referenceImageBase64
             }
         });

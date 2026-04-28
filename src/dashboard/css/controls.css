@@ -186,6 +186,39 @@
     color: var(--text-secondary);
     cursor: pointer;
 }
+.confirm-action-choice input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-light, #555);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+.confirm-action-choice input[type="radio"]:checked {
+    border-color: var(--accent);
+}
+.confirm-action-choice input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+.confirm-action-choice.delete-choice input[type="radio"]:checked {
+    border-color: #e74c3c;
+}
+.confirm-action-choice.delete-choice input[type="radio"]:checked::after {
+    background: #e74c3c;
+}
 .confirm-action-choice .text-danger {
     color: #e74c3c;
 }
@@ -223,6 +256,51 @@
     margin-bottom: 14px;
 }
 .confirm-info svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* Inline danger confirmation (replaces browser prompt) */
+.confirm-danger-zone {
+    padding: 12px 14px;
+    margin: 0 0 14px;
+    background: rgba(231, 76, 60, 0.06);
+    border: 1px solid rgba(231, 76, 60, 0.25);
+    border-radius: var(--radius-sm);
+    animation: dangerSlideIn 0.2s ease;
+}
+@keyframes dangerSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.confirm-danger-text {
+    font-size: 13px;
+    color: #e74c3c;
+    margin: 0 0 10px;
+    line-height: 1.5;
+}
+.confirm-danger-input {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg-card);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    color-scheme: dark;
+    transition: border-color 0.15s ease;
+}
+.confirm-danger-input:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.15);
+}
+.confirm-danger-input::placeholder {
+    color: rgba(231, 76, 60, 0.3);
+    font-weight: 400;
+}
+.btn-danger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
 
 .btn-danger {
     background: #e74c3c;
@@ -357,6 +435,14 @@
 .model-dropdown-item .model-tag.tag-default {
     background: var(--accent-glow);
     color: var(--accent);
+}
+.model-dropdown-item .model-tag.tag-new {
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+}
+.model-dropdown-item .model-tag.tag-ref {
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
 }
 
 /* ── SELECTION SYSTEM ── */

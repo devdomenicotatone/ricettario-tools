@@ -137,6 +137,9 @@ function showImagePickerModal(data) {
     setTimeout(() => {
         const ta = document.getElementById('ai-prompt-input');
         if (ta) ta.value = data.recipeName + ", food photography, high quality, professional lighting";
+        // Reset button to step 1
+        const btn = document.getElementById('ai-generate-btn');
+        if (btn) { btn.dataset.step = 'craft'; btn.classList.remove('btn-confirm-generate'); }
         if (window.lucide) lucide.createIcons();
 
         // ── Reference image drop zone setup ──
@@ -177,25 +180,67 @@ export async function confirmImageSelection(image, slug, category) {
 }
 
 export async function generateAiImage(slug, category) {
-    const prompt = document.getElementById('ai-prompt-input').value.trim();
-    if (!prompt) return showToast('Inserisci un prompt', 'warning');
     const btn = document.getElementById('ai-generate-btn');
+    const textarea = document.getElementById('ai-prompt-input');
+    const prompt = textarea.value.trim();
+    if (!prompt) return showToast('Inserisci un prompt', 'warning');
+
+    const step = btn.dataset.step || 'craft';
+
+    if (step === 'craft') {
+        // ── Step 1: Craft prompt + translate to Italian ──
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="lucide-icon spin"></i> Composizione prompt...';
+        if (window.lucide) lucide.createIcons();
+
+        const refData = window._aiReferenceData;
+        const referenceImage = refData?.base64 || null;
+        const referenceImageMimeType = refData?.mimeType || null;
+
+        try {
+            const resp = await fetch('/api/refresh-image/craft-prompt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slug, category, prompt, referenceImage, referenceImageMimeType })
+            });
+            const data = await resp.json();
+            if (data.error) throw new Error(data.error);
+
+            textarea.value = data.promptIT;
+            textarea.classList.add('prompt-reviewed');
+            btn.dataset.step = 'generate';
+            btn.disabled = false;
+            btn.classList.add('btn-confirm-generate');
+            btn.innerHTML = '<i data-lucide="check"></i> <span id="ai-generate-label">Conferma e Genera</span>';
+            if (window.lucide) lucide.createIcons();
+            showToast('Prompt generato! Rileggi e modifica, poi conferma.', 'info');
+        } catch (e) {
+            showToast(`Errore: ${e.message}`, 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="sparkles"></i> <span id="ai-generate-label">Genera Immagine</span>';
+            if (window.lucide) lucide.createIcons();
+        }
+        return;
+    }
+
+    // ── Step 2: Send confirmed Italian prompt to generate ──
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader-2" class="lucide-icon spin"></i> Generazione...';
     if (window.lucide) lucide.createIcons();
 
-    // Read reference image base64 if present
-    const referenceImage = window._aiReferenceBase64 || null;
+    const refData = window._aiReferenceData;
+    const referenceImage = refData?.base64 || null;
+    const referenceImageMimeType = refData?.mimeType || null;
 
     closeImageModal();
     appendTerminal(`🤖 Generazione immagine AI per "${slug}"${referenceImage ? ' (con riferimento visivo)' : ''}...`, 'job-start');
     try {
-        await apiPost('refresh-image/generate', { slug, category, prompt, referenceImage });
+        await apiPost('refresh-image/generate', { slug, category, prompt, promptLanguage: 'it', referenceImage, referenceImageMimeType });
     } catch (e) {
         showToast('Errore durante la generazione', 'error');
         appendTerminal(`❌ Errore AI: ${e.message}`, 'stderr');
     } finally {
-        window._aiReferenceBase64 = null;
+        window._aiReferenceData = null;
     }
 }
 
@@ -247,23 +292,45 @@ function handleReferenceFile(file) {
     const sizeEl = document.getElementById('ai-reference-size');
     const label = document.getElementById('ai-generate-label');
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        // Show preview
-        thumb.src = e.target.result;
-        nameEl.textContent = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
-        sizeEl.textContent = (file.size / 1024).toFixed(0) + ' KB';
-        zone.style.display = 'none';
-        preview.style.display = 'flex';
+    // Compress via Canvas: resize to max 1024px + export as webp
+    const img = new Image();
+    img.onload = () => {
+        const MAX = 1024;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+            const scale = MAX / Math.max(width, height);
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
 
-        // Store raw base64 (strip data URL prefix)
-        window._aiReferenceBase64 = e.target.result.split(',')[1];
+        canvas.toBlob((blob) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Show preview
+                thumb.src = e.target.result;
+                nameEl.textContent = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+                const compressedKB = (blob.size / 1024).toFixed(0);
+                const originalKB = (file.size / 1024).toFixed(0);
+                sizeEl.textContent = `${compressedKB} KB (da ${originalKB} KB)`;
+                zone.style.display = 'none';
+                preview.style.display = 'flex';
 
-        // Update button label
-        if (label) label.textContent = 'Genera con Riferimento';
-        if (window.lucide) lucide.createIcons();
+                window._aiReferenceData = {
+                    base64: e.target.result.split(',')[1],
+                    mimeType: 'image/webp'
+                };
+
+                if (label) label.textContent = 'Genera con Riferimento';
+                if (window.lucide) lucide.createIcons();
+            };
+            reader.readAsDataURL(blob);
+        }, 'image/webp', 0.85);
     };
-    reader.readAsDataURL(file);
+    img.src = URL.createObjectURL(file);
 }
 
 function clearReferenceImage() {
@@ -272,7 +339,7 @@ function clearReferenceImage() {
     const input = document.getElementById('ai-reference-input');
     const label = document.getElementById('ai-generate-label');
 
-    window._aiReferenceBase64 = null;
+    window._aiReferenceData = null;
     if (zone) zone.style.display = '';
     if (preview) preview.style.display = 'none';
     if (input) input.value = '';
@@ -281,6 +348,8 @@ function clearReferenceImage() {
 
 export function closeImageModal() {
     document.getElementById('imageModal')?.classList.remove('active');
+    // Prevent stale reference data leaking into the next session
+    window._aiReferenceData = null;
 }
 
 export function showImageGenerateDropdown(slug, cat, anchorEl) {
@@ -307,7 +376,7 @@ export function showImageGenerateDropdown(slug, cat, anchorEl) {
         <button class="model-dropdown-item" data-action="generate-with-ref">
             <i data-lucide="image-plus"></i>
             Genera con Riferimento
-            <span class="model-tag" style="background:rgba(52,152,219,0.15);color:#3498db">REF</span>
+            <span class="model-tag tag-ref">REF</span>
         </button>
     `;
     dd.querySelector('[data-action="quick-generate"]').addEventListener('click', () => {
@@ -316,13 +385,14 @@ export function showImageGenerateDropdown(slug, cat, anchorEl) {
     });
     dd.querySelector('[data-action="generate-with-ref"]').addEventListener('click', () => {
         dd.remove();
-        // Open the image picker modal and switch to AI tab
-        runRefreshImageForSlug(slug).then(() => {
-            // Switch to AI tab after modal opens
-            setTimeout(() => {
-                const aiTab = document.querySelector('.modal-tab[data-idx="ai"]');
-                if (aiTab) aiTab.click();
-            }, 500);
+        // Open directly on AI tab — skip the 5 stock provider API calls
+        const r = allRecipes.find(x => x.slug === slug);
+        const title = r ? (r.title || r.name) : slug;
+        showImagePickerModal({
+            recipeName: title,
+            slug,
+            category: cat,
+            providerResults: []
         });
     });
     document.body.appendChild(dd);
