@@ -378,3 +378,76 @@
     width: 14px;
     height: 14px;
 }
+
+/* ── Section Labels (Stile / Soggetto) ── */
+.ai-section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-align: left;
+}
+.ai-section-label-hint {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+/* ── AI Subject Image Zone ── */
+.ai-subject-section {
+    margin-bottom: 16px;
+}
+
+.ai-subject-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 13px;
+    transition: all var(--transition);
+    background: transparent;
+}
+.ai-subject-zone:hover {
+    border-color: #1abc9c;
+    color: var(--text-secondary);
+    background: rgba(26, 188, 156, 0.04);
+}
+.ai-subject-zone.drag-over {
+    border-color: #1abc9c;
+    background: rgba(26, 188, 156, 0.08);
+    color: #1abc9c;
+}
+.ai-subject-zone svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.ai-subject-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid #1abc9c;
+    border-radius: var(--radius-sm);
+    position: relative;
+}
+.ai-subject-preview img {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+/* ── Dropdown tag for subject ── */
+.model-tag.tag-subject {
+    background: rgba(26, 188, 156, 0.15);
+    color: #1abc9c;
+}

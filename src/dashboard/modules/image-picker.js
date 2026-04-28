@@ -91,9 +91,10 @@ function showImagePickerModal(data) {
                 <textarea id="ai-prompt-input" class="form-textarea modal-ai-textarea" rows="3"></textarea>
 
                 <div class="ai-reference-section">
+                    <div class="ai-section-label">🎨 Riferimento Stile <span class="ai-section-label-hint">(opzionale — per il crafting del prompt)</span></div>
                     <div class="ai-reference-zone" id="ai-reference-zone">
                         <i data-lucide="image-plus"></i>
-                        <span>Trascina o clicca per aggiungere un riferimento</span>
+                        <span>Trascina o clicca per aggiungere un riferimento stile</span>
                         <input type="file" id="ai-reference-input" accept="image/*" hidden>
                     </div>
                     <div class="ai-reference-preview" id="ai-reference-preview" style="display:none">
@@ -103,6 +104,25 @@ function showImagePickerModal(data) {
                             <span id="ai-reference-size"></span>
                         </div>
                         <button class="ai-reference-remove" id="ai-reference-remove" title="Rimuovi riferimento">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ai-subject-section">
+                    <div class="ai-section-label">📷 Riferimento Soggetto <span class="ai-section-label-hint">(opzionale — foto reale del piatto da imitare)</span></div>
+                    <div class="ai-subject-zone" id="ai-subject-zone">
+                        <i data-lucide="camera"></i>
+                        <span>Trascina una foto reale del piatto per imitarne forma e texture</span>
+                        <input type="file" id="ai-subject-input" accept="image/*" hidden>
+                    </div>
+                    <div class="ai-subject-preview" id="ai-subject-preview" style="display:none">
+                        <img id="ai-subject-thumb" alt="Soggetto">
+                        <div class="ai-reference-info">
+                            <span id="ai-subject-name"></span>
+                            <span id="ai-subject-size"></span>
+                        </div>
+                        <button class="ai-reference-remove" id="ai-subject-remove" title="Rimuovi soggetto">
                             <i data-lucide="x"></i>
                         </button>
                     </div>
@@ -144,6 +164,7 @@ function showImagePickerModal(data) {
 
         // ── Reference image drop zone setup ──
         initReferenceImageZone();
+        initSubjectImageZone();
     }, 10);
 
     tabsEl.querySelectorAll('.modal-tab').forEach(tab => {
@@ -232,15 +253,21 @@ export async function generateAiImage(slug, category) {
     const referenceImage = refData?.base64 || null;
     const referenceImageMimeType = refData?.mimeType || null;
 
+    // Subject reference (foto reale del piatto)
+    const subData = window._aiSubjectData;
+    const subjectImage = subData?.base64 || null;
+    const subjectImageMimeType = subData?.mimeType || null;
+
     closeImageModal();
-    appendTerminal(`🤖 Generazione immagine AI per "${slug}"${referenceImage ? ' (con riferimento visivo)' : ''}...`, 'job-start');
+    appendTerminal(`🤖 Generazione immagine AI per "${slug}"${subjectImage ? ' (📷 con soggetto reale)' : ''}${referenceImage ? ' (🎨 con stile)' : ''}...`, 'job-start');
     try {
-        await apiPost('refresh-image/generate', { slug, category, prompt, promptLanguage: 'it', referenceImage, referenceImageMimeType });
+        await apiPost('refresh-image/generate', { slug, category, prompt, promptLanguage: 'it', referenceImage, referenceImageMimeType, subjectImage, subjectImageMimeType });
     } catch (e) {
         showToast('Errore durante la generazione', 'error');
         appendTerminal(`❌ Errore AI: ${e.message}`, 'stderr');
     } finally {
         window._aiReferenceData = null;
+        window._aiSubjectData = null;
     }
 }
 
@@ -350,6 +377,7 @@ export function closeImageModal() {
     document.getElementById('imageModal')?.classList.remove('active');
     // Prevent stale reference data leaking into the next session
     window._aiReferenceData = null;
+    window._aiSubjectData = null;
 }
 
 export function showImageGenerateDropdown(slug, cat, anchorEl) {
@@ -373,6 +401,11 @@ export function showImageGenerateDropdown(slug, cat, anchorEl) {
             Genera con Nano Banana 2
             <span class="model-tag tag-new">AI</span>
         </button>
+        <button class="model-dropdown-item" data-action="quick-generate-subject">
+            <i data-lucide="camera"></i>
+            Genera da Foto Reale
+            <span class="model-tag tag-subject">📷</span>
+        </button>
         <button class="model-dropdown-item" data-action="generate-with-ref">
             <i data-lucide="image-plus"></i>
             Genera con Riferimento
@@ -382,6 +415,10 @@ export function showImageGenerateDropdown(slug, cat, anchorEl) {
     dd.querySelector('[data-action="quick-generate"]').addEventListener('click', () => {
         dd.remove();
         quickGenerateAiImage(slug, cat);
+    });
+    dd.querySelector('[data-action="quick-generate-subject"]').addEventListener('click', () => {
+        dd.remove();
+        showSubjectUploadDialog(slug, cat);
     });
     dd.querySelector('[data-action="generate-with-ref"]').addEventListener('click', () => {
         dd.remove();
@@ -477,6 +514,231 @@ export async function runBatchGenerateAiImage() {
     });
 }
 
+// ── Subject Image Zone (foto reale del piatto) ──
+function initSubjectImageZone() {
+    const zone = document.getElementById('ai-subject-zone');
+    const input = document.getElementById('ai-subject-input');
+    if (!zone || !input) return;
+
+    zone.addEventListener('click', (e) => {
+        if (e.target === input) return;
+        input.click();
+    });
+
+    input.addEventListener('change', () => {
+        if (input.files.length > 0) handleSubjectFile(input.files[0]);
+    });
+
+    zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) handleSubjectFile(file);
+    });
+
+    const removeBtn = document.getElementById('ai-subject-remove');
+    if (removeBtn) removeBtn.addEventListener('click', clearSubjectImage);
+}
+
+function handleSubjectFile(file) {
+    const zone = document.getElementById('ai-subject-zone');
+    const preview = document.getElementById('ai-subject-preview');
+    const thumb = document.getElementById('ai-subject-thumb');
+    const nameEl = document.getElementById('ai-subject-name');
+    const sizeEl = document.getElementById('ai-subject-size');
+    const label = document.getElementById('ai-generate-label');
+
+    const img = new Image();
+    img.onload = () => {
+        const MAX = 1024;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+            const scale = MAX / Math.max(width, height);
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                thumb.src = e.target.result;
+                nameEl.textContent = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+                const compressedKB = (blob.size / 1024).toFixed(0);
+                const originalKB = (file.size / 1024).toFixed(0);
+                sizeEl.textContent = `${compressedKB} KB (da ${originalKB} KB)`;
+                zone.style.display = 'none';
+                preview.style.display = 'flex';
+
+                window._aiSubjectData = {
+                    base64: e.target.result.split(',')[1],
+                    mimeType: 'image/webp'
+                };
+
+                if (label) label.textContent = 'Genera da Foto Reale';
+                if (window.lucide) lucide.createIcons();
+            };
+            reader.readAsDataURL(blob);
+        }, 'image/webp', 0.85);
+    };
+    img.src = URL.createObjectURL(file);
+}
+
+function clearSubjectImage() {
+    const zone = document.getElementById('ai-subject-zone');
+    const preview = document.getElementById('ai-subject-preview');
+    const input = document.getElementById('ai-subject-input');
+    const label = document.getElementById('ai-generate-label');
+
+    window._aiSubjectData = null;
+    if (zone) zone.style.display = '';
+    if (preview) preview.style.display = 'none';
+    if (input) input.value = '';
+    // Restore label only if no style reference is set either
+    if (label && !window._aiReferenceData) label.textContent = 'Genera Immagine';
+}
+
+// ── Quick Generate with Subject (mini dialog) ──
+function showSubjectUploadDialog(slug, category) {
+    // Remove existing dialog
+    document.getElementById('subject-upload-dialog')?.remove();
+
+    const r = allRecipes.find(x => x.slug === slug);
+    const title = r ? (r.title || r.name) : slug;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'subject-upload-dialog';
+    overlay.className = 'modal-overlay active';
+    overlay.innerHTML = `
+        <div class="modal-content" style="width: 440px; max-width: 90vw;">
+            <div class="modal-header">
+                <h3>📷 Genera da Foto Reale</h3>
+                <button class="modal-close" id="subject-dialog-close">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 13px;">
+                    Carica una foto reale di <strong>${title}</strong>. Il modello imiterà forma, texture e colore del piatto.
+                </p>
+                <div class="ai-subject-zone" id="quick-subject-zone" style="min-height: 100px; flex-direction: column; gap: 8px;">
+                    <i data-lucide="camera"></i>
+                    <span>Trascina o clicca per caricare</span>
+                    <input type="file" id="quick-subject-input" accept="image/*" hidden>
+                </div>
+                <div class="ai-subject-preview" id="quick-subject-preview" style="display:none">
+                    <img id="quick-subject-thumb" alt="Soggetto">
+                    <div class="ai-reference-info">
+                        <span id="quick-subject-name"></span>
+                        <span id="quick-subject-size"></span>
+                    </div>
+                    <button class="ai-reference-remove" id="quick-subject-remove" title="Rimuovi">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <button class="btn btn-primary btn-full-width" id="quick-subject-generate" disabled style="margin-top: 16px;">
+                    <i data-lucide="sparkles"></i> Genera Immagine
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    if (window.lucide) lucide.createIcons();
+
+    // Close button
+    document.getElementById('subject-dialog-close').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+    // File handling
+    const zone = document.getElementById('quick-subject-zone');
+    const input = document.getElementById('quick-subject-input');
+    const generateBtn = document.getElementById('quick-subject-generate');
+    let subjectData = null;
+
+    zone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
+    input.addEventListener('change', () => { if (input.files.length > 0) processQuickSubject(input.files[0]); });
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) processQuickSubject(file);
+    });
+
+    function processQuickSubject(file) {
+        const img = new Image();
+        img.onload = () => {
+            const MAX = 1024;
+            let { width, height } = img;
+            if (width > MAX || height > MAX) {
+                const scale = MAX / Math.max(width, height);
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('quick-subject-preview');
+                    document.getElementById('quick-subject-thumb').src = e.target.result;
+                    document.getElementById('quick-subject-name').textContent = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+                    document.getElementById('quick-subject-size').textContent = `${(blob.size / 1024).toFixed(0)} KB`;
+                    zone.style.display = 'none';
+                    preview.style.display = 'flex';
+                    generateBtn.disabled = false;
+
+                    subjectData = {
+                        base64: e.target.result.split(',')[1],
+                        mimeType: 'image/webp'
+                    };
+                    if (window.lucide) lucide.createIcons();
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/webp', 0.85);
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
+    document.getElementById('quick-subject-remove')?.addEventListener('click', () => {
+        subjectData = null;
+        zone.style.display = '';
+        document.getElementById('quick-subject-preview').style.display = 'none';
+        input.value = '';
+        generateBtn.disabled = true;
+    });
+
+    generateBtn.addEventListener('click', async () => {
+        if (!subjectData) return;
+        overlay.remove();
+        const prompt = title + ", food photography, high quality, professional lighting";
+        appendTerminal(`🤖 Generazione immagine AI per "${slug}" (📷 con soggetto reale)...`, 'job-start');
+        showToast(`Generazione da foto reale per ${title}...`, 'info');
+        try {
+            await apiPost('refresh-image/generate', {
+                slug, category, prompt,
+                subjectImage: subjectData.base64,
+                subjectImageMimeType: subjectData.mimeType
+            });
+        } catch (e) {
+            showToast('Errore durante la generazione', 'error');
+            appendTerminal(`❌ Errore AI: ${e.message}`, 'stderr');
+        }
+    });
+}
+
 export function initImageModal() {
     document.getElementById('imageModal')?.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal-overlay')) closeImageModal();
@@ -493,4 +755,5 @@ window.showImageGenerateDropdown = showImageGenerateDropdown;
 window.showImageGenerateDropdownBatch = showImageGenerateDropdownBatch;
 window.quickGenerateAiImage = quickGenerateAiImage;
 window.runBatchGenerateAiImage = runBatchGenerateAiImage;
+window.showSubjectUploadDialog = showSubjectUploadDialog;
 

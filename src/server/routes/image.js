@@ -178,7 +178,7 @@ export function setupImageRoutes(app, { getRicettarioPath, findRecipeJsonDynamic
 
     // ── Genera immagine AI (Nano Banana 2 / Gemini) ──
     app.post('/api/refresh-image/generate', async (req, res) => {
-        const { slug, prompt, category, promptLanguage } = req.body;
+        const { slug, prompt, category, promptLanguage, subjectImage, subjectImageMimeType } = req.body;
         const jobId = nextJobId('img-ai');
         const ctx = createJobContext(jobId, `AI Generate: ${slug}`);
         res.json({ jobId, status: 'started' });
@@ -239,8 +239,10 @@ export function setupImageRoutes(app, { getRicettarioPath, findRecipeJsonDynamic
                 }
                 craftedPrompt = sanitized.prompt;
 
-                ctx.log(`🤖 Generazione in corso con Nano Banana 2 (da prompt arricchito)...`);
-                const imageBuffer = await generateImageWithGemini(craftedPrompt, null, null);
+                const hasSubject = !!subjectImage;
+                if (hasSubject) ctx.log(`📷 Riferimento soggetto allegato — il modello imiterà il piatto reale`);
+                ctx.log(`🤖 Generazione in corso con Nano Banana 2${hasSubject ? ' + soggetto reale' : ' (da prompt arricchito)'}...`);
+                const imageBuffer = await generateImageWithGemini(craftedPrompt, subjectImage || null, subjectImageMimeType || null);
                 ctx.log(`✅ Immagine generata con successo!`);
                 
                 // Salviamo l'originale temporaneo

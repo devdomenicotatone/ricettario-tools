@@ -725,9 +725,9 @@ export async function generateImageWithGemini(prompt, referenceImageBase64 = nul
                 data: referenceImageBase64
             }
         });
-        // Wrap prompt with style reference instructions
+        // Wrap prompt with subject-faithful reference instructions
         parts.push({
-            text: `Using the provided reference image as a visual style guide for lighting, composition, angle, and plating style, generate a professional food photograph of: ${prompt}. The result should look like a photo taken in the same setting and style as the reference, but featuring the described dish.`
+            text: `Recreate the food item shown in the reference image as faithfully as possible — match its exact shape, texture, crust color, filling, and natural imperfections. The result must look like a real photograph of the same dish, not an idealized version. Then place it in a professional food photography setting with: ${prompt}`
         });
     } else {
         parts.push({ text: prompt });

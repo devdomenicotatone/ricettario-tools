@@ -98,15 +98,20 @@ const FORBIDDEN_REGEX = new RegExp(
     'gi'
 );
 
-/** Lunghezza massima del prompt per Imagen */
-const MAX_PROMPT_LENGTH = 450;
+/** Suffisso obbligatorio anti-testo — appeso a OGNI prompt per Imagen.
+ *  Posizionato alla fine = massimo peso nell'attenzione del modello. */
+const CLEAN_LABEL_SUFFIX = ' All containers, jars, lids, and surfaces are completely plain and smooth with zero text, zero markings, zero engravings, zero printed elements.';
+
+/** Lunghezza massima del prompt per Imagen (incluso suffisso) */
+const MAX_PROMPT_LENGTH = 480;
 
 /**
  * Sanitizza il prompt generato da Gemini prima di inviarlo a Imagen.
  * 
  * 1. Rimuove termini proibiti (che causerebbero testo nelle immagini)
  * 2. Pulisce spazi/punteggiatura residui
- * 3. Tronca a MAX_PROMPT_LENGTH caratteri (taglio pulito su parola)
+ * 3. Appende il suffisso anti-testo obbligatorio
+ * 4. Tronca a MAX_PROMPT_LENGTH caratteri (taglio pulito su parola)
  * 
  * @param {string} prompt - Il prompt grezzo generato da Gemini
  * @returns {{ prompt: string, wasModified: boolean, removedTerms: string[] }}
@@ -135,18 +140,22 @@ export function sanitizeImagePrompt(prompt) {
         .replace(/^[,.\s]+/, '')           // trim iniziale punteggiatura
         .trim();
 
-    // 3. Tronca a MAX_PROMPT_LENGTH con taglio su parola
-    if (sanitized.length > MAX_PROMPT_LENGTH) {
-        const truncated = sanitized.substring(0, MAX_PROMPT_LENGTH);
+    // 3. Tronca il corpo del prompt per lasciare spazio al suffisso
+    const maxBody = MAX_PROMPT_LENGTH - CLEAN_LABEL_SUFFIX.length;
+    if (sanitized.length > maxBody) {
+        const truncated = sanitized.substring(0, maxBody);
         const lastSpace = truncated.lastIndexOf(' ');
-        sanitized = lastSpace > MAX_PROMPT_LENGTH * 0.8
+        sanitized = lastSpace > maxBody * 0.8
             ? truncated.substring(0, lastSpace).replace(/[,\s]+$/, '') + '.'
             : truncated.replace(/[,\s]+$/, '') + '.';
     }
 
+    // 4. Appendi suffisso anti-testo obbligatorio
+    sanitized = sanitized + CLEAN_LABEL_SUFFIX;
+
     return {
         prompt: sanitized,
-        wasModified: removedTerms.length > 0 || prompt.length > MAX_PROMPT_LENGTH,
+        wasModified: removedTerms.length > 0 || prompt.length > maxBody,
         removedTerms,
     };
 }
