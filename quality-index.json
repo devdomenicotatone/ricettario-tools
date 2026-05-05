@@ -515,5 +515,23 @@
     "verdict": "🟢 Buona",
     "issueCount": 6,
     "timestamp": "2026-04-28T21:28:36.590Z"
+  },
+  "babaganoush-crema-melanzane": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-05-05T21:01:00.110Z"
+  },
+  "dado-vegetale-granulare": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-05-05T21:01:22.905Z"
+  },
+  "pizza-marinara-verace-disciplinare-avpn": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-05-05T21:01:32.271Z"
   }
 }
