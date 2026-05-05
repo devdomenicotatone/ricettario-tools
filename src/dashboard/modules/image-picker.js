@@ -140,7 +140,11 @@ function showImagePickerModal(data) {
     bodyEl._providerData = { providers, slug: data.slug, category: data.category };
     
     // Event delegation for image selection and AI generate
-    bodyEl.addEventListener('click', function modalBodyClick(e) {
+    // ── Remove previous handler to prevent duplicate fires ──
+    if (bodyEl._modalClickHandler) {
+        bodyEl.removeEventListener('click', bodyEl._modalClickHandler);
+    }
+    bodyEl._modalClickHandler = function modalBodyClick(e) {
         const target = e.target.closest('[data-action]');
         if (!target) return;
         
@@ -152,7 +156,8 @@ function showImagePickerModal(data) {
         } else if (target.dataset.action === 'generate-ai') {
             generateAiImage(target.dataset.slug, target.dataset.category);
         }
-    });
+    };
+    bodyEl.addEventListener('click', bodyEl._modalClickHandler);
 
     setTimeout(() => {
         const ta = document.getElementById('ai-prompt-input');
