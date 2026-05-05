@@ -201,7 +201,7 @@ function getFilteredRecipes() {
         filtered = filtered.filter(r => {
             if (recipeFilter.status === 'no-qa') return !qualityIndex[r.slug];
             if (recipeFilter.status === 'no-fix') return qualityIndex[r.slug]?.fixed !== true;
-            if (recipeFilter.status === 'no-tech') return !r.hydration && !r.time && !r.temp && !r.hasSensory;
+            if (recipeFilter.status === 'no-tech') return !r.hasSensory && !r.hydration && !r.time && !r.temp;
             return true;
         });
     }
@@ -449,12 +449,12 @@ function updateActionBar() {
         return;
     }
 
-    if (!bar) {
-        bar = document.createElement('div');
-        bar.id = 'selectionActionBar';
-        bar.className = 'selection-action-bar';
-        document.body.appendChild(bar);
-    }
+    // Ricrea sempre la barra da zero per evitare accumulo di event listener
+    if (bar) bar.remove();
+    bar = document.createElement('div');
+    bar.id = 'selectionActionBar';
+    bar.className = 'selection-action-bar';
+    document.body.appendChild(bar);
 
     bar.innerHTML = `
         <div class="action-bar-info">

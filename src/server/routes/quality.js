@@ -295,6 +295,12 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                     ctx.log(`✅ Profilo aggiunto con successo a ${currentSlug}`);
                 }
                 ctx.log(`\n🎉 Processo completato per ${targetSlugs.length} ricette!`);
+
+                // Sync cards per aggiornare recipes.json (hasSensory, nutrition, ecc.)
+                ctx.log('🔄 Aggiornamento recipes.json...');
+                const { syncCards } = await import('../../commands/sync-cards.js');
+                await syncCards({});
+                ctx.log('✅ recipes.json aggiornato');
             });
             ctx.end(true);
         } catch (err) {
