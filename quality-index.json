@@ -533,5 +533,12 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-05-05T21:01:32.271Z"
+  },
+  "pinsa-romana-v2": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-05-07T10:50:48.662Z",
+    "fixed": true
   }
 }

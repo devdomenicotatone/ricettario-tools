@@ -254,7 +254,22 @@ export function getActiveGeminiKey() {
 }
 
 /**
- * Chiama Gemini API con retry automatico
+ * Catena di fallback modelli Gemini.
+ * Quando un modello preview è sovraccarico (503), il sistema scala automaticamente
+ * al modello stabile successivo nella catena.
+ */
+const GEMINI_MODEL_FALLBACK = {
+    'gemini-3.1-pro-preview': 'gemini-2.5-pro',
+    // Aggiungi qui futuri modelli preview → fallback stabile
+};
+
+/**
+ * Chiama Gemini API con retry automatico e model fallback intelligente
+ *
+ * Strategia resilienza (per errori 503/overloaded):
+ *   1. Retry con exponential backoff (3 tentativi) sul modello richiesto
+ *   2. Se fallisce, switcha API key e riprova (3 tentativi)
+ *   3. Se fallisce ancora, fallback al modello stabile (es. gemini-2.5-pro)
  *
  * @param {object} options
  * @param {string} [options.model] - Modello Gemini (default: gemini-2.5-pro)
@@ -262,6 +277,7 @@ export function getActiveGeminiKey() {
  * @param {string} [options.system] - System instruction
  * @param {Array} options.messages - Array messaggi [{role: 'user'|'model', content: string}]
  * @param {object} [options.retry] - Config retry
+ * @param {boolean} [options._isFallback] - Interno: true se è già un tentativo di fallback
  * @returns {Promise<string>} Testo della risposta
  */
 export async function callGemini({
@@ -270,50 +286,102 @@ export async function callGemini({
     system,
     messages,
     retry = DEFAULT_RETRY,
+    _isFallback = false,
 }) {
     const { maxAttempts, baseDelayMs, maxDelayMs } = { ...DEFAULT_RETRY, ...retry };
-    const client = getGeminiClient();
 
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-            const genModel = client.getGenerativeModel({
-                model,
-                ...(system ? { systemInstruction: system } : {}),
-                generationConfig: { maxOutputTokens: maxTokens },
-            });
+    /** Esegue i tentativi di retry sul modello corrente */
+    async function tryWithRetries(activeModel) {
+        const client = getGeminiClient();
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                const genModel = client.getGenerativeModel({
+                    model: activeModel,
+                    ...(system ? { systemInstruction: system } : {}),
+                    generationConfig: { maxOutputTokens: maxTokens },
+                });
 
-            // Converti messaggi nel formato Gemini
-            const history = messages.slice(0, -1).map(m => ({
-                role: m.role === 'assistant' ? 'model' : m.role,
-                parts: m.parts || [{ text: m.content }],
-            }));
+                // Converti messaggi nel formato Gemini
+                const history = messages.slice(0, -1).map(m => ({
+                    role: m.role === 'assistant' ? 'model' : m.role,
+                    parts: m.parts || [{ text: m.content }],
+                }));
 
-            const lastMessage = messages[messages.length - 1];
-            const contentOrParts = lastMessage.parts || lastMessage.content;
+                const lastMessage = messages[messages.length - 1];
+                const contentOrParts = lastMessage.parts || lastMessage.content;
 
-            if (history.length > 0) {
-                const chat = genModel.startChat({ history });
-                const result = await chat.sendMessage(contentOrParts);
-                return result.response.text().trim();
-            } else {
-                const result = await genModel.generateContent(contentOrParts);
-                return result.response.text().trim();
+                if (history.length > 0) {
+                    const chat = genModel.startChat({ history });
+                    const result = await chat.sendMessage(contentOrParts);
+                    return result.response.text().trim();
+                } else {
+                    const result = await genModel.generateContent(contentOrParts);
+                    return result.response.text().trim();
+                }
+            } catch (err) {
+                const isLast = attempt === maxAttempts;
+                const retryable = err.status === 429 || err.status >= 500 ||
+                    err.message?.includes('overloaded') || err.message?.includes('rate') ||
+                    err.message?.includes('Service Unavailable');
+
+                if (isLast || !retryable) {
+                    err._isServiceUnavailable = err.status === 503 ||
+                        err.message?.includes('503') || err.message?.includes('Service Unavailable');
+                    throw err;
+                }
+
+                const delay = Math.min(baseDelayMs * Math.pow(2, attempt - 1), maxDelayMs);
+                log.warn(`Gemini API errore (tentativo ${attempt}/${maxAttempts}): ${err.message}`);
+                log.warn(`   Retry in ${delay / 1000}s...`);
+                await sleep(delay);
             }
-        } catch (err) {
-            const isLast = attempt === maxAttempts;
-            const retryable = err.status === 429 || err.status >= 500 ||
-                err.message?.includes('overloaded') || err.message?.includes('rate');
-
-            if (isLast || !retryable) {
-                log.error(`Gemini API fallita dopo ${attempt} tentativ${attempt === 1 ? 'o' : 'i'}: ${err.message}`);
-                throw err;
-            }
-
-            const delay = Math.min(baseDelayMs * Math.pow(2, attempt - 1), maxDelayMs);
-            log.warn(`Gemini API errore (tentativo ${attempt}/${maxAttempts}): ${err.message}`);
-            log.warn(`   Retry in ${delay / 1000}s...`);
-            await sleep(delay);
         }
+    }
+
+    // ── Fase 1: Prova con il modello richiesto ──
+    try {
+        return await tryWithRetries(model);
+    } catch (primaryErr) {
+        // Se non è un errore di sovraccarico, o è già un fallback, rilancia
+        if (!primaryErr._isServiceUnavailable || _isFallback) {
+            log.error(`Gemini API fallita dopo ${maxAttempts} tentativi: ${primaryErr.message}`);
+            throw primaryErr;
+        }
+
+        // ── Fase 2: Switcha API key e riprova stesso modello ──
+        const originalSlot = _activeGeminiSlot;
+        const otherSlot = originalSlot === 1 ? 2 : 1;
+        const otherKey = otherSlot === 2 ? process.env.GEMINI_API_KEY2 : process.env.GEMINI_API_KEY;
+
+        if (otherKey) {
+            switchGeminiKey(otherSlot);
+            try {
+                return await tryWithRetries(model);
+            } catch (keyErr) {
+                if (!keyErr._isServiceUnavailable) throw keyErr;
+                log.warn(`Modello ${model} sovraccarico anche con chiave slot ${otherSlot}`);
+            }
+        }
+
+        // ── Fase 3: Fallback a modello stabile ──
+        const fallbackModel = GEMINI_MODEL_FALLBACK[model];
+        if (fallbackModel) {
+            // Ripristina la chiave originale per il fallback
+            if (_activeGeminiSlot !== originalSlot) switchGeminiKey(originalSlot);
+            log.warn(`⚡ Modello ${model} non disponibile — fallback automatico a ${fallbackModel}`);
+            return callGemini({
+                model: fallbackModel,
+                maxTokens,
+                system,
+                messages,
+                retry,
+                _isFallback: true,
+            });
+        }
+
+        // Nessun fallback disponibile
+        log.error(`Gemini API fallita: modello ${model} sovraccarico, nessun fallback disponibile`);
+        throw primaryErr;
     }
 }
 
