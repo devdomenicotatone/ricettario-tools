@@ -122,7 +122,7 @@ export async function trascriviImmagini(args) {
                 log.success(`Trovate ${recipes.length} ricette in questo batch.`);
                 for (const recipe of recipes) {
                     recipe.slug = recipe.slug || recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                    if (!recipe.category) recipe.category = 'Pasta';
+                    if (!recipe.category) recipe.category = 'Primi';
 
                     // ── DEDUPLICAZIONE ──
                     const dupCheck = checkDuplicate(recipe, existingRecipes, extractedSlugs);

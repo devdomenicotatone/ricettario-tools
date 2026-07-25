@@ -23,7 +23,7 @@ const CATEGORY_AXES = {
         'Equilibrio Condimento-Impasto',
         'Complessità Aromatica'
     ],
-    'Pasta': [
+    'Primi': [
         'Tenuta al Morso',
         'Ruvidezza Superficie',
         'Elasticità / Masticabilità',

@@ -4,6 +4,7 @@
  * Gestione stato ricette, filtraggio, ordinamento, selezione e rendering cards/rows.
  */
 
+import { CATEGORIES, CATEGORY_ORDER } from '/shared/categories.js';
 import { showToast, showCustomConfirm, showDeleteCategoryConfirm } from './toast.js';
 import { apiPost, setRunning } from './navigation.js';
 import { appendTerminal } from './terminal.js';
@@ -18,12 +19,14 @@ export let recipeFilter = { category: 'all', search: '', sort: 'name-asc', view:
 // Condividiamo la reference di selectedSlugs con qa-tools
 setSelectedSlugsRef(selectedSlugs);
 
+// Colori e icone sono presentazione della sola dashboard: non esistono nel registry
+// del sito, quindi restano definiti qui.
 export const CATEGORY_COLORS = {
     'Pane':      '#d4a574',
     'Pizza':     '#e74c3c',
     'Focaccia':  '#27ae60',
     'Lievitati': '#f39c12',
-    'Pasta':     '#3498db',
+    'Primi':     '#3498db',
     'Dolci':     '#e91e63',
     'Condimenti':'#2ecc71',
     'Conserve':  '#9b59b6',
@@ -34,20 +37,27 @@ export const CATEGORY_ICONS = {
     'Pizza': 'pizza',          // Fluent: pizza ✅
     'Focaccia': 'wheat',       // Fluent: flatbread
     'Lievitati': 'croissant',  // Fluent: croissant ✅
-    'Pasta': 'utensils-crossed', // Fluent: spaghetti
+    'Primi': 'utensils-crossed',
     'Dolci': 'cake-slice',     // Fluent: shortcake ✅
     'Condimenti': 'leaf',      // Fluent: herb ✅
     'Conserve': 'package',     // Fluent: canned-food
     'Secondi Piatti': 'utensils', // Fluent: fork-and-knife
 };
 
-export const CATEGORY_DIR_MAP = {
-    'Pane': 'pane', 'Pizza': 'pizza', 'Focaccia': 'focaccia',
-    'Lievitati': 'lievitati', 'Pasta': 'pasta', 'Dolci': 'dolci',
-    'Condimenti': 'condimenti', 'Conserve': 'conserve', 'Secondi Piatti': 'secondi-piatti',
-};
+// Nomi e cartelle invece arrivano dal registry del sito (js/categories.js, servito
+// su /shared): erano due elenchi scritti a mano che conoscevano ancora "Pasta" e
+// ignoravano "Primi", quindi le ricette create da qui finivano in una cartella che
+// il sito non dichiara e `npm run check` si fermava.
+const CHIAVI_CATEGORIE = [
+    ...CATEGORY_ORDER.filter(k => CATEGORIES[k]),
+    ...Object.keys(CATEGORIES).filter(k => !CATEGORY_ORDER.includes(k)),
+];
 
-export const ALL_CATEGORIES = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci', 'Condimenti', 'Conserve', 'Secondi Piatti'];
+export const CATEGORY_DIR_MAP = Object.fromEntries(
+    CHIAVI_CATEGORIE.map(k => [CATEGORIES[k].name, CATEGORIES[k].dir])
+);
+
+export const ALL_CATEGORIES = CHIAVI_CATEGORIE.map(k => CATEGORIES[k].name);
 
 window.imageCacheBuster = window.imageCacheBuster || Date.now();
 

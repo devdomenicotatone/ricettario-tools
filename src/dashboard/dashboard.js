@@ -4,6 +4,7 @@
  * Entry point per l'interfaccia di gestione del Ricettario.
  */
 
+import { initCategorieUI } from './modules/categorie-ui.js';
 import { initNavigation, restorePanelFromHash } from './modules/navigation.js';
 import { connectWebSocket, setWsMessageHandler, restoreTerminalState, toggleTerminal, toggleTerminalPin, toggleExpandTerminal, clearTerminal } from './modules/terminal.js';
 import { fetchStatus, loadStats, switchGeminiKey, showUsedImagesMenu } from './modules/stats.js';
@@ -17,6 +18,10 @@ import { runGenera, runUrl, runTesto, runScopri } from './modules/commands.js';
 
 // ── Inizializzazione ──
 document.addEventListener('DOMContentLoaded', () => {
+    // 0. Categorie: tendine e tab SEO derivate dal registry del sito, non scritte
+    //    a mano nell'HTML. Va per prima: gli altri init leggono quei controlli.
+    initCategorieUI();
+
     // 1. Setup UI & Navigation
     initNavigation();
     restorePanelFromHash();

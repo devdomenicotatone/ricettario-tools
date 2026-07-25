@@ -12,7 +12,7 @@
 
 // ── Costanti ──
 
-import { ALL_CATEGORIES } from './constants.js';
+import { ALL_CATEGORIES, CATEGORIES_DATA } from './constants.js';
 
 // ── Costanti ──
 
@@ -20,11 +20,11 @@ export const VALID_CATEGORIES = ALL_CATEGORIES;
 
 export const CATEGORIES_NEEDING_BAKING = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Dolci'];
 
-export const CATEGORY_EMOJI = {
-    Pane: '🍞', Pizza: '🍕', Focaccia: '🫓',
-    Pasta: '🍝', Lievitati: '🥐', Dolci: '🍰',
-    Conserve: '🫙', Condimenti: '🌿'
-};
+// Quarta copia delle emoji per categoria, ora derivata dal registry del sito:
+// era scritta a mano, conosceva "Pasta" e non conosceva "Primi" né "Secondi Piatti".
+export const CATEGORY_EMOJI = Object.fromEntries(
+    Object.values(CATEGORIES_DATA).map(c => [c.label, c.emoji])
+);
 
 // Token regex: {nome:valore} con suffisso opzionale ! per fissi
 export const TOKEN_REGEX = /\{([a-z_]+):(\d+(?:\.\d+)?)(!)?\}/g;
@@ -53,7 +53,7 @@ export const RECIPE_FIELDS = {
     hydration:    { type: 'number',  required: false,  description: 'Idratazione % (0 per dolci/pasta senza calcolo)',
                     validate: (v, recipe) => {
                         if (v === undefined || v === null) {
-                            const needsDough = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci'].includes(recipe?.category);
+                            const needsDough = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Dolci'].includes(recipe?.category);
                             if (needsDough) return 'Idratazione obbligatoria per questa categoria (0 se non ha calcolo)';
                             return null;
                         }
@@ -64,7 +64,7 @@ export const RECIPE_FIELDS = {
     totalFlour:   { type: 'number',  required: false,  description: 'Farina totale in grammi (base per ricalcolo dosi, 0 per ricette senza farina)',
                     validate: (v, recipe) => {
                         if (v === undefined || v === null) {
-                            const needsDough = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Pasta', 'Dolci'].includes(recipe?.category);
+                            const needsDough = ['Pane', 'Pizza', 'Focaccia', 'Lievitati', 'Dolci'].includes(recipe?.category);
                             if (needsDough) return 'totalFlour obbligatoria per questa categoria (0 se senza farina)';
                             return null;
                         }

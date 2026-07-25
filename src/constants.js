@@ -1,46 +1,74 @@
 /**
  * COSTANTI UNIVERSALI — Il Ricettario
  * Singolo punto di verità per le impostazioni globali dell'app backend e dei generatori AI.
+ *
+ * ⚠️ Le categorie NON sono definite qui. La fonte unica è il registry del sito,
+ * `Ricettario/js/categories.js`: questo file lo legge e ne deriva le forme che il
+ * backend e i prompt AI usano da sempre (stessi nomi di export, stessa struttura).
+ *
+ * Perché: qui esisteva una seconda copia dell'elenco, ed è divergita in silenzio.
+ * "Pasta" è rimasta qui per mesi dopo che il sito l'aveva rinominata "Primi", quindi
+ * le ricette finivano in `ricette/pasta/` — una cartella non dichiarata nel registry —
+ * e il `npm run check` del sito si fermava, bloccando la pubblicazione.
  */
 
-// Lista ordinata delle categorie riconosciute
-export const ALL_CATEGORIES = [
-    'Pane', 
-    'Pizza', 
-    'Focaccia', 
-    'Pasta', 
-    'Lievitati', 
-    'Dolci', 
-    'Conserve', 
-    'Condimenti',
-    'Secondi Piatti'
+import { resolve, dirname } from 'path';
+import { existsSync } from 'fs';
+import { fileURLToPath, pathToFileURL } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Trova `js/categories.js` nel repo del sito.
+ * Stessa convenzione del resto del progetto (RICETTARIO_PATH, poi `../Ricettario`),
+ * più un ultimo tentativo relativo a questo file: così il modulo funziona anche se
+ * il processo viene avviato da una cartella diversa da `tools/`.
+ */
+function trovaRegistryCategorie() {
+    const candidati = [
+        process.env.RICETTARIO_PATH && resolve(process.cwd(), process.env.RICETTARIO_PATH),
+        resolve(process.cwd(), '../Ricettario'),
+        resolve(__dirname, '..', '..', 'Ricettario'),
+    ].filter(Boolean);
+
+    for (const base of candidati) {
+        const file = resolve(base, 'js', 'categories.js');
+        if (existsSync(file)) return file;
+    }
+
+    throw new Error(
+        'Registry delle categorie non trovato: cercato js/categories.js in\n  ' +
+        candidati.join('\n  ') +
+        '\nImposta RICETTARIO_PATH nel .env con il percorso del repo del sito.'
+    );
+}
+
+const { CATEGORIES, CATEGORY_ORDER } = await import(pathToFileURL(trovaRegistryCategorie()).href);
+
+// Chiavi nell'ordine della homepage; eventuali categorie non elencate finiscono in coda.
+const CHIAVI = [
+    ...CATEGORY_ORDER.filter(k => CATEGORIES[k]),
+    ...Object.keys(CATEGORIES).filter(k => !CATEGORY_ORDER.includes(k)),
 ];
 
-// Mapping per ottenere l'ID (cartella) dalla Label (Categoria Utente)
-export const CATEGORY_FOLDERS = {
-    'Pane': 'pane',
-    'Pizza': 'pizza',
-    'Focaccia': 'focaccia',
-    'Pasta': 'pasta',
-    'Lievitati': 'lievitati',
-    'Dolci': 'dolci',
-    'Conserve': 'conserve',
-    'Condimenti': 'condimenti',
-    'Secondi Piatti': 'secondi-piatti'
-};
+// Lista ordinata delle categorie riconosciute
+export const ALL_CATEGORIES = CHIAVI.map(k => CATEGORIES[k].name);
 
-// Dati estesi delle categorie (Usato in sync-cards, UI index dashboard, ecc)
-export const CATEGORIES_DATA = {
-    pasta: { emoji: '🍝', label: 'Pasta', order: 1 },
-    pane: { emoji: '🥖', label: 'Pane', order: 2 },
-    pizza: { emoji: '🍕', label: 'Pizza', order: 3 },
-    lievitati: { emoji: '🥐', label: 'Lievitati', order: 4 },
-    focaccia: { emoji: '🫓', label: 'Focaccia', order: 5 },
-    dolci: { emoji: '🍪', label: 'Dolci', order: 6 },
-    conserve: { emoji: '🫙', label: 'Conserve', order: 7 },
-    condimenti: { emoji: '🌿', label: 'Condimenti', order: 8 },
-    secondi_piatti: { emoji: '🍲', label: 'Secondi Piatti', order: 9 },
-};
+// Mapping per ottenere l'ID (cartella) dalla Label (Categoria Utente).
+// Attenzione: la cartella è `dir`, non la chiave — `secondi_piatti` sta in `secondi-piatti/`.
+export const CATEGORY_FOLDERS = Object.fromEntries(
+    CHIAVI.map(k => [CATEGORIES[k].name, CATEGORIES[k].dir])
+);
 
-// Costruisce la Regex (es. Pane|Lievitati|Pasta...) per prompt AI e validatori
+// Dati estesi delle categorie (Usato in sync-cards, UI index dashboard, ecc).
+// `emoji` qui è l'emoji unicode (quella che finisce in recipes.json), non lo slug Fluent.
+export const CATEGORIES_DATA = Object.fromEntries(
+    CHIAVI.map((k, i) => [k, {
+        emoji: CATEGORIES[k].unicode,
+        label: CATEGORIES[k].name,
+        order: i + 1,
+    }])
+);
+
+// Costruisce la Regex (es. Pane|Lievitati|Primi...) per prompt AI e validatori
 export const CATEGORY_REGEX_PATTERN = ALL_CATEGORIES.join('|');

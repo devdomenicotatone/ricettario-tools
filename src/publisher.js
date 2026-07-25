@@ -17,19 +17,9 @@ import { validateRecipe } from './validator.js';
 import { log } from './utils/logger.js';
 import { CATEGORY_FOLDERS } from './constants.js';
 
-/**
- * Metadati per le pagine categoria (auto-generazione index.html)
- */
-const CATEGORY_META = {
-    Pane:      { emoji: '🥖', title: 'Pane Artigianale', desc: 'Ricette di pane ad alta idratazione — ciabatta, filone, baguette e pane speciale.' },
-    Pizza:     { emoji: '🍕', title: 'Pizza Artigianale', desc: 'Pizze con lievitazione lunga — napoletana, in teglia, canotto e pinsa romana.' },
-    Pasta:     { emoji: '🍝', title: 'Pasta Fresca', desc: 'Pasta fresca fatta in casa — trafilata, ripiena e formati speciali.' },
-    Lievitati: { emoji: '🥐', title: 'Lievitati Dolci e Salati', desc: 'Brioche, cornetti, panettone, burger buns e rosticceria.' },
-    Focaccia:  { emoji: '🫓', title: 'Focaccia Artigianale', desc: 'Focacce ad alta idratazione — genovese, barese, pugliese e varianti creative.' },
-    Dolci:     { emoji: '🍰', title: 'Dolci e Pasticceria', desc: 'Dolci tradizionali, frolle, biscotti e pasticceria artigianale.' },
-    Conserve:  { emoji: '🫙', title: 'Conserve e Preparazioni', desc: 'Conserve fatte in casa — dadi vegetali, salse, sottoli e preparazioni base.' },
-    Condimenti:{ emoji: '🌿', title: 'Condimenti e Salse', desc: 'Oli aromatizzati, salse e condimenti speciali.' },
-};
+// NB: qui c'era CATEGORY_META, una terza copia di titoli/emoji/descrizioni delle
+// categorie — non era importata da nessuno e conosceva ancora "Pasta". I metadati
+// veri stanno nel registry del sito (js/categories.js, campi title/desc/unicode).
 
 /**
  * Risolve il percorso di output per una ricetta

@@ -50,7 +50,7 @@ const CATEGORY_SEEDS = {
         'burger buns ricetta',
         'babà napoletano ricetta'
     ],
-    Pasta: [
+    Primi: [
         'ricetta pasta fresca',
         'pasta fatta in casa',
         'ricetta ravioli fatti in casa',

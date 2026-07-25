@@ -5,6 +5,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { resolve, basename } from 'path';
+import { CATEGORY_FOLDERS, CATEGORIES_DATA } from './constants.js';
 
 /**
  * Aggiunge la ricetta al file recipes.json.
@@ -25,9 +26,10 @@ export function injectCard(recipe, ricettarioPath) {
 
     const r = recipe;
     const slug = r.slug || r.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const category = r.category || 'Pasta';
-    const categoryDir = { Pane: 'pane', Pizza: 'pizza', Pasta: 'pasta', Lievitati: 'lievitati', Focaccia: 'focaccia', Dolci: 'dolci', Conserve: 'conserve' };
-    const dir = categoryDir[category] || category.toLowerCase();
+    // Cartella e default arrivano dal registry del sito (via constants.js): questa mappa
+    // era una copia locale, dimenticava metà delle categorie e conosceva ancora "Pasta".
+    const category = r.category || 'Pane';
+    const dir = CATEGORY_FOLDERS[category] || category.toLowerCase();
 
     // Verifica duplicati
     if (data.recipes.some(existing => existing.slug === slug)) {
@@ -73,7 +75,9 @@ export function injectCard(recipe, ricettarioPath) {
 
     // Ricalcola categorie
     const stats = {};
-    const emojiMap = { Pasta: '🍝', Pane: '🥖', Pizza: '🍕', Lievitati: '🥐', Focaccia: '🫓', Dolci: '🍰', Conserve: '🫙' };
+    const emojiMap = Object.fromEntries(
+        Object.values(CATEGORIES_DATA).map(c => [c.label, c.emoji])
+    );
     data.recipes.forEach(rec => {
         stats[rec.category] = (stats[rec.category] || 0) + 1;
     });

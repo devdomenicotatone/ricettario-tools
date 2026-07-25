@@ -539,7 +539,7 @@ Esempio Struttura di ritorno:
     "emoji": "🍝",
     "description": "Pasta estrusa con Philips Pasta Maker",
     "subtitle": "Trafila: Maccheroni",
-    "category": "Pasta",
+    "category": "Primi",
     "hydration": 35,
     "targetTemp": "Ambiente",
     "fermentation": "Nessuna",
@@ -567,7 +567,7 @@ Esempio Struttura di ritorno:
 ]
 
 REGOLE PER LA LETTURA DELLE IMMAGINI E L'ESTRAZIONE:
-1. Category DEVE ESSERE sempre "Pasta"
+1. Category DEVE ESSERE sempre "Primi"
 2. Dosi e ingredienti DEBBONO essere fedeli alle pagine. L'idratazione solitamente per Philips 7000 è molto bassa, calcolala come (liquidi / farine * 100) ma non andare MAI sotto il 30%.
 3. Usa SEMPRE "steps" e includi nel primo step quale trafila va usata e nel suo testo come assemblare ("Montare la trafila...").
 4. CONDIMENTO/PREPARAZIONE: Se la pagina contiene indicazioni testuali su come preparare un SUGO, SALSA o CONDIMENTO (es. "Preparazione" come cucinare acciughe, melanzane, pomodori), DEVI aggiungerlo nell'array separato "stepsCondiment".
@@ -647,7 +647,7 @@ Struttura JSON di ritorno (array di oggetti):
     "emoji": "🍝",
     "description": "Breve descrizione dalla ricetta originale",
     "subtitle": "Trafila: Maccheroni",
-    "category": "Pasta",
+    "category": "Primi",
     "hydration": 35,
     "targetTemp": "Ambiente",
     "fermentation": "Nessuna",
@@ -675,7 +675,7 @@ Struttura JSON di ritorno (array di oggetti):
 ]
 
 REGOLE:
-1. Category = sempre "Pasta". Lo slug DEVE finire con "-philips".
+1. Category = sempre "Primi". Lo slug DEVE finire con "-philips".
 2. INGREDIENTI: estrai SOLO quelli scritti esplicitamente nel testo italiano. Per l'impasto: farine + liquidi. Per la salsa: solo se indicata. Idratazione = (liquidi / farine × 100), minimo 30%.
 3. Usa SEMPRE "steps" con nel primo step quale trafila usare.
 4. Se c'è un condimento/salsa nel testo, mettilo in "stepsCondiment". Copia le istruzioni FEDELMENTE dal libro.
