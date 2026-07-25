@@ -57,7 +57,11 @@ export function startServer(port = 3500) {
     setupWebSocket(wss);
 
     // ── Start ──
-    server.listen(port, () => {
+    // Solo loopback: senza indirizzo, Node ascolta su TUTTE le interfacce di rete e
+    // la dashboard (che non ha autenticazione) diventa raggiungibile da chiunque sia
+    // sulla stessa WiFi — comprese le rotte che cancellano ricette e quelle che
+    // consumano credito API.
+    server.listen(port, '127.0.0.1', () => {
         console.log('');
         console.log('  🔥 ═══════════════════════════════════════');
         console.log('     RICETTARIO TOOLS — Dashboard');
