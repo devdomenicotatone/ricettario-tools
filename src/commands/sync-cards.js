@@ -1,150 +1,79 @@
 /**
- * COMANDO: sync-cards — Ricostruisce recipes.json scannerizzando tutti i JSON ricetta
- * 
- * Scannerizza ricette/{pane,pizza,pasta,lievitati,dolci,focaccia}/*.json
- * Estrae metadati da ogni JSON e ricostruisce recipes.json da zero.
- * 
- * I file JSON sono la UNICA fonte di verità — gli HTML sono template
- * generati dinamicamente e non vengono mai usati come sorgente dati.
- * 
+ * COMANDO: sync-cards — Ricostruisce public/recipes.json
+ *
+ * NON genera più l'indice per conto suo: esegue `scripts/build-recipes.js` del
+ * sito, che è la fonte unica di quella derivazione.
+ *
+ * Perché: qui viveva un secondo generatore, e i due producevano indici DIVERSI
+ * a partire dagli stessi dati. Le differenze misurate:
+ *
+ *  - `_createdAt` veniva riscritto con la data di MODIFICA del file. Le 17
+ *    ricette che hanno la data di creazione solo nell'indice la perdevano a
+ *    ogni sync — cioè a ogni salvataggio dall'editor — e siccome poi il
+ *    generatore del sito recupera il valore dall'indice precedente, la data
+ *    sbagliata diventava definitiva. Google vede date false e l'ordinamento
+ *    "per novità" si scombina.
+ *  - le descrizioni venivano troncate a 160 caratteri, a metà parola
+ *    ("...lavorazione mini").
+ *  - l'immagine veniva inventata con un percorso convenzionale anche quando
+ *    il file non esiste; il sito invece lascia null e segnala.
+ *  - i placeholder ("nessuna", "n/a", "-") restavano testo invece di
+ *    diventare null.
+ *  - l'idratazione non veniva validata.
+ *
+ * E soprattutto saltavano tutte le validazioni del sito: slug che non
+ * corrisponde al nome file, categoria incoerente con la cartella in cui la
+ * ricetta sta, immagine dichiarata ma mancante, cartelle non dichiarate nel
+ * registry. Ora quei controlli girano anche dalla dashboard, quindi il problema
+ * si vede subito invece che al primo `npm run check`, a distanza di giorni.
+ *
  * Uso: node crea-ricetta.js --sync-cards
  */
 
-import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'fs';
-import { resolve, basename, join } from 'path';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 import { log } from '../utils/logger.js';
-import { ALL_CATEGORIES, CATEGORIES_DATA } from '../constants.js';
 
-/**
- * Estrae i metadati di una ricetta dal file JSON
- */
-function extractRecipeFromJson(jsonPath, categoryDir) {
-    const data = JSON.parse(readFileSync(jsonPath, 'utf-8'));
-    const filename = basename(jsonPath, '.json');
+const execFileAsync = promisify(execFile);
 
-    // Salta eventuali file index.json
-    if (filename === 'index') return null;
-
-    // Fallback _createdAt: usa mtime del file se non c'è nel JSON
-    let createdAt = data._createdAt || null;
-    if (!createdAt) {
-        try { createdAt = statSync(jsonPath).mtime.toISOString(); } catch {}
+/** Stampa un blocco di output del generatore riga per riga, senza righe vuote. */
+function stampa(testo, livello) {
+    for (const riga of String(testo || '').split('\n')) {
+        if (riga.trim()) log[livello](riga.trimEnd());
     }
-
-    const slug = data.slug || filename;
-    const category = data.category || CATEGORIES_DATA[categoryDir]?.label || categoryDir;
-    const emoji = data.emoji || CATEGORIES_DATA[categoryDir]?.emoji || '🍝';
-
-    // Immagine: dal JSON, oppure path convenzionale
-    const image = data.image || `images/ricette/${categoryDir}/${slug}.webp`;
-
-    // Fermentation / time: normalizzazione
-    const time = data.fermentation || data.time || null;
-
-    // Temperatura
-    const temp = data.targetTemp || data.temp || null;
-
-    // Tool/Setup
-    const tool = data.tool || '';
-
-    return {
-        title: data.title || slug,
-        slug,
-        category,
-        categoryDir,
-        emoji,
-        href: `ricette/${categoryDir}/${slug}.html`,
-        image,
-        description: (data.description || '').substring(0, 160),
-        hydration: data.hydration ? `${data.hydration}%` : null,
-        time,
-        temp,
-        tool,
-        hasSensory: !!data.sensoryProfile,
-        hasStorage: !!(data.storage && data.storage.length > 0),
-        _generatedBy: data._generatedBy || null,
-        _createdAt: createdAt,
-    };
 }
 
 /**
- * Sync-cards: scannerizza tutti i JSON ricetta e ricostruisce recipes.json
+ * Sync-cards: rigenera recipes.json chiamando il generatore del sito.
+ * Lancia un errore se i dati sono incoerenti — i chiamanti lo gestiscono
+ * (l'editor risponde `syncOk: false`, i job finiscono in errore).
  */
-export async function syncCards(args) {
+export async function syncCards(args = {}) {
     const ricettarioPath = resolve(process.cwd(), args.output || process.env.RICETTARIO_PATH || '../Ricettario');
-    const ricettePath = resolve(ricettarioPath, 'ricette');
-    const jsonPath = resolve(ricettarioPath, 'public', 'recipes.json');
+    const generatore = resolve(ricettarioPath, 'scripts', 'build-recipes.js');
 
     log.header('SYNC CARDS — Ricostruzione recipes.json');
 
-    if (!existsSync(ricettePath)) {
-        log.error(`Cartella ricette non trovata: ${ricettePath}`);
-        return;
+    if (!existsSync(generatore)) {
+        log.error(`Generatore del sito non trovato: ${generatore}`);
+        log.error('Controlla RICETTARIO_PATH nel .env: senza quello script l\'indice non si rigenera.');
+        throw new Error(`build-recipes.js non trovato in ${generatore}`);
     }
 
-    const allRecipes = [];
-    const categoryDirs = readdirSync(ricettePath, { withFileTypes: true })
-        .filter(d => d.isDirectory())
-        .map(d => d.name);
-
-    log.info(`Categorie trovate: ${categoryDirs.join(', ')}`);
-
-    for (const dir of categoryDirs) {
-        const categoryPath = join(ricettePath, dir);
-        const jsonFiles = readdirSync(categoryPath)
-            .filter(f => f.endsWith('.json') && f !== 'index.json' && !f.includes('.backup.') && !f.includes('.pre-'));
-
-        for (const file of jsonFiles) {
-            const filePath = join(categoryPath, file);
-            try {
-                const recipe = extractRecipeFromJson(filePath, dir);
-                if (recipe) {
-                    allRecipes.push(recipe);
-                    log.info(`  ✅ ${recipe.title} (${dir}/${file})`);
-                }
-            } catch (err) {
-                log.warn(`  ❌ Errore parsing ${file}: ${err.message}`);
-            }
-        }
+    try {
+        const { stdout, stderr } = await execFileAsync(process.execPath, [generatore], {
+            cwd: ricettarioPath,
+            maxBuffer: 10 * 1024 * 1024,
+        });
+        stampa(stdout, 'info');
+        stampa(stderr, 'warn'); // i warning non bloccano: categorie vuote, description mancanti
+        log.info(`📄 ${resolve(ricettarioPath, 'public', 'recipes.json')}`);
+    } catch (err) {
+        // build-recipes.js esce con 1 e stampa gli errori quando i dati sono incoerenti.
+        stampa(err.stdout, 'info');
+        stampa(err.stderr, 'error');
+        throw new Error('recipes.json NON rigenerato: il generatore del sito ha trovato dati incoerenti (vedi sopra)');
     }
-
-    // Ordina per categoria e poi per titolo
-    allRecipes.sort((a, b) => {
-        const catA = ALL_CATEGORIES.indexOf(a.category);
-        const catB = ALL_CATEGORIES.indexOf(b.category);
-        
-        // Se una categoria non è in ALL_CATEGORIES (indexOf = -1), la mettiamo in fondo (valore alto)
-        const orderA = catA === -1 ? 999 : catA;
-        const orderB = catB === -1 ? 999 : catB;
-        
-        if (orderA !== orderB) return orderA - orderB;
-        return a.title.localeCompare(b.title, 'it');
-    });
-
-    // Ricalcola categorie
-    const stats = {};
-    allRecipes.forEach(r => {
-        stats[r.category] = (stats[r.category] || 0) + 1;
-    });
-    const categories = Object.entries(stats).map(([name, count]) => {
-        // Cerca l'emoji trovando la chiave corrispondente in CATEGORIES_DATA (es: "Condimenti" -> "condimenti")
-        const key = Object.keys(CATEGORIES_DATA).find(k => CATEGORIES_DATA[k].label === name);
-        const emoji = key ? CATEGORIES_DATA[key].emoji : '';
-        return { name, count, emoji };
-    });
-
-    // Scrivi recipes.json
-    const data = {
-        generatedAt: new Date().toISOString(),
-        totalRecipes: allRecipes.length,
-        categories,
-        recipes: allRecipes,
-    };
-
-    writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf-8');
-
-    log.header('SYNC COMPLETATO');
-    log.info(`📦 ${allRecipes.length} ricette sincronizzate`);
-    categories.forEach(c => log.info(`   ${c.emoji} ${c.name}: ${c.count}`));
-    log.info(`📄 ${jsonPath}`);
 }
