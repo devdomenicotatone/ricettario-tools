@@ -5,6 +5,9 @@ node_modules/
 data/ocr-results.json
 data/ocr-test.json
 
+# Backup delle categorie rimosse (copie di ricette e immagini, pesanti)
+data/backup-categorie/
+
 # File di debug
 debug-*.txt
 debug-*.json

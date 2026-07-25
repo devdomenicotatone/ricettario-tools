@@ -9,6 +9,92 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/**
+ * Backup delle categorie rimosse. DEVE stare fuori dal repo del sito: dentro
+ * `ricette/` ogni cartella è per contratto una categoria dichiarata in
+ * js/categories.js, quindi `ricette/.backup/` faceva fallire `npm run check`
+ * con «non è dichiarata in js/categories.js» e bloccava la pubblicazione.
+ */
+const BACKUP_DIR = resolve(__dirname, '..', '..', '..', 'data', 'backup-categorie');
+
+// ── Helper condivisi per riscrivere i registry (js/categories.js, js/emoji.js) ──
+
+/** Rende una stringa sicura dentro un literal JS con apici singoli (apostrofi italiani!). */
+export function escJs(str) {
+    return String(str ?? '')
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\r?\n/g, ' ');
+}
+
+/** Inserisce testo prima della chiusura di un blocco `export const NOME = ...`. */
+export function insertBeforeBlockClose(content, constName, closingStr, insertion) {
+    const declIdx = content.indexOf(`export const ${constName}`);
+    if (declIdx === -1) return content;
+    const closeIdx = content.indexOf(closingStr, declIdx);
+    if (closeIdx === -1) return content;
+    return content.slice(0, closeIdx) + insertion + '\n' + content.slice(closeIdx);
+}
+
+/** Rimuove la riga che contiene `pattern` dentro un blocco oggetto (una voce per riga). */
+export function removeLineFromBlock(content, constName, pattern) {
+    const lines = content.split('\n');
+    const declIdx = lines.findIndex(l => l.includes(`export const ${constName}`));
+    if (declIdx === -1) return content;
+    let closeIdx = -1;
+    for (let i = declIdx + 1; i < lines.length; i++) {
+        if (lines[i].match(/^(};|];)/)) { closeIdx = i; break; }
+    }
+    if (closeIdx === -1) return content;
+    for (let i = declIdx + 1; i < closeIdx; i++) {
+        if (lines[i].includes(pattern)) {
+            lines.splice(i, 1);
+            closeIdx--;
+            break;
+        }
+    }
+    if (closeIdx > 0 && lines[closeIdx - 1]) {
+        lines[closeIdx - 1] = lines[closeIdx - 1].replace(/,(\s*)$/, '$1');
+    }
+    return lines.join('\n');
+}
+
+/**
+ * Rimuove UN elemento da un array di stringhe, anche quando l'array sta tutto
+ * su una riga sola — che è il caso di CATEGORY_ORDER nel sito. Con la rimozione
+ * "per riga" si cancellavano tutte e nove le categorie insieme.
+ */
+export function removeKeyFromArrayBlock(content, constName, key) {
+    const declIdx = content.indexOf(`export const ${constName}`);
+    if (declIdx === -1) return content;
+    const openIdx = content.indexOf('[', declIdx);
+    const closeIdx = content.indexOf(']', openIdx);
+    if (openIdx === -1 || closeIdx === -1) return content;
+
+    const voci = content.slice(openIdx + 1, closeIdx)
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+    const rimaste = voci.filter(v => v.replace(/['"]/g, '') !== key);
+    if (rimaste.length === voci.length) return content;
+
+    return content.slice(0, openIdx + 1)
+        + `\n  ${rimaste.join(', ')},\n`
+        + content.slice(closeIdx);
+}
+
+/**
+ * Valuta il contenuto di js/categories.js SENZA scriverlo su disco e ne restituisce
+ * gli export. Serve come rete di sicurezza: se la riscrittura ha prodotto JS non
+ * valido o un registry incoerente, ce ne accorgiamo qui invece che al prossimo
+ * `npm run check` del sito, in un altro repo e con un errore che non nomina niente.
+ */
+export async function leggiRegistry(contenuto) {
+    const url = 'data:text/javascript;base64,' + Buffer.from(contenuto, 'utf-8').toString('base64');
+    const mod = await import(url);
+    return { CATEGORIES: mod.CATEGORIES || {}, CATEGORY_ORDER: mod.CATEGORY_ORDER || [] };
+}
+
 export function setupCategoryRoutes(app, { getRicettarioPath, nextJobId, createJobContext, withOutputCapture }) {
 
     // ── Cambia Categoria ──
@@ -233,57 +319,47 @@ REGOLE:
                 mkdirSync(imgDir, { recursive: true });
                 ctx.log(`📁 Cartelle create: ricette/${slug}/ + images/ricette/${slug}/`);
 
-                // ── 4. Aggiorna constants.js (backend) ──
-                const constantsPath = resolve(__dirname, '..', '..', 'constants.js');
-                let constantsContent = readFileSync(constantsPath, 'utf-8');
+                // ── 4. Aggiorna il registry del sito (js/categories.js) ──
+                // È la fonte unica delle categorie: constants.js di tools lo legge e ne
+                // deriva le proprie strutture, quindi non c'è più niente da scrivere lato
+                // backend (prima si scrivevano entrambi, e le due copie divergevano).
                 const nextOrder = Object.keys(CATEGORIES_DATA).length + 1;
+                const catKey = slug.replace(/-/g, '_');
 
-                // ── Helper: inserisci testo prima della chiusura di un blocco const ──
-                function insertBeforeBlockClose(content, constName, closingStr, insertion) {
-                    const declIdx = content.indexOf(`export const ${constName}`);
-                    if (declIdx === -1) return content;
-                    // Trova la chiusura del blocco (]; o };) DOPO la dichiarazione
-                    const searchFrom = declIdx;
-                    const closeIdx = content.indexOf(closingStr, searchFrom);
-                    if (closeIdx === -1) return content;
-                    // Inserisci prima della chiusura
-                    return content.slice(0, closeIdx) + insertion + '\n' + content.slice(closeIdx);
+                const categoriesPath = resolve(ricettarioPath, 'js', 'categories.js');
+                const catContentPrima = readFileSync(categoriesPath, 'utf-8');
+
+                // `dir` e `unicode` sono obbligatori. Senza `dir` il sito non sa in quale
+                // cartella vive la categoria e `npm run check` muore al primo comando con
+                // "The paths[1] argument must be of type string" — un errore che non nomina
+                // né la categoria né la dashboard, e che blocca ogni pubblicazione.
+                const catEntry = `  ${catKey}: { name: '${escJs(categoryName)}', dir: '${escJs(slug)}', emoji: '${escJs(metadata.fluentEmojiSlug)}', unicode: '${escJs(metadata.unicodeEmoji)}', title: '${escJs(metadata.title)}', desc: '${escJs(metadata.description)}' },`;
+
+                let catContent = insertBeforeBlockClose(catContentPrima, 'CATEGORIES', '\n};', catEntry);
+                catContent = insertBeforeBlockClose(catContent, 'CATEGORY_ORDER', '\n];', ` '${catKey}',`);
+
+                // Rete di sicurezza: valuta il risultato PRIMA di scriverlo su disco.
+                const regPrima = await leggiRegistry(catContentPrima);
+                const regDopo = await leggiRegistry(catContent);
+                const nuova = regDopo.CATEGORIES[catKey];
+                if (Object.keys(regDopo.CATEGORIES).length !== Object.keys(regPrima.CATEGORIES).length + 1
+                    || regDopo.CATEGORY_ORDER.length !== regPrima.CATEGORY_ORDER.length + 1
+                    || !nuova?.name || !nuova?.dir || !nuova?.unicode) {
+                    throw new Error(
+                        `Riscrittura di js/categories.js incoerente (da ${Object.keys(regPrima.CATEGORIES).length} ` +
+                        `a ${Object.keys(regDopo.CATEGORIES).length} categorie). Non ho scritto niente.`
+                    );
                 }
 
-                // ALL_CATEGORIES: aggiungi prima di ];
-                constantsContent = insertBeforeBlockClose(constantsContent, 'ALL_CATEGORIES',
-                    '\n];', `,\n    '${categoryName}'`);
-                // CATEGORY_FOLDERS: aggiungi prima di };
-                constantsContent = insertBeforeBlockClose(constantsContent, 'CATEGORY_FOLDERS',
-                    '\n};', `,\n    '${categoryName}': '${slug}'`);
-                // CATEGORIES_DATA: aggiungi prima di };
-                constantsContent = insertBeforeBlockClose(constantsContent, 'CATEGORIES_DATA',
-                    '\n};', `\n    ${slug.replace(/-/g, '_')}: { emoji: '${metadata.unicodeEmoji}', label: '${categoryName}', order: ${nextOrder} },`);
-
-                writeFileSync(constantsPath, constantsContent, 'utf-8');
-                ctx.log(`💾 constants.js aggiornato`);
+                writeFileSync(categoriesPath, catContent, 'utf-8');
+                ctx.log(`💾 js/categories.js del sito aggiornato (${Object.keys(regDopo.CATEGORIES).length} categorie)`);
 
                 // Aggiorna oggetti live in memoria (no restart necessario)
                 ALL_CATEGORIES.push(categoryName);
                 CATEGORY_FOLDERS[categoryName] = slug;
-                const dataKey = slug.replace(/-/g, '_');
-                CATEGORIES_DATA[dataKey] = { emoji: metadata.unicodeEmoji, label: categoryName, order: nextOrder };
+                CATEGORIES_DATA[catKey] = { emoji: metadata.unicodeEmoji, label: categoryName, order: nextOrder };
 
-                // ── 5. Aggiorna categories.js (frontend SPA) ──
-                const categoriesPath = resolve(ricettarioPath, 'js', 'categories.js');
-                let catContent = readFileSync(categoriesPath, 'utf-8');
-
-                const catKey = slug.replace(/-/g, '_');
-                const catEntry = `  ${catKey}: { name: '${categoryName}', emoji: '${metadata.fluentEmojiSlug}', title: '${metadata.title}', desc: '${metadata.description.replace(/'/g, "\\'")}' },`;
-                catContent = insertBeforeBlockClose(catContent, 'CATEGORIES', '\n};', catEntry);
-                // CATEGORY_ORDER: aggiungi prima di ];
-                catContent = insertBeforeBlockClose(catContent, 'CATEGORY_ORDER',
-                    '\n];', ` '${catKey}',`);
-
-                writeFileSync(categoriesPath, catContent, 'utf-8');
-                ctx.log(`💾 categories.js aggiornato`);
-
-                // ── 6. Aggiorna emoji.js (frontend SPA) — EMOJI_MAP ──
+                // ── 5. Aggiorna emoji.js (frontend SPA) — EMOJI_MAP ──
                 if (emojiDownloaded) {
                     const emojiJsPath = resolve(ricettarioPath, 'js', 'emoji.js');
                     let emojiContent = readFileSync(emojiJsPath, 'utf-8');
@@ -293,7 +369,7 @@ REGOLE:
                     ctx.log(`💾 emoji.js aggiornato`);
                 }
 
-                // ── 7. Sync cards ──
+                // ── 6. Sync cards ──
                 ctx.log('🔄 Sync cards...');
                 const { syncCards } = await import('../../commands/sync-cards.js');
                 await syncCards({});
@@ -399,20 +475,22 @@ REGOLE:
 
                 // ── 2. Backup della cartella (soft-delete) ──
                 const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-                const backupBase = resolve(ricettarioPath, 'ricette', '.backup');
-                mkdirSync(backupBase, { recursive: true });
+                // La cartella viene creata solo se c'è davvero qualcosa da salvare.
+                const haRicette = existsSync(recipesDir) && readdirSync(recipesDir).length > 0;
+                const haImmagini = existsSync(imagesDir) && readdirSync(imagesDir).length > 0;
+                if (haRicette || haImmagini) mkdirSync(BACKUP_DIR, { recursive: true });
 
-                if (existsSync(recipesDir) && readdirSync(recipesDir).length > 0) {
-                    const backupDir = resolve(backupBase, `${slug}_${timestamp}`);
+                if (haRicette) {
+                    const backupDir = resolve(BACKUP_DIR, `${slug}_${timestamp}`);
                     cpSync(recipesDir, backupDir, { recursive: true });
-                    ctx.log(`\n💾 Backup salvato in: ricette/.backup/${slug}_${timestamp}/`);
+                    ctx.log(`\n💾 Backup salvato in: tools/data/backup-categorie/${slug}_${timestamp}/`);
                 }
 
                 // Backup immagini ricette
-                if (existsSync(imagesDir) && readdirSync(imagesDir).length > 0) {
-                    const imgBackup = resolve(backupBase, `${slug}_images_${timestamp}`);
+                if (haImmagini) {
+                    const imgBackup = resolve(BACKUP_DIR, `${slug}_images_${timestamp}`);
                     cpSync(imagesDir, imgBackup, { recursive: true });
-                    ctx.log(`💾 Backup immagini in: ricette/.backup/${slug}_images_${timestamp}/`);
+                    ctx.log(`💾 Backup immagini in: tools/data/backup-categorie/${slug}_images_${timestamp}/`);
                 }
 
                 // ── 3. Rimuovi cartelle originali ──
@@ -434,51 +512,36 @@ REGOLE:
                     // Per ora le emoji le lasciamo, sono asset condivisi
                 }
 
-                // ── 5. Aggiorna constants.js ──
-                const constantsPath = resolve(__dirname, '..', '..', 'constants.js');
-                let constantsContent = readFileSync(constantsPath, 'utf-8');
+                // ── 5. Aggiorna il registry del sito (js/categories.js) ──
+                // constants.js di tools non si tocca più: deriva da questo file.
+                const categoriesPath = resolve(ricettarioPath, 'js', 'categories.js');
+                const catContentPrima = readFileSync(categoriesPath, 'utf-8');
 
-                // Helper: rimuovi una riga contenente un pattern da un blocco specifico
-                function removeLineFromBlock(content, constName, pattern) {
-                    const lines = content.split('\n');
-                    const declIdx = lines.findIndex(l => l.includes(`export const ${constName}`));
-                    if (declIdx === -1) return content;
-                    // Trova la chiusura del blocco
-                    let closeIdx = -1;
-                    for (let i = declIdx + 1; i < lines.length; i++) {
-                        if (lines[i].match(/^(};|];)/)) { closeIdx = i; break; }
-                    }
-                    if (closeIdx === -1) return content;
-                    // Rimuovi la riga che matcha il pattern (tra decl e close)
-                    for (let i = declIdx + 1; i < closeIdx; i++) {
-                        if (lines[i].includes(pattern)) {
-                            lines.splice(i, 1);
-                            closeIdx--;
-                            break;
-                        }
-                    }
-                    // Pulisci trailing comma sull'ultimo elemento se necessario
-                    if (closeIdx > 0 && lines[closeIdx - 1]) {
-                        lines[closeIdx - 1] = lines[closeIdx - 1].replace(/,(\s*)$/, '$1');
-                    }
-                    return lines.join('\n');
+                let catContent = removeLineFromBlock(catContentPrima, 'CATEGORIES', `${catKey}:`);
+                // CATEGORY_ORDER sta tutto su una riga sola: va tolto l'ELEMENTO, non la
+                // riga. Cancellando la riga si perdevano tutte e nove le categorie insieme,
+                // e il job diceva comunque "rimossa con successo".
+                catContent = removeKeyFromArrayBlock(catContent, 'CATEGORY_ORDER', catKey);
+
+                // Rete di sicurezza: valuta il risultato PRIMA di scriverlo su disco.
+                const regPrima = await leggiRegistry(catContentPrima);
+                const regDopo = await leggiRegistry(catContent);
+                if (Object.keys(regDopo.CATEGORIES).length !== Object.keys(regPrima.CATEGORIES).length - 1
+                    || regDopo.CATEGORY_ORDER.length !== regPrima.CATEGORY_ORDER.length - 1
+                    || regDopo.CATEGORIES[catKey]
+                    || regDopo.CATEGORY_ORDER.includes(catKey)) {
+                    throw new Error(
+                        `Riscrittura di js/categories.js incoerente: categorie da ` +
+                        `${Object.keys(regPrima.CATEGORIES).length} a ${Object.keys(regDopo.CATEGORIES).length}, ` +
+                        `ordine da ${regPrima.CATEGORY_ORDER.length} a ${regDopo.CATEGORY_ORDER.length}. ` +
+                        `Non ho scritto niente.`
+                    );
                 }
 
-                constantsContent = removeLineFromBlock(constantsContent, 'ALL_CATEGORIES', `'${name}'`);
-                constantsContent = removeLineFromBlock(constantsContent, 'CATEGORY_FOLDERS', `'${name}'`);
-                constantsContent = removeLineFromBlock(constantsContent, 'CATEGORIES_DATA', `${catKey}:`);
-                writeFileSync(constantsPath, constantsContent, 'utf-8');
-                ctx.log(`💾 constants.js aggiornato`);
-
-                // ── 6. Aggiorna categories.js (frontend SPA) ──
-                const categoriesPath = resolve(ricettarioPath, 'js', 'categories.js');
-                let catContent = readFileSync(categoriesPath, 'utf-8');
-                catContent = removeLineFromBlock(catContent, 'CATEGORIES', `${catKey}:`);
-                catContent = removeLineFromBlock(catContent, 'CATEGORY_ORDER', `'${catKey}'`);
                 writeFileSync(categoriesPath, catContent, 'utf-8');
-                ctx.log(`💾 categories.js aggiornato`);
+                ctx.log(`💾 js/categories.js del sito aggiornato (${Object.keys(regDopo.CATEGORIES).length} categorie rimaste)`);
 
-                // ── 7. Aggiorna emoji.js se l'emoji era stata aggiunta ──
+                // ── 6. Aggiorna emoji.js se l'emoji era stata aggiunta ──
                 const emojiJsPath = resolve(ricettarioPath, 'js', 'emoji.js');
                 if (existsSync(emojiJsPath)) {
                     const catEmoji = catData?.emoji;
@@ -494,13 +557,13 @@ REGOLE:
                     }
                 }
 
-                // ── 8. Aggiorna oggetti live in memoria ──
+                // ── 7. Aggiorna oggetti live in memoria ──
                 const idx = ALL_CATEGORIES.indexOf(name);
                 if (idx !== -1) ALL_CATEGORIES.splice(idx, 1);
                 delete CATEGORY_FOLDERS[name];
                 delete CATEGORIES_DATA[catKey];
 
-                // ── 9. Sync cards ──
+                // ── 8. Sync cards ──
                 ctx.log('\n🔄 Sync cards...');
                 const { syncCards } = await import('../../commands/sync-cards.js');
                 await syncCards({});
@@ -508,7 +571,7 @@ REGOLE:
 
                 ctx.log(`\n🎉 Categoria "${name}" rimossa con successo!`);
                 if (moveTo) ctx.log(`   📦 ${recipesCount} ricette spostate in "${moveTo}"`);
-                ctx.log(`   💾 Backup disponibile in ricette/.backup/`);
+                ctx.log(`   💾 Backup disponibile in tools/data/backup-categorie/`);
             });
             ctx.end(true);
         } catch (err) {
