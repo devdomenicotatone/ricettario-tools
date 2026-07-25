@@ -111,21 +111,38 @@ export class RecipeEditorState {
         this.isSaving = true;
         this._emitStatus('Salvataggio...', 'saving');
 
+        // Fotografia di ciò che stiamo inviando. Mentre la richiesta viaggia l'utente
+        // continua a scrivere e `currentRecipe` cambia sotto i piedi: dichiarare
+        // "salvato" il contenuto ATTUALE faceva sparire quelle battute in silenzio,
+        // con la pillola che diceva comunque "✓ Salvata" e il salvataggio successivo
+        // che non trovava più niente da fare.
+        const inviata = JSON.parse(JSON.stringify(this.currentRecipe));
+
         try {
             const resp = await fetch(`/api/ricetta/${this.cat}/${this.slug}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ recipe: this.currentRecipe, autoRegen: true }),
+                body: JSON.stringify({ recipe: inviata, autoRegen: true }),
             });
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
             const result = await resp.json();
-            this.originalRecipe = JSON.parse(JSON.stringify(this.currentRecipe));
-            this.isDirty = false;
+            // Sul disco c'è quello che abbiamo inviato, non quello che c'è a schermo ora.
+            this.originalRecipe = inviata;
             this.isSaving = false;
+
+            const modificheNuove = JSON.stringify(this.currentRecipe) !== JSON.stringify(inviata);
+            this.isDirty = modificheNuove;
             this._emitChange();
-            const syncMsg = result.syncOk ? '✓ Salvata + cards sync' : '✓ Salvata';
-            this._emitStatus(syncMsg, 'saved');
+
+            if (modificheNuove) {
+                // Arrivate modifiche durante l'invio: resta sporco e risalva.
+                this._emitStatus('Modifiche non salvate', 'dirty');
+                this._debouncedAutoSave();
+            } else {
+                const syncMsg = result.syncOk ? '✓ Salvata + cards sync' : '✓ Salvata';
+                this._emitStatus(syncMsg, 'saved');
+            }
         } catch (err) {
             this.isSaving = false;
             this._emitStatus(`Errore salvataggio: ${err.message}`, 'error');
