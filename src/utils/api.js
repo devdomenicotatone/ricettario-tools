@@ -24,20 +24,43 @@ const DEFAULT_RETRY = {
  * Massimo output tokens per modello Claude.
  * Quando maxTokens non è specificato dal chiamante, si usa il max del modello.
  * Non ha impatto sui costi: Anthropic fattura solo i token effettivamente generati.
- * 
- * Ref: https://docs.anthropic.com/en/docs/about-claude/models
+ *
+ * ⚠️ Se aggiungi un modello, mettilo qui: quelli non elencati ripiegano su
+ * DEFAULT_MAX_TOKENS, che può essere molto più basso del loro tetto reale e
+ * produce troncamenti silenziosi.
+ *
+ * Ref: https://platform.claude.com/docs/en/about-claude/models/overview
  */
 const MODEL_MAX_TOKENS = {
     'claude-opus-4-6': 128000,
-    'claude-sonnet-4-6': 64000,
+    'claude-sonnet-4-6': 128000,        // era 64000: metà del tetto reale del modello
+    'claude-sonnet-4-5-20250929': 64000,
+    'claude-sonnet-4-20250514': 64000,
 };
-const DEFAULT_MAX_TOKENS = 64000;  // Fallback per modelli non in mappa
+const DEFAULT_MAX_TOKENS = 64000;  // Fallback prudente per modelli non in mappa
+
+/**
+ * Risposta arrivata incompleta o non utilizzabile.
+ *
+ * Non è un errore di rete: la chiamata è riuscita e l'abbiamo pagata, ma quello
+ * che è tornato non si può usare. Rilanciare la stessa identica richiesta
+ * produrrebbe lo stesso risultato, quindi `retryable` è false e il wrapper non
+ * la ritenta.
+ */
+export class RispostaIncompletaError extends Error {
+    constructor(messaggio, { motivo }) {
+        super(messaggio);
+        this.name = 'RispostaIncompletaError';
+        this.motivo = motivo;   // 'max_tokens' | 'rifiuto' | 'contesto_esaurito' | 'nessun_testo' | ...
+        this.retryable = false;
+    }
+}
 
 /**
  * Chiama Claude API con retry automatico e exponential backoff
  *
  * @param {object} options
- * @param {string} options.model - Modello Claude (default: claude-sonnet-4-5-20250929)
+ * @param {string} options.model - Modello Claude (default: claude-sonnet-4-6)
  * @param {number} [options.maxTokens] - Max tokens risposta (default: max del modello)
  * @param {string} [options.system] - System prompt
  * @param {Array} options.messages - Array messaggi [{role, content}]
@@ -61,10 +84,10 @@ export async function callClaude({
             if (system) params.system = system;
 
             // Usa streaming + finalMessage() per evitare timeout HTTP con max_tokens alti
-            // Ref: https://docs.anthropic.com/en/api/messages-streaming
+            // Ref: https://platform.claude.com/docs/en/build-with-claude/streaming
             const stream = client.messages.stream(params);
             const message = await stream.finalMessage();
-            return message.content[0].text.trim();
+            return testoDallaRisposta(message, { model, maxTokens: resolvedMaxTokens });
         } catch (err) {
             const isRetryable = isRetryableError(err);
             const isLast = attempt === maxAttempts;
@@ -83,9 +106,76 @@ export async function callClaude({
 }
 
 /**
+ * Estrae il testo da una risposta Claude, DOPO aver verificato che sia completa.
+ *
+ * `stop_reason` dice perché il modello ha smesso di scrivere. Non guardarlo
+ * significa trattare come finita una risposta tagliata a metà: la chiamata
+ * l'hai pagata per intero, quello che ne esce è parziale, e il danno si vede
+ * molto più tardi — un array troncato diventa un oggetto solo, e il chiamante
+ * conclude "nessun risultato" invece di "risposta incompleta".
+ *
+ * Ref: https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons
+ */
+export function testoDallaRisposta(message, { model, maxTokens }) {
+    const tetto = MODEL_MAX_TOKENS[model] || DEFAULT_MAX_TOKENS;
+
+    if (message.stop_reason === 'max_tokens') {
+        const generati = message.usage?.output_tokens ?? '?';
+        const consiglio = maxTokens < tetto
+            ? ` Rilancia con maxTokens più alto: ${model} arriva a ${tetto}.`
+            : ` Sei già al tetto di ${model} (${tetto}): spezza la richiesta in parti più piccole.`;
+        throw new RispostaIncompletaError(
+            `Risposta troncata: esaurito il budget di ${maxTokens} token di output (${generati} generati). ` +
+            `Il testo arrivato è incompleto e non va usato.${consiglio}`,
+            { motivo: 'max_tokens' }
+        );
+    }
+
+    if (message.stop_reason === 'model_context_window_exceeded') {
+        throw new RispostaIncompletaError(
+            'Finestra di contesto esaurita: è troppo grande quello che hai MANDATO, non quello che il ' +
+            'modello ha scritto. Riduci il testo in ingresso o dividilo in blocchi.',
+            { motivo: 'contesto_esaurito' }
+        );
+    }
+
+    if (message.stop_reason === 'refusal') {
+        // stop_details è popolato SOLO sui rifiuti, e `explanation` non è garantito.
+        const dettagli = message.stop_details || {};
+        const categoria = dettagli.category ? ` [${dettagli.category}]` : '';
+        const spiegazione = dettagli.explanation ? ` ${dettagli.explanation}` : '';
+        throw new RispostaIncompletaError(
+            `Il modello ha rifiutato di rispondere${categoria}.${spiegazione}`,
+            { motivo: 'rifiuto' }
+        );
+    }
+
+    // I blocchi possono essere di tipi diversi (text, thinking, tool_use...) e
+    // il testo può arrivare spezzato in più blocchi: prenderli tutti è più
+    // corretto che dare per scontato che content[0] sia testo.
+    const testo = (message.content || [])
+        .filter(b => b.type === 'text')
+        .map(b => b.text)
+        .join('')
+        .trim();
+
+    if (!testo) {
+        const tipi = (message.content || []).map(b => b.type).join(', ') || 'nessuno';
+        throw new RispostaIncompletaError(
+            `Risposta senza testo (stop_reason: ${message.stop_reason}, blocchi ricevuti: ${tipi}).`,
+            { motivo: 'nessun_testo' }
+        );
+    }
+
+    return testo;
+}
+
+/**
  * Determina se un errore è ritentabile
  */
 function isRetryableError(err) {
+    // Le risposte incomplete si marcano da sole: rilanciare identico non aiuta.
+    if (err.retryable === false) return false;
     // Rate limit (429), server errors (5xx), timeout, network errors
     if (err.status === 429) return true;
     if (err.status >= 500) return true;
@@ -144,17 +234,31 @@ export function parseClaudeJson(text) {
         return JSON.parse(fixed);
     } catch (e) { lastError = e; }
 
-    // 4. Estrai primo oggetto JSON bilanciato (gestisce nested objects)
+    const inizio = cleaned.trimStart()[0];
+
+    // 4. Estrai il primo valore JSON bilanciato (oggetto o array, gestisce nested)
     const extracted = extractBalancedJson(cleaned);
-    if (extracted) {
+
+    // 4b. Ripiego: se la prima parentesi era solo prosa ("Ecco [la lista]: {...}"),
+    // l'estratto non parsa. Riprova partendo dal primo oggetto vero.
+    //
+    // ⚠️ NON si applica quando il testo COMINCIA con "[": lì l'array è il valore
+    // richiesto, e pescarne dentro il primo oggetto è esattamente il bug da
+    // evitare — una ricetta consegnata al posto di N, senza nessun errore.
+    const iOggetto = cleaned.indexOf('{');
+    const daOggetto = (inizio !== '[' && iOggetto !== -1)
+        ? extractBalancedJson(cleaned.slice(iOggetto))
+        : null;
+
+    for (const candidato of [extracted, daOggetto]) {
+        if (!candidato) continue;
         try {
-            return JSON.parse(extracted);
+            return JSON.parse(candidato);
         } catch (e) { lastError = e; }
 
-        // 4b. Prova con fix trailing commas sull'estratto
-        const fixedExtracted = extracted.replace(/,\s*([\]}])/g, '$1');
+        // Stesso candidato, con le virgole finali ripulite
         try {
-            return JSON.parse(fixedExtracted);
+            return JSON.parse(candidato.replace(/,\s*([\]}])/g, '$1'));
         } catch (e) { lastError = e; }
     }
 
@@ -164,17 +268,45 @@ export function parseClaudeJson(text) {
         log.warn('Risposta Claude salvata in debug-failed-response.txt per diagnosi');
     } catch { /* ignore */ }
 
+    // Se il testo COMINCIA come JSON ma non si chiude, il problema non è il
+    // formato: è che la risposta è stata tagliata. Dirlo cambia la diagnosi.
+    if ((inizio === '[' || inizio === '{') && extracted === null) {
+        throw new RispostaIncompletaError(
+            `Risposta troncata: comincia come JSON ma la parentesi "${inizio}" non si chiude mai ` +
+            `(${text.length} caratteri ricevuti). Alza maxTokens o spezza la richiesta. ` +
+            `Copia salvata in debug-failed-response.txt.`,
+            { motivo: 'json_troncato' }
+        );
+    }
+
     const parseMsg = lastError ? ` (JSON.parse: ${lastError.message})` : '';
     throw new Error(`Impossibile parsare JSON dalla risposta Claude${parseMsg}: ${text.substring(0, 200)}...`);
 }
 
 /**
- * Estrae il primo oggetto JSON bilanciato da una stringa mixed
- * Tiene conto di stringhe (per non contare { e } dentro "...")
+ * Estrae il primo valore JSON bilanciato (oggetto O array) da una stringa mista.
+ * Tiene conto delle stringhe, per non contare parentesi dentro "...".
+ *
+ * ⚠️ Parte dalla PRIMA parentesi che incontra, `[` o `{` che sia. Prima cercava
+ * solo `{`: da un array troncato — `[{...},{...},{..` — estraeva il primo
+ * oggetto completo e lo restituiva senza un errore. Il chiamante riceveva UNA
+ * ricetta invece di N, concludeva "nessuna ricetta trovata", marcava le pagine
+ * come già lavorate, e le altre non erano più recuperabili.
+ *
+ * Se la parentesi non si chiude mai, restituisce null: il testo è troncato, e
+ * meglio fallire che consegnare mezzo risultato.
  */
-function extractBalancedJson(text) {
-    const start = text.indexOf('{');
-    if (start === -1) return null;
+export function extractBalancedJson(text) {
+    const iOggetto = text.indexOf('{');
+    const iArray = text.indexOf('[');
+    if (iOggetto === -1 && iArray === -1) return null;
+
+    const start = iArray === -1 ? iOggetto
+        : iOggetto === -1 ? iArray
+            : Math.min(iOggetto, iArray);
+
+    const apertura = text[start];
+    const chiusura = apertura === '[' ? ']' : '}';
 
     let depth = 0;
     let inString = false;
@@ -197,13 +329,13 @@ function extractBalancedJson(text) {
         }
         if (inString) continue;
 
-        if (ch === '{') depth++;
-        if (ch === '}') depth--;
-        if (depth === 0) {
-            return text.substring(start, i + 1);
+        if (ch === apertura) depth++;
+        else if (ch === chiusura) {
+            depth--;
+            if (depth === 0) return text.substring(start, i + 1);
         }
     }
-    return null;
+    return null;  // mai chiusa: risposta troncata
 }
 
 function sleep(ms) {
@@ -264,6 +396,68 @@ const GEMINI_MODEL_FALLBACK = {
 };
 
 /**
+ * Estrae il testo da una risposta Gemini, DOPO aver verificato che sia completa.
+ *
+ * L'equivalente di `stop_reason` qui si chiama `finishReason`, e vale lo stesso
+ * discorso: senza guardarlo, una risposta tagliata passa per buona.
+ *
+ * Con i modelli 2.5 e 3.x c'è una trappola in più: i token di ragionamento
+ * interno attingono allo STESSO budget di `maxOutputTokens`. Il modello può
+ * quindi consumare tutto il budget pensando e restituire una risposta vuota o
+ * troncata, senza che nulla segnali un errore.
+ */
+export function testoDaRispostaGemini(response, { model, maxTokens }) {
+    const bloccoPrompt = response.promptFeedback?.blockReason;
+    if (bloccoPrompt) {
+        throw new RispostaIncompletaError(
+            `Gemini ha bloccato la richiesta prima ancora di rispondere (${bloccoPrompt}).`,
+            { motivo: 'blocco_prompt' }
+        );
+    }
+
+    const candidato = response.candidates?.[0];
+    if (!candidato) {
+        throw new RispostaIncompletaError(
+            'Gemini non ha restituito nessun candidato di risposta.',
+            { motivo: 'nessun_testo' }
+        );
+    }
+
+    const finish = candidato.finishReason;
+
+    if (finish === 'MAX_TOKENS') {
+        const pensiero = response.usageMetadata?.thoughtsTokenCount;
+        const dettaglio = pensiero
+            ? ` Di quel budget, ${pensiero} token sono finiti in ragionamento interno: su ${model} il ` +
+              `"pensiero" attinge allo stesso budget della risposta.`
+            : '';
+        throw new RispostaIncompletaError(
+            `Risposta Gemini troncata: esaurito il budget di ${maxTokens} token di output.${dettaglio} ` +
+            `Alza maxTokens o spezza la richiesta.`,
+            { motivo: 'max_tokens' }
+        );
+    }
+
+    if (finish && finish !== 'STOP') {
+        const perche = candidato.finishMessage ? `: ${candidato.finishMessage}` : '';
+        throw new RispostaIncompletaError(
+            `Gemini ha interrotto la risposta (${finish}${perche}).`,
+            { motivo: 'finish_reason' }
+        );
+    }
+
+    const testo = response.text().trim();
+    if (!testo) {
+        throw new RispostaIncompletaError(
+            `Gemini ha restituito una risposta vuota (finishReason: ${finish || 'assente'}).`,
+            { motivo: 'nessun_testo' }
+        );
+    }
+
+    return testo;
+}
+
+/**
  * Chiama Gemini API con retry automatico e model fallback intelligente
  *
  * Strategia resilienza (per errori 503/overloaded):
@@ -310,19 +504,19 @@ export async function callGemini({
                 const lastMessage = messages[messages.length - 1];
                 const contentOrParts = lastMessage.parts || lastMessage.content;
 
-                if (history.length > 0) {
-                    const chat = genModel.startChat({ history });
-                    const result = await chat.sendMessage(contentOrParts);
-                    return result.response.text().trim();
-                } else {
-                    const result = await genModel.generateContent(contentOrParts);
-                    return result.response.text().trim();
-                }
+                const result = history.length > 0
+                    ? await genModel.startChat({ history }).sendMessage(contentOrParts)
+                    : await genModel.generateContent(contentOrParts);
+
+                return testoDaRispostaGemini(result.response, { model: activeModel, maxTokens });
             } catch (err) {
                 const isLast = attempt === maxAttempts;
-                const retryable = err.status === 429 || err.status >= 500 ||
+                // Le risposte incomplete si marcano da sole (retryable: false):
+                // rilanciare identico produrrebbe lo stesso troncamento.
+                const retryable = err.retryable !== false && (
+                    err.status === 429 || err.status >= 500 ||
                     err.message?.includes('overloaded') || err.message?.includes('rate') ||
-                    err.message?.includes('Service Unavailable');
+                    err.message?.includes('Service Unavailable'));
 
                 if (isLast || !retryable) {
                     err._isServiceUnavailable = err.status === 503 ||
