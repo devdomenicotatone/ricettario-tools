@@ -7,6 +7,7 @@
 import { showToast } from './toast.js';
 import { apiPost, navigateToPanel } from './navigation.js';
 import { appendTerminal } from './terminal.js';
+import { escapeHtml } from './escape.js';
 
 export async function runGenera() {
     const btn = document.getElementById('btn-run-genera');
@@ -78,7 +79,7 @@ export async function runScopri() {
         if (data.error) throw new Error(data.error);
         renderScopriResults(data.results || []);
     } catch (e) {
-        container.innerHTML = `<div class="feedback-error">Errore: ${e.message}</div>`;
+        container.innerHTML = `<div class="feedback-error">Errore: ${escapeHtml(e.message)}</div>`;
     } finally {
         btn.innerHTML = orgHtml;
         btn.disabled = false;
@@ -95,13 +96,15 @@ function renderScopriResults(results) {
 
     let html = `<div class="scopri-results">`;
     results.forEach((r, idx) => {
+        // Titolo, fonte e snippet li scrive il proprietario del sito trovato da
+        // Google: vanno neutralizzati prima di finire in innerHTML.
         html += `
             <label class="scopri-card">
-                <input type="checkbox" class="scopri-checkbox" value="${r.url}" checked>
+                <input type="checkbox" class="scopri-checkbox" value="${escapeHtml(r.url)}" checked>
                 <div class="scopri-card-body">
-                    <div class="scopri-card-title">${r.title}</div>
-                    <div class="scopri-card-source">${r.source}</div>
-                    <div class="scopri-card-snippet">${r.snippet}</div>
+                    <div class="scopri-card-title">${escapeHtml(r.title)}</div>
+                    <div class="scopri-card-source">${escapeHtml(r.source)}</div>
+                    <div class="scopri-card-snippet">${escapeHtml(r.snippet)}</div>
                 </div>
             </label>
         `;

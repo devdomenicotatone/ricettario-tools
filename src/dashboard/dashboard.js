@@ -92,7 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.terminal-header')?.addEventListener('click', toggleTerminal);
     document.querySelectorAll('.terminal-actions .terminal-btn').forEach(btn => {
         const title = btn.getAttribute('title') || '';
-        if (title.includes('Pin')) {
+        // Il pulsante del pin si riconosce dall'id, non dal title: nell'HTML il
+        // title è "Blocca aperto" (e diventa "Sblocca" quando è attivo), quindi
+        // il vecchio confronto con "Pin" non corrispondeva mai — nessun listener,
+        // il clic saliva alla testata e chiudeva il terminale invece di bloccarlo.
+        if (btn.id === 'terminalPinBtn') {
             btn.addEventListener('click', (e) => { e.stopPropagation(); toggleTerminalPin(); });
         } else if (title.includes('Espandi')) {
             btn.addEventListener('click', (e) => { e.stopPropagation(); toggleExpandTerminal(); });

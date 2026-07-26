@@ -8,6 +8,7 @@ import { showToast, showCustomConfirm } from './toast.js';
 import { apiPost, setRunning } from './navigation.js';
 import { appendTerminal, expandTerminal } from './terminal.js';
 import { allRecipes, selectedSlugs, clearSelection } from './recipe-list.js';
+import { escapeHtml } from './escape.js';
 
 export async function loadRecipesForPicker() {
     const select = document.getElementById('img-slug');
@@ -15,8 +16,9 @@ export async function loadRecipesForPicker() {
     try {
         const resp = await fetch('/api/ricette');
         const recipes = await resp.json();
+        // I titoli delle ricette li scrive l'AI leggendo pagine web: mai in HTML grezzo.
         select.innerHTML = '<option value="">-- Seleziona ricetta --</option>' +
-            recipes.map(r => `<option value="${r.slug}">${r.title || r.slug} (${r.category || '?'})</option>`).join('');
+            recipes.map(r => `<option value="${escapeHtml(r.slug)}">${escapeHtml(r.title || r.slug)} (${escapeHtml(r.category || '?')})</option>`).join('');
     } catch {}
 }
 
@@ -54,8 +56,8 @@ function showImagePickerModal(data) {
     const modal = document.getElementById('imageModal');
     const tabsEl = document.getElementById('modalTabs');
     const bodyEl = document.getElementById('modalBody');
-    document.getElementById('modalTitle').innerHTML = `🖼️ Immagine per: ${data.recipeName} 
-        <button class="btn btn-sm modal-refresh-btn" data-action="force-refresh" data-slug="${data.slug}">🔄 Forza Refresh API</button>
+    document.getElementById('modalTitle').innerHTML = `🖼️ Immagine per: ${escapeHtml(data.recipeName)}
+        <button class="btn btn-sm modal-refresh-btn" data-action="force-refresh" data-slug="${escapeHtml(data.slug)}">🔄 Forza Refresh API</button>
         <input type="text" id="modalImageSearch" placeholder="🔍 Cerca tra i risultati..." class="modal-search-input">
     `;
     
@@ -67,17 +69,19 @@ function showImagePickerModal(data) {
     const providers = data.providerResults.filter(p => p.images.length > 0);
 
     tabsEl.innerHTML = providers.map((p, i) =>
-        `<button class="modal-tab${i === 0 ? ' active' : ''}" data-idx="${i}">${p.emoji} ${p.provider} (${p.images.length})</button>`
+        `<button class="modal-tab${i === 0 ? ' active' : ''}" data-idx="${i}">${escapeHtml(p.emoji)} ${escapeHtml(p.provider)} (${p.images.length})</button>`
     ).join('') + `<button class="modal-tab${providers.length === 0 ? ' active' : ''}" data-idx="ai">🍌 Genera AI</button>`;
 
+    // Titoli, autori e URL delle foto arrivano da Pexels/Unsplash/Pixabay/Wikimedia,
+    // cioè da sconosciuti: vanno neutralizzati sia nel testo sia negli attributi.
     let gridsHtml = providers.map((p, i) =>
         `<div class="modal-grid" data-idx="${i}" style="display:${i === 0 ? 'grid' : 'none'}">
             ${p.images.map((img, imgIdx) => `
                 <div class="modal-img-card" data-action="select-image" data-provider-idx="${i}" data-img-idx="${imgIdx}">
-                    <img src="${img.thumbUrl || img.url}" alt="${(img.title || '').substring(0, 40)}" loading="lazy">
-                    <div class="modal-img-title" title="${(img.title || '').replace(/"/g, '&quot;')}">${img.title || 'Senza titolo'}</div>
+                    <img src="${escapeHtml(img.thumbUrl || img.url)}" alt="${escapeHtml((img.title || '').substring(0, 40))}" loading="lazy">
+                    <div class="modal-img-title" title="${escapeHtml(img.title || '')}">${escapeHtml(img.title || 'Senza titolo')}</div>
                     <div class="modal-img-card-info">
-                        <span class="modal-img-card-score">⭐${img.score}</span> · ${img.width}×${img.height} · ${img.author || '?'}
+                        <span class="modal-img-card-score">⭐${escapeHtml(img.score)}</span> · ${escapeHtml(img.width)}×${escapeHtml(img.height)} · ${escapeHtml(img.author || '?')}
                     </div>
                 </div>
             `).join('')}
@@ -128,7 +132,7 @@ function showImagePickerModal(data) {
                     </div>
                 </div>
 
-                <button class="btn btn-primary btn-full-width" data-action="generate-ai" data-slug="${data.slug}" data-category="${data.category}" id="ai-generate-btn">
+                <button class="btn btn-primary btn-full-width" data-action="generate-ai" data-slug="${escapeHtml(data.slug)}" data-category="${escapeHtml(data.category)}" id="ai-generate-btn">
                     <i data-lucide="sparkles"></i> <span id="ai-generate-label">Genera Immagine</span>
                 </button>
             </div>
@@ -632,7 +636,7 @@ function showSubjectUploadDialog(slug, category) {
             </div>
             <div class="modal-body" style="padding: 24px;">
                 <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 13px;">
-                    Carica una foto reale di <strong>${title}</strong>. Il modello imiterà forma, texture e colore del piatto.
+                    Carica una foto reale di <strong>${escapeHtml(title)}</strong>. Il modello imiterà forma, texture e colore del piatto.
                 </p>
                 <div class="ai-subject-zone" id="quick-subject-zone" style="min-height: 100px; flex-direction: column; gap: 8px;">
                     <i data-lucide="camera"></i>

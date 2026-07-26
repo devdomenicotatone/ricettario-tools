@@ -6,7 +6,7 @@
  */
 
 import { VALID_CATEGORY_NAMES as VALID_CATEGORIES } from '/shared/categories.js';
-import { esc } from './editor-state.js';
+import { escapeHtml } from '../modules/escape.js';
 
 // ═══════════════════════════════════════════════════════
 //  TAB DISPATCHER
@@ -40,65 +40,65 @@ function renderMetaTab(container, state) {
     container.innerHTML = `
         <div class="re-field">
             <label class="re-label">Titolo</label>
-            <input class="re-input" id="re-title-input" value="${esc(r.title)}" data-path="title">
+            <input class="re-input" id="re-title-input" value="${escapeHtml(r.title)}" data-path="title">
         </div>
         <div class="re-field">
             <label class="re-label">Sottotitolo</label>
-            <input class="re-input" id="re-subtitle-input" value="${esc(r.subtitle)}" data-path="subtitle">
+            <input class="re-input" id="re-subtitle-input" value="${escapeHtml(r.subtitle)}" data-path="subtitle">
         </div>
         <div class="re-field">
             <label class="re-label">Descrizione</label>
-            <textarea class="re-textarea" data-path="description" rows="3">${esc(r.description)}</textarea>
+            <textarea class="re-textarea" data-path="description" rows="3">${escapeHtml(r.description)}</textarea>
         </div>
         <div class="re-row">
             <div class="re-field">
                 <label class="re-label">Emoji</label>
-                <input class="re-input re-input-sm" value="${esc(r.emoji)}" data-path="emoji" style="width:80px">
+                <input class="re-input re-input-sm" value="${escapeHtml(r.emoji)}" data-path="emoji" style="width:80px">
             </div>
             <div class="re-field">
                 <label class="re-label">Categoria</label>
                 <select class="re-select" data-path="category">
-                    ${VALID_CATEGORIES.map(c => `<option value="${c}" ${c === r.category ? 'selected' : ''}>${c}</option>`).join('')}
+                    ${VALID_CATEGORIES.map(c => `<option value="${escapeHtml(c)}" ${c === r.category ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('')}
                 </select>
             </div>
             <div class="re-field">
                 <label class="re-label">Slug</label>
-                <input class="re-input re-input-sm re-input-mono" value="${esc(r.slug)}" data-path="slug">
+                <input class="re-input re-input-sm re-input-mono" value="${escapeHtml(r.slug)}" data-path="slug">
             </div>
         </div>
         <div class="re-row">
             <div class="re-field">
                 <label class="re-label">Idratazione %</label>
-                <input class="re-input re-input-sm" type="number" value="${r.hydration ?? ''}" data-path="hydration" data-type="number">
+                <input class="re-input re-input-sm" type="number" value="${escapeHtml(r.hydration)}" data-path="hydration" data-type="number">
             </div>
             <div class="re-field">
                 <label class="re-label">Temp. Target</label>
-                <input class="re-input re-input-sm" value="${esc(r.targetTemp)}" data-path="targetTemp">
+                <input class="re-input re-input-sm" value="${escapeHtml(r.targetTemp)}" data-path="targetTemp">
             </div>
             <div class="re-field">
                 <label class="re-label">Lievitazione</label>
-                <input class="re-input re-input-sm" value="${esc(r.fermentation)}" data-path="fermentation">
+                <input class="re-input re-input-sm" value="${escapeHtml(r.fermentation)}" data-path="fermentation">
             </div>
             <div class="re-field">
                 <label class="re-label">Farina Totale (g)</label>
-                <input class="re-input re-input-sm" type="number" value="${r.totalFlour ?? ''}" data-path="totalFlour" data-type="number">
+                <input class="re-input re-input-sm" type="number" value="${escapeHtml(r.totalFlour)}" data-path="totalFlour" data-type="number">
             </div>
         </div>
         <div class="re-field">
             <label class="re-label">Alert ⚠️</label>
-            <textarea class="re-textarea" data-path="alert" rows="2">${esc(r.alert)}</textarea>
+            <textarea class="re-textarea" data-path="alert" rows="2">${escapeHtml(r.alert)}</textarea>
         </div>
         <div class="re-field">
             <label class="re-label">Tags</label>
             <div class="re-tags-wrap" id="reTagsWrap">
-                ${(r.tags || []).map((t, i) => `<span class="re-tag">${esc(t)}<button class="re-tag-remove" data-tag-idx="${i}">×</button></span>`).join('')}
+                ${(r.tags || []).map((t, i) => `<span class="re-tag">${escapeHtml(t)}<button class="re-tag-remove" data-tag-idx="${i}">×</button></span>`).join('')}
                 <input class="re-tag-input" id="reTagInput" placeholder="Aggiungi tag...">
             </div>
         </div>
         <div class="re-field">
             <label class="re-label">Immagine</label>
-            <input class="re-input re-input-sm re-input-mono" value="${esc(r.image)}" data-path="image" style="color:#64748b">
-            ${r.image ? `<img class="re-image-preview" src="/${r.image}" alt="" onerror="this.style.display='none'">` : ''}
+            <input class="re-input re-input-sm re-input-mono" value="${escapeHtml(r.image)}" data-path="image" style="color:#64748b">
+            ${r.image ? `<img class="re-image-preview" src="/${escapeHtml(r.image)}" alt="" onerror="this.style.display='none'">` : ''}
         </div>
 
         ${renderValidationPanel(state)}
@@ -118,19 +118,22 @@ function renderIngredientsTab(container, state) {
 
     let html = '';
     groups.forEach((g, gi) => {
-        const totalGrams = (g.items || []).reduce((sum, it) => sum + (it.grams || 0), 0);
+        // `Number(...)` e non `it.grams || 0`: se l'AI scrive i grammi come
+        // stringa il `+` concatena invece di sommare, e il totale smette di
+        // essere un numero (finiva tale e quale dentro lo <span> qui sotto).
+        const totalGrams = (g.items || []).reduce((sum, it) => sum + (Number(it.grams) || 0), 0);
         html += `
             <div class="re-section" data-group-idx="${gi}">
                 <div class="re-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
                     <div class="re-section-title">
                         <span class="emoji">🧂</span>
-                        <input class="re-input re-input-sm" value="${esc(g.group)}" 
+                        <input class="re-input re-input-sm" value="${escapeHtml(g.group)}" 
                             data-path="ingredientGroups.${gi}.group" 
                             style="flex:1;max-width:300px;background:transparent;border:none;color:#e2e8f0;font-weight:600"
                             onclick="event.stopPropagation()">
                     </div>
                     <div style="display:flex;gap:8px;align-items:center">
-                        <span style="font-size:11px;color:#818cf8;font-weight:600;font-feature-settings:'tnum'">${totalGrams}g</span>
+                        <span style="font-size:11px;color:#818cf8;font-weight:600;font-feature-settings:'tnum'">${escapeHtml(totalGrams)}g</span>
                         <span style="font-size:11px;color:#475569">${(g.items || []).length} ing.</span>
                         <span class="re-section-chevron">▸</span>
                         <button class="re-row-delete" onclick="event.stopPropagation(); removeGroup(${gi})" title="Rimuovi gruppo"><i data-lucide="trash-2"></i></button>
@@ -142,17 +145,17 @@ function renderIngredientsTab(container, state) {
                     </div>
                     ${(g.items || []).map((item, ii) => `
                         <div class="re-ingredient-row">
-                            <input class="re-input" value="${esc(item.name)}" data-path="ingredientGroups.${gi}.items.${ii}.name" placeholder="Nome">
-                            <input class="re-input" type="number" value="${item.grams ?? ''}" data-path="ingredientGroups.${gi}.items.${ii}.grams" data-type="number" placeholder="g">
-                            <input class="re-input" value="${esc(item.note)}" data-path="ingredientGroups.${gi}.items.${ii}.note" placeholder="Note">
-                            <input class="re-input re-input-mono" value="${esc(item.tokenId)}" data-path="ingredientGroups.${gi}.items.${ii}.tokenId" placeholder="token_id">
+                            <input class="re-input" value="${escapeHtml(item.name)}" data-path="ingredientGroups.${gi}.items.${ii}.name" placeholder="Nome">
+                            <input class="re-input" type="number" value="${escapeHtml(item.grams)}" data-path="ingredientGroups.${gi}.items.${ii}.grams" data-type="number" placeholder="g">
+                            <input class="re-input" value="${escapeHtml(item.note)}" data-path="ingredientGroups.${gi}.items.${ii}.note" placeholder="Note">
+                            <input class="re-input re-input-mono" value="${escapeHtml(item.tokenId)}" data-path="ingredientGroups.${gi}.items.${ii}.tokenId" placeholder="token_id">
                             <div class="re-checkbox-wrap"><input type="checkbox" class="re-checkbox" data-path="ingredientGroups.${gi}.items.${ii}.excludeFromTotal" ${item.excludeFromTotal ? 'checked' : ''}></div>
                             <button class="re-row-delete" onclick="removeIngredient(${gi},${ii})"><i data-lucide="x"></i></button>
                         </div>
                     `).join('')}
                     <div class="re-group-totals">
-                        <span class="re-group-totals-label">Totale ${esc(g.group)}</span>
-                        <span class="re-group-totals-value">${totalGrams} g</span>
+                        <span class="re-group-totals-label">Totale ${escapeHtml(g.group)}</span>
+                        <span class="re-group-totals-value">${escapeHtml(totalGrams)} g</span>
                     </div>
                     <button class="re-add-btn" onclick="addIngredient(${gi})"><i data-lucide="plus"></i> Ingrediente</button>
                 </div>
@@ -171,9 +174,9 @@ function renderIngredientsTab(container, state) {
                 <div class="re-section-body">
                     ${susp.map((s, si) => `
                         <div class="re-ingredient-row" style="grid-template-columns:1fr 80px 1fr 36px">
-                            <input class="re-input" value="${esc(s.name)}" data-path="suspensions.${si}.name">
-                            <input class="re-input" type="number" value="${s.grams ?? ''}" data-path="suspensions.${si}.grams" data-type="number">
-                            <input class="re-input" value="${esc(s.note)}" data-path="suspensions.${si}.note">
+                            <input class="re-input" value="${escapeHtml(s.name)}" data-path="suspensions.${si}.name">
+                            <input class="re-input" type="number" value="${escapeHtml(s.grams)}" data-path="suspensions.${si}.grams" data-type="number">
+                            <input class="re-input" value="${escapeHtml(s.note)}" data-path="suspensions.${si}.note">
                             <button class="re-row-delete" onclick="removeSuspension(${si})"><i data-lucide="x"></i></button>
                         </div>
                     `).join('')}
@@ -223,7 +226,7 @@ function renderStepsTab(container, state, activeTextareaRef) {
                         <div class="re-step">
                             <div class="re-step-header">
                                 <span class="re-step-num">${si + 1}</span>
-                                <input class="re-input re-step-title-input" value="${esc(s.title)}" data-path="${sec.key}.${si}.title" placeholder="Titolo step">
+                                <input class="re-input re-step-title-input" value="${escapeHtml(s.title)}" data-path="${sec.key}.${si}.title" placeholder="Titolo step">
                                 <div class="re-step-actions">
                                     <button class="re-row-delete" onclick="moveStep('${sec.key}',${si},-1)" title="Sposta su"><i data-lucide="arrow-up"></i></button>
                                     <button class="re-row-delete" onclick="moveStep('${sec.key}',${si},1)" title="Sposta giù"><i data-lucide="arrow-down"></i></button>
@@ -231,7 +234,7 @@ function renderStepsTab(container, state, activeTextareaRef) {
                                 </div>
                             </div>
                             <textarea class="re-textarea re-step-textarea" data-path="${sec.key}.${si}.text" rows="4" 
-                                onfocus="window.__editorActiveTextarea=this">${esc(s.text)}</textarea>
+                                onfocus="window.__editorActiveTextarea=this">${escapeHtml(s.text)}</textarea>
                         </div>
                     `).join('')}
                     <button class="re-add-btn" onclick="addStep('${sec.key}')"><i data-lucide="plus"></i> Step</button>
@@ -240,12 +243,15 @@ function renderStepsTab(container, state, activeTextareaRef) {
         `;
     }
 
-    // Token Helper
+    // Token Helper — id e grammi viaggiano in `data-*` invece che dentro
+    // l'`onclick`: nell'attributo il browser ridecodifica le entità prima che
+    // JavaScript legga la stringa, quindi l'escape HTML da solo non basterebbe
+    // a impedire a un `tokenId` con un apice di uscire dalla chiamata.
     if (allTokens.length) {
         html += `
             <div class="re-token-helper">
                 <div class="re-token-helper-title">📎 Token Helper — clicca per inserire nel textarea attivo</div>
-                ${allTokens.map(t => `<span class="re-token-chip" onclick="insertToken('${t.id}', ${t.grams})" title="${t.name}">{${t.id}:<span class="value">${t.grams}</span>}</span>`).join('')}
+                ${allTokens.map(t => `<span class="re-token-chip" data-token-id="${escapeHtml(t.id)}" data-token-grams="${escapeHtml(t.grams)}" onclick="insertToken(this.dataset.tokenId, this.dataset.tokenGrams)" title="${escapeHtml(t.name)}">{${escapeHtml(t.id)}:<span class="value">${escapeHtml(t.grams)}</span>}</span>`).join('')}
             </div>
         `;
     }
@@ -277,9 +283,9 @@ function renderSupportTab(container, state) {
                 </div>
                 ${fl.map((f, fi) => `
                     <div class="re-flour-row">
-                        <input class="re-input" value="${esc(f.type)}" data-path="flourTable.${fi}.type">
-                        <input class="re-input" value="${esc(f.w)}" data-path="flourTable.${fi}.w">
-                        <input class="re-input" value="${esc(f.brands)}" data-path="flourTable.${fi}.brands">
+                        <input class="re-input" value="${escapeHtml(f.type)}" data-path="flourTable.${fi}.type">
+                        <input class="re-input" value="${escapeHtml(f.w)}" data-path="flourTable.${fi}.w">
+                        <input class="re-input" value="${escapeHtml(f.brands)}" data-path="flourTable.${fi}.brands">
                         <button class="re-row-delete" onclick="removeFlour(${fi})"><i data-lucide="x"></i></button>
                     </div>
                 `).join('')}
@@ -300,17 +306,17 @@ function renderSupportTab(container, state) {
                 <div class="re-baking-grid">
                     <div class="re-field">
                         <label class="re-label">Temperatura</label>
-                        <input class="re-input" value="${esc(b.temperature)}" data-path="baking.temperature">
+                        <input class="re-input" value="${escapeHtml(b.temperature)}" data-path="baking.temperature">
                     </div>
                     <div class="re-field">
                         <label class="re-label">Tempo</label>
-                        <input class="re-input" value="${esc(b.time)}" data-path="baking.time">
+                        <input class="re-input" value="${escapeHtml(b.time)}" data-path="baking.time">
                     </div>
                 </div>
                 <label class="re-label">Tips Cottura</label>
                 ${(b.tips || []).map((t, ti) => `
                     <div class="re-string-item">
-                        <textarea class="re-textarea" data-path="baking.tips.${ti}" rows="2">${esc(t)}</textarea>
+                        <textarea class="re-textarea" data-path="baking.tips.${ti}" rows="2">${escapeHtml(t)}</textarea>
                         <button class="re-row-delete" onclick="removeBakingTip(${ti})"><i data-lucide="x"></i></button>
                     </div>
                 `).join('')}
@@ -329,7 +335,7 @@ function renderSupportTab(container, state) {
             <div class="re-section-body">
                 ${(r.proTips || []).map((t, ti) => `
                     <div class="re-string-item">
-                        <textarea class="re-textarea" data-path="proTips.${ti}" rows="2">${esc(t)}</textarea>
+                        <textarea class="re-textarea" data-path="proTips.${ti}" rows="2">${escapeHtml(t)}</textarea>
                         <button class="re-row-delete" onclick="removeProTip(${ti})"><i data-lucide="x"></i></button>
                     </div>
                 `).join('')}
@@ -348,7 +354,7 @@ function renderSupportTab(container, state) {
             <div class="re-section-body">
                 ${(r.storage || []).map((t, ti) => `
                     <div class="re-string-item">
-                        <textarea class="re-textarea" data-path="storage.${ti}" rows="2">${esc(t)}</textarea>
+                        <textarea class="re-textarea" data-path="storage.${ti}" rows="2">${escapeHtml(t)}</textarea>
                         <button class="re-row-delete" onclick="removeStorage(${ti})"><i data-lucide="x"></i></button>
                     </div>
                 `).join('')}
@@ -367,8 +373,8 @@ function renderSupportTab(container, state) {
             <div class="re-section-body">
                 ${(r.glossary || []).map((g, gi) => `
                     <div class="re-glossary-item">
-                        <input class="re-input" value="${esc(g.term)}" data-path="glossary.${gi}.term" placeholder="Termine">
-                        <input class="re-input" value="${esc(g.definition)}" data-path="glossary.${gi}.definition" placeholder="Definizione">
+                        <input class="re-input" value="${escapeHtml(g.term)}" data-path="glossary.${gi}.term" placeholder="Termine">
+                        <input class="re-input" value="${escapeHtml(g.definition)}" data-path="glossary.${gi}.definition" placeholder="Definizione">
                         <button class="re-row-delete" onclick="removeGlossary(${gi})"><i data-lucide="x"></i></button>
                     </div>
                 `).join('')}
@@ -382,7 +388,7 @@ function renderSupportTab(container, state) {
         <div class="re-token-helper">
             <div class="re-token-helper-title" style="color:#a5b4fc;">🖼️ Image Keywords</div>
             <div class="re-tags-wrap" id="reImgKwWrap" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:6px;min-height:36px;margin-bottom:0;">
-                ${(r.imageKeywords || []).map((t, i) => `<span class="re-tag" style="background:rgba(129,140,248,0.2)">${esc(t)}<button class="re-tag-remove" data-imgkw-idx="${i}">×</button></span>`).join('')}
+                ${(r.imageKeywords || []).map((t, i) => `<span class="re-tag" style="background:rgba(129,140,248,0.2)">${escapeHtml(t)}<button class="re-tag-remove" data-imgkw-idx="${i}">×</button></span>`).join('')}
                 <input class="re-tag-input" id="reImgKwInput" placeholder="Aggiungi keyword...">
             </div>
         </div>
@@ -406,8 +412,8 @@ function renderValidationPanel(state) {
     return `
         <div class="re-validation">
             <div class="re-validation-title">${v.valid ? '⚠️' : '❌'} Validazione Schema</div>
-            ${v.errors.map(e => `<div class="re-validation-item error">❌ ${esc(e)}</div>`).join('')}
-            ${v.warnings.map(w => `<div class="re-validation-item warning">⚠️ ${esc(w)}</div>`).join('')}
+            ${v.errors.map(e => `<div class="re-validation-item error">❌ ${escapeHtml(e)}</div>`).join('')}
+            ${v.warnings.map(w => `<div class="re-validation-item warning">⚠️ ${escapeHtml(w)}</div>`).join('')}
         </div>
     `;
 }

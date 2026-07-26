@@ -1,8 +1,17 @@
 /**
  * DASHBOARD — Toast & Confirm Dialogs
- * 
+ *
  * Notifiche toast e dialog di conferma custom.
+ *
+ * I messaggi arrivano da titoli di ricetta scritti dall'AI, da nomi di
+ * categoria e da errori del server: passano tutti per `escapeHtml` prima di
+ * finire in `innerHTML`. Nessun chiamante passa markup di proposito (sono
+ * tutte stringhe di testo con emoji), quindi qui non c'è una via d'uscita
+ * "html: true": se un giorno servirà del markup, si costruisce con i nodi
+ * invece di riaprire il buco per tutti.
  */
+
+import { escapeHtml } from './escape.js';
 
 // ── Toast Notifications ──
 export function showToast(message, type = 'info') {
@@ -13,7 +22,7 @@ export function showToast(message, type = 'info') {
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
         <span class="toast-icon"><i data-lucide="${icons[type] || 'message-circle'}"></i></span>
-        <span class="toast-text">${message}</span>
+        <span class="toast-text">${escapeHtml(message)}</span>
     `;
     container.appendChild(toast);
     lucide.createIcons({ attrs: { 'width': 18, 'height': 18 } });
@@ -31,7 +40,7 @@ export function showCustomConfirm(message, onConfirm) {
     
     overlay.innerHTML = `
         <div class="confirm-box">
-            <div class="confirm-message">${message}</div>
+            <div class="confirm-message">${escapeHtml(message)}</div>
             <div class="confirm-actions">
                 <button class="btn btn-secondary" data-action="confirm-cancel">Annulla</button>
                 <button class="btn btn-primary" data-action="confirm-ok">Ok</button>
@@ -57,14 +66,19 @@ export function showDeleteCategoryConfirm(categoryName, recipeCount, otherCatego
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay confirm-overlay active';
 
+    // Il nome della categoria arriva dall'elenco delle cartelle sul disco:
+    // neutralizzato per il markup, mentre i confronti qui sotto restano sul
+    // valore grezzo (il browser ridecodifica `&quot;`/`&#39;` leggendo il DOM).
+    const nomeSicuro = escapeHtml(categoryName);
+
     const options = otherCategories.map(c =>
-        `<option value="${c}">${c}</option>`
+        `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`
     ).join('');
 
     overlay.innerHTML = `
         <div class="confirm-box confirm-delete-cat">
             <div class="confirm-message">
-                <strong>🗑️ Eliminare la categoria "${categoryName}"?</strong>
+                <strong>🗑️ Eliminare la categoria "${nomeSicuro}"?</strong>
                 ${recipeCount > 0 ? `<p class="confirm-recipe-count">Contiene <strong>${recipeCount}</strong> ricett${recipeCount === 1 ? 'a' : 'e'}</p>` : '<p class="confirm-recipe-count confirm-empty">Nessuna ricetta al suo interno</p>'}
             </div>
             ${recipeCount > 0 ? `
@@ -86,8 +100,8 @@ export function showDeleteCategoryConfirm(categoryName, recipeCount, otherCatego
                 </div>
             </div>
             <div class="confirm-danger-zone" style="display:none">
-                <p class="confirm-danger-text">⚠️ Stai per eliminare <strong>${recipeCount}</strong> ricett${recipeCount === 1 ? 'a' : 'e'}. Digita <strong>"${categoryName}"</strong> per confermare:</p>
-                <input type="text" class="confirm-danger-input" placeholder="${categoryName}" autocomplete="off" spellcheck="false">
+                <p class="confirm-danger-text">⚠️ Stai per eliminare <strong>${recipeCount}</strong> ricett${recipeCount === 1 ? 'a' : 'e'}. Digita <strong>"${nomeSicuro}"</strong> per confermare:</p>
+                <input type="text" class="confirm-danger-input" placeholder="${nomeSicuro}" autocomplete="off" spellcheck="false">
             </div>` : ''}
             <div class="confirm-info">
                 <i data-lucide="archive"></i>

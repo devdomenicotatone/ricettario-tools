@@ -77,12 +77,16 @@ function getOrCreateJobContainer(jobId, jobName) {
         jobWrap.innerHTML = `
             <div class="terminal-job-header" data-action="toggle-collapse">
                 <div class="job-status-icon"><i data-lucide="loader-2" class="lucide-spin job-icon-running"></i></div>
-                <div class="job-name">${jobName || jobId}</div>
+                <div class="job-name"></div>
                 <div class="job-badge">Running</div>
                 <i data-lucide="chevron-down" class="job-chevron"></i>
             </div>
-            <div class="terminal-job-logs" id="job-logs-${jobId}"></div>
+            <div class="terminal-job-logs"></div>
         `;
+        // Il nome del job è composto con quello che scrivi nel form: come le righe
+        // di output, va inserito come testo e mai come HTML.
+        jobWrap.querySelector('.job-name').textContent = jobName || jobId;
+        jobWrap.querySelector('.terminal-job-logs').id = `job-logs-${jobId}`;
         jobWrap.querySelector('[data-action="toggle-collapse"]').addEventListener('click', (e) => {
             e.currentTarget.parentElement.classList.toggle('collapsed');
         });

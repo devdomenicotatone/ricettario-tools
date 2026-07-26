@@ -5,6 +5,7 @@
  */
 
 import { CATEGORIES, CATEGORY_ORDER } from '/shared/categories.js';
+import { escapeHtml } from './escape.js';
 import { showToast, showCustomConfirm, showDeleteCategoryConfirm } from './toast.js';
 import { apiPost, setRunning } from './navigation.js';
 import { appendTerminal } from './terminal.js';
@@ -79,7 +80,7 @@ export async function loadRecipes() {
         renderRecipes();
         updateActionBar();
     } catch (err) {
-        grid.innerHTML = `<p class="empty-state">❌ Errore caricamento: ${err.message}</p>`;
+        grid.innerHTML = `<p class="empty-state">❌ Errore caricamento: ${escapeHtml(err.message)}</p>`;
     }
 }
 
@@ -138,8 +139,9 @@ function updateCategoryTabs() {
         const icon = CATEGORY_ICONS[cat] || 'folder';
         const isActive = recipeFilter.category === cat ? 'active' : '';
         const color = CATEGORY_COLORS[cat] || '#888';
-        html += `<button class="recipe-cat-tab ${isActive}" data-category="${cat}" style="--cat-color:${color}">
-            <i data-lucide="${icon}"></i> ${cat} <span class="cat-count">${count}</span>
+        const catSicura = escapeHtml(cat);
+        html += `<button class="recipe-cat-tab ${isActive}" data-category="${catSicura}" style="--cat-color:${color}">
+            <i data-lucide="${icon}"></i> ${catSicura} <span class="cat-count">${count}</span>
         </button>`;
     });
 
@@ -171,7 +173,7 @@ export function renderRecipes() {
         const catName = recipeFilter.category !== 'all' ? recipeFilter.category : '';
         grid.innerHTML = `<div class="empty-state-pro">
             <div class="empty-state-icon">📭</div>
-            <p>Nessuna ricetta${catName ? ` in "${catName}"` : ''}</p>
+            <p>Nessuna ricetta${catName ? ` in "${escapeHtml(catName)}"` : ''}</p>
             <button class="btn btn-primary" data-action="go-genera">
                 🔥 Crea la prima!
             </button>
@@ -183,9 +185,13 @@ export function renderRecipes() {
 
     if (recipeFilter.view === 'list') {
         const allChecked = filtered.length > 0 && filtered.every(r => selectedSlugs.has(r.slug));
+        // La casella "seleziona tutte" passa dalla delega degli eventi come le
+        // altre: con `onchange="toggleSelectAll(...)"` cercava una funzione
+        // globale, ma questo è un modulo ES e la funzione non è su `window`,
+        // quindi il clic non selezionava niente.
         grid.innerHTML = `<div class="recipe-list-header">
-            <span><input type="checkbox" class="recipe-checkbox-all" ${allChecked ? 'checked' : ''} 
-                onchange="toggleSelectAll(this.checked)"> Ricetta</span>
+            <span><input type="checkbox" class="recipe-checkbox-all" ${allChecked ? 'checked' : ''}
+                data-action="toggle-select-all"> Ricetta</span>
             <span>Categoria</span><span>Qualità</span><span>Idratazione</span><span>Tempo</span><span>Data</span><span>Azioni</span>
         </div>` + filtered.map(r => renderRecipeRow(r)).join('');
     } else {
@@ -245,7 +251,9 @@ function getAiBadge(generatedBy) {
         'gemini-3.1': { label: 'Gemini 3.1', icon: 'sparkles', color: '#34a853' },
     };
     const m = models[generatedBy] || { label: generatedBy, icon: 'cpu', color: '#888' };
-    return `<span class="recipe-badge ai-badge" style="color:${m.color};border-color:${m.color}40;background:${m.color}15" title="Generata con ${m.label}"><i data-lucide="${m.icon}"></i> ${m.label}</span>`;
+    // `label` può arrivare dal JSON della ricetta (modello sconosciuto): va scappata.
+    const etichetta = escapeHtml(m.label);
+    return `<span class="recipe-badge ai-badge" style="color:${m.color};border-color:${m.color}40;background:${m.color}15" title="Generata con ${etichetta}"><i data-lucide="${m.icon}"></i> ${etichetta}</span>`;
 }
 
 function buildRecipeUrl(r) {
@@ -297,42 +305,52 @@ function renderRecipeCard(r) {
     const fixTitle = !hasReport ? 'Esegui prima l\'analisi qualità' : isFixed ? 'Già fixata' : 'Fix AI';
     const catDir = r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase();
 
+    // Titolo e descrizione li scrive l'AI leggendo pagine web, categoria e slug
+    // arrivano dal JSON: tutto va scappato prima di finire in `innerHTML`, sia
+    // nel testo visibile sia dentro gli attributi (alt=, title=, data-slug=).
+    const titoloSicuro = escapeHtml(title);
+    const catSicura = escapeHtml(cat);
+    const slugSicuro = escapeHtml(r.slug);
+    const imgSicura = escapeHtml(img);
+    const urlSicuro = escapeHtml(recipeUrl);
+    const catDirSicura = escapeHtml(catDir);
+
     return `
-        <div class="recipe-card${isSelected ? ' selected' : ''}" data-slug="${r.slug}" data-category="${cat}" data-action="toggle-select">
-            <button class="recipe-delete-btn" data-action="elimina" data-slug="${r.slug}" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
+        <div class="recipe-card${isSelected ? ' selected' : ''}" data-slug="${slugSicuro}" data-category="${catSicura}" data-action="toggle-select">
+            <button class="recipe-delete-btn" data-action="elimina" data-slug="${slugSicuro}" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             ${img ? `<div class="recipe-card-img-wrap">
-                <img class="recipe-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.parentElement.style.display='none'">
-                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" 
-                    data-action="show-category-dropdown" data-slug="${r.slug}" data-current-cat="${cat}"><i data-lucide="${catIcon}"></i> ${cat}</span>
+                <img class="recipe-card-img" src="${imgSicura}" alt="${titoloSicuro}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}"
+                    data-action="show-category-dropdown" data-slug="${slugSicuro}" data-current-cat="${catSicura}"><i data-lucide="${catIcon}"></i> ${catSicura}</span>
                 ${r._createdAt ? `<span class="recipe-card-date-badge"><i data-lucide="calendar"></i> ${formatCreatedAt(r._createdAt)}</span>` : ''}
-                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" data-action="stop-only"><i data-lucide="external-link"></i></a>
+                <a class="recipe-card-open-btn" href="${urlSicuro}" target="_blank" title="Apri nel sito" data-action="stop-only"><i data-lucide="external-link"></i></a>
             </div>` : `<div class="recipe-card-no-img">
-                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" data-action="show-category-dropdown" data-slug="${r.slug}" data-current-cat="${cat}"><i data-lucide="${catIcon}"></i> ${cat}</span>
-                <a class="recipe-card-open-btn" href="${recipeUrl}" target="_blank" title="Apri nel sito" data-action="stop-only"><i data-lucide="external-link"></i></a>
+                <span class="recipe-card-cat-badge clickable" style="--cat-color:${catColor}" data-action="show-category-dropdown" data-slug="${slugSicuro}" data-current-cat="${catSicura}"><i data-lucide="${catIcon}"></i> ${catSicura}</span>
+                <a class="recipe-card-open-btn" href="${urlSicuro}" target="_blank" title="Apri nel sito" data-action="stop-only"><i data-lucide="external-link"></i></a>
             </div>`}
             <div class="recipe-card-body">
-                <div class="recipe-card-title">${title}</div>
+                <div class="recipe-card-title">${titoloSicuro}</div>
                 <div class="recipe-card-badges">
                     ${getAiBadge(r._generatedBy)}
                     ${getQualityBadge(r.slug)}
-                    ${r.hydration ? `<span class="recipe-badge ${hydClass}"><i data-lucide="droplets"></i> ${r.hydration}</span>` : ''}
-                    ${r.time ? `<span class="recipe-badge recipe-badge-time"><i data-lucide="clock"></i> ${r.time}</span>` : ''}
+                    ${r.hydration ? `<span class="recipe-badge ${hydClass}"><i data-lucide="droplets"></i> ${escapeHtml(r.hydration)}</span>` : ''}
+                    ${r.time ? `<span class="recipe-badge recipe-badge-time"><i data-lucide="clock"></i> ${escapeHtml(r.time)}</span>` : ''}
                 </div>
-                ${r.description ? `<div class="recipe-card-desc">${r.description.substring(0, 90)}…</div>` : ''}
+                ${r.description ? `<div class="recipe-card-desc">${escapeHtml(String(r.description).substring(0, 90))}…</div>` : ''}
                 <div class="recipe-card-actions" data-action="stop-only">
                     <div class="btn-split" title="Cambia immagine">
-                        <button class="btn-split-main" data-action="refresh-image" data-slug="${r.slug}"><i data-lucide="image"></i></button>
-                        <button class="btn-split-chevron" data-action="image-generate-dropdown" data-slug="${r.slug}" data-cat="${cat}">▾</button>
+                        <button class="btn-split-main" data-action="refresh-image" data-slug="${slugSicuro}"><i data-lucide="image"></i></button>
+                        <button class="btn-split-chevron" data-action="image-generate-dropdown" data-slug="${slugSicuro}" data-cat="${catSicura}">▾</button>
                     </div>
                     <div class="btn-split" title="Analisi Qualità">
-                        <button class="btn-split-main" data-action="qualita" data-slug="${r.slug}" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
-                        <button class="btn-split-chevron" data-action="model-dropdown" data-slug="${r.slug}" title="Scegli modello">▾</button>
+                        <button class="btn-split-main" data-action="qualita" data-slug="${slugSicuro}" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
+                        <button class="btn-split-chevron" data-action="model-dropdown" data-slug="${slugSicuro}" title="Scegli modello">▾</button>
                     </div>
                     <div class="btn-split btn-split-fix${fixDisabled ? ' disabled' : ''}" title="${fixTitle}">
-                        <button class="btn-split-main btn-fix-card" data-action="fix-single" data-slug="${r.slug}" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
-                        <button class="btn-split-chevron btn-fix-chevron" data-action="fix-model-dropdown" data-slug="${r.slug}" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
+                        <button class="btn-split-main btn-fix-card" data-action="fix-single" data-slug="${slugSicuro}" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
+                        <button class="btn-split-chevron btn-fix-chevron" data-action="fix-model-dropdown" data-slug="${slugSicuro}" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                     </div>
-                    <button class="btn btn-secondary btn-sm btn-edit-recipe" data-action="open-editor" data-slug="${r.slug}" data-cat-dir="${catDir}" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
+                    <button class="btn btn-secondary btn-sm btn-edit-recipe" data-action="open-editor" data-slug="${slugSicuro}" data-cat-dir="${catDirSicura}" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
                 </div>
             </div>
         </div>`;
@@ -353,39 +371,47 @@ function renderRecipeRow(r) {
     const fixTitle = !hasReport ? 'Esegui prima l\'analisi qualità' : isFixed ? 'Già fixata' : 'Fix AI';
     const catDir = r.categoryDir || CATEGORY_DIR_MAP[r.category] || (r.category||'').toLowerCase();
 
+    // Stesso motivo delle schede: il contenuto arriva dal JSON della ricetta.
+    const titoloSicuro = escapeHtml(title);
+    const catSicura = escapeHtml(cat);
+    const slugSicuro = escapeHtml(r.slug);
+    const imgSicura = escapeHtml(img);
+    const urlSicuro = escapeHtml(recipeUrl);
+    const catDirSicura = escapeHtml(catDir);
+
     return `
-        <div class="recipe-row${isSelected ? ' selected' : ''}" data-slug="${r.slug}" data-category="${cat}" data-action="toggle-select">
+        <div class="recipe-row${isSelected ? ' selected' : ''}" data-slug="${slugSicuro}" data-category="${catSicura}" data-action="toggle-select">
             <div class="recipe-row-info">
                 <input type="checkbox" class="recipe-checkbox" ${isSelected ? 'checked' : ''}
-                    data-action="toggle-checkbox" data-slug="${r.slug}">
-                ${img ? `<img class="recipe-row-thumb" src="${img}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<div class="recipe-row-thumb-empty"></div>'}
-                <span class="recipe-row-title">${title}</span>
+                    data-action="toggle-checkbox" data-slug="${slugSicuro}">
+                ${img ? `<img class="recipe-row-thumb" src="${imgSicura}" alt="" loading="lazy" onerror="this.style.display='none'">` : '<div class="recipe-row-thumb-empty"></div>'}
+                <span class="recipe-row-title">${titoloSicuro}</span>
             </div>
-            <span class="recipe-row-cat clickable" style="--cat-color:${catColor}" 
-                data-action="show-category-dropdown" data-slug="${r.slug}" data-current-cat="${cat}"><i data-lucide="${catIcon}"></i> ${cat}</span>
+            <span class="recipe-row-cat clickable" style="--cat-color:${catColor}"
+                data-action="show-category-dropdown" data-slug="${slugSicuro}" data-current-cat="${catSicura}"><i data-lucide="${catIcon}"></i> ${catSicura}</span>
             <div class="recipe-row-badges">
                 ${getAiBadge(r._generatedBy)}
                 ${getQualityBadge(r.slug) ? `<span class="recipe-row-quality">${getQualityBadge(r.slug)}</span>` : ''}
             </div>
-            <span class="recipe-row-hydration">${r.hydration || '—'}</span>
-            <span class="recipe-row-time">${r.time || '—'}</span>
+            <span class="recipe-row-hydration">${r.hydration ? escapeHtml(r.hydration) : '—'}</span>
+            <span class="recipe-row-time">${r.time ? escapeHtml(r.time) : '—'}</span>
             <span class="recipe-row-date">${r._createdAt ? formatCreatedAt(r._createdAt) : '—'}</span>
             <div class="recipe-row-actions" data-action="stop-only">
                 <div class="btn-split" title="Cambia immagine">
-                    <button class="btn-split-main" data-action="refresh-image" data-slug="${r.slug}"><i data-lucide="image"></i></button>
-                    <button class="btn-split-chevron" data-action="image-generate-dropdown" data-slug="${r.slug}" data-cat="${cat}">▾</button>
+                    <button class="btn-split-main" data-action="refresh-image" data-slug="${slugSicuro}"><i data-lucide="image"></i></button>
+                    <button class="btn-split-chevron" data-action="image-generate-dropdown" data-slug="${slugSicuro}" data-cat="${catSicura}">▾</button>
                 </div>
                 <div class="btn-split" title="Analisi Qualità">
-                    <button class="btn-split-main" data-action="qualita" data-slug="${r.slug}" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
-                    <button class="btn-split-chevron" data-action="model-dropdown" data-slug="${r.slug}" title="Scegli modello">▾</button>
+                    <button class="btn-split-main" data-action="qualita" data-slug="${slugSicuro}" title="Analisi Qualità (${getSelectedGeminiModel()})"><i data-lucide="shield-check"></i></button>
+                    <button class="btn-split-chevron" data-action="model-dropdown" data-slug="${slugSicuro}" title="Scegli modello">▾</button>
                 </div>
                 <div class="btn-split btn-split-fix${fixDisabled ? ' disabled' : ''}" title="${fixTitle}">
-                    <button class="btn-split-main btn-fix-card" data-action="fix-single" data-slug="${r.slug}" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
-                    <button class="btn-split-chevron btn-fix-chevron" data-action="fix-model-dropdown" data-slug="${r.slug}" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
+                    <button class="btn-split-main btn-fix-card" data-action="fix-single" data-slug="${slugSicuro}" title="Fix AI (${getSelectedGeminiModel()})" ${fixDisabled ? 'disabled' : ''}><i data-lucide="wrench"></i></button>
+                    <button class="btn-split-chevron btn-fix-chevron" data-action="fix-model-dropdown" data-slug="${slugSicuro}" title="Scegli modello ri-validazione" ${fixDisabled ? 'disabled' : ''}>▾</button>
                 </div>
-                <button class="btn btn-secondary btn-sm btn-edit-recipe" data-action="open-editor" data-slug="${r.slug}" data-cat-dir="${catDir}" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
-                <a class="btn btn-secondary btn-sm" href="${recipeUrl}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
-                <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" data-action="elimina" data-slug="${r.slug}" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
+                <button class="btn btn-secondary btn-sm btn-edit-recipe" data-action="open-editor" data-slug="${slugSicuro}" data-cat-dir="${catDirSicura}" title="Modifica ricetta"><i data-lucide="pencil"></i></button>
+                <a class="btn btn-secondary btn-sm" href="${urlSicuro}" target="_blank" title="Apri nel sito"><i data-lucide="external-link"></i></a>
+                <button class="btn btn-secondary btn-sm btn-danger-subtle recipe-row-delete" data-action="elimina" data-slug="${slugSicuro}" title="Elimina ricetta"><i data-lucide="trash-2"></i></button>
             </div>
         </div>`;
 }
@@ -598,10 +624,11 @@ export function showCategoryDropdown(slug, currentCategory, anchorEl) {
             const icon = CATEGORY_ICONS[cat] || 'folder';
             const color = CATEGORY_COLORS[cat] || '#888';
             const isCurrent = cat === currentCategory;
-            return `<button class="cat-dropdown-item${isCurrent ? ' current' : ''}" 
-                data-cat="${cat}" style="--cat-color:${color}" 
+            const catSicura = escapeHtml(cat);
+            return `<button class="cat-dropdown-item${isCurrent ? ' current' : ''}"
+                data-cat="${catSicura}" style="--cat-color:${color}"
                 ${isCurrent ? 'disabled' : ''}>
-                <i data-lucide="${icon}"></i> ${cat}${isCurrent ? ' ✓' : ''}
+                <i data-lucide="${icon}"></i> ${catSicura}${isCurrent ? ' ✓' : ''}
             </button>`;
         }).join('') + `
         <div class="cat-dropdown-divider"></div>
@@ -616,7 +643,7 @@ export function showCategoryDropdown(slug, currentCategory, anchorEl) {
         </div>
         <div class="cat-dropdown-divider"></div>
         <button class="cat-dropdown-item cat-dropdown-delete-btn" data-action="delete-category">
-            <i data-lucide="trash-2"></i> Elimina "${currentCategory}"...
+            <i data-lucide="trash-2"></i> Elimina "${escapeHtml(currentCategory)}"...
         </button>`;
 
     document.body.appendChild(dd);
@@ -863,6 +890,12 @@ export function initRecipeFilters() {
 
     // Handle checkbox change events separately
     grid?.addEventListener('change', (e) => {
+        const selezionaTutte = e.target.closest('[data-action="toggle-select-all"]');
+        if (selezionaTutte) {
+            e.stopPropagation();
+            toggleSelectAll(selezionaTutte.checked);
+            return;
+        }
         const target = e.target.closest('[data-action="toggle-checkbox"]');
         if (target) {
             e.stopPropagation();

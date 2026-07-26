@@ -6,6 +6,7 @@
 
 import { showToast } from './toast.js';
 import { navigateToPanel } from './navigation.js';
+import { escapeHtml } from './escape.js';
 
 let currentSeoCategory = 'Pane';
 let seoLoading = false;
@@ -34,7 +35,7 @@ export async function loadSeoSuggestions(category, forceRefresh = false) {
         const data = await resp.json();
 
         if (!resp.ok) {
-            grid.innerHTML = `<div class="seo-loading"><p>❌ ${data.error || 'Errore di caricamento'}</p></div>`;
+            grid.innerHTML = `<div class="seo-loading"><p>❌ ${escapeHtml(data.error || 'Errore di caricamento')}</p></div>`;
             return;
         }
 
@@ -50,13 +51,13 @@ export async function loadSeoSuggestions(category, forceRefresh = false) {
         }
 
         if (suggestions.length === 0) {
-            grid.innerHTML = `<div class="seo-loading"><p>Nessun suggerimento trovato per "${category}"</p></div>`;
+            grid.innerHTML = `<div class="seo-loading"><p>Nessun suggerimento trovato per "${escapeHtml(category)}"</p></div>`;
             return;
         }
 
         renderSeoCards(grid, suggestions);
     } catch (err) {
-        grid.innerHTML = `<div class="seo-loading"><p>❌ ${err.message}</p></div>`;
+        grid.innerHTML = `<div class="seo-loading"><p>❌ ${escapeHtml(err.message)}</p></div>`;
     } finally {
         seoLoading = false;
     }
@@ -75,19 +76,19 @@ function renderSeoCards(container, suggestions) {
             <div class="seo-card ${s.alreadyCreated ? 'already-created' : ''}" data-keyword="${escapeHtml(s.keyword)}">
                 <div class="seo-card-header">
                     <div class="seo-card-keyword">${escapeHtml(s.keyword)}</div>
-                    <span class="seo-card-badge ${badgeClass}">${badgeText}</span>
+                    <span class="seo-card-badge ${badgeClass}">${escapeHtml(badgeText)}</span>
                 </div>
                 <div class="seo-card-popularity">
-                    <span>${volumeText}</span>
+                    <span>${escapeHtml(volumeText)}</span>
                     <div class="seo-popularity-bar">
-                        <div class="seo-popularity-fill ${fillClass}" style="width:${score}%"></div>
+                        <div class="seo-popularity-fill ${fillClass}" style="width:${Number(score) || 0}%"></div>
                     </div>
                 </div>
                 <div class="seo-card-footer">
-                    <span class="seo-card-source">${s.source || 'autocomplete'}</span>
+                    <span class="seo-card-source">${escapeHtml(s.source || 'autocomplete')}</span>
                     ${s.alreadyCreated
                         ? '<span class="seo-card-existing">Già nel Ricettario</span>'
-                        : `<button class="seo-gen-btn" data-action="generate-seo" data-keyword="${escapeHtml(s.keyword)}" data-category="${s.category}">
+                        : `<button class="seo-gen-btn" data-action="generate-seo" data-keyword="${escapeHtml(s.keyword)}" data-category="${escapeHtml(s.category)}">
                             🔥 Genera
                            </button>`
                     }
@@ -101,12 +102,6 @@ function renderSeoCards(container, suggestions) {
         const btn = e.target.closest('[data-action="generate-seo"]');
         if (btn) generateFromSeo(btn.dataset.keyword, btn.dataset.category);
     });
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 export async function generateFromSeo(keyword, category) {

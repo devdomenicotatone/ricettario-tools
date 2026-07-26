@@ -4,6 +4,8 @@
  * Visualizzazione report qualità in markdown.
  */
 
+import { escapeHtml } from './escape.js';
+
 export async function showQualityReport(slug) {
     const modal = document.getElementById('qualityModal');
     const body = document.getElementById('qualityModalBody');
@@ -11,7 +13,7 @@ export async function showQualityReport(slug) {
 
     modal.classList.add('active');
     body.innerHTML = '<div class="quality-loading">⏳ Caricamento report...</div>';
-    title.innerHTML = `<i data-lucide="shield-check" style="width:20px;height:20px;vertical-align:-3px;margin-right:6px"></i>Report Qualità: ${slug}`;
+    title.innerHTML = `<i data-lucide="shield-check" style="width:20px;height:20px;vertical-align:-3px;margin-right:6px"></i>Report Qualità: ${escapeHtml(slug)}`;
     if (window.lucide) lucide.createIcons();
 
     try {
@@ -19,13 +21,17 @@ export async function showQualityReport(slug) {
         const data = await resp.json();
 
         if (data.error) {
-            body.innerHTML = `<div class="quality-error">❌ ${data.error}</div>`;
+            body.innerHTML = `<div class="quality-error">❌ ${escapeHtml(data.error)}</div>`;
             return;
         }
 
-        body.innerHTML = `<div class="quality-report-content">${renderMarkdown(data.report)}</div>`;
+        // Il report lo scrive il modello a partire dalla ricetta analizzata: se cita
+        // verbatim un frammento HTML, va neutralizzato PRIMA delle sostituzioni
+        // markdown, altrimenti finisce eseguito. I marcatori usati dalle regex
+        // (#, **, -, |) non vengono toccati dall'escape, quindi h2/strong/li restano.
+        body.innerHTML = `<div class="quality-report-content">${renderMarkdown(escapeHtml(data.report))}</div>`;
     } catch (err) {
-        body.innerHTML = `<div class="quality-error">❌ Errore: ${err.message}</div>`;
+        body.innerHTML = `<div class="quality-error">❌ Errore: ${escapeHtml(err.message)}</div>`;
     }
 }
 
