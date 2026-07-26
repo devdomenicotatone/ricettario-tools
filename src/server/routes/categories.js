@@ -19,40 +19,114 @@ const BACKUP_DIR = resolve(__dirname, '..', '..', '..', 'data', 'backup-categori
 
 // ── Helper condivisi per riscrivere i registry (js/categories.js, js/emoji.js) ──
 
-/** Rende una stringa sicura dentro un literal JS con apici singoli (apostrofi italiani!). */
+/**
+ * Rende una stringa sicura dentro un literal JS con apici singoli.
+ * In italiano gli apostrofi sono ovunque ("Ricette d'Autore", "l'aglio"): senza
+ * questo escape il nome chiudeva la stringa a metà e js/categories.js del sito
+ * diventava JS non valido — cioè il sito intero smetteva di caricarsi.
+ * Si neutralizzano anche i terminatori di riga (`\r` da solo incluso), che
+ * spezzerebbero il literal su due righe.
+ */
 export function escJs(str) {
     return String(str ?? '')
         .replace(/\\/g, '\\\\')
         .replace(/'/g, "\\'")
-        .replace(/\r?\n/g, ' ');
+        .replace(/[\r\n\u2028\u2029]+/g, ' ');
 }
 
-/** Inserisce testo prima della chiusura di un blocco `export const NOME = ...`. */
+/**
+ * Regex che riconosce la dichiarazione `const NOME`, con o senza `export`.
+ * Non tutti i registry del sito esportano: `EMOJI_MAP` in js/emoji.js è un
+ * `const` interno al modulo, e cercare solo `export const` significava non
+ * trovarlo mai — e scrivere il file identico dichiarando "aggiornato".
+ */
+function reDichiarazione(constName) {
+    return new RegExp(`(?:export\\s+)?const\\s+${constName}\\b`);
+}
+
+/**
+ * Separa una riga nella parte di CODICE e nell'eventuale commento `// ...` di
+ * coda. Gli apici vengono seguiti, così un `//` dentro una stringa (un URL in
+ * `desc`) non viene scambiato per l'inizio di un commento.
+ */
+function spezzaCommento(riga) {
+    let apice = null;
+    for (let i = 0; i < riga.length; i++) {
+        const c = riga[i];
+        if (apice) {
+            if (c === '\\') i++;
+            else if (c === apice) apice = null;
+        } else if (c === "'" || c === '"' || c === '`') {
+            apice = c;
+        } else if (c === '/' && riga[i + 1] === '/') {
+            return { codice: riga.slice(0, i), commento: riga.slice(i) };
+        }
+    }
+    return { codice: riga, commento: '' };
+}
+
+/**
+ * Inserisce testo prima della chiusura di un blocco `const NOME = ...`.
+ * Se non trova il blocco LANCIA un errore invece di restituire il contenuto
+ * invariato: un ritorno silenzioso faceva scrivere il file identico e stampare
+ * "💾 aggiornato", cioè il caso peggiore — nessuna modifica e nessun avviso.
+ *
+ * La voce nuova va su una RIGA PROPRIA. Senza l'a-capo DAVANTI finiva incollata
+ * a quella precedente (`'tomato': 'tomato',  'fish': 'fish',`), e `removeLineFromBlock`
+ * cancella la riga intera: la rimozione successiva si portava via anche la chiave
+ * accanto. "Una voce per riga" è l'invariante su cui l'altro helper si basa.
+ *
+ * L'ultima voce deve inoltre chiudere con una virgola: `removeLineFromBlock`
+ * toglie quella dell'ultima riga, quindi un ciclo rimuovi → aggiungi produceva
+ * JS non valido. La virgola va messa in fondo al CODICE, non in fondo alla riga:
+ * su `'b': 'b'  // nota` appenderla alla riga la infilava dentro il commento, che
+ * se la mangiava — di nuovo JS non valido, su un file che nessuno rilegge prima
+ * di scriverlo. E l'ultima riga di codice non è per forza quella subito sopra la
+ * chiusura: in mezzo possono esserci righe vuote o di solo commento.
+ */
 export function insertBeforeBlockClose(content, constName, closingStr, insertion) {
-    const declIdx = content.indexOf(`export const ${constName}`);
-    if (declIdx === -1) return content;
-    const closeIdx = content.indexOf(closingStr, declIdx);
-    if (closeIdx === -1) return content;
-    return content.slice(0, closeIdx) + insertion + '\n' + content.slice(closeIdx);
+    const decl = reDichiarazione(constName).exec(content);
+    if (!decl) throw new Error(`dichiarazione di ${constName} non trovata`);
+    const closeIdx = content.indexOf(closingStr, decl.index);
+    if (closeIdx === -1) throw new Error(`chiusura del blocco ${constName} non trovata`);
+
+    const righe = content.slice(0, closeIdx).split('\n');
+    let i = righe.length - 1;
+    while (i >= 0 && spezzaCommento(righe[i]).codice.trim() === '') i--;
+    if (i >= 0) {
+        const { codice, commento } = spezzaCommento(righe[i]);
+        // Niente virgola dopo `{`/`[` (blocco vuoto) o dopo una già presente.
+        if (!/[,[{(]$/.test(codice.trim())) {
+            const spazi = codice.slice(codice.trimEnd().length);
+            righe[i] = commento
+                ? `${codice.trimEnd()},${spazi}${commento}`
+                : `${codice.trimEnd()},`;
+        }
+    }
+    return righe.join('\n') + '\n' + insertion + content.slice(closeIdx);
 }
 
-/** Rimuove la riga che contiene `pattern` dentro un blocco oggetto (una voce per riga). */
+/**
+ * Rimuove la riga che contiene `pattern` dentro un blocco oggetto (una voce per riga).
+ * Come sopra: se non c'è niente da rimuovere lancia, non finge.
+ */
 export function removeLineFromBlock(content, constName, pattern) {
     const lines = content.split('\n');
-    const declIdx = lines.findIndex(l => l.includes(`export const ${constName}`));
-    if (declIdx === -1) return content;
+    const re = reDichiarazione(constName);
+    const declIdx = lines.findIndex(l => re.test(l));
+    if (declIdx === -1) throw new Error(`dichiarazione di ${constName} non trovata`);
     let closeIdx = -1;
     for (let i = declIdx + 1; i < lines.length; i++) {
         if (lines[i].match(/^(};|];)/)) { closeIdx = i; break; }
     }
-    if (closeIdx === -1) return content;
+    if (closeIdx === -1) throw new Error(`chiusura del blocco ${constName} non trovata`);
+    let rigaTrovata = -1;
     for (let i = declIdx + 1; i < closeIdx; i++) {
-        if (lines[i].includes(pattern)) {
-            lines.splice(i, 1);
-            closeIdx--;
-            break;
-        }
+        if (lines[i].includes(pattern)) { rigaTrovata = i; break; }
     }
+    if (rigaTrovata === -1) throw new Error(`nessuna riga con "${pattern}" dentro ${constName}`);
+    lines.splice(rigaTrovata, 1);
+    closeIdx--;
     if (closeIdx > 0 && lines[closeIdx - 1]) {
         lines[closeIdx - 1] = lines[closeIdx - 1].replace(/,(\s*)$/, '$1');
     }
@@ -65,21 +139,25 @@ export function removeLineFromBlock(content, constName, pattern) {
  * "per riga" si cancellavano tutte e nove le categorie insieme.
  */
 export function removeKeyFromArrayBlock(content, constName, key) {
-    const declIdx = content.indexOf(`export const ${constName}`);
-    if (declIdx === -1) return content;
-    const openIdx = content.indexOf('[', declIdx);
+    const decl = reDichiarazione(constName).exec(content);
+    if (!decl) throw new Error(`dichiarazione di ${constName} non trovata`);
+    const openIdx = content.indexOf('[', decl.index);
     const closeIdx = content.indexOf(']', openIdx);
-    if (openIdx === -1 || closeIdx === -1) return content;
+    if (openIdx === -1 || closeIdx === -1) throw new Error(`chiusura del blocco ${constName} non trovata`);
 
     const voci = content.slice(openIdx + 1, closeIdx)
         .split(',')
         .map(s => s.trim())
         .filter(Boolean);
     const rimaste = voci.filter(v => v.replace(/['"]/g, '') !== key);
-    if (rimaste.length === voci.length) return content;
+    if (rimaste.length === voci.length) throw new Error(`"${key}" non è presente in ${constName}`);
 
+    // Array svuotato: va emesso `[]`, non `[\n  ,\n]`. Quella virgola solitaria
+    // produce un array SPARSO di lunghezza 1, quindi togliere l'ULTIMA categoria
+    // faceva scattare la rete di sicurezza con «ordine da 1 a 1» — un messaggio
+    // che non nomina la causa vera.
     return content.slice(0, openIdx + 1)
-        + `\n  ${rimaste.join(', ')},\n`
+        + (rimaste.length ? `\n  ${rimaste.join(', ')},\n` : '')
         + content.slice(closeIdx);
 }
 
@@ -93,6 +171,28 @@ export async function leggiRegistry(contenuto) {
     const url = 'data:text/javascript;base64,' + Buffer.from(contenuto, 'utf-8').toString('base64');
     const mod = await import(url);
     return { CATEGORIES: mod.CATEGORIES || {}, CATEGORY_ORDER: mod.CATEGORY_ORDER || [] };
+}
+
+/**
+ * Stessa rete di sicurezza per js/emoji.js, l'altro file del sito che queste
+ * rotte riscrivono. Non si può valutare intero come fa `leggiRegistry`: importa
+ * `./router.js`, `./icons.js` e `./categories.js`, specificatori relativi che da
+ * un `data:` URL non si risolvono. Si estrae quindi il solo blocco
+ * `const EMOJI_MAP = { ... };` — un oggetto di sole stringhe — e si valuta quello.
+ * Se la riscrittura ha prodotto JS non valido, l'import lancia PRIMA della
+ * scrittura: senza, un emoji.js rotto manda giù la SPA del sito intera.
+ */
+export async function leggiEmojiMap(contenuto) {
+    const decl = reDichiarazione('EMOJI_MAP').exec(contenuto);
+    if (!decl) throw new Error('dichiarazione di EMOJI_MAP non trovata');
+    const closeIdx = contenuto.indexOf('\n};', decl.index);
+    if (closeIdx === -1) throw new Error('chiusura del blocco EMOJI_MAP non trovata');
+
+    const blocco = contenuto.slice(decl.index, closeIdx + 3).replace(/^export\s+/, '');
+    const url = 'data:text/javascript;base64,'
+        + Buffer.from(`export ${blocco}`, 'utf-8').toString('base64');
+    const mod = await import(url);
+    return mod.EMOJI_MAP || {};
 }
 
 export function setupCategoryRoutes(app, { getRicettarioPath, nextJobId, createJobContext, withOutputCapture }) {
@@ -277,6 +377,21 @@ REGOLE:
                     };
                 }
 
+                // Lo slug arriva dal JSON del modello e finisce in un percorso su
+                // disco, in un URL e (via escJs) nel sorgente JS del sito: `escJs`
+                // lo rende innocuo solo dentro il literal. Uno slug tipo
+                // `../../js/categories` scriverebbe il PNG fuori dalla cartella
+                // emoji del sito, quindi qui vale la stessa regola dello slug
+                // categoria. Se non passa si ripiega su fork-and-knife — anche la
+                // cartella, altrimenti scaricheremmo un'emoji diversa SOPRA il
+                // fork-and-knife.png che il sito già usa.
+                if (!/^[a-z0-9-]{1,60}$/.test(String(metadata.fluentEmojiSlug ?? ''))
+                    || !String(metadata.fluentEmojiFolder ?? '').trim()) {
+                    ctx.log(`   ⚠️ Metadati emoji non validi ("${metadata.fluentEmojiSlug}"), uso fork-and-knife`);
+                    metadata.fluentEmojiFolder = 'Fork and knife';
+                    metadata.fluentEmojiSlug = 'fork-and-knife';
+                }
+
                 // ── 2. Download emoji Fluent 3D da GitHub ──
                 const emojiSlug = metadata.fluentEmojiSlug;
                 const emojiFileName = metadata.fluentEmojiFolder.toLowerCase().replace(/\s+/g, '_');
@@ -336,7 +451,7 @@ REGOLE:
                 const catEntry = `  ${catKey}: { name: '${escJs(categoryName)}', dir: '${escJs(slug)}', emoji: '${escJs(metadata.fluentEmojiSlug)}', unicode: '${escJs(metadata.unicodeEmoji)}', title: '${escJs(metadata.title)}', desc: '${escJs(metadata.description)}' },`;
 
                 let catContent = insertBeforeBlockClose(catContentPrima, 'CATEGORIES', '\n};', catEntry);
-                catContent = insertBeforeBlockClose(catContent, 'CATEGORY_ORDER', '\n];', ` '${catKey}',`);
+                catContent = insertBeforeBlockClose(catContent, 'CATEGORY_ORDER', '\n];', `  '${catKey}',`);
 
                 // Rete di sicurezza: valuta il risultato PRIMA di scriverlo su disco.
                 const regPrima = await leggiRegistry(catContentPrima);
@@ -360,13 +475,38 @@ REGOLE:
                 CATEGORIES_DATA[catKey] = { emoji: metadata.unicodeEmoji, label: categoryName, order: nextOrder };
 
                 // ── 5. Aggiorna emoji.js (frontend SPA) — EMOJI_MAP ──
+                // Passo secondario: se fallisce non annulliamo la categoria appena creata,
+                // ma lo diciamo. Prima l'errore era invisibile — EMOJI_MAP non è esportata,
+                // l'inserimento non avveniva mai e il file veniva riscritto identico con
+                // sopra scritto "💾 emoji.js aggiornato".
                 if (emojiDownloaded) {
                     const emojiJsPath = resolve(ricettarioPath, 'js', 'emoji.js');
-                    let emojiContent = readFileSync(emojiJsPath, 'utf-8');
-                    emojiContent = insertBeforeBlockClose(emojiContent, 'EMOJI_MAP',
-                        '\n};', `  '${metadata.fluentEmojiSlug}': '${metadata.fluentEmojiSlug}',`);
-                    writeFileSync(emojiJsPath, emojiContent, 'utf-8');
-                    ctx.log(`💾 emoji.js aggiornato`);
+                    const emojiKey = escJs(metadata.fluentEmojiSlug);
+                    try {
+                        const emojiPrima = readFileSync(emojiJsPath, 'utf-8');
+                        if (emojiPrima.includes(`'${emojiKey}':`)) {
+                            ctx.log(`ℹ️ emoji.js invariato: "${emojiKey}" è già in EMOJI_MAP`);
+                        } else {
+                            const emojiDopo = insertBeforeBlockClose(emojiPrima, 'EMOJI_MAP',
+                                '\n};', `  '${emojiKey}': '${emojiKey}',`);
+                            if (emojiDopo === emojiPrima) throw new Error('contenuto invariato');
+                            // Rete di sicurezza, come per js/categories.js: valuta il
+                            // risultato PRIMA di scriverlo su disco.
+                            const mapPrima = await leggiEmojiMap(emojiPrima);
+                            const mapDopo = await leggiEmojiMap(emojiDopo);
+                            if (Object.keys(mapDopo).length !== Object.keys(mapPrima).length + 1
+                                || !mapDopo[emojiKey]) {
+                                throw new Error(
+                                    `riscrittura incoerente (da ${Object.keys(mapPrima).length} a ` +
+                                    `${Object.keys(mapDopo).length} voci). Non ho scritto niente.`
+                                );
+                            }
+                            writeFileSync(emojiJsPath, emojiDopo, 'utf-8');
+                            ctx.log(`💾 emoji.js aggiornato ('${emojiKey}' aggiunta a EMOJI_MAP)`);
+                        }
+                    } catch (emojiErr) {
+                        ctx.log(`⚠️ emoji.js NON aggiornato: ${emojiErr.message}`);
+                    }
                 }
 
                 // ── 6. Sync cards ──
@@ -542,17 +682,42 @@ REGOLE:
                 ctx.log(`💾 js/categories.js del sito aggiornato (${Object.keys(regDopo.CATEGORIES).length} categorie rimaste)`);
 
                 // ── 6. Aggiorna emoji.js se l'emoji era stata aggiunta ──
+                // La chiave di EMOJI_MAP è lo slug Fluent ('baguette-bread'), non l'emoji
+                // unicode: CATEGORIES_DATA.emoji contiene l'unicode, quindi lo slug si legge
+                // dal registro del sito com'era PRIMA della rimozione.
                 const emojiJsPath = resolve(ricettarioPath, 'js', 'emoji.js');
-                if (existsSync(emojiJsPath)) {
-                    const catEmoji = catData?.emoji;
-                    if (catEmoji) {
-                        // Leggi categories.js per controllare che nessun'altra categoria usi la stessa emoji
-                        const freshCatContent = readFileSync(categoriesPath, 'utf-8');
-                        if (!freshCatContent.includes(`'${catEmoji}'`)) {
-                            let emojiContent = readFileSync(emojiJsPath, 'utf-8');
-                            emojiContent = removeLineFromBlock(emojiContent, 'EMOJI_MAP', `'${catEmoji}'`);
-                            writeFileSync(emojiJsPath, emojiContent, 'utf-8');
-                            ctx.log(`💾 emoji.js aggiornato (emoji ${catEmoji} rimossa)`);
+                const fluentSlug = regPrima.CATEGORIES[catKey]?.emoji;
+                if (existsSync(emojiJsPath) && fluentSlug) {
+                    // Nessun'altra categoria deve usare lo stesso slug Fluent. La
+                    // domanda si fa al registry GIÀ RILETTO, non al testo del file:
+                    // cercare la sottostringa `'baguette-bread'` in js/categories.js
+                    // pescava anche il commento JSDoc di CATEGORY_EMOJI_MAP
+                    // (`Es: { Pane: 'baguette-bread', Pizza: 'pizza', ... }`), quindi
+                    // per `pane` e `pizza` il job dichiarava «è usata anche da
+                    // un'altra categoria» — falso — e non toccava emoji.js.
+                    const ancoraUsata = Object.values(regDopo.CATEGORIES)
+                        .some(c => c.emoji === fluentSlug);
+                    if (ancoraUsata) {
+                        ctx.log(`ℹ️ emoji.js invariato: "${fluentSlug}" è usata anche da un'altra categoria`);
+                    } else {
+                        try {
+                            const emojiPrima = readFileSync(emojiJsPath, 'utf-8');
+                            const emojiDopo = removeLineFromBlock(emojiPrima, 'EMOJI_MAP', `'${fluentSlug}':`);
+                            if (emojiDopo === emojiPrima) throw new Error('contenuto invariato');
+                            // Rete di sicurezza, come per js/categories.js.
+                            const mapPrima = await leggiEmojiMap(emojiPrima);
+                            const mapDopo = await leggiEmojiMap(emojiDopo);
+                            if (Object.keys(mapDopo).length !== Object.keys(mapPrima).length - 1
+                                || mapDopo[fluentSlug]) {
+                                throw new Error(
+                                    `riscrittura incoerente (da ${Object.keys(mapPrima).length} a ` +
+                                    `${Object.keys(mapDopo).length} voci). Non ho scritto niente.`
+                                );
+                            }
+                            writeFileSync(emojiJsPath, emojiDopo, 'utf-8');
+                            ctx.log(`💾 emoji.js aggiornato (emoji ${fluentSlug} rimossa)`);
+                        } catch (emojiErr) {
+                            ctx.log(`⚠️ emoji.js NON aggiornato: ${emojiErr.message}`);
                         }
                     }
                 }

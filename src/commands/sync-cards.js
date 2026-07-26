@@ -35,6 +35,7 @@ import { promisify } from 'util';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { log } from '../utils/logger.js';
+import { conLockFile } from '../server/routes/_helpers.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -62,18 +63,43 @@ export async function syncCards(args = {}) {
         throw new Error(`build-recipes.js non trovato in ${generatore}`);
     }
 
-    try {
-        const { stdout, stderr } = await execFileAsync(process.execPath, [generatore], {
-            cwd: ricettarioPath,
-            maxBuffer: 10 * 1024 * 1024,
-        });
-        stampa(stdout, 'info');
-        stampa(stderr, 'warn'); // i warning non bloccano: categorie vuote, description mancanti
-        log.info(`📄 ${resolve(ricettarioPath, 'public', 'recipes.json')}`);
-    } catch (err) {
-        // build-recipes.js esce con 1 e stampa gli errori quando i dati sono incoerenti.
-        stampa(err.stdout, 'info');
-        stampa(err.stderr, 'error');
-        throw new Error('recipes.json NON rigenerato: il generatore del sito ha trovato dati incoerenti (vedi sopra)');
-    }
+    // Nove rotte della dashboard chiamano syncCards, e ognuna lancia il
+    // generatore del sito che riscrive public/recipes.json per intero. Due job
+    // in parallelo (un salvataggio dall'editor mentre scarica un'immagine, per
+    // dire) si sovrascriverebbero a vicenda, e il secondo generatore leggerebbe
+    // le ricette mentre il primo le sta ancora toccando. Il lock è sul file
+    // prodotto: le esecuzioni si accodano invece di accavallarsi. `resolve`
+    // rende la chiave stabile fra percorso relativo e assoluto; delle maiuscole
+    // (`--output Ricettario` contro `--output ricettario`, indistinguibili per
+    // il filesystem di Windows) si occupa conLockFile.
+    const indice = resolve(ricettarioPath, 'public', 'recipes.json');
+
+    // Nessun `timeout` sull'esecuzione, di proposito. Un tetto di tempo qui non
+    // sarebbe gratis: `execFile` interrompe il figlio con TerminateProcess, e su
+    // Windows anche `SIGTERM` è una terminazione secca — verificato, un handler
+    // SIGTERM nel figlio non è mai arrivato a girare in 6 prove su 6 — quindi il
+    // generatore non avrebbe modo di chiudere quello che sta scrivendo. E quello
+    // che sta scrivendo è public/recipes.json, con una writeFileSync diretta
+    // (Ricettario/scripts/build-recipes.js:165), che al giro successivo viene
+    // riletto per recuperare le date `_createdAt` (riga 38): un indice lasciato a
+    // metà lì non si nota subito. Interromperlo per difendersi da un generatore
+    // impiantato che non si è mai visto è uno scambio in perdita. Il lock si
+    // libera comunque nel `finally` di conLockFile, appena l'esecuzione termina o
+    // fallisce.
+    await conLockFile(indice, async () => {
+        try {
+            const { stdout, stderr } = await execFileAsync(process.execPath, [generatore], {
+                cwd: ricettarioPath,
+                maxBuffer: 10 * 1024 * 1024,
+            });
+            stampa(stdout, 'info');
+            stampa(stderr, 'warn'); // i warning non bloccano: categorie vuote, description mancanti
+            log.info(`📄 ${indice}`);
+        } catch (err) {
+            // build-recipes.js esce con 1 e stampa gli errori quando i dati sono incoerenti.
+            stampa(err.stdout, 'info');
+            stampa(err.stderr, 'error');
+            throw new Error('recipes.json NON rigenerato: il generatore del sito ha trovato dati incoerenti (vedi sopra)');
+        }
+    });
 }
