@@ -31,16 +31,22 @@
 > tre, nove, due e due copie divergenti. Se ti serve una di quelle logiche,
 > **importala**: è il difetto che questo checkup denunciava a ogni pagina.
 >
+> **Punto 10 chiuso del tutto (27/07).** Il default è invertito: se la ricetta
+> esiste, il comando **si ferma senza scrivere niente e senza spendere**, e dice
+> come procedere. Rimpiazzare vuole `--sovrascrivi` (con copia di sicurezza),
+> tenere entrambe vuole `--keepExisting` (salva `-v2`, che però finisce online).
+> In dashboard è una tendina sola con tre voci, presente in tutti e **quattro** i
+> flussi — non tre: "Scopri" passa da `/api/genera`, e `/api/testo` e
+> `/api/scopri` non leggevano affatto la scelta.
+>
+> **86 copie di sicurezza rimosse dal repo del sito (27/07).** Prima di
+> cancellarle: nessun codice le leggeva, 84 su 86 erano identiche o più povere
+> della ricetta viva, e le 2 orfane erano versioni precedenti di ricette
+> rinominate (le attuali sono più ricche). Erano tracciate, quindi restano nella
+> storia git. Gli 83 `.qualita.md` e i 68 `.validazione.md` **non** sono backup e
+> restano: `routes/quality.js` ci pesca il report che la dashboard mostra.
+>
 > **RESTA APERTO, per scelta:**
-> - **Punto 10, seconda metà.** Il backup prima di rigenerare c'è; invertire il
->   default (`--sovrascrivi` obbligatorio) no: oggi i flussi "Da URL" e "Da
->   testo" non hanno modo di passare quel flag, quindi ogni rigenerazione
->   produrrebbe `slug-v2`, `slug-v3`… e ognuno finirebbe online. Serve prima il
->   flag nella CLI e l'interruttore nei tre flussi della dashboard.
-> - **86 file `.backup.json`/`.pre-edit.json` nel repo del sito.** Non vengono
->   più prodotti lì, ma i vecchi non sono stati cancellati: sono lavoro tuo, e
->   toglierli è una decisione da prendere guardandoli. Il sito li esclude già
->   (`build-recipes.js`), quindi non finiscono online.
 > - **Nessun lock fra processi distinti** (dashboard + CLI insieme). Dentro un
 >   processo gli indici sono protetti, fra due processi no. Rischio basso.
 > - **Nessun CI.** Richiede una decisione tua, non è un guasto.

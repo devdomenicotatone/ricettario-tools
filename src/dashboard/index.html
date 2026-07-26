@@ -145,8 +145,14 @@
                         <div class="toggle-group">
                             <label class="toggle"><input type="checkbox" id="gen-noimage"><span
                                     class="toggle-slider"></span> No immagine</label>
-                            <label class="toggle"><input type="checkbox" id="gen-keep"><span
-                                    class="toggle-slider"></span> Mantieni esistente</label>
+                        </div>
+                        <div class="model-selector">
+                            <label class="form-label-sm">Se la ricetta esiste già</label>
+                            <select class="form-select form-select-sm" id="gen-se-esiste">
+                                <option value="fermati">Fermati, non toccare niente</option>
+                                <option value="sovrascrivi">Sovrascrivi (con copia di sicurezza)</option>
+                                <option value="entrambe">Tieni entrambe (salva come -v2)</option>
+                            </select>
                         </div>
                         <div class="model-selector">
                             <label class="form-label-sm">Modello AI</label>
@@ -180,7 +186,15 @@
                             <option value="">Auto-detect</option>
                         </select>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row form-row-inline">
+                        <div class="model-selector">
+                            <label class="form-label-sm">Se la ricetta esiste già</label>
+                            <select class="form-select form-select-sm" id="url-se-esiste">
+                                <option value="fermati">Fermati, non toccare niente</option>
+                                <option value="sovrascrivi">Sovrascrivi (con copia di sicurezza)</option>
+                                <option value="entrambe">Tieni entrambe (salva come -v2)</option>
+                            </select>
+                        </div>
                         <div class="model-selector">
                             <label class="form-label-sm">Modello AI</label>
                             <select class="form-select form-select-sm ai-model-select" id="url-model">
@@ -213,7 +227,15 @@
                             <option value="">Auto-detect</option>
                         </select>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row form-row-inline">
+                        <div class="model-selector">
+                            <label class="form-label-sm">Se la ricetta esiste già</label>
+                            <select class="form-select form-select-sm" id="testo-se-esiste">
+                                <option value="fermati">Fermati, non toccare niente</option>
+                                <option value="sovrascrivi">Sovrascrivi (con copia di sicurezza)</option>
+                                <option value="entrambe">Tieni entrambe (salva come -v2)</option>
+                            </select>
+                        </div>
                         <div class="model-selector">
                             <label class="form-label-sm">Modello AI</label>
                             <select class="form-select form-select-sm ai-model-select" id="testo-model">
@@ -243,6 +265,16 @@
                         <div class="slider-group">
                             <input type="range" class="form-range" id="scopri-quante" min="1" max="10" value="5">
                             <span class="range-value" id="scopri-quante-val">5</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="model-selector">
+                            <label class="form-label-sm">Se la ricetta esiste già</label>
+                            <select class="form-select form-select-sm" id="scopri-se-esiste">
+                                <option value="fermati">Fermati, non toccare niente</option>
+                                <option value="sovrascrivi">Sovrascrivi (con copia di sicurezza)</option>
+                                <option value="entrambe">Tieni entrambe (salva come -v2)</option>
+                            </select>
                         </div>
                     </div>
                     <button class="btn btn-primary btn-lg" id="btn-run-scopri">

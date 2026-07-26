@@ -228,9 +228,23 @@ processate (`data/image-process-index.json`).
 | `--no-inject` | Salta l'inserimento diretto della card in `public/recipes.json` |
 | `--no-valida` (o `--no-validate`) | Salta il cross-check con le fonti |
 | `--no-enrich` | Salta l'arricchimento SerpAPI + Claude in `--trascrivi-immagini` |
-| `--keepExisting` | Non sovrascrive una ricetta già presente: la salva come `<slug>-v2` |
+| `--sovrascrivi` | Rimpiazza una ricetta già presente, salvandone prima una copia |
+| `--keepExisting` | Tiene entrambe: lascia quella che c'è e salva la nuova come `<slug>-v2` |
 | `--forza` | Ignora la cache di verifica |
 | `--output <path>` | Percorso del repo del sito, alternativo a `RICETTARIO_PATH` |
+
+> **Se la ricetta esiste già, di default non si tocca.** Il comando si ferma
+> senza scrivere niente e senza spendere, e ti dice come procedere. Devi
+> scegliere: `--sovrascrivi` per rimpiazzarla (con copia in
+> `data/backup-ricette/`) o `--keepExisting` per tenere entrambe le versioni.
+> In dashboard è la tendina «Se la ricetta esiste già», presente in tutti e
+> quattro i modi di creare una ricetta.
+>
+> Prima il default era l'opposto: rigenerare cancellava e riscriveva. Poi è
+> arrivata la copia di sicurezza, che però è un rimedio, non un permesso —
+> rimpiazzare lavoro già fatto è una decisione, e la prende chi lancia il
+> comando. Attenzione a `--keepExisting`: `<slug>-v2` **finisce online** come
+> tutte le altre, quindi serve per un confronto A/B breve, non per archiviare.
 
 > **`--no-valida` è l'unico modo per non spendere in validazione.** Il
 > cross-check chiama SerpAPI e Claude, e `--dry-run` **non** lo evita: salta

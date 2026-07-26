@@ -25,6 +25,29 @@ import {
 import { salvaCopiaSicurezza } from '../../utils/backup-ricette.js';
 import { liberaUrlDiRicetta } from '../../utils/indice-immagini.js';
 
+/**
+ * Traduce la scelta «se la ricetta esiste già» che arriva dal browser nei flag
+ * che `publisher.js` capisce.
+ *
+ * Un campo solo con tre valori, non due booleani: `sovrascrivi` e
+ * `keepExisting` sono alternative, e "entrambi veri" non vorrebbe dire niente.
+ * Il default è il valore assente, cioè «fermati»: se il browser non dice
+ * niente, non si rimpiazza nulla.
+ *
+ * `keepExisting` è ancora accettato perché una pagina della dashboard aperta da
+ * prima dell'aggiornamento continua a mandare quel campo, e ignorarlo
+ * cambierebbe in silenzio il comportamento che l'utente ha scelto.
+ *
+ * @param {object} [corpo] - `req.body`
+ * @returns {{sovrascrivi?: true, keepExisting?: true}}
+ */
+function flagSeEsiste(corpo = {}) {
+    const scelta = corpo.seEsiste || (corpo.keepExisting ? 'entrambe' : 'fermati');
+    if (scelta === 'sovrascrivi') return { sovrascrivi: true };
+    if (scelta === 'entrambe') return { keepExisting: true };
+    return {};
+}
+
 // ── Validazione di categoria e slug ──
 
 // La regola dello slug (kebab-case stretto: niente punti, niente barre, niente
@@ -619,7 +642,8 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
 
     // ── Genera da nome o url(s) ──
     app.post('/api/genera', async (req, res) => {
-        const { nome, url, urls, tipo, note, noImage, preview, aiModel, keepExisting } = req.body || {};
+        const { nome, url, urls, tipo, note, noImage, preview, aiModel } = req.body || {};
+        const seEsiste = flagSeEsiste(req.body);
 
         const isBatch = Array.isArray(urls) && urls.length > 0;
         const targetUrls = isBatch ? urls : (url ? [url] : []);
@@ -661,7 +685,7 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
                     if (note) args.note = note;
                     if (noImage) args['no-image'] = true;
                     if (aiModel) args.aiModel = aiModel;
-                    if (keepExisting) args.keepExisting = true;
+                    Object.assign(args, seEsiste);
                     await genera(args);
                 } else if (targetUrls.length > 0) {
                     if (isBatch) ctx.log(`🔄 Avvio batch scraping su ${targetUrls.length} URL...\n`);
@@ -671,7 +695,7 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
                         if (note) args.note = note;
                         if (noImage) args['no-image'] = true;
                         if (aiModel) args.aiModel = aiModel;
-                        if (keepExisting) args.keepExisting = true;
+                        Object.assign(args, seEsiste);
 
                         if (isBatch) ctx.log(`\n🔜 Processo: ${u}...`);
                         try {
@@ -720,6 +744,11 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
             const args = { testo: tmpFile };
             if (tipo) args.tipo = tipo;
             if (aiModel) args.aiModel = aiModel;
+            // Questa rotta non leggeva affatto la scelta «se esiste già»: la
+            // dashboard non la mandava e il server non l'avrebbe letta comunque,
+            // quindi "Da testo" rigenerava sopra una ricetta esistente senza che
+            // ci fosse modo di dire di no.
+            Object.assign(args, flagSeEsiste(req.body));
 
             await withOutputCapture(ctx, () => testo(args));
             ctx.end(true);
@@ -738,7 +767,11 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
 
         try {
             const { scopri } = await import('../../commands/scopri.js');
-            await withOutputCapture(ctx, () => scopri({ scopri: query, quante: String(quante || 5) }));
+            // `scopri` passa i propri args a `genera`, quindi la scelta arriva
+            // fino a publisher.js: era il quarto flusso, e nemmeno questo la
+            // leggeva.
+            const args = { scopri: query, quante: String(quante || 5), ...flagSeEsiste(req.body) };
+            await withOutputCapture(ctx, () => scopri(args));
             ctx.end(true);
         } catch (err) {
             ctx.error(`❌ Errore: ${err.message}`);

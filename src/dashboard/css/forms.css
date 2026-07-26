@@ -17,11 +17,21 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    /* Va a capo invece di sfondare. Finché la riga conteneva un selettore solo
+       non serviva; con due ("Se la ricetta esiste già" + "Modello AI") arrivava
+       a 980px dentro una card da 700, e la seconda tendina finiva mezza fuori. */
+    flex-wrap: wrap;
 }
 .model-selector {
     display: flex;
     align-items: center;
     gap: 8px;
+    /* Senza `min-width: 0` un flex item non scende sotto la larghezza del
+       proprio contenuto: la tendina resterebbe larga anche quando non ci sta. */
+    min-width: 0;
+}
+.model-selector .form-select {
+    min-width: 0;
 }
 .form-label-sm {
     font-size: 11px;

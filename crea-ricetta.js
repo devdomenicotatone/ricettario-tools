@@ -95,8 +95,14 @@ Flag:
                       Vale anche la forma --no-validate
   --no-enrich         Salta l'arricchimento SerpAPI + Claude in
                       --trascrivi-immagini (l'altra spesa, con un flag suo)
-  --keepExisting      Non sovrascrive una ricetta già presente: la salva
-                      accanto come <slug>-v2
+  --sovrascrivi       Rimpiazza una ricetta già presente (ne salva prima una
+                      copia in tools/data/backup-ricette/). Senza questo flag,
+                      se la ricetta esiste il comando si ferma senza scrivere
+                      niente e senza spendere: rimpiazzare lavoro già fatto è
+                      una decisione, non un default
+  --keepExisting      Tiene entrambe le versioni: lascia intatta quella che
+                      c'è e salva la nuova accanto come <slug>-v2.
+                      Attenzione: finiscono online tutte e due
   --forza             Forza ri-verifica (ignora cache)
 `);
 }

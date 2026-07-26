@@ -8,7 +8,7 @@
  */
 
 import { writeFileSync, readFileSync, copyFileSync, unlinkSync, mkdirSync, rmdirSync, readdirSync, existsSync } from 'fs';
-import { resolve, basename } from 'path';
+import { resolve, basename, relative } from 'path';
 import { exec } from 'child_process';
 import { createInterface } from 'readline';
 import { injectCard } from './injector.js';
@@ -395,6 +395,29 @@ export async function publishRecipe(recipe, args, options = {}) {
     const cartelleCreateOra = new Set();
     if (cartellaCreataOra) cartelleCreateOra.add(outputDir);
 
+    // ── Ricetta già presente: di default non si tocca ──
+    // Il default era "sovrascrivi", e rigenerare una ricetta la cancellava. Ora
+    // esiste una copia di sicurezza, ma una copia è un rimedio, non un
+    // permesso: rimpiazzare lavoro già fatto è una decisione, e la prende chi
+    // lancia il comando. Ci si ferma PRIMA della ricerca immagine, così
+    // l'invocazione non spende niente.
+    //
+    // Non scatta in dry-run (non scrive comunque, e lo scopo è proprio vedere
+    // il JSON di una ricetta che esiste), né con `skipJson` (il chiamante ha
+    // già dichiarato che non vuole scrivere il .json), né con `--keepExisting`,
+    // che salva come slug-v2 senza toccare l'originale.
+    //
+    // Truthy e non `=== true`: il parser di crea-ricetta.js prende il token
+    // successivo come valore, quindi `--sovrascrivi 1` arriva come stringa.
+    const sovrascrivi = !!args.sovrascrivi;
+    if (!dryRun && !skipJson && !sovrascrivi && !args.keepExisting && existsSync(jsonFile)) {
+        log.warn(`"${recipe.slug}" esiste già: non ho scritto niente.`);
+        log.info('   Per rimpiazzarla:    --sovrascrivi   (dashboard: "Sovrascrivi")');
+        log.info('   Per tenere entrambe: --keepExisting  (dashboard: "Tieni entrambe", salva come -v2)');
+        log.info(`   La ricetta attuale è intatta: ${relative(ricettarioPath, jsonFile)}`);
+        return { outputFile: null, jsonFile: null };
+    }
+
     // Ricalcolo dei percorsi dopo un cambio di categoria: tiene aggiornato
     // l'elenco delle cartelle create adesso e toglie subito quella che il
     // cambio ha appena abbandonato, se l'aveva creata questa esecuzione.
@@ -502,9 +525,9 @@ export async function publishRecipe(recipe, args, options = {}) {
             // dirlo all'utente: annullaScritturaJson continua a ricevere un percorso.
             const copiaPreGen = salvaCopiaPreGenerazione(jsonFile);
             backupFile = copiaPreGen ? copiaPreGen.percorso : null;
-            log.warn(`"${recipe.slug}" esisteva già e viene riscritta.`);
+            log.warn(`"${recipe.slug}" esisteva già e viene riscritta (--sovrascrivi).`);
             if (copiaPreGen) log.info(`🛟 Copia di sicurezza: tools/${copiaPreGen.percorsoRelativo}`);
-            log.info('   Per tenere entrambe le versioni: --keepExisting (dashboard: "Mantieni esistente").');
+            log.info('   Per tenere entrambe le versioni: --keepExisting (dashboard: "Tieni entrambe").');
 
             // Con --no-image la ricetta riscritta perderebbe l'URL della foto già
             // in uso, e l'indice anti-duplicati dimenticherebbe quella voce.

@@ -9,6 +9,25 @@ import { apiPost, navigateToPanel } from './navigation.js';
 import { appendTerminal } from './terminal.js';
 import { escapeHtml } from './escape.js';
 
+/**
+ * Legge la scelta «se la ricetta esiste già» dal pannello indicato.
+ *
+ * Tutti e quattro i flussi la mandano ora. Prima ce l'aveva solo "Genera da
+ * nome", con una casella "Mantieni esistente": gli altri tre rigeneravano sopra
+ * una ricetta esistente senza che ci fosse modo di dire di no, e "Da testo" e
+ * "Scopri" non venivano nemmeno letti dal server.
+ *
+ * Il ripiego è `fermati`, non `sovrascrivi`: se il controllo non c'è (pannello
+ * senza select, HTML più vecchio del codice) la scelta prudente è non toccare
+ * niente.
+ *
+ * @param {string} prefisso - `gen`, `url`, `testo` o `scopri`
+ * @returns {'fermati'|'sovrascrivi'|'entrambe'}
+ */
+function seEsiste(prefisso) {
+    return document.getElementById(`${prefisso}-se-esiste`)?.value || 'fermati';
+}
+
 export async function runGenera() {
     const btn = document.getElementById('btn-run-genera');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Avvio...'; lucide?.createIcons?.(); }
@@ -24,7 +43,7 @@ export async function runGenera() {
         tipo: document.getElementById('gen-tipo').value,
         note: document.getElementById('gen-note').value,
         noImage: document.getElementById('gen-noimage').checked,
-        keepExisting: document.getElementById('gen-keep').checked,
+        seEsiste: seEsiste('gen'),
         aiModel: document.getElementById('gen-model').value,
     });
     
@@ -40,6 +59,7 @@ export async function runUrl() {
     await apiPost('genera', {
         url,
         tipo: document.getElementById('url-tipo').value,
+        seEsiste: seEsiste('url'),
         aiModel: document.getElementById('url-model').value,
     });
 }
@@ -51,6 +71,7 @@ export async function runTesto() {
     await apiPost('testo', {
         text,
         tipo: document.getElementById('testo-tipo').value,
+        seEsiste: seEsiste('testo'),
         aiModel: document.getElementById('testo-model').value,
     });
 }
@@ -140,7 +161,9 @@ export async function generateSelectedScopri() {
     }
 
     try {
-        await apiPost('genera', { urls });
+        // Questo flusso passa da /api/genera (non da /api/scopri, che è la
+        // versione interattiva da riga di comando): la scelta va mandata qui.
+        await apiPost('genera', { urls, seEsiste: seEsiste('scopri') });
     } catch (e) {
         showToast('Errore in accodamento job: ' + e.message, 'error');
     } finally {
