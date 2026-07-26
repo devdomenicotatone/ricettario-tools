@@ -1,27 +1,52 @@
 # Checkup — Ricettario Tools Dashboard
 
-> **STATO — aggiornato 25/07/2026.** Rapporto di un checkup multiagentico:
-> 26 problemi confermati da un revisore indipendente, più 32 minori non verificati.
+> **STATO — aggiornato 27/07/2026. Il rapporto qui sotto è STORIA: quasi tutto
+> è chiuso.** Non usarlo come lista di lavoro, usalo per capire *perché* il
+> codice è fatto così adesso.
 >
-> **GIÀ CHIUSI — non rifarli** (commit `43d821a`, `7437a9f`, `8aa0766`, `97bf775`,
-> `5746a25`, `e4bc373`, `d622b10`):
-> **1, 2, 3, 4, 5, 6, 7, 11**, più le voci minori su `utils/api.js`
-> (finishReason Gemini, array troncato) e lo script `add-storage-backfill.js`,
-> spostato in `archive/` e reso innocuo.
+> **CHIUSI, tutti e 26 i punti numerati.** Prima (`43d821a`, `7437a9f`,
+> `8aa0766`, `97bf775`, `5746a25`, `e4bc373`, `d622b10`): 1, 2, 3, 4, 5, 6, 7,
+> 11. Poi, in due giri (`7f46aa5` → `846072d`): 8, 9, 10, 12, 13, 14, 15, 16,
+> 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, più tutte le voci della sezione
+> "Minori" tranne quelle elencate sotto.
 >
-> **ANCORA APERTI:** 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-> 24, 25, 26 — più tutte le voci della sezione "Minori, non verificati".
+> **Verificato eseguendo, non leggendo.** Il checkup originale ammetteva che
+> «tutto l'audit è statico, 8 dimensioni su 8 dichiarano di non aver eseguito
+> nulla». Adesso: server avviato davvero (bind su `127.0.0.1`, IP LAN
+> irraggiungibile; POST con `Origin` estranea → 403, POST urlencoded → 403,
+> WebSocket con `Origin` estranea o assente → 403, corpo JSON malformato → 400);
+> `--dry-run` misurato con `git status` prima e dopo; `npm run check` del sito
+> verde; crediti CC presenti nell'HTML **statico** di tutte e cinque le ricette.
 >
-> **Da guardare per primo:** il punto 13 (crediti Creative Commons). È l'unico le
-> cui conseguenze ricadono fuori: cinque ricette **già pubblicate** usano foto che
-> obbligano a citare autore e licenza. È anche l'unico che richiede di toccare
-> anche il repo del **sito**, non solo `tools/`.
+> **Il difetto peggiore non era in questa lista.** `src/commands/trascrivi.js`
+> salvava ogni ricetta trascritta in `ricette/pasta/`, la categoria che il sito
+> ha rinominato Primi: alla prima trascrizione `npm run check` del sito si
+> sarebbe fermato e non si sarebbe pubblicato più niente. Era il punto 5 in un
+> file che nessuno stava guardando. Lezione: **spartirsi il lavoro per file
+> lascia scoperto quello che sta fra i file.**
 >
-> **Mai coperto:** il checkup del sito (`../Ricettario`). Ha senso farlo ora che
-> le voci che ne sporcavano i dati dal lato dashboard sono chiuse.
+> **Le fonti uniche adesso esistono** (`7f46aa5`): l'indice foto, i percorsi
+> delle ricette, i backup e l'escape HTML hanno un modulo ciascuno in
+> `src/utils/` e `src/dashboard/modules/escape.js`. Prima erano rispettivamente
+> tre, nove, due e due copie divergenti. Se ti serve una di quelle logiche,
+> **importala**: è il difetto che questo checkup denunciava a ogni pagina.
 >
-> Nota: le voci 1-6 qui sotto sono nella sezione "Da sistemare subito" ma sono
-> **tutte già risolte**. La sezione è rimasta com'era per non falsare il rapporto.
+> **RESTA APERTO, per scelta:**
+> - **Punto 10, seconda metà.** Il backup prima di rigenerare c'è; invertire il
+>   default (`--sovrascrivi` obbligatorio) no: oggi i flussi "Da URL" e "Da
+>   testo" non hanno modo di passare quel flag, quindi ogni rigenerazione
+>   produrrebbe `slug-v2`, `slug-v3`… e ognuno finirebbe online. Serve prima il
+>   flag nella CLI e l'interruttore nei tre flussi della dashboard.
+> - **86 file `.backup.json`/`.pre-edit.json` nel repo del sito.** Non vengono
+>   più prodotti lì, ma i vecchi non sono stati cancellati: sono lavoro tuo, e
+>   toglierli è una decisione da prendere guardandoli. Il sito li esclude già
+>   (`build-recipes.js`), quindi non finiscono online.
+> - **Nessun lock fra processi distinti** (dashboard + CLI insieme). Dentro un
+>   processo gli indici sono protetti, fra due processi no. Rischio basso.
+> - **Nessun CI.** Richiede una decisione tua, non è un guasto.
+>
+> **Mai coperto:** un checkup del repo del **sito** (`../Ricettario`) con lo
+> stesso metodo. Ha senso ora che i dati non gli arrivano più sporchi da qui.
 
 Lo strumento è messo meglio di quanto la lista qui sotto faccia sembrare: la pipeline di generazione funziona, la dashboard è comoda, i job hanno un terminale in diretta, e il progetto ha già dentro di sé le soluzioni giuste (c'è una funzione di escape in `seo.js`, c'è un mutex, c'è un backup nell'editor) — solo che non sono state applicate ovunque. Il tema di fondo dei problemi è uno solo, ripetuto in forme diverse: **la dashboard e il sito si sono parlati per copia**. Ogni volta che `tools` scrive nel repo del sito, o si porta dietro una sua copia di un elenco che il sito ha già, prima o poi le due versioni divergono e il guasto salta fuori lontano dal punto in cui è nato — spesso con un messaggio d'errore che punta altrove. Il secondo tema, minore ma diffuso, è che lo strumento è stato scritto dando per scontato che i dati in ingresso siano puliti: testo dal web, risposte dei modelli AI, richieste dal browser, entrano senza controlli. Nessuno di questi problemi ha ancora fatto danni gravi, e quasi tutto è recuperabile con git — ma tre cose possono bloccare del tutto la pubblicazione del sito, e una fa perdere il tuo lavoro in silenzio.
 
