@@ -5,9 +5,10 @@
  * Usa SerpAPI per trovare fonti + scraping HTML per estrarre dati strutturati.
  */
 
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { resolve, basename } from 'path';
 import { callClaude, parseClaudeJson } from './utils/api.js';
+import { elencaRicetteJson } from './verify.js';
 
 // ── Configurazione ──────────────────────────────────────────────────
 
@@ -103,6 +104,21 @@ const BLOCKED_DOMAINS = [
 // ── 1. Ricerca fonti reali via SerpAPI (4x Google Search: IT+EN) ────
 
 /**
+ * Quante volte abbiamo davvero interrogato SerpAPI da quando gira il processo.
+ *
+ * Serve alla pausa anti-rate-limit di `validateAllRecipes`: aspettare due
+ * secondi ha senso solo dopo aver consumato quota, non dopo una ricetta che è
+ * fallita prima di chiamare (JSON illeggibile, `SERPAPI_KEY` mancante). Su un
+ * elenco di 80 ricette quelle pause a vuoto sono minuti di attesa per niente.
+ */
+let chiamateSerpApi = 0;
+
+/** Numero di query SerpAPI effettuate finora (solo lettura). */
+export function contatoreChiamateSerpApi() {
+    return chiamateSerpApi;
+}
+
+/**
  * Cerca fonti reali per una ricetta tramite SerpAPI
  * 4 query Google Search parallele con keyword strategiche diverse
  * per massimizzare la diversità di fonti con dati strutturati (JSON-LD)
@@ -163,6 +179,7 @@ async function serpSearch(apiKey, query, lang = 'it', country = 'it') {
     url.searchParams.set('gl', country);
     url.searchParams.set('engine', 'google');
 
+    chiamateSerpApi++;   // da qui in poi la quota è consumata, anche se la risposta non serve
     const res = await fetch(url);
     if (!res.ok) return [];
 
@@ -190,6 +207,7 @@ async function serpForumSearch(apiKey, query, lang = 'it', country = 'it') {
     url.searchParams.set('engine', 'google_forums');
 
     try {
+        chiamateSerpApi++;   // vale anche qui: la query parte, la quota si consuma
         const res = await fetch(url);
         if (!res.ok) return [];
 
@@ -755,134 +773,101 @@ export async function validateRecipe(recipe) {
     return { comparison, report };
 }
 
-// ── 6. Valida ricetta da file HTML ──────────────────────────────────
+// ── 6. Valida ricetta da file JSON ──────────────────────────────────
+
+// Qui viveva `parseRecipeHtml`: leggeva la ricetta da una pagina HTML del sito
+// (`<table class="ingredients-table">`, `basename(filePath, '.html')`) — un
+// formato che il sito non produce più da quando è una SPA, e che nessun file
+// del progetto chiamava più dopo il passaggio ai .json. Restava lì a suggerire
+// che esistesse un secondo modo di leggere una ricetta: due parser per lo
+// stesso lavoro, di cui uno già divergente. La lettura di una ricetta dal
+// disco è `parseRecipeJson`, qui sotto, e basta quella.
 
 /**
- * Estrae i dati di una ricetta da un file HTML generato
- * Supporta la struttura table.ingredients-table usata dal generatore
+ * Estrae i dati di una ricetta dal suo JSON (formato SPA).
+ *
+ * È l'unico modo di leggere una ricetta dal disco: il confronto con le fonti
+ * riceve sempre questa forma, qualunque sia il chiamante.
  */
-export function parseRecipeHtml(filePath) {
-    const html = readFileSync(filePath, 'utf-8');
+export function parseRecipeJson(filePath) {
+    const data = JSON.parse(readFileSync(filePath, 'utf-8'));
 
-    // ── Titolo ──
-    const titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-    const title = titleMatch ? titleMatch[1].trim() : basename(filePath, '.html');
-
-    // ── Ingredienti: strategia multi-livello ──
+    // ── Ingredienti: solo i nomi, il confronto lavora per parole chiave ──
     const ingredients = [];
-
-    // 1️⃣ Parser primario: <table class="ingredients-table"> → <tr> con <td> nome + <td data-base> qty
-    const tableMatch = html.match(/<table[^>]*class="[^"]*ingredients-table[^"]*"[^>]*>([\s\S]*?)<\/table>/i);
-    if (tableMatch) {
-        const tableHtml = tableMatch[1];
-        const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-        let row;
-        while ((row = rowRegex.exec(tableHtml)) !== null) {
-            const cells = [];
-            const cellRegex = /<td[^>]*(?:data-base="(\d+[\.,]?\d*)")?[^>]*>([\s\S]*?)<\/td>/gi;
-            let cell;
-            while ((cell = cellRegex.exec(row[1])) !== null) {
-                cells.push({
-                    dataBase: cell[1] || '',
-                    text: cell[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
-                });
-            }
-            if (cells.length >= 2) {
-                const name = cells[0].text.replace(/\(.*?\)/g, '').trim(); // rimuovi note tra parentesi
-                const qty = cells[1].text.trim(); // es. "400g"
-                if (name && qty) {
-                    ingredients.push(`${qty} ${name}`);
-                }
-            }
+    for (const gruppo of data.ingredientGroups || []) {
+        for (const item of gruppo.items || []) {
+            if (item?.name) ingredients.push(item.name);
         }
     }
-
-    // 2️⃣ Fallback: <li> con class ingredient
-    if (ingredients.length === 0) {
-        const ingRegex = /<li[^>]*class="[^"]*ingredient[^"]*"[^>]*>[\s\S]*?<span[^>]*class="[^"]*ingredient-name[^"]*"[^>]*>([^<]+)<\/span>/gi;
-        let m;
-        while ((m = ingRegex.exec(html)) !== null) {
-            ingredients.push(m[1].trim());
-        }
+    for (const item of data.ingredients || []) {
+        if (typeof item === 'string') ingredients.push(item);
+        else if (item?.name) ingredients.push(item.name);
+    }
+    for (const s of data.suspensions || []) {
+        if (s?.name) ingredients.push(s.name);
     }
 
-    // 3️⃣ Fallback: qualsiasi <li> con quantità
-    if (ingredients.length === 0) {
-        const simpleLiRegex = /<li[^>]*>([^<]*\d+[^<]*(?:g|ml|kg|cucchia)[^<]*)<\/li>/gi;
-        let m;
-        while ((m = simpleLiRegex.exec(html)) !== null) {
-            ingredients.push(m[1].replace(/<[^>]+>/g, '').trim());
-        }
-    }
+    // Categoria: nel JSON, altrimenti dalla cartella che lo contiene
+    const catDaCartella = filePath.replace(/\\/g, '/').split('/').slice(-2)[0] || '';
 
-    // 4️⃣ Ultimo fallback: pattern raw nel testo
-    if (ingredients.length === 0) {
-        const rawIngRegex = /(\d+\s*(?:g|gr|ml)\s+[A-Za-zÀ-ú\s]+)/g;
-        let m;
-        while ((m = rawIngRegex.exec(html)) !== null) {
-            ingredients.push(m[1].trim());
-        }
-    }
-
-    // ── Idratazione: dal badge tech ──
-    const hydrationMatch = html.match(/[Ii]dratazione[^<]*?(\d{2,3})\s*%/) ||
-        html.match(/(\d{2,3})\s*%\s*(?:[Ii]dratazione|[Hh]ydration)/);
-    const hydration = hydrationMatch ? hydrationMatch[1] : '';
-
-    // ── Categoria ──
-    const catMatch = html.match(/data-category="([^"]+)"/i) ||
-        html.match(/class="tag tag--category"[^>]*>[^<]*?([A-Za-zÀ-ú]+)\s*<\/span>/i);
-    const category = catMatch ? catMatch[1] : '';
-
-    return { title, ingredients, hydration, category, filePath };
+    return {
+        title: data.title || basename(filePath, '.json'),
+        ingredients,
+        hydration: data.hydration != null ? String(data.hydration) : '',
+        fermentation: data.fermentation || '',
+        category: data.category || catDaCartella,
+        filePath,
+    };
 }
 
 // ── 7. Valida tutte le ricette nella cartella ───────────────────────
 
 /**
- * Valida tutte le ricette HTML in una cartella (ricorsivamente)
+ * Valida tutte le ricette (JSON) di una cartella `ricette/`
+ * @throws {Error} se non c'è nessuna ricetta da validare
  */
 export async function validateAllRecipes(ricettarioPath) {
     const ricettePath = resolve(ricettarioPath, 'ricette');
     const results = [];
 
-    // Scansiona sottocartelle
-    const subdirs = readdirSync(ricettePath, { withFileTypes: true })
-        .filter(d => d.isDirectory())
-        .map(d => d.name);
+    // Stesso elenco usato dalla verifica: JSON delle ricette, senza i sidecar
+    const ricette = elencaRicetteJson(ricettePath);
+    console.log(`\n📂 ${ricette.length} ricette da validare in ${ricettePath}`);
 
-    for (const subdir of subdirs) {
-        const subPath = resolve(ricettePath, subdir);
-        const files = readdirSync(subPath).filter(f => f.endsWith('.html'));
+    for (const [indice, { file, filePath }] of ricette.entries()) {
+        console.log(`\n${'═'.repeat(60)}`);
 
-        for (const file of files) {
-            const filePath = resolve(subPath, file);
-            console.log(`\n${'═'.repeat(60)}`);
+        const chiamatePrima = chiamateSerpApi;
 
-            try {
-                const recipe = parseRecipeHtml(filePath);
-                const { comparison, report } = await validateRecipe(recipe);
+        try {
+            const recipe = parseRecipeJson(filePath);
+            const { comparison, report } = await validateRecipe(recipe);
 
-                // Salva il report accanto alla ricetta
-                const reportPath = filePath.replace('.html', '.validazione.md');
-                writeFileSync(reportPath, report, 'utf-8');
-                console.log(`   📄 Report: ${reportPath}`);
+            // Salva il report accanto alla ricetta (mai sopra la ricetta stessa)
+            const reportPath = filePath.replace(/\.json$/, '.validazione.md');
+            writeFileSync(reportPath, report, 'utf-8');
+            console.log(`   📄 Report: ${reportPath}`);
 
-                results.push({
-                    file,
-                    title: recipe.title,
-                    confidence: comparison.confidence,
-                    matches: comparison.matches.length,
-                    warnings: comparison.warnings.length,
-                });
-            } catch (err) {
-                console.error(`   ❌ Errore: ${err.message}`);
-                results.push({ file, title: file, confidence: -1, error: err.message });
-            }
-
-            // Pausa tra le ricette per non intasare API
-            await sleep(2000);
+            results.push({
+                file,
+                title: recipe.title,
+                confidence: comparison.confidence,
+                matches: comparison.matches.length,
+                warnings: comparison.warnings.length,
+            });
+        } catch (err) {
+            console.error(`   ❌ Errore: ${err.message}`);
+            results.push({ file, title: file, confidence: -1, error: err.message });
         }
+
+        // Pausa anti-rate-limit: ha senso solo se questa ricetta ha davvero
+        // interrogato SerpAPI, e solo se ne resta un'altra da fare. Prima
+        // scattava sempre, anche quando la ricetta era fallita senza chiamare
+        // (JSON illeggibile, chiave mancante): su un elenco lungo, minuti di
+        // attesa per proteggere una quota che nessuno stava consumando.
+        const haChiamato = chiamateSerpApi > chiamatePrima;
+        const eLUltima = indice === ricette.length - 1;
+        if (haChiamato && !eLUltima) await sleep(2000);
     }
 
     return results;

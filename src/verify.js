@@ -18,11 +18,15 @@
 import { callClaude, callGemini, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'fs';
-import { resolve, basename, relative } from 'path';
+import { resolve, dirname, basename, relative } from 'path';
+import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
 
 // ── Indice verifiche (evita ri-verifiche inutili) ──
-const INDEX_DIR = resolve(new URL('.', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1'), '..', 'data');
+// `fileURLToPath` e non `new URL(...).pathname`: il pathname lascia gli spazi
+// codificati (`Progetti%20personali`), quindi l'indice finiva in una cartella
+// inesistente sul Desktop e il "salta, già verificata" non funzionava mai.
+const INDEX_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'data');
 const INDEX_PATH = resolve(INDEX_DIR, 'verify-index.json');
 
 function loadIndex() {
@@ -43,6 +47,67 @@ function saveIndex(index) {
 function computeHash(filePath) {
     const content = readFileSync(filePath, 'utf-8');
     return createHash('md5').update(content).digest('hex');
+}
+
+// ── Elenco delle ricette da analizzare ──────────────────────────────
+
+/**
+ * Sidecar che stanno accanto alle ricette ma ricette non sono:
+ * le copie di sicurezza dell'editor (`.backup.json`) e le istantanee
+ * pre-modifica (`.pre-edit.json`, `.pre-gen.json`).
+ * Analizzarle vorrebbe dire pagare due volte la stessa ricetta e
+ * scriverle sopra un report che nessuno legge.
+ */
+const NON_E_UNA_RICETTA = /\.backup\.|\.pre-/i;
+
+function eUnaRicetta(file) {
+    return file.endsWith('.json') && !NON_E_UNA_RICETTA.test(file);
+}
+
+/**
+ * Elenca i JSON delle ricette dentro `ricette/`, una sottocartella per categoria.
+ *
+ * Il sito è una SPA: i file `.html` non esistono più, le ricette sono JSON.
+ * Cercare gli `.html` faceva finire verifica e validazione a vuoto in due
+ * secondi, con un riepilogo vuoto e "Media: NaN/100" — cioè dicendo di aver
+ * controllato tutto senza aver aperto niente. Per questo qui l'elenco vuoto
+ * è un errore e non un risultato.
+ *
+ * @param {string} ricettePath - Percorso alla cartella `ricette/` del sito
+ * @returns {Array<{categoria: string, file: string, filePath: string}>}
+ * @throws {Error} se la cartella non è leggibile o non contiene nessuna ricetta
+ */
+export function elencaRicetteJson(ricettePath) {
+    let sottocartelle;
+    try {
+        sottocartelle = readdirSync(ricettePath, { withFileTypes: true })
+            .filter(d => d.isDirectory())
+            .map(d => d.name);
+    } catch (err) {
+        throw new Error(`Cartella ricette non leggibile: ${ricettePath} (${err.message})`);
+    }
+
+    const ricette = [];
+    for (const categoria of sottocartelle) {
+        const catPath = resolve(ricettePath, categoria);
+        let files;
+        try { files = readdirSync(catPath); }
+        catch { continue; }
+
+        for (const file of files.filter(eUnaRicetta).sort()) {
+            ricette.push({ categoria, file, filePath: resolve(catPath, file) });
+        }
+    }
+
+    if (ricette.length === 0) {
+        throw new Error(
+            `Nessuna ricetta .json trovata in ${ricettePath}. ` +
+            'Controlla il percorso del Ricettario (--output oppure RICETTARIO_PATH): ' +
+            'senza ricette da analizzare non c\'è niente da riportare.'
+        );
+    }
+
+    return ricette;
 }
 
 // ── Formati pasta che si possono fare a mano ──
@@ -269,8 +334,13 @@ La ricetta ha una sezione cottura completa con temperatura, tempo e suggerimenti
     // ── STEP 1: Claude verifica ──
     log.info('   🔵 Claude sta verificando...');
     const claudeText = await callClaude({
-        model: 'claude-sonnet-4-20250514',
-        maxTokens: 3000,
+        // Stesso modello usato da quality.js e sensory.js: 'claude-sonnet-4-20250514'
+        // è stato ritirato e l'API risponde 404, quindi la verifica falliva su
+        // ogni ricetta senza che il modello c'entrasse nulla.
+        // Niente maxTokens: il verdetto completo (issues + glossario + cottura)
+        // supera i 3000 token che c'erano prima e la risposta usciva troncata.
+        // Senza il campo, api.js usa il tetto del modello e si paga il generato.
+        model: 'claude-sonnet-4-6',
         system: VERIFY_SYSTEM,
         messages: [{ role: 'user', content: userPrompt }],
     });
@@ -293,7 +363,17 @@ Analizza CRITICAMENTE il verdetto di Claude. Conferma, contesta o aggiungi probl
 
             const geminiText = await callGemini({
                 model: 'gemini-2.5-pro',
-                maxTokens: 4096,
+                // Il tetto NON è solo la risposta: su gemini-2.5 il ragionamento
+                // interno attinge allo stesso budget (vedi `testoDaRispostaGemini`
+                // in utils/api.js). Con 4096 il challenge si troncava spesso — su
+                // una ricetta reale 3550 token erano finiti in ragionamento, e del
+                // JSON non restava abbastanza. Il fallimento è morbido (si procede
+                // col solo verdetto Claude), quindi non se ne accorgeva nessuno:
+                // spariva il confronto a due modelli, cioè il senso del comando.
+                // 16384 lascia spazio al ragionamento più al verdetto completo
+                // (issues contestate + mancate + review gruppi ≈ 1500-3000 token).
+                // Si paga solo il generato, quindi alzarlo non costa se non serve.
+                maxTokens: 16384,
                 system: GEMINI_CHALLENGE_SYSTEM,
                 messages: [{ role: 'user', content: geminiPrompt }],
             });
@@ -457,87 +537,78 @@ export async function verifyAllRecipes(ricettarioPath, options = {}) {
     const index = loadIndex();
     let skipped = 0;
 
-    const subdirs = readdirSync(ricettePath, { withFileTypes: true })
-        .filter(d => d.isDirectory())
-        .map(d => d.name);
+    const ricette = elencaRicetteJson(ricettePath);
+    log.info(`${ricette.length} ricette da verificare in ${ricettePath}`);
 
-    for (const subdir of subdirs) {
-        const subPath = resolve(ricettePath, subdir);
-        let files;
-        try { files = readdirSync(subPath).filter(f => f.endsWith('.html')); }
-        catch { continue; }
+    for (const { categoria, file, filePath } of ricette) {
+        const relPath = relative(ricettarioPath, filePath).replace(/\\/g, '/');
+        const currentHash = computeHash(filePath);
 
-        for (const file of files) {
-            const filePath = resolve(subPath, file);
-            const relPath = relative(ricettarioPath, filePath).replace(/\\/g, '/');
-            const currentHash = computeHash(filePath);
-
-            // Controlla indice: skip se già verificata e non modificata
-            if (!options.force && index.verified[relPath]?.hash === currentHash) {
-                const cached = index.verified[relPath];
-                const emoji = cached.score >= 80 ? '🟢' : cached.score >= 60 ? '🟡' : '🔴';
-                console.log(`\n⏭️  Skip: "${cached.title}" ${emoji} ${cached.score}/100 (già verificata)`);
-                results.push({
-                    file, title: cached.title,
-                    category: cached.category || subdir,
-                    score: cached.score,
-                    issues: cached.issues || 0,
-                    glossaryTerms: cached.glossaryTerms || 0,
-                    needsBaking: cached.needsBaking || false,
-                    needsSetupFix: cached.needsSetupFix || false,
-                    cached: true,
-                });
-                skipped++;
-                continue;
-            }
-
-            console.log(`\n${'═'.repeat(60)}`);
-
-            try {
-                const { recipe, result } = await verifyRecipe(filePath);
-
-                // Salva report
-                const reportPath = filePath.replace('.html', '.verifica.md');
-                const report = generateVerifyReport(recipe, result);
-                writeFileSync(reportPath, report, 'utf-8');
-
-                const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
-                console.log(`   ${emoji} Score: ${result.score}/100`);
-
-                if (result.issues?.length > 0) {
-                    result.issues.forEach(i => console.log(`   ${i.severity} ${i.area}: ${i.message}`));
-                }
-
-                console.log(`   📄 Report: ${reportPath}`);
-
-                const entry = {
-                    file, title: recipe.title,
-                    category: recipe.category,
-                    score: result.score,
-                    issues: result.issues?.length || 0,
-                    glossaryTerms: result.glossary?.length || 0,
-                    needsBaking: result.bakingSection?.needed || false,
-                    needsSetupFix: result.setupCorrection?.needed || false,
-                };
-
-                results.push(entry);
-
-                // Aggiorna indice
-                index.verified[relPath] = {
-                    hash: currentHash,
-                    ...entry,
-                    verifiedAt: new Date().toISOString(),
-                };
-                saveIndex(index);
-
-            } catch (err) {
-                console.error(`   ❌ Errore: ${err.message}`);
-                results.push({ file, title: file, score: -1, error: err.message });
-            }
-
-            // Pausa tra ricette per rispettare rate limits
-            await new Promise(r => setTimeout(r, 1500));
+        // Controlla indice: skip se già verificata e non modificata
+        if (!options.force && index.verified[relPath]?.hash === currentHash) {
+            const cached = index.verified[relPath];
+            const emoji = cached.score >= 80 ? '🟢' : cached.score >= 60 ? '🟡' : '🔴';
+            console.log(`\n⏭️  Skip: "${cached.title}" ${emoji} ${cached.score}/100 (già verificata)`);
+            results.push({
+                file, title: cached.title,
+                category: cached.category || categoria,
+                score: cached.score,
+                issues: cached.issues || 0,
+                glossaryTerms: cached.glossaryTerms || 0,
+                needsBaking: cached.needsBaking || false,
+                needsSetupFix: cached.needsSetupFix || false,
+                cached: true,
+            });
+            skipped++;
+            continue;
         }
+
+        console.log(`\n${'═'.repeat(60)}`);
+
+        try {
+            const { recipe, result } = await verifyRecipe(filePath);
+
+            // Salva report accanto alla ricetta (mai sopra la ricetta stessa)
+            const reportPath = filePath.replace(/\.json$/, '.verifica.md');
+            const report = generateVerifyReport(recipe, result);
+            writeFileSync(reportPath, report, 'utf-8');
+
+            const emoji = result.score >= 80 ? '🟢' : result.score >= 60 ? '🟡' : '🔴';
+            console.log(`   ${emoji} Score: ${result.score}/100`);
+
+            if (result.issues?.length > 0) {
+                result.issues.forEach(i => console.log(`   ${i.severity} ${i.area}: ${i.message}`));
+            }
+
+            console.log(`   📄 Report: ${reportPath}`);
+
+            const entry = {
+                file, title: recipe.title,
+                category: recipe.category,
+                score: result.score,
+                issues: result.issues?.length || 0,
+                glossaryTerms: result.glossary?.length || 0,
+                needsBaking: result.bakingSection?.needed || false,
+                needsSetupFix: result.setupCorrection?.needed || false,
+            };
+
+            results.push(entry);
+
+            // Aggiorna indice
+            index.verified[relPath] = {
+                hash: currentHash,
+                ...entry,
+                verifiedAt: new Date().toISOString(),
+            };
+            saveIndex(index);
+
+        } catch (err) {
+            console.error(`   ❌ Errore: ${err.message}`);
+            results.push({ file, title: file, score: -1, error: err.message });
+        }
+
+        // Pausa tra ricette per rispettare rate limits
+        await new Promise(r => setTimeout(r, 1500));
     }
 
     if (skipped > 0) {
@@ -655,7 +726,16 @@ RISPONDI con un JSON valido (NO markdown fences):
  */
 async function sendPdfToClaudeForTranscription(base64Pdf, prompt) {
     const text = await callClaude({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',   // 'claude-sonnet-4-20250514' è ritirato (404)
+        // 8000 resta: qui il tetto NON ha il problema del challenge Gemini, dove
+        // il ragionamento interno mangia il budget della risposta. A Claude non
+        // stiamo chiedendo extended thinking, quindi 8000 sono tutti risposta —
+        // 5 pagine di ricette in JSON ci stanno comode, e il tetto del modello
+        // (128000, vedi MODEL_MAX_TOKENS in utils/api.js) è lontanissimo.
+        // Se sbagliassimo, non sarebbe silenzioso: `callClaude` controlla
+        // `stop_reason` e su 'max_tokens' solleva RispostaIncompletaError.
+        // Non alzato perché non è stato possibile provarlo: servirebbe il PDF
+        // Philips e una chiamata vera, cioè credito API speso per un ritocco.
         maxTokens: 8000,
         messages: [{
             role: 'user',

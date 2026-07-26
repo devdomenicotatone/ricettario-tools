@@ -13,8 +13,10 @@
 import { callGemini, callClaude, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { resolve, basename } from 'path';
+import { resolve, basename, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
+import { scriviJsonAtomico } from './server/routes/_helpers.js';
 
 // ── Riuso utility da validator.js per il web grounding ──
 import { searchRealSources, scrapeRecipePage } from './validator.js';
@@ -467,7 +469,13 @@ export async function analyzeQuality(filePath, options = {}) {
 // QUALITY INDEX — persistenza score per badge dashboard
 // ══════════════════════════════════════════════════════════════════════
 
-const QUALITY_INDEX_PATH = resolve(process.cwd(), 'quality-index.json');
+// Ancorato al MODULO, non alla cartella da cui lanci il comando: con
+// `process.cwd()` l'indice cambiava posizione a seconda di dove partivi, e la
+// dashboard avviata da un'altra cartella ne ricreava uno vuoto altrove —
+// i badge di qualità sparivano senza nessun errore. Sta in `data/` come tutti
+// gli altri indici.
+const RADICE_TOOLS = dirname(dirname(fileURLToPath(import.meta.url)));
+const QUALITY_INDEX_PATH = resolve(RADICE_TOOLS, 'data', 'quality-index.json');
 
 function loadQualityIndex() {
     try {
@@ -481,11 +489,14 @@ function loadQualityIndex() {
 function saveScoreToIndex(slug, data) {
     const index = loadQualityIndex();
     index[slug] = data;
-    writeFileSync(QUALITY_INDEX_PATH, JSON.stringify(index, null, 2), 'utf-8');
+    saveQualityIndex(index);
 }
 
 function saveQualityIndex(index) {
-    writeFileSync(QUALITY_INDEX_PATH, JSON.stringify(index, null, 2), 'utf-8');
+    // tmp + rename: un'interruzione a metà tronca il file temporaneo, non
+    // l'indice vero. Resta senza lock (la firma è sincrona e la usano rotte che
+    // non l'attendono), ma la scrittura non è più distruttiva.
+    scriviJsonAtomico(QUALITY_INDEX_PATH, index);
 }
 
 export { loadQualityIndex, saveQualityIndex };

@@ -21,10 +21,21 @@ export async function valida(args) {
         console.log(`  ${emoji} ${r.confidence}% — ${r.title}`);
     }
 
+    // Senza ricette validate la media è NaN: meglio un errore che un
+    // riepilogo vuoto che sembra dire "controllato tutto, tutto a posto".
+    const valide = sorted.filter(r => r.confidence >= 0);
+    if (valide.length === 0) {
+        throw new Error(
+            `Nessuna ricetta validata su ${results.length} trovate: media non calcolabile. ` +
+            'Controlla gli errori qui sopra.'
+        );
+    }
+
     const avgConfidence = Math.round(
-        sorted.filter(r => r.confidence >= 0).reduce((sum, r) => sum + r.confidence, 0) /
-        sorted.filter(r => r.confidence >= 0).length
+        valide.reduce((sum, r) => sum + r.confidence, 0) / valide.length
     );
-    log.info(`Media confidenza: ${avgConfidence}%`);
+    log.info(`Media confidenza: ${avgConfidence}% su ${valide.length} ricette validate`);
+    const falliti = results.length - valide.length;
+    if (falliti > 0) log.warn(`${falliti} ricette in errore, escluse dalla media`);
     log.info('Report salvati come .validazione.md accanto a ogni ricetta');
 }

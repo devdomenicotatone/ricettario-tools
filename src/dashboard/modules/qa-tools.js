@@ -117,6 +117,25 @@ export function showFixModelDropdown(slug, anchorEl, isBatch = false) {
 }
 
 // ── QA Actions ──
+
+/**
+ * Dove finiscono le copie di sicurezza, detto all'utente prima di confermare.
+ *
+ * Il testo diceva «un backup .backup.json per ogni file», cioè accanto alla
+ * ricetta nel repo del sito: da quando le copie passano da
+ * `src/utils/backup-ricette.js` non è più vero, e un'interfaccia che indica il
+ * posto sbagliato è peggio di una che tace — chi cerca di annullare un fix di
+ * massa guarda dove gli è stato detto, non trova niente e crede di aver perso
+ * la ricetta.
+ *
+ * Il numero di copie tenute è deciso da `MAX_COPIE_PER_OPERAZIONE` in quel
+ * modulo: quello è un file Node (usa `fs`) e non si può importare qui nel
+ * browser, quindi se lo cambi cambia anche questa riga.
+ */
+const DOVE_FINISCONO_LE_COPIE =
+    'Prima di sovrascrivere viene salvata una copia della ricetta in tools/data/backup-ricette/<slug>/, ' +
+    'con data e ora nel nome. Si conservano le ultime 5 copie per ogni tipo di operazione: la sesta cancella la più vecchia.';
+
 /** @type {Set<string>} */
 let _selectedSlugsRef = null;
 
@@ -144,7 +163,7 @@ export async function runFix(geminiModel) {
     const fixable = [...selectedSlugs].filter(s => qualityIndex[s]);
     if (fixable.length === 0) return showToast('Nessuna ricetta selezionata ha un report qualità. Esegui prima l\'analisi.', 'warning');
     
-    showCustomConfirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'}?\n\nVerrà creato un backup .backup.json per ogni file.`, async () => {
+    showCustomConfirm(`Applicare fix AI a ${fixable.length} ricett${fixable.length === 1 ? 'a' : 'e'}?\n\n${DOVE_FINISCONO_LE_COPIE}`, async () => {
         await apiPost('qualita/fix', { slugs: fixable, geminiModel: geminiModel || getSelectedGeminiModel() });
     });
 }
@@ -153,7 +172,7 @@ export async function runFixSingle(slug, geminiModel) {
     const q = qualityIndex[slug];
     if (!q) return showToast('Esegui prima l\'analisi qualità su questa ricetta', 'warning');
     
-    showCustomConfirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\nVerrà creato un backup .backup.json.`, async () => {
+    showCustomConfirm(`Applicare fix AI a questa ricetta? (score: ${q.score}/100)\n\n${DOVE_FINISCONO_LE_COPIE}`, async () => {
         await apiPost('qualita/fix', { slugs: [slug], force: true, geminiModel: geminiModel || getSelectedGeminiModel() });
     });
 }

@@ -42,8 +42,19 @@ export async function verifica(args) {
             console.log(`  ${emoji} ${r.score}/100 — ${r.title} ${flags}`);
         }
 
+        // Senza ricette verificate la media è NaN: meglio un errore che un
+        // riepilogo vuoto che sembra dire "controllato tutto, tutto a posto".
+        const falliti = results.length - sorted.length;
+        if (sorted.length === 0) {
+            throw new Error(
+                `Nessuna ricetta verificata su ${results.length} trovate: media non calcolabile. ` +
+                'Controlla gli errori qui sopra.'
+            );
+        }
+
         const avg = Math.round(sorted.reduce((s, r) => s + r.score, 0) / sorted.length);
-        log.info(`Media: ${avg}/100`);
-        log.info('Report salvati come .verifica.md');
+        log.info(`Media: ${avg}/100 su ${sorted.length} ricette verificate`);
+        if (falliti > 0) log.warn(`${falliti} ricette in errore, escluse dalla media`);
+        log.info('Report salvati come .verifica.md accanto a ogni ricetta');
     }
 }

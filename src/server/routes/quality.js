@@ -5,6 +5,18 @@
 import { resolve } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 
+// ── Copie di sicurezza delle ricette ──
+//
+// `salvaCopiaSicurezza` stava qui dentro, ed era una delle tre convenzioni di
+// backup del progetto: `publisher.js` scriveva nella STESSA cartella
+// (`tools/data/backup-ricette/`) con uno schema diverso, e l'editor lasciava i
+// suoi `.pre-edit.json` dentro il repo del sito. Ora la funzione vive in
+// `src/utils/backup-ricette.js` ed è l'unico posto da cui nasce una copia:
+// tutta la spiegazione della convenzione (una cartella per slug, l'operazione e
+// la data nel nome, rotazione a MAX_COPIE_PER_OPERAZIONE, `.gitignore` con `*`)
+// sta là e non va ricopiata qui.
+import { salvaCopiaSicurezza } from '../../utils/backup-ricette.js';
+
 export function setupQualityRoutes(app, { getRicettarioPath, nextJobId, createJobContext, withOutputCapture }) {
 
     // ── Qualità (pipeline unificata — sostituisce valida + verifica) ──
@@ -207,13 +219,12 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                             continue;
                         }
 
-                        // Backup
-                        const backupPath = jsonFile.replace('.json', '.backup.json');
-                        writeFileSync(backupPath, recipeJson, 'utf-8');
+                        // Copia di sicurezza (serie dedicata al fix, con la data nel nome)
+                        const copia = salvaCopiaSicurezza(jsonFile, recipeJson, 'fix-ai');
 
                         // Salva
                         writeFileSync(jsonFile, JSON.stringify(fixed, null, 2), 'utf-8');
-                        ctx.log(`  ✅ ${s}: corretto (backup salvato)`);
+                        ctx.log(`  ✅ ${s}: corretto${copia ? ` (copia di sicurezza in tools/${copia.percorsoRelativo})` : ''}`);
 
                         // Auto-revalidation: rilancia qualità per aggiornare report e badge
                         try {
@@ -287,12 +298,11 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                     recipeData.sensoryProfile = analytics.sensory;
                     recipeData.nutrition = analytics.nutrition;
 
-                    // Save
-                    const backupPath = jsonFile.replace('.json', '.backup.json');
-                    writeFileSync(backupPath, recipeJson, 'utf-8');
+                    // Save — copia di sicurezza in una serie sua, così non cancella quella del fix
+                    const copia = salvaCopiaSicurezza(jsonFile, recipeJson, 'sensoriale');
                     writeFileSync(jsonFile, JSON.stringify(recipeData, null, 2), 'utf-8');
-                    
-                    ctx.log(`✅ Profilo aggiunto con successo a ${currentSlug}`);
+
+                    ctx.log(`✅ Profilo aggiunto con successo a ${currentSlug}${copia ? ` (copia di sicurezza in tools/${copia.percorsoRelativo})` : ''}`);
                 }
                 ctx.log(`\n🎉 Processo completato per ${targetSlugs.length} ricette!`);
 
