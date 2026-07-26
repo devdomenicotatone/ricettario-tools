@@ -8,6 +8,32 @@ data/ocr-test.json
 # Backup delle categorie rimosse (copie di ricette e immagini, pesanti)
 data/backup-categorie/
 
+# Copie di sicurezza delle ricette (pre-edit, pre-gen, fix-ai, sensoriale):
+# src/utils/backup-ricette.js ne scrive una a ogni salvataggio, tiene le
+# ultime 5 per operazione e non le cancella mai tutte. Sono copie di file
+# che stanno già nel repo del sito: nella storia di tools non servono.
+# Questa è la SECONDA rete, non l'unica: la cartella nasce con un proprio
+# `.gitignore` contenente `*`, scritto da backup-ricette.js insieme alla
+# cartella stessa. Quella barriera non può restare indietro; questa riga
+# copre il caso in cui la cartella venga ricreata a mano senza il file.
+data/backup-ricette/
+
+# Copia MORTA della cache immagini rimasta in radice (6,9 MB, ferma ad
+# aprile). Quella viva è data/image-cache.json: nessun file del progetto
+# legge questa — tutti i percorsi passano da
+# `resolve(cwd, 'data', 'image-cache.json')`. Ci è finita perché il vecchio
+# deploy.bat faceva `git add -A` senza guardare, ed è stata tolta dal
+# tracking con `git rm --cached` (il file resta sul disco). La barra
+# iniziale àncora il modello alla radice: senza, nasconderebbe anche quella
+# vera dentro data/.
+/image-cache.json
+
+# Scratch del flusso "Da testo": ci finisce il testo che incolli nella
+# dashboard (src/server/routes/recipes.js lo riscrive a ogni richiesta).
+# È usa-e-getta: se resta tracciato, ogni ricetta incollata entra nella
+# storia git e non ne esce più.
+data/_tmp_testo.txt
+
 # File di debug
 debug-*.txt
 debug-*.json

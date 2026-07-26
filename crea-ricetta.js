@@ -3,24 +3,14 @@
 /**
  * CREA RICETTA — CLI Entry Point (Dispatcher)
  *
- * Uso:
- *   node crea-ricetta.js --url "https://giallozafferano.it/ricetta/Focaccia.html"
- *   node crea-ricetta.js --nome "Focaccia Barese" --idratazione 80
- *   node crea-ricetta.js --testo ricetta.txt
- *   node crea-ricetta.js --scopri "focaccia pugliese" --quante 3
- *   node crea-ricetta.js --valida
- *   node crea-ricetta.js --verifica
- *   node crea-ricetta.js --trascrivi-philips
- *   node crea-ricetta.js --trascrivi-immagini
- *   node crea-ricetta.js --aggiorna-immagini
+ * Comandi, opzioni e flag stanno in `showHelp()` qui sotto, che è la loro
+ * unica fonte: `node crea-ricetta.js --help`.
  *
- * Flag globali:
- *   --dry-run    Mostra il JSON senza scrivere file
- *   --verbose    Output dettagliato (mostra debug)
- *   --quiet      Output minimale (solo errori)
- *   --no-image   Salta la ricerca immagini
- *   --no-inject  Non inserire la card nella homepage
- *   --no-valida  Salta la validazione post-generazione
+ * Qui c'era una seconda copia dell'elenco, scritta a mano, e aveva già preso
+ * una strada sua: annunciava `--no-inject` come «non inserire la card nella
+ * homepage», mentre in homepage la card ci finisce lo stesso — subito dopo
+ * l'inject, `publishRecipe` in src/publisher.js rilancia `syncCards`, che
+ * ricostruisce l'indice rileggendo tutte le ricette. Non reintrodurla.
  */
 
 import 'dotenv/config';
@@ -45,7 +35,27 @@ function parseArgs() {
     return parsed;
 }
 
-function showHelp() {
+/**
+ * Elenco delle categorie da mostrare nell'help.
+ *
+ * Non è scritto a mano: l'help elencava «Pane, Pizza, Pasta, Lievitati», cioè
+ * una quarta copia dell'elenco, ferma a una "Pasta" che sul sito non esiste
+ * più (oggi è "Primi") e che manda le ricette in una cartella non dichiarata.
+ * La fonte è `Ricettario/js/categories.js`, letta via `src/constants.js`.
+ *
+ * Se il repo del sito non è raggiungibile l'help deve comunque uscire: qui si
+ * ripiega su una riga che dice dove guardare, invece di far fallire `--help`.
+ */
+async function elencoCategorie() {
+    try {
+        const { etichetteAmmesse } = await import('./src/utils/percorsi-ricette.js');
+        return etichetteAmmesse().join(', ');
+    } catch {
+        return 'quelle dichiarate in js/categories.js del sito (registry non raggiungibile)';
+    }
+}
+
+async function showHelp() {
     console.log(`
 🔥 ═══════════════════════════════════════
    RICETTARIO TOOLS — Recipe Generator
@@ -59,19 +69,19 @@ Comandi:
   --valida                   Valida tutte le ricette (SerpAPI cross-check)
   --verifica                 Verifica qualità con Claude AI
   --verifica-ricetta <path>  Verifica singola ricetta
-  --verifica-ricetta <path>  Verifica singola ricetta
-  --sync-cards               Ricostruisce recipes.json da tutte le ricette HTML
+  --sync-cards               Ricostruisce public/recipes.json dai .json delle ricette
   --refresh-image <slug>     Rigenera solo l'immagine di copertina
   --trascrivi-philips        Trascrivi PDF Philips Serie 7000
-  --trascrivi-immagini       Trascrivi immagini PNG in HTML
+  --trascrivi-immagini       Trascrivi immagini PNG in ricette JSON (OCR Surya)
   --aggiorna-immagini        Scarica immagini multi-provider
 
 Opzioni:
   --quante <n>        Risultati ricerca (default: 5, max: 10)
-  --idratazione <n>   Idratazione target in %
-  --tipo <cat>        Categoria: Pane, Pizza, Pasta, Lievitati
+  --tipo <cat>        Categoria: ${await elencoCategorie()}
   --note <testo>      Note aggiuntive per Claude
-  --output <path>     Percorso output custom
+  --aiModel <id>      Modello che genera la ricetta: claude (default, Sonnet 4.6),
+                      claude-opus, gemini, gemini-3.1
+  --output <path>     Percorso del repo del sito (alternativo a RICETTARIO_PATH)
 
 Flag:
   --preview           Anteprima: mostra riepilogo + apre browser, conferma prima di pubblicare
@@ -79,7 +89,14 @@ Flag:
   --verbose, -v       Output dettagliato
   --quiet, -q         Output minimale
   --no-image          Salta ricerca immagini
-  --no-inject         Non inserire card in homepage
+  --no-inject         Salta l'inserimento diretto della card in public/recipes.json
+  --no-valida         Salta il cross-check con le fonti: è l'unico modo per non
+                      spendere in validazione (--dry-run non lo evita).
+                      Vale anche la forma --no-validate
+  --no-enrich         Salta l'arricchimento SerpAPI + Claude in
+                      --trascrivi-immagini (l'altra spesa, con un flag suo)
+  --keepExisting      Non sovrascrive una ricetta già presente: la salva
+                      accanto come <slug>-v2
   --forza             Forza ri-verifica (ignora cache)
 `);
 }
@@ -93,7 +110,7 @@ async function main() {
         !args.verifica && !args['verifica-ricetta'] && !args['trascrivi-philips'] &&
         !args['trascrivi-immagini'] && !args['aggiorna-immagini'] && !args['sync-cards'] &&
         !args['refresh-image']) {
-        showHelp();
+        await showHelp();
         process.exit(0);
     }
 

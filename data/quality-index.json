@@ -1,0 +1,544 @@
+{
+  "pane-pugliese-biga": {
+    "score": 60,
+    "verdict": "🟢 Buona",
+    "issueCount": 5,
+    "timestamp": "2026-03-30T23:34:53.246Z"
+  },
+  "pinsa-romana": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T19:39:35.906Z",
+    "fixed": true
+  },
+  "pizza-contemporanea-canotto": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-04T23:44:30.576Z"
+  },
+  "pizza-napoletana-biga-criscito": {
+    "score": 90,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-01T01:48:13.528Z"
+  },
+  "gnocchi-di-patate": {
+    "score": 85,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 3,
+    "timestamp": "2026-04-18T00:26:41.751Z"
+  },
+  "impasto-rosticceria-siciliana": {
+    "score": 85,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:30:24.847Z"
+  },
+  "panettone-pere-cioccolato": {
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 5,
+    "timestamp": "2026-03-30T21:40:56.755Z"
+  },
+  "cantuccini-di-prato": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-01T01:54:31.904Z"
+  },
+  "cartocci-alla-crema-siciliani": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:31:40.982Z"
+  },
+  "migliaccio-napoletano": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T19:32:05.095Z"
+  },
+  "focaccia-di-recco-igp": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:43:07.687Z",
+    "fixed": true
+  },
+  "focaccia-genovese-fugassa": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-17T23:45:39.989Z",
+    "fixed": true
+  },
+  "focaccia-genovese-classica": {
+    "score": 85,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:45:59.379Z"
+  },
+  "pane-pugliese-con-biga": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-01T01:57:56.055Z"
+  },
+  "pane-pugliese-biga-claude": {
+    "score": 60,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-03-30T23:35:02.104Z"
+  },
+  "baguette-francese-tradizionale": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-01T11:58:56.351Z"
+  },
+  "ciabatta-con-poolish": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-03T21:00:58.457Z"
+  },
+  "pane-alle-noci-con-poolish": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-03T21:07:32.718Z"
+  },
+  "pane-di-altamura-dop": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-03T22:09:27.669Z"
+  },
+  "dado-vegetale-fatto-in-casa": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-27T08:04:55.149Z"
+  },
+  "cornetti-sfogliati-classici": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T19:58:25.263Z"
+  },
+  "burger-buns-con-biga": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-05T01:47:59.790Z"
+  },
+  "pane-integrale-con-biga": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-05T02:08:58.898Z"
+  },
+  "ciabatta-poolish-malto-criscito": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-08T09:15:22.612Z"
+  },
+  "panettone-fatto-in-casa-caputo": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T19:34:02.578Z"
+  },
+  "pasta-madre-solida-creazione-rinfresco": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-15T19:50:24.666Z"
+  },
+  "olio-al-basilico-verde-smeraldo": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-16T18:48:22.291Z"
+  },
+  "pasta-brioche-classica": {
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-16T20:20:17.855Z"
+  },
+  "pasta-brioche-artigianale": {
+    "score": 88,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-16T20:06:24.069Z",
+    "fixed": true
+  },
+  "pizza-romana-stesa-al-matterello": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-26T15:40:18.710Z",
+    "fixed": true
+  },
+  "pizza-in-teglia-romana-alta-idratazione": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-17T14:02:07.494Z",
+    "fixed": true
+  },
+  "pizza-in-teglia-romana": {
+    "score": 85,
+    "verdict": "🟡 Da migliorare",
+    "issueCount": 3,
+    "timestamp": "2026-04-26T15:42:17.440Z",
+    "fixed": true
+  },
+  "marinatura-menta-aceto-verdure-grigliate": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-17T22:59:29.864Z"
+  },
+  "polenta-concia-valdostana": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-17T22:59:49.675Z"
+  },
+  "salmoriglio-siciliano-tradizionale": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-17T23:00:09.536Z"
+  },
+  "focaccia-barese": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-17T23:43:16.100Z"
+  },
+  "pane-ai-cereali-semi": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-18T00:10:27.198Z"
+  },
+  "gnocchi-di-patate-v2": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-18T00:26:20.941Z"
+  },
+  "burro-maitre-d-hotel": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:36:29.669Z"
+  },
+  "burro-composto-acciughe-tartufo": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-19T20:36:45.965Z"
+  },
+  "caesar-dressing": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:37:06.595Z"
+  },
+  "dressing-miele-senape": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-19T20:37:20.567Z"
+  },
+  "vinaigrette-classica-e-citronette": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-19T20:37:36.584Z"
+  },
+  "salsa-bernese": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:38:01.291Z"
+  },
+  "salsa-bbq-artigianale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:38:28.384Z"
+  },
+  "chimichurri": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:38:45.556Z"
+  },
+  "guacamole": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-19T20:39:09.732Z"
+  },
+  "pesto-pomodori-secchi-mandorle-basilico": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:39:30.366Z"
+  },
+  "pesto-alla-genovese-tradizionale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:06.869Z"
+  },
+  "coulis-salsa-pomodoro-fresco": {
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:21.061Z"
+  },
+  "maionese-fatta-in-casa": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-19T20:41:55.080Z"
+  },
+  "salsa-allo-yogurt-ed-erba-cipollina": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:58:05.815Z"
+  },
+  "salsa-verde-piemontese-bagnet-verd": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-26T19:34:53.914Z"
+  },
+  "salsa-teriyaki-originale": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-19T20:58:45.366Z"
+  },
+  "treccia-di-pane-olio": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-23T23:22:18.860Z",
+    "fixed": true
+  },
+  "calzone-cipolla-barese-pugliese": {
+    "score": 92,
+    "verdict": "🟢 Buona",
+    "issueCount": 5,
+    "timestamp": "2026-04-23T23:39:56.872Z"
+  },
+  "pesto-alla-siciliana": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-24T12:59:48.819Z"
+  },
+  "pesto-di-pistacchi-artigianale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-24T13:00:05.764Z"
+  },
+  "pesto-di-zucchine": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-24T13:00:22.894Z"
+  },
+  "pesto-rucola-artigianale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T13:02:31.373Z"
+  },
+  "pesto-di-fave-maro": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-24T13:11:30.553Z"
+  },
+  "burro-chiarificato": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:07:03.812Z",
+    "fixed": true
+  },
+  "salsa-allo-yogurt": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-24T13:12:08.629Z"
+  },
+  "pesto-di-barbabietola": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T13:12:29.395Z"
+  },
+  "salsa-cocktail-rosa-artigianale": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-24T13:12:55.329Z"
+  },
+  "salsa-alle-noci": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T13:13:21.858Z"
+  },
+  "maionese": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T13:13:44.343Z"
+  },
+  "salsa-verde-tradizionale": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-24T13:14:03.305Z"
+  },
+  "besciamella": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T13:14:35.985Z"
+  },
+  "pomodorini-confit-sottolio": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-24T14:46:17.948Z",
+    "fixed": true
+  },
+  "olio-peperone-crusco-rosso-rubino": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-24T23:20:41.512Z",
+    "fixed": true
+  },
+  "olio-cavolo-viola-elettrico": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-24T23:31:21.724Z",
+    "fixed": true
+  },
+  "olio-aglio-nero-ossidiana": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T23:58:44.002Z"
+  },
+  "olio-curcuma-zafferano-giallo-oro": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T23:59:02.423Z"
+  },
+  "olio-carota-zenzero-arancio-fluo": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-24T23:59:21.924Z"
+  },
+  "olio-extravergine-aromatizzato-verde-dorato": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-04-16T18:19:50.885Z"
+  },
+  "crema-al-parmigiano": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:36:54.512Z"
+  },
+  "fumetto-di-crostacei": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:36:54.516Z"
+  },
+  "crema-di-peperoni": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T08:54:58.797Z"
+  },
+  "pure-di-patate": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 0,
+    "timestamp": "2026-04-27T17:45:46.907Z"
+  },
+  "spare-ribs-salsa-bbq": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 3,
+    "timestamp": "2026-04-27T21:54:26.826Z"
+  },
+  "pizza-napoletana-verace-stg": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-04-27T22:06:19.574Z",
+    "fixed": true
+  },
+  "pizza-margherita-verace-disciplinare-avpn": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-28T21:28:06.404Z"
+  },
+  "pizza-marinara-napoletana-verace": {
+    "score": 90,
+    "verdict": "🟢 Buona",
+    "issueCount": 6,
+    "timestamp": "2026-04-28T21:28:36.590Z"
+  },
+  "babaganoush-crema-melanzane": {
+    "score": 98,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-05-05T21:01:00.110Z"
+  },
+  "dado-vegetale-granulare": {
+    "score": 100,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-05-05T21:01:22.905Z"
+  },
+  "pizza-marinara-verace-disciplinare-avpn": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 1,
+    "timestamp": "2026-05-05T21:01:32.271Z"
+  },
+  "pinsa-romana-v2": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-05-07T10:50:48.662Z",
+    "fixed": true
+  }
+}

@@ -1,12 +1,16 @@
 {
     "name": "ricettario-tools",
     "version": "1.0.0",
-    "description": "CLI per creare ricette: scraping + AI rewriting + HTML generation",
+    "description": "CLI e dashboard per creare ricette: scraping + riscrittura AI + JSON per il sito",
     "type": "module",
     "scripts": {
         "crea": "node crea-ricetta.js",
+        "check:env": "node scripts/check-env.mjs",
         "dashboard": "node dashboard.js",
         "dashboard:dev": "npx nodemon --watch src/server --watch src/commands --watch dashboard.js --ext js,json dashboard.js"
+    },
+    "engines": {
+        "node": ">=20.18.1"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",
@@ -15,13 +19,11 @@
         "dotenv": "^16.4.7",
         "express": "^5.2.1",
         "pdf-lib": "^1.17.1",
-        "pdf-poppler": "^0.2.3",
         "pdf-to-img": "^5.0.0",
         "puppeteer": "^24.37.5",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
         "sharp": "^0.34.5",
-        "slugify": "^1.6.6",
         "ws": "^8.20.0"
     },
     "devDependencies": {

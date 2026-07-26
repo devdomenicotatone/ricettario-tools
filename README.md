@@ -1,7 +1,25 @@
-# 🔥 Ricettario Tools — `crea-ricetta.js`
+# 🔥 Ricettario Tools
 
-CLI professionale per creare, validare e gestire le ricette de **Il Ricettario**.
-Combina web scraping, OCR locale, AI (Claude) e ricerca immagini stock per generare pagine HTML complete.
+Strumenti per creare, validare e gestire le ricette de **Il Ricettario**.
+Mettono insieme scraping web, OCR locale, AI (Claude e Gemini) e ricerca
+immagini stock, e scrivono il risultato **come JSON dentro il repo del sito**.
+
+> **Il sito non è più fatto di pagine HTML.** È una SPA che legge i `.json`
+> delle ricette: `ricette/<categoria>/<slug>.json` più l'indice
+> `public/recipes.json`. Se in questo README o in un messaggio dei comandi
+> trovi ancora scritto "genera la pagina HTML", è testo vecchio: l'HTML lo
+> costruisce il sito a runtime.
+
+Si usa in due modi:
+
+| | Come si avvia | Quando |
+|---|---|---|
+| **Dashboard web** (modo principale) | `npm run dashboard` → <http://localhost:3500> | Uso normale: creare, modificare, pubblicare, controllare qualità |
+| **CLI** | `node crea-ricetta.js --help` | Batch, automazioni, tutto ciò che vuoi lanciare senza browser |
+
+I due modi condividono lo stesso codice (`src/`): la dashboard è un server
+Express che chiama gli stessi comandi della CLI e ne trasmette l'output in
+diretta via WebSocket.
 
 ---
 
@@ -12,406 +30,389 @@ Combina web scraping, OCR locale, AI (Claude) e ricerca immagini stock per gener
 cd tools
 npm install
 
-# 2. Configura le API keys
+# 2. Configura le chiavi
 cp .env.example .env
-# Compila .env con le tue chiavi (vedi sezione API Keys sotto)
+# Compila .env (vedi sezione sotto)
 
-# 3. Esegui
+# 3a. Dashboard
+npm run dashboard          # → http://localhost:3500
+
+# 3b. oppure CLI
 node crea-ricetta.js --help
 ```
 
-### API Keys Necessarie
+`npm run dashboard:dev` fa la stessa cosa passando da nodemon: riavvia il
+server a ogni salvataggio dei file sotto `src/server/`, `src/commands/` e
+`dashboard.js`.
 
-| Variabile `.env` | Servizio | Obbligatoria | Dove ottenerla |
-|---|---|:---:|---|
-| `ANTHROPIC_API_KEY` | Claude AI | ✅ | [console.anthropic.com](https://console.anthropic.com) |
-| `SERPAPI_KEY` | Google Search | ✅ | [serpapi.com](https://serpapi.com) (100 ricerche/mese gratis) |
-| `SERPAPI_KEY_2` | Google Search (rotazione) | ❌ | Opzionale, stesso provider |
-| `PEXELS_API_KEY` | Immagini Pexels | ❌ | [pexels.com/api](https://www.pexels.com/api/) |
-| `UNSPLASH_ACCESS_KEY` | Immagini Unsplash | ❌ | [unsplash.com/developers](https://unsplash.com/developers) |
-| `PIXABAY_API_KEY` | Immagini Pixabay | ❌ | [pixabay.com/api](https://pixabay.com/api/docs/) |
-| `RICETTARIO_PATH` | Path output | ❌ | Default: `../Ricettario` |
+### Variabili d'ambiente
 
-> Le API immagini sono opzionali ma **almeno una** è consigliata. Il sistema le usa in cascata: Pexels → Unsplash → Pixabay → Wikimedia (senza chiave).
+L'elenco completo, con i commenti, sta in [`.env.example`](./.env.example) —
+quello è il riferimento, questa tabella è un riassunto.
+
+| Variabile | Serve a | Obbligatoria |
+|---|---|:---:|
+| `ANTHROPIC_API_KEY` | Claude: riscrittura, strutturazione, QA | ✅ |
+| `RICETTARIO_PATH` | Cartella del repo del sito (default `../Ricettario`) | ❌ |
+| `SITE_URL` | Base URL per l'anteprima (default dev server Vite) | ❌ |
+| `GEMINI_API_KEY` | Gemini: verifica qualità e "challenger" | ❌ |
+| `GEMINI_API_KEY2` | Seconda chiave Gemini, a rotazione | ❌ |
+| `SERPAPI_KEY` | Ricerca fonti reali su Google | ❌ |
+| `SERPAPI_KEY_2` | Seconda chiave SerpAPI, a rotazione | ❌ |
+| `DATAFORSEO_LOGIN` + `DATAFORSEO_PASSWORD` | Volumi di ricerca nella barra SEO | ❌ |
+| `PEXELS_API_KEY` | Immagini Pexels | ❌ |
+| `UNSPLASH_ACCESS_KEY` | Immagini Unsplash | ❌ |
+| `PIXABAY_API_KEY` | Immagini Pixabay | ❌ |
+| `OCR_PAGINE_PER_BLOCCO` | Pagine per blocco nell'OCR locale (default 10) | ❌ |
+| `OCR_TIMEOUT_BLOCCO_MS` | Timeout fisso per blocco OCR in ms; 0 = dinamico (default) | ❌ |
+
+`npm run check:env` rilegge le `process.env.*` scritte nel codice e fallisce
+se una non compare sia in `.env.example` sia in questa tabella. Serve a non
+ripetere la deriva di prima: il codice leggeva undici variabili e il file di
+esempio ne documentava quattro.
+
+> ⚠️ **Attenzione ai due nomi che si somigliano:** la seconda chiave Gemini è
+> `GEMINI_API_KEY2` (senza underscore), la seconda SerpAPI è `SERPAPI_KEY_2`
+> (con underscore). Sbagliare l'underscore non produce nessun errore: la
+> chiave semplicemente non viene letta.
+
+> Una chiave mancante **non** ferma niente e **non** stampa un avviso: il
+> provider corrispondente resta muto e il flusso prosegue senza di lui. Se un
+> risultato ti sembra povero, controlla prima `.env`. La pagina
+> Impostazioni della dashboard mostra quali servizi risultano configurati.
+
+Le API immagini sono opzionali ma **almeno una** è consigliata. Vengono usate
+in cascata: Pexels → Unsplash → Pixabay → Wikimedia (che non richiede chiave).
 
 ---
 
-## Comandi
+## Categorie
+
+Le categorie del sito sono nove e la loro **unica fonte** è
+`Ricettario/js/categories.js`:
+
+`Pane`, `Pizza`, `Primi`, `Lievitati`, `Focaccia`, `Dolci`, `Conserve`,
+`Condimenti`, `Secondi Piatti`.
+
+Non esiste più la categoria "Pasta": è stata rinominata in "Primi". Se trovi
+"Pasta" scritta da qualche parte in questi strumenti, è un residuo da
+correggere — una ricetta classificata così finisce in `ricette/pasta/`, che
+sul sito non è dichiarata, e fa fallire `npm run check`.
+
+---
+
+## Comandi CLI
 
 ### 📥 `--url` — Importa ricetta da URL
 
-Scrappa una ricetta da qualsiasi sito web, la riscrive in stile tecnico con Claude AI, e genera la pagina HTML.
-
 ```bash
-# Singola ricetta
-node crea-ricetta.js --url "https://giallozafferano.it/ricetta/Focaccia.html"
-
-# Batch (più URL separati da virgola)
+node crea-ricetta.js --url "https://esempio.it/ricetta/focaccia"
 node crea-ricetta.js --url "https://sito1.it/ricetta1,https://sito2.it/ricetta2"
 ```
 
-**Come funziona:**
-1. **Scraping** del sito (JSON-LD → CSS selettori → browser headless Puppeteer)
-2. **Ricerca fonti reali** via SerpAPI (4 query Google IT+EN) per cross-reference
-3. **Claude AI** riscrive la ricetta nel formato tecnico del Ricettario
-4. **Cross-check** automatico ingredienti vs fonti web (punteggio confidenza)
-5. **Immagine stock** cercata e scaricata (Pexels/Unsplash/Pixabay/Wikimedia)
-6. **HTML generato** con template completo (hero, ingredienti, procedimenti, glossario...)
-7. **`recipes.json`** aggiornato automaticamente (homepage)
-
----
+1. **Scraping** del sito (JSON-LD → selettori CSS → browser headless Puppeteer)
+2. **Ricerca fonti reali** via SerpAPI (query Google IT+EN) per cross-reference
+3. **Claude** riscrive la ricetta nel formato tecnico del Ricettario
+4. **Cross-check** ingredienti vs fonti web (punteggio di confidenza)
+5. **Immagine** cercata e scaricata (Pexels/Unsplash/Pixabay/Wikimedia)
+6. **JSON scritto** in `ricette/<categoria>/<slug>.json`
+7. **`public/recipes.json`** aggiornato (indice della homepage)
 
 ### 🧠 `--nome` — Genera ricetta da zero
 
-Claude crea una ricetta completa partendo solo dal nome, basandosi su fonti reali trovate online (non dalla memoria).
-
 ```bash
 node crea-ricetta.js --nome "Focaccia Barese"
-node crea-ricetta.js --nome "Pane Cafone" --idratazione 70 --tipo Pane
+node crea-ricetta.js --nome "Pane Cafone" --tipo Pane
 node crea-ricetta.js --nome "Pizza Napoletana" --note "con poolish al 30%"
 ```
 
-**Opzioni specifiche:**
-- `--idratazione <n>` — Idratazione target in %
-- `--tipo <categoria>` — Categoria: `Pane`, `Pizza`, `Pasta`, `Lievitati`, `Dolci`
+- `--tipo <categoria>` — Una delle nove categorie qui sopra
 - `--note <testo>` — Istruzioni aggiuntive per Claude
+- `--aiModel <id>` — Chi genera: `claude` (default, Sonnet 4.6),
+  `claude-opus`, `gemini`, `gemini-3.1`
 
----
+> Non esiste un `--idratazione`. L'help lo pubblicizzava, ma nessuno leggeva
+> quel valore: `src/commands/genera.js` passa a `generateRecipe` solo `tipo`,
+> `note` e `aiModel`, e `generateRecipe` in `src/enhancer.js` nel prompt usa
+> solo quei campi. Per chiedere un'idratazione precisa scrivila in `--note`,
+> che nel prompt ci finisce davvero.
 
-### 📝 `--testo` — Inserisci ricetta da testo libero
-
-Inserisci una ricetta completa che hai già (appunti, note, copia-incolla) e il sistema la adatta al template del sito.
+### 📝 `--testo` — Ricetta da testo libero
 
 ```bash
-node crea-ricetta.js --testo ricetta.txt
-node crea-ricetta.js --testo pizza-canotto.txt --tipo Pizza
-node crea-ricetta.js --testo mia-ricetta.txt --dry-run    # vedi JSON senza scrivere
+node crea-ricetta.js --testo ricetta.txt --tipo Pizza
 ```
 
-**Come funziona:**
-1. Legge il file `.txt` con la tua ricetta completa
-2. Cerca fonti reali (SerpAPI) per aggiungere contesto
-3. Claude **struttura** il testo nel formato JSON — **senza modificare le tue dosi** (le fonti servono solo per glossario, pro tips, tabella farine)
-4. Prosegue col flusso standard (validazione → immagine → HTML → inject)
-
-> ⚠️ Le dosi e gli ingredienti nel tuo testo hanno **priorità assoluta**: Claude non li modifica.
-
-
+Claude **struttura** il testo senza toccare dosi e ingredienti: le fonti
+esterne servono solo per glossario, pro tips e tabella farine.
 
 ### 🔍 `--scopri` — Cerca ricette su Google
 
-Cerca ricette su Google, mostra i risultati, e ti fa scegliere quali generare.
-
 ```bash
-node crea-ricetta.js --scopri "focaccia pugliese"
-node crea-ricetta.js --scopri "pizza in teglia" --quante 8
+node crea-ricetta.js --scopri "focaccia pugliese" --quante 8
 ```
 
-**Interazione:**
-```
-📋 Trovate 5 ricette:
-  1. Focaccia Pugliese — giallozafferano.it
-  2. La vera focaccia barese — ricettedellanonna.net
-  ...
-
-👉 Quale vuoi generare? (numero, o "tutti", o "esci"): 1,3
-```
-
-- `--quante <n>` — Numero risultati (default: 5, max: 10)
-
----
+Mostra i risultati e ti fa scegliere quali generare (`--quante`, default 5,
+max 10).
 
 ### ✅ `--valida` — Cross-check con fonti reali
-
-Valida **tutte** le ricette esistenti confrontandole con fonti web autorevoli.
 
 ```bash
 node crea-ricetta.js --valida
 ```
 
-**Cosa fa:**
-- Per ogni ricetta HTML in `ricette/**/`:
-  - Cerca 10+ fonti reali via SerpAPI (4 query parallele IT+EN)
-  - Scrappa ingredienti da ogni fonte (JSON-LD / HTML / Claude AI fallback)
-  - Confronta: ingredienti match, idratazione, tempi
-  - Calcola un **punteggio di confidenza** (0-100%)
-- Genera report `.validazione.md` accanto a ogni ricetta
-- Riepilogo finale con media confidenza
+Per ogni ricetta cerca fonti autorevoli via SerpAPI, ne estrae gli
+ingredienti e calcola un punteggio di confidenza, salvando un report
+`.validazione.md` accanto alla ricetta.
 
-**Output:**
-```
-🟢 85% — Pane alle Noci e Olive
-🟡 62% — Focaccia Barese
-🔴 41% — Pizza in Teglia
-```
-
----
-
-### 🔬 `--verifica` — Verifica qualità con Claude AI
-
-Claude agisce da **tecnologo alimentare** e verifica la correttezza tecnica di ogni ricetta.
+### 🔬 `--verifica` — Verifica qualità con l'AI
 
 ```bash
-# Tutte le ricette
 node crea-ricetta.js --verifica
-
-# Singola ricetta
-node crea-ricetta.js --verifica-ricetta ricette/pizza/napoletana.html
-
-# Forza ri-verifica (ignora cache)
-node crea-ricetta.js --verifica --forza
+node crea-ricetta.js --verifica-ricetta ricette/pizza/napoletana.json
+node crea-ricetta.js --verifica --forza     # ignora la cache
 ```
 
-**Cosa verifica Claude:**
-| Area | Controlli |
-|------|-----------|
-| Dosi | Rapporti farina/acqua, % lievito, sale |
-| Temperature | Max 280°C per forni casalinghi |
-| Tempi | Coerenza lievitazione vs quantità lievito |
-| Setup | Spirale/Estrusore/Mano appropriato per categoria |
-| Cottura | Sezione presente per pane/pizza con pietra refrattaria, vapore |
-| Glossario | Identifica termini tecnici non spiegati |
+Claude fa da tecnologo alimentare su dosi, temperature, tempi, setup,
+cottura e glossario. La cache si basa sull'hash dei file: una ricetta non
+modificata viene saltata.
 
-**Cache intelligente:** usa un indice con hash MD5 dei file. Se la ricetta non è stata modificata, la salta (usa `--forza` per ri-verificare).
+> Entrambi cercavano file `.html`, che sul sito non esistono più: finivano in
+> due secondi senza nominare nessuna ricetta e stampavano `Media: NaN/100`,
+> cioè dicevano di aver controllato tutto senza aver aperto niente (punto 12
+> del [CHECKUP](./CHECKUP.md)). **Risolto:** l'elenco lo costruisce ora
+> `elencaRicetteJson`, esportata da `src/verify.js` e usata sia da
+> `verifyAllRecipes` (stesso file) sia da `validateAllRecipes` in
+> `src/validator.js`, e un elenco vuoto è un errore esplicito invece di un
+> riepilogo vuoto.
 
----
-
-### 🔄 `--sync-cards` — Ricostruisce `recipes.json`
-
-Scannerizza tutti i file HTML in `ricette/` e ricostruisce il database JSON da zero.
+### 🔄 `--sync-cards` — Ricostruisce `public/recipes.json`
 
 ```bash
 node crea-ricetta.js --sync-cards
 ```
 
-**Quando usarlo:**
-- Dopo aver modificato/cancellato manualmente dei file HTML
-- Se `recipes.json` è disallineato o corrotto
-- Dopo un batch di operazioni
+Rilegge i JSON delle ricette e ricostruisce l'indice della homepage. Utile
+dopo modifiche o cancellazioni manuali.
 
-Estrae da ogni HTML: titolo, slug, categoria, emoji, immagine, idratazione, temperatura, tempo, setup.
-
----
-
-### 🖼️ `--aggiorna-immagini` — Scarica/aggiorna immagini
-
-Cerca e scarica immagini stock per le ricette.
+### 🖼️ `--aggiorna-immagini` e `--refresh-image`
 
 ```bash
-# Tutte le ricette
-node crea-ricetta.js --aggiorna-immagini
-
-# Singola ricetta (per slug o parte del nome)
+node crea-ricetta.js --aggiorna-immagini              # tutte
 node crea-ricetta.js --aggiorna-immagini --nome "focaccia"
+node crea-ricetta.js --refresh-image focaccia-barese  # solo la copertina
 ```
 
-**Provider in cascata:** Pexels → Unsplash → Pixabay → Wikimedia Commons
+Provider in cascata, scoring sui risultati (keyword food obbligatorie,
+penalità non-food, bonus landscape/hi-res), deduplica tramite
+`data/used-images.json`.
 
-Ogni immagine è:
-- Cercata con query intelligenti (traduzione IT→EN, keywords AI)
-- Filtrata con scoring: food-keywords obbligatori, penalità non-food, bonus landscape/hi-res
-- Deduplicata (nessuna immagine riusata tra ricette)
-- Salvata in `public/images/ricette/<categoria>/<slug>.jpg`
+### 📖 `--trascrivi-philips` / 📸 `--trascrivi-immagini`
 
----
-
-### 📖 `--trascrivi-philips` — Trascrivi PDF Philips
-
-Trascrivi i PDF del ricettario Philips Pasta Maker Serie 7000.
-
-```bash
-node crea-ricetta.js --trascrivi-philips
-```
-
-Legge i PDF da `public/pdf/`, li divide in batch di 5 pagine, e usa Claude Vision per estrarre le ricette.
-
----
-
-### 📸 `--trascrivi-immagini` — Trascrivi immagini Philips
-
-Pipeline completa per digitalizzare il ricettario Philips da immagini PNG:
-
-```bash
-node crea-ricetta.js --trascrivi-immagini
-node crea-ricetta.js --trascrivi-immagini --no-image --no-enrich  # veloce, senza extra
-```
-
-**Pipeline 3 step:**
-1. **OCR locale** con Surya (PyTorch GPU CUDA) → estrae testo da tutte le immagini
-2. **Batch a Claude** (10 pagine + 2 overlap per batch) → struttura in JSON
-3. **Per ogni ricetta**: deduplicazione → arricchimento SerpAPI → immagine → HTML → inject
-
-**Deduplicazione a 3 livelli:**
-- Slug identico (su disco o nel run corrente)
-- Fuzzy match titolo (normalizzazione + 70% overlap parole)
-- Indice pagine già processate (`data/image-process-index.json`)
+Digitalizzazione del ricettario Philips Pasta Maker Serie 7000: dai PDF in
+`public/pdf/` oppure da immagini PNG passando per l'OCR locale Surya
+(PyTorch + CUDA). Deduplica su slug, titolo fuzzy e indice delle pagine già
+processate (`data/image-process-index.json`).
 
 ---
 
 ## Flag Globali
 
-Questi flag funzionano con **tutti** i comandi:
-
 | Flag | Descrizione |
-|------|-------------|
-| `--preview` | Anteprima: mostra riepilogo + apre browser, conferma (s/n) prima di pubblicare |
-| `--dry-run` | Mostra il JSON generato senza scrivere file |
-| `--verbose` / `-v` | Output dettagliato (mostra debug) |
+|---|---|
+| `--preview` | Riepilogo + apertura nel browser, conferma prima di pubblicare |
+| `--dry-run` | Mostra il JSON senza scrivere file |
+| `--verbose` / `-v` | Output dettagliato |
 | `--quiet` / `-q` | Output minimale (solo errori) |
-| `--no-image` | Salta la ricerca e il download di immagini |
-| `--no-inject` | Non aggiunge la card a `recipes.json` |
-| `--no-validate` | Salta il cross-check con fonti reali |
-| `--output <path>` | Percorso output custom per il Ricettario |
+| `--no-image` | Salta ricerca e download immagini |
+| `--no-inject` | Salta l'inserimento diretto della card in `public/recipes.json` |
+| `--no-valida` (o `--no-validate`) | Salta il cross-check con le fonti |
+| `--no-enrich` | Salta l'arricchimento SerpAPI + Claude in `--trascrivi-immagini` |
+| `--keepExisting` | Non sovrascrive una ricetta già presente: la salva come `<slug>-v2` |
+| `--forza` | Ignora la cache di verifica |
+| `--output <path>` | Percorso del repo del sito, alternativo a `RICETTARIO_PATH` |
+
+> **`--no-valida` è l'unico modo per non spendere in validazione.** Il
+> cross-check chiama SerpAPI e Claude, e `--dry-run` **non** lo evita: salta
+> le scritture, non le chiamate a pagamento.
+>
+> Per un periodo l'help scriveva `--no-valida` mentre il codice leggeva solo
+> `--no-validate`, quindi la forma documentata non spegneva niente. Oggi
+> `publishRecipe` in `src/publisher.js` accetta entrambe
+> (`skipValidation = !!(args['no-valida'] || args['no-validate'])`): scrivi
+> quella che preferisci.
+>
+> Vale per la pipeline di pubblicazione. L'altra spesa a chiamata sta in
+> `--trascrivi-immagini`, dove l'arricchimento SerpAPI + Claude è governato da
+> un flag suo, `--no-enrich` (`trascriviImmagini` in
+> `src/commands/trascrivi.js`).
+
+> `--no-inject` salta solo `injectCard`, cioè l'aggiunta immediata della card
+> all'indice. `public/recipes.json` viene comunque rigenerato subito dopo dal
+> passo `sync-cards` di `publishRecipe` (`src/publisher.js`, la chiamata
+> `await syncCards({})` che segue l'inject), che rilegge tutte le ricette:
+> il flag non tiene la ricetta fuori dall'indice, evita solo la doppia
+> scrittura.
 
 ---
 
-## Architettura Moduli
+## Struttura
 
 ```
 crea-ricetta.js          ← Dispatcher CLI
+dashboard.js             ← Avvio dashboard web (porta 3500)
+deploy.bat               ← Controlli → commit → push → deploy (vedi sotto)
 │
-├── src/commands/
-│   ├── genera.js        ← Flusso principale (URL / nome)
-│   ├── testo.js         ← Inserimento da testo libero
-│   ├── scopri.js        ← Ricerca Google + selezione interattiva
-│   ├── trascrivi.js     ← OCR Philips (PDF + immagini)
-│   ├── valida.js        ← Cross-check fonti reali
-│   ├── verifica.js      ← QA con Claude AI
-│   ├── sync-cards.js    ← Ricostruzione recipes.json
-│   └── immagini.js      ← Download immagini stock
+├── src/commands/        ← Un file per comando CLI
+│   genera.js · testo.js · scopri.js · trascrivi.js · valida.js
+│   verifica.js · sync-cards.js · immagini.js · refresh-image.js
 │
-├── src/
-│   ├── publisher.js     ← Pipeline unificata (validazione → JSON → HTML → inject)
-│   ├── scraper.js       ← Estrazione dati da URL (JSON-LD / CSS / Puppeteer)
-│   ├── enhancer.js      ← Claude AI: rewriting + strutturazione ricette
-│   ├── image-finder.js  ← Ricerca immagini multi-provider con scoring
-│   ├── injector.js      ← Aggiornamento recipes.json
-│   ├── validator.js     ← SerpAPI search + scraping fonti + confronto
-│   ├── verify.js        ← Verifica qualità Claude + trascrizione PDF
-│   ├── ocr.js           ← Bridge Node → Python (Surya OCR locale GPU)
-│   └── discovery.js     ← Ricerca ricette su Google
+├── src/                 ← Motore condiviso CLI + dashboard
+│   publisher.js         ← Pipeline unificata (validazione → JSON → indice)
+│   scraper.js           ← Estrazione da URL (JSON-LD / CSS / Puppeteer)
+│   enhancer.js          ← Riscrittura e strutturazione con l'AI
+│   prompt-templates.js  ← Prompt riusati dai vari flussi
+│   recipe-schema.js     ← Schema della ricetta
+│   image-finder.js      ← Ricerca immagini multi-provider con scoring
+│   image-picker.js      ← Selezione immagine
+│   injector.js          ← Aggiornamento di public/recipes.json
+│   validator.js         ← Cross-check con fonti reali
+│   verify.js            ← Verifica qualità con l'AI
+│   quality.js           ← Punteggi qualità (indice per i badge)
+│   sensory.js           ← Profilo sensoriale
+│   seo-keywords.js      ← Keyword e volumi di ricerca
+│   discovery.js         ← Ricerca ricette su Google
+│   ocr.js               ← Bridge Node → Python (Surya OCR locale)
+│   constants.js         ← Percorsi e costanti condivise
 │
-├── src/utils/
-│   ├── api.js           ← Wrapper Claude API (retry, streaming, JSON parser)
-│   └── logger.js        ← Logger CLI con livelli e colori
+├── src/utils/           ← api.js (client Claude/Gemini, con retry e
+│                          rotazione delle chiavi) · logger.js (livelli
+│                          di log, --verbose / --quiet)
 │
-├── data/                ← Cache e indici
-│   ├── ocr-results.json
-│   ├── verify-index.json
-│   └── image-process-index.json
+├── src/server/          ← Dashboard lato server
+│   index.js · routes.js · ws-handler.js
+│   routes/ (recipes, image, quality, categories, seo, settings)
 │
-└── ocr-surya.py         ← Script Python per OCR locale (Surya + CUDA)
+├── src/dashboard/       ← Dashboard lato browser (HTML/CSS/JS senza build)
+│   index.html · dashboard.js · modules/ · editor/
+│
+├── data/                ← Cache e indici locali
+│   image-cache.json · used-images.json · verify-index.json
+│   quality-index.json · seo-cache.json · image-process-index.json
+│   ocr-*.json · backup-ricette/ · logs/
+│
+├── archive/             ← Script dismessi, tenuti solo come storia. Non
+│                          fanno parte della pipeline: non lanciarli.
+│
+├── scripts/             ← Manutenzione, non pipeline
+│   check-env.mjs        ← npm run check:env (allineamento .env / README)
+│
+└── ocr-surya.py         ← OCR locale (Surya + CUDA)
 ```
+
+**Tutti i percorsi sono ancorati al modulo, non alla cartella di lancio.**
+`quality-index.json` stava nella radice di `tools/` e `src/quality.js` lo
+cercava con `resolve(process.cwd(), ...)`: avviando la dashboard da un'altra
+cartella l'indice veniva ricreato vuoto altrove e i badge di qualità
+scomparivano senza nessun errore. Ora sta in `data/` come gli altri, risolto a
+partire da `import.meta.url`. Se aggiungi un indice, fai lo stesso: `cwd()` non
+è una posizione, è una coincidenza.
 
 ---
 
-## Output Generato
+## Output prodotto
 
-Per ogni ricetta, il sistema produce:
+| File | Posizione (nel repo del sito) | Contenuto |
+|---|---|---|
+| **Ricetta** | `ricette/<categoria>/<slug>.json` | Dati strutturati della ricetta |
+| **Indice** | `public/recipes.json` | Metadati per la homepage — **generato**, non modificarlo a mano |
+| **Immagine** | `public/images/ricette/<categoria>/<slug>.webp` (+ `.avif`) | Foto di copertina, già ottimizzata |
+| **Report validazione** | `ricette/<categoria>/<slug>.validazione.md` | Cross-check con le fonti |
+| **Report verifica** | `ricette/<categoria>/<slug>.verifica.md` | QA tecnica dell'AI |
 
-| File | Posizione | Contenuto |
-|------|-----------|-----------|
-| **HTML** | `ricette/<categoria>/<slug>.html` | Pagina completa con hero, ingredienti, procedimenti, glossario |
-| **JSON** | `ricette/<categoria>/<slug>.json` | Dati strutturati della ricetta |
-| **Immagine** | `public/images/ricette/<categoria>/<slug>.jpg` | Foto stock scaricata |
-| **Entry JSON** | `public/recipes.json` | Metadati per il listing in homepage |
-| **Report validazione** | `ricette/<categoria>/<slug>.validazione.md` | Cross-check con fonti |
-| **Report verifica** | `ricette/<categoria>/<slug>.verifica.md` | QA tecnica Claude |
-
-### Struttura JSON Ricetta
-
-Il JSON interno generato da Claude ha questa struttura:
-
-```jsonc
-{
-  "title": "Pizza Contemporanea Canotto",
-  "slug": "pizza-contemporanea-canotto",
-  "emoji": "🍕",
-  "description": "Meta description per SEO (max 160 char)",
-  "subtitle": "Biga 30% | Idratazione 72% | Blend Nuvola-Saccorosso",
-  "category": "Pizza",           // Pane | Pizza | Pasta | Lievitati | Dolci
-  "hydration": 72,
-  "targetTemp": "23°C",
-  "fermentation": "~24h",
-  "totalFlour": 3000,
-  "ingredients": [
-    { "name": "Farina", "note": "(nota tecnica)", "grams": 1800,
-      "setupNote": { "spirale": "ghiacciata 2-4°C", "mano": "20-22°C" } }
-  ],
-  "suspensions": [               // Opzionale: noci, olive, uvetta...
-    { "name": "Olive", "note": "(denocciolate)", "grams": 160 }
-  ],
-  "stepsSpiral": [               // Pane/Pizza: impastatrice a spirale
-    { "title": "Autolisi", "text": "Descrizione dettagliata..." }
-  ],
-  "stepsHand": [                 // Pane/Pizza: procedimento a mano
-    { "title": "Impasto", "text": "..." }
-  ],
-  "stepsExtruder": [             // Pasta: estrusore Philips
-    { "title": "Setup", "text": "Montare la trafila..." }
-  ],
-  "stepsCondiment": [            // Opzionale: sugo/salsa di accompagnamento
-    { "title": "Preparazione", "text": "..." }
-  ],
-  "flourTable": [                // Consigli farine
-    { "type": "Tipo 0", "w": "260-280", "brands": "Caputo, Molino Grassi" }
-  ],
-  "baking": {                    // Pane/Pizza: sezione cottura
-    "temperature": "250°C",
-    "time": "25-30 minuti",
-    "tips": ["Preriscaldare pietra refrattaria 45 min", "Vapore primi 10 min"]
-  },
-  "glossary": [                  // Termini tecnici
-    { "term": "Autolisi", "definition": "Riposo farina+acqua senza lievito..." }
-  ],
-  "alert": "Testo dell'alert professionale (cosa NON fare)",
-  "proTips": ["Tip 1", "Tip 2"],
-  "imageKeywords": ["neapolitan pizza artisan", "pizza dough"],
-  "tags": ["Pizza", "Biga", "Lievitazione lunga"]
-}
-```
+I file `.backup.json` e `.pre-edit.json` che trovi accanto alle ricette sono
+copie di sicurezza scritte prima di una modifica. Il sito le ignora.
 
 ---
 
-## Esempi Completi
+## Pubblicazione
 
-```bash
-# Importa una ricetta da GialloZafferano
-node crea-ricetta.js --url "https://giallozafferano.it/ricetta/Focaccia.html"
+**Il push su `main` non pubblica niente.** GitHub Pages serve dal branch
+`gh-pages`, che viene aggiornato solo da `npm run deploy` dentro il repo del
+sito — e quel comando è preceduto da `npm run check`, il cancello che
+verifica dati, build e pre-rendering.
 
-# Genera una pizza con parametri specifici
-node crea-ricetta.js --nome "Pizza Napoletana" --idratazione 65 --tipo Pizza
+Il flusso completo (controlli → revisione → commit → push → deploy) sta in
+[`deploy.bat`](./deploy.bat), qui dentro `tools/`:
 
-# Inserisci la tua ricetta personale
-node crea-ricetta.js --testo mia-pizza.txt --tipo Pizza
-
-# Cerca e genera ricette di pasta
-node crea-ricetta.js --scopri "orecchiette pugliesi" --quante 5
-
-# Batch: importa 3 ricette in sequenza
-node crea-ricetta.js --url "url1,url2,url3"
-
-# Solo preview JSON (senza scrivere file)
-node crea-ricetta.js --nome "Ciabatta" --dry-run
-
-# Genera senza immagini e senza validazione (veloce)
-node crea-ricetta.js --nome "Pane Cafone" --no-image --no-validate
-
-# QA completa del ricettario
-node crea-ricetta.js --valida
-node crea-ricetta.js --verifica
-
-# Ricostruisci l'indice dopo modifiche manuali
-node crea-ricetta.js --sync-cards
-
-# Aggiorna tutte le immagini
-node crea-ricetta.js --aggiorna-immagini
+```bat
+deploy.bat "aggiunta focaccia genovese"
 ```
+
+Senza argomenti il messaggio di commit te lo chiede (serve per il doppio
+clic, che argomenti non ne può passare). L'ordine è: `npm run check` →
+`git status` dei due repo con conferma → commit e push → `npm run deploy`.
+Se salta qualcosa — controlli, `git add`, commit, **push** o deploy — si
+ferma lì e te lo dice: non arriva mai a scrivere "pubblicato" quando non lo
+è.
+
+### Il pulsante Deploy (e perché non va cancellato niente)
+
+Nella cartella **sopra** i due repo (`Progetti personali\Ricettario\`) c'è
+`Deploy.exe`: un launcher .NET di venti righe (sorgente `DeployLauncher.cs`,
+compilato da `build-deploy-exe.ps1`) che fa una cosa sola, aprire `cmd /k`
+sul `deploy.bat` che trova **accanto a sé**. Il percorso è compilato dentro
+l'eseguibile: non è configurabile. Lo stesso script di build crea anche una
+scorciatoia `Deploy Ricettario.lnk` sul Desktop che punta all'exe (oggi sul
+Desktop non c'è: se la rimetti, vale lo stesso discorso).
+
+Per questo il `deploy.bat` di quella cartella **non va cancellato**. Oggi non
+è più il vecchio script: è uno stub di due righe che passa il controllo a
+`tools\deploy.bat`. È l'unica cosa che tiene vivo il pulsante — cancellarlo
+lascia il doppio clic su una finestra nera che dice "impossibile trovare il
+file". Se un giorno vuoi che l'exe punti direttamente qui, cambia la riga 10
+di `DeployLauncher.cs` e ricompila; sappi però che `build-deploy-exe.ps1`
+ricostruisce anche l'icona a partire da un PNG in una cartella temporanea
+che **non esiste più**, quindi lo script si ferma al primo passo così com'è.
+
+> **Cosa faceva il vecchio `deploy.bat`** (fino al 26/07/2026, stessa
+> cartella): `git add -A` + `git commit -m "deploy manuale"` + `push` su
+> entrambi i repo, e **solo dopo** `npm run deploy` — cioè i controlli
+> giravano a commit già spedito. Conseguenze ancora visibili: 73 commit su
+> 118 chiamati tutti "deploy manuale", una copia morta della cache
+> immagini da 6,9 MB committata in radice (`image-cache.json`, che nessun
+> file legge — quella viva è `data/image-cache.json`), e il testo incollato
+> di ogni ricetta finito nella storia git (`data/_tmp_testo.txt`, ora
+> ignorato).
 
 ---
 
 ## Requisiti
 
-- **Node.js** ≥ 18 (usa `fetch` nativo e `import.meta`)
-- **Python** 3.13 con PyTorch + Surya (solo per `--trascrivi-immagini`, richiede GPU CUDA)
-- **Chromium** (scaricato automaticamente da Puppeteer per lo scraping browser)
+- **Node.js ≥ 20.18.1** — è il minimo richiesto dalle dipendenze (`cheerio`
+  chiede `>=20.18.1`, `pdf-to-img` chiede `>=20`). Il vincolo è dichiarato
+  nel campo `engines` di `package.json`.
+- **Python 3.13** con PyTorch + Surya — solo per `--trascrivi-immagini`,
+  richiede GPU CUDA.
+- **Chromium** — scaricato in automatico da Puppeteer per lo scraping.
+
+### Manutenzione
+
+- **Revoca la vecchia `SERPAPI_KEY_2`.** Fino al 26/07/2026 `.env.example`
+  conteneva il valore vero di quella chiave invece di un segnaposto. È stato
+  tolto, ma toglierlo non la disattiva: resta nella storia di git (commit
+  `848f474`, visibile con `git log -p -- .env.example`) ed è tuttora la
+  chiave in uso nel `.env` locale. Rigenerala su serpapi.com e aggiorna il
+  `.env`; finché non lo fai, quella chiave è pubblica.
+- `npm audit` oggi dice **11 vulnerabilità (1 bassa, 2 medie, 7 alte, 1
+  critica)**, in buona parte transitive e arrivate da Puppeteer. Lo strumento
+  gira in locale e non è esposto, quindi non è un'emergenza, ma vale la pena
+  passare `npm audit fix` ogni tanto — e ricordare che `sharp` richiede un
+  aggiornamento major.
+- **Rilancia `npm install`.** `pdf-poppler` e `slugify` sono stati tolti da
+  `package.json` (nessun file del progetto li nominava), ma finché non
+  reinstalli restano in `package-lock.json` e soprattutto dentro
+  `node_modules/`: `npm ls --depth=0` li marca `extraneous` e `pdf-poppler`
+  da solo occupa 87 MB. Non è `npm ci` a rompersi — provato, `npm ci
+  --dry-run` con questi due file esce 0 e non li installa: è spazio e
+  confusione che restano lì finché non riallinei.
