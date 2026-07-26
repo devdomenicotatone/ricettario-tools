@@ -13,11 +13,20 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
-import { resolve } from 'path';
 import { log } from '../utils/logger.js';
 import { searchAllProviders, downloadImage, buildAttribution } from '../image-finder.js';
-import { CATEGORY_FOLDERS } from '../constants.js';
 import { startImagePicker } from '../image-picker.js';
+import { aggiornaIndiceImmagini } from '../utils/indice-immagini.js';
+import {
+    slugValido,
+    ERRORE_SLUG,
+    cartellaCategoriaSeValida,
+    etichetteAmmesse,
+    radiceRicettario,
+    percorsoRicetta,
+    percorsoImmagineRicetta,
+    riferimentoImmagineRicetta,
+} from '../utils/percorsi-ricette.js';
 
 export async function refreshImage(args) {
     const slug = args['refresh-image'];
@@ -26,28 +35,35 @@ export async function refreshImage(args) {
         log.info('Esempio: --refresh-image focaccia-genovese-classica');
         process.exit(1);
     }
+    if (!slugValido(slug)) {
+        log.error(`${ERRORE_SLUG} — ricevuto: "${slug}"`);
+        process.exit(1);
+    }
 
-    const ricettarioPath = resolve(
-        process.cwd(),
-        args.output || process.env.RICETTARIO_PATH || '../Ricettario'
-    );
+    const ricettarioPath = radiceRicettario(args.output);
 
     // ── Trova il JSON della ricetta ──
     let jsonFile = null;
     let category = null;
 
+    // `--tipo` che il registry non conosce non diventa una cartella: prima
+    // `args.tipo.toLowerCase()` cercava in `ricette/secondi piatti/` (con lo
+    // spazio), non trovava niente e si passava comunque alla ricerca completa.
     if (args.tipo) {
-        const folder = CATEGORY_FOLDERS[args.tipo] || args.tipo.toLowerCase();
-        const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
-        if (existsSync(candidate)) {
-            jsonFile = candidate;
-            category = args.tipo;
+        if (cartellaCategoriaSeValida(args.tipo)) {
+            const candidate = percorsoRicetta(args.tipo, slug, { ricettarioPath });
+            if (existsSync(candidate)) {
+                jsonFile = candidate;
+                category = args.tipo;
+            }
+        } else {
+            log.warn(`Categoria "${args.tipo}" non dichiarata in js/categories.js: cerco in tutte le categorie.`);
         }
     }
 
     if (!jsonFile) {
-        for (const [cat, folder] of Object.entries(CATEGORY_FOLDERS)) {
-            const candidate = resolve(ricettarioPath, 'ricette', folder, `${slug}.json`);
+        for (const cat of etichetteAmmesse()) {
+            const candidate = percorsoRicetta(cat, slug, { ricettarioPath });
             if (existsSync(candidate)) {
                 jsonFile = candidate;
                 category = cat;
@@ -67,7 +83,6 @@ export async function refreshImage(args) {
     recipe.slug = slug;
     recipe.category = category;
 
-    const catFolder = CATEGORY_FOLDERS[category] || category.toLowerCase();
     const oldUrl = recipe._originalImageUrl || '';
 
     // ── Cerca su TUTTI i provider ──
@@ -97,13 +112,12 @@ export async function refreshImage(args) {
     log.info(`   ${selectedImage.width}×${selectedImage.height} — ${selectedImage.provider}`);
 
     // ── Elimina immagini vecchie ──
-    const oldWebp = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
-    const oldAvif = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.avif`);
-    if (existsSync(oldWebp)) unlinkSync(oldWebp);
+    const localPath = percorsoImmagineRicetta(category, slug, { ricettarioPath });
+    const oldAvif = percorsoImmagineRicetta(category, slug, { ricettarioPath, estensione: '.avif' });
+    if (existsSync(localPath)) unlinkSync(localPath);
     if (existsSync(oldAvif)) unlinkSync(oldAvif);
 
     // ── Scarica nuova immagine ──
-    const localPath = resolve(ricettarioPath, 'public', 'images', 'ricette', catFolder, `${slug}.webp`);
     try {
         await downloadImage(selectedImage.url, localPath);
         log.info(`💾 Scaricata: ${localPath}`);
@@ -113,19 +127,29 @@ export async function refreshImage(args) {
     }
 
     // ── Aggiorna index persistente ──
-    const indexFile = resolve(process.cwd(), 'data', 'used-images.json');
-    let index = {};
-    try { if (existsSync(indexFile)) index = JSON.parse(readFileSync(indexFile, 'utf-8')); } catch {}
-    // Rimuovi vecchia URL
-    if (oldUrl && index[oldUrl]) delete index[oldUrl];
-    // Aggiungi nuova
-    index[selectedImage.url] = slug;
-    writeFileSync(indexFile, JSON.stringify(index, null, 2), 'utf-8');
+    // Il vecchio URL lo libera il modulo condiviso, e SOLO se era di questa
+    // ricetta: qui bastava che esistesse (`if (oldUrl && index[oldUrl]) delete`)
+    // per cancellarlo anche quando apparteneva a un'altra, che restava così
+    // senza protezione e poteva vedersi riproporre la propria foto.
+    const esitoIndice = await aggiornaIndiceImmagini({
+        slug,
+        nuovoUrl: selectedImage.url,
+        vecchioUrl: oldUrl,
+    });
+    log.info(`🗂️  Indice immagini usate: ${esitoIndice.totale} voci${esitoIndice.rimosso ? ' (vecchio URL liberato)' : ''}`);
 
     // ── Aggiorna JSON ──
-    recipe.image = `images/ricette/${catFolder}/${slug}.webp`;
+    recipe.image = riferimentoImmagineRicetta(category, slug);
     recipe.imageAttribution = buildAttribution(selectedImage);
     recipe._originalImageUrl = selectedImage.url;
+    // URI della licenza e pagina d'origine: obbligatori per le CC, e ora
+    // arrivano dai provider invece di essere indovinati dal testo del credito.
+    // Si cancellano quando la foto nuova non li ha, altrimenti resterebbero
+    // quelli della foto precedente — un credito che indica la licenza sbagliata.
+    if (selectedImage.licenseUrl) recipe.imageLicenseUrl = selectedImage.licenseUrl;
+    else delete recipe.imageLicenseUrl;
+    if (selectedImage.sourceUrl) recipe.imageSourceUrl = selectedImage.sourceUrl;
+    else delete recipe.imageSourceUrl;
 
     const persistentJson = { ...recipe };
     delete persistentJson._validation;

@@ -13,26 +13,17 @@
  *   - Per slug: non scarica se file già esiste su disco
  */
 
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, copyFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
-
-// ── Index persistente immagini già usate ──
-const IMAGE_INDEX_FILE = resolve(process.cwd(), 'data', 'used-images.json');
-
-function loadImageIndex() {
-    try {
-        if (existsSync(IMAGE_INDEX_FILE)) {
-            return JSON.parse(readFileSync(IMAGE_INDEX_FILE, 'utf-8'));
-        }
-    } catch {}
-    return {}; // { url: slug }
-}
-
-function saveImageIndex(index) {
-    const dir = dirname(IMAGE_INDEX_FILE);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    writeFileSync(IMAGE_INDEX_FILE, JSON.stringify(index, null, 2), 'utf-8');
-}
+import { pathToFileURL } from 'url';
+// Indice delle foto già usate: fonte UNICA, niente copia locale. Qui c'erano
+// `loadImageIndex`/`saveImageIndex`, che leggevano prima di una ricerca lunga e
+// riscrivevano tutto dopo — cancellando quanto il server aveva scritto nel
+// frattempo. Il modulo condiviso mette lock e scrittura atomica.
+import { leggiIndiceImmagini, segnaUrlUsato } from './utils/indice-immagini.js';
+// Scrittura tmp+rename: una sola implementazione per tutto il progetto (qui ce
+// n'era una terza, sullo STESSO data/image-cache.json protetto da withCacheLock).
+import { withCacheLock, scriviJsonAtomico } from './server/routes/_helpers.js';
 
 const MIN_WIDTH = 600;
 const MIN_HEIGHT = 400;
@@ -175,8 +166,255 @@ async function searchPixabay(query, limit = 15) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  LICENZE: cosa possiamo davvero usare
+// ══════════════════════════════════════════════════════════
+//
+// La pipeline ridimensiona ogni foto a 1800px e la riconverte in WebP + AVIF:
+// tecnicamente è un'opera derivata. Le licenze ND (NoDerivatives) vietano di
+// distribuire opere derivate, quindi quelle immagini NON sono utilizzabili e
+// vengono scartate all'origine, prima di arrivare al selettore.
+// Le NC (NonCommercial) restano scaricabili — il sito non vende niente — ma
+// vanno dichiarate: sono l'unica scelta che vincola il futuro del sito, e chi
+// sceglie la foto deve vederlo prima di cliccare, non dopo la pubblicazione.
+
+function analizzaLicenza(testoLicenza) {
+    const testo = String(testoLicenza || '').toLowerCase();
+    // "nd"/"nc" vanno riconosciute come sigle isolate (by-nc-nd, CC BY-ND 4.0),
+    // non dentro altre parole
+    const sigla = (s) => new RegExp(`(^|[^a-z])${s}([^a-z]|$)`).test(testo);
+    return {
+        senzaDerivate: sigla('nd') || testo.includes('noderiv') || testo.includes('no deriv'),
+        nonCommerciale: sigla('nc') || testo.includes('noncommercial')
+            || testo.includes('non-commercial') || testo.includes('non commercial'),
+    };
+}
+
+/**
+ * Scarta le immagini con licenza ND e marca quelle NC.
+ * Esportata perché non basta applicarla alle ricerche nuove: la cache dei
+ * candidati era stata riempita prima che esistesse, e il selettore la mostra
+ * così com'è. Per quelle vecchie serve una passata a parte, che NON parte da
+ * sola: `riparaCacheLicenze` qui sotto, oppure `sanificaGruppiCache` applicata
+ * in lettura da chi la cache la legge.
+ * @param {Array} immagini - risultati grezzi del provider (o letti dalla cache)
+ * @param {string} nomeProvider - solo per il messaggio a schermo
+ * @param {boolean} [silenzioso] - niente log (ripulitura in blocco della cache)
+ * @returns {Array} le sole immagini utilizzabili
+ */
+export function filtraPerLicenza(immagini, nomeProvider, silenzioso = false) {
+    const utilizzabili = [];
+    let scartateND = 0;
+    let contaNC = 0;
+
+    for (const img of immagini) {
+        const { senzaDerivate, nonCommerciale } = analizzaLicenza(img.license);
+        if (senzaDerivate) {
+            scartateND++;
+            continue;
+        }
+        if (nonCommerciale) {
+            img.nonCommerciale = true;
+            img.avvisoLicenza = '⚠️ USO NON COMMERCIALE — la licenza vieta lo sfruttamento commerciale della foto';
+            contaNC++;
+        }
+        utilizzabili.push(img);
+    }
+
+    if (!silenzioso && scartateND > 0) {
+        console.log(`      🚫 ${nomeProvider}: ${scartateND} immagini scartate (licenza ND: vieta le opere derivate, e noi ridimensioniamo)`);
+    }
+    if (!silenzioso && contaNC > 0) {
+        console.log(`      ⚠️  ${nomeProvider}: ${contaNC} immagini con licenza NC (uso non commerciale) — segnalate nel selettore`);
+    }
+
+    return utilizzabili;
+}
+
+// L'avviso va in testa al titolo perché il titolo è l'unico testo della foto
+// che il selettore mostra davvero (`modules/image-picker.js`: `modal-img-title`,
+// e `src/image-picker.js`: `card-title`). Scritto per esteso e non come sigla:
+// "NC" non dice niente a chi sta scegliendo una foto. Il titolo sta su una riga
+// sola con i puntini di sospensione (`css/modal.css`: `text-overflow: ellipsis`),
+// quindi in testa l'avviso resta leggibile anche quando il titolo viene tagliato.
+// La frase per esteso resta in `avvisoLicenza`, pronta per quando la modale
+// mostrerà la licenza accanto ad autore e dimensioni.
+const PREFISSO_NC = '⚠️ NON COMMERCIALE — ';
+
+/** Mette l'avviso NC in testa al titolo. Idempotente: non lo raddoppia. */
+function marcaTitoloNC(img) {
+    if (img && img.nonCommerciale && !String(img.title || '').startsWith('⚠️')) {
+        img.title = `${PREFISSO_NC}${img.title || 'Senza titolo'}`;
+    }
+    return img;
+}
+
+/**
+ * Applica il filtro a risultati GIÀ raggruppati per provider — la forma con
+ * cui finiscono in cache e con cui tornano alla UI.
+ * @param {Array<{provider?: string, images?: Array}>} gruppi
+ * @returns {{gruppi: Array, scartateND: number, marcateNC: number}}
+ */
+export function sanificaGruppiCache(gruppi) {
+    let scartateND = 0;
+    let marcateNC = 0;
+
+    const puliti = (Array.isArray(gruppi) ? gruppi : []).map(gruppo => {
+        const originali = Array.isArray(gruppo?.images) ? gruppo.images : [];
+        const utilizzabili = filtraPerLicenza(originali, gruppo?.provider || '?', true);
+        scartateND += originali.length - utilizzabili.length;
+        for (const img of utilizzabili) {
+            if (img.nonCommerciale && !String(img.title || '').startsWith('⚠️')) marcateNC++;
+            marcaTitoloNC(img);
+        }
+        return { ...gruppo, images: utilizzabili };
+    });
+
+    return { gruppi: puliti, scartateND, marcateNC };
+}
+
+// Marca lasciata dentro OGNI VOCE ripulita, non come chiave in cima alla
+// cache: quella mappa è slug→risultati e c'è chi la conta aspettandosi ricette
+// (`rebuild-image-cache.js:43` stampa `Object.keys(cache).length` come numero
+// di entry). Una chiave finta lì in mezzo diventerebbe una ricetta fantasma,
+// e il prossimo che itera dovrebbe ricordarsi di saltarla.
+const MARCA_LICENZE = '_licenzeFiltrate';
+const VERSIONE_FILTRO_LICENZE = 1;
+
+/** Copia di sicurezza prima di una migrazione che ELIMINA record. */
+function copiaDiSicurezza(percorso) {
+    const ora = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+$/, '');
+    const destinazione = `${percorso.replace(/\.json$/i, '')}.backup-${ora}.json`;
+    copyFileSync(percorso, destinazione);
+    return destinazione;
+}
+
+/**
+ * Migrazione UNA-TANTUM della cache dei candidati su disco.
+ *
+ * `filtraPerLicenza` copre le ricerche NUOVE, ma il pulsante immagine della
+ * dashboard non ne fa nessuna: `/api/refresh-image` con `forceRefresh=false`
+ * restituisce `data/image-cache.json` così com'è, e quel file è stato riempito
+ * prima che il filtro esistesse. Le voci vecchie contengono quindi immagini ND
+ * (che non possiamo ridimensionare) e NC senza avviso.
+ *
+ * NON GIRA DA SOLA, ed è la correzione di un guasto vero: prima era chiamata
+ * nel corpo del modulo, quindi il solo `import` di questo file — che fa anche
+ * `publisher.js`, per tutt'altro — riscriveva 7,6 MB di cache dell'utente
+ * eliminando record, senza che nessuno avesse chiesto niente e senza copia di
+ * sicurezza. Si esegue a mano, dalla cartella `tools/`:
+ *
+ *     node src/image-finder.js --ripara-licenze --anteprima   (conta e basta)
+ *     node src/image-finder.js --ripara-licenze               (scrive, con backup)
+ *
+ * L'alternativa senza migrazione è filtrare in lettura: `routes/image.js`
+ * passerebbe `sanificaGruppiCache()` sui `providerResults` presi dalla cache,
+ * dentro il `withCacheLock` che già usa. Quella rotta è di un altro modulo e
+ * non si tocca da qui.
+ *
+ * Ogni voce sistemata porta `_licenzeFiltrate: 1`. Se non c'è niente da
+ * sistemare il file non viene riscritto affatto.
+ *
+ * @param {object} [opzioni]
+ * @param {string} [opzioni.percorso] - default: `<cwd>/data/image-cache.json`
+ * @param {boolean} [opzioni.soloAnteprima] - conta senza scrivere niente
+ * @returns {Promise<{riparata: boolean, ricette: number, scartateND: number, marcateNC: number, backup: string|null}>}
+ */
+export async function riparaCacheLicenze(opzioni = {}) {
+    const percorso = opzioni.percorso || resolve(process.cwd(), 'data', 'image-cache.json');
+    const soloAnteprima = !!opzioni.soloAnteprima;
+    const esito = { riparata: false, ricette: 0, scartateND: 0, marcateNC: 0, backup: null };
+    if (!existsSync(percorso)) return esito;
+
+    // `withCacheLock` è il serializzatore che il progetto usa proprio per questo
+    // file, e `scriviJsonAtomico` la sua scrittura tmp+rename: sono importati in
+    // cima, non qui dentro con un ripiego. Girarci intorno vorrebbe dire
+    // riscrivere 7,6 MB di cache mentre il server la sta riscrivendo pure lui.
+    return withCacheLock(() => {
+        try {
+            const cache = JSON.parse(readFileSync(percorso, 'utf-8'));
+
+            for (const voce of Object.values(cache)) {
+                if (!voce || typeof voce !== 'object' || !Array.isArray(voce.providerResults)) continue;
+                if (voce[MARCA_LICENZE] === VERSIONE_FILTRO_LICENZE) continue; // già sistemata
+                const { gruppi, scartateND, marcateNC } = sanificaGruppiCache(voce.providerResults);
+                if (scartateND === 0 && marcateNC === 0) continue;
+                voce.providerResults = gruppi;
+                voce[MARCA_LICENZE] = VERSIONE_FILTRO_LICENZE;
+                esito.ricette++;
+                esito.scartateND += scartateND;
+                esito.marcateNC += marcateNC;
+            }
+
+            // Niente da sistemare, o solo anteprima: il file resta com'è.
+            if (soloAnteprima || (esito.scartateND === 0 && esito.marcateNC === 0)) return esito;
+
+            esito.backup = copiaDiSicurezza(percorso);
+            scriviJsonAtomico(percorso, cache);
+            esito.riparata = true;
+        } catch (err) {
+            // Una cache illeggibile non deve far esplodere il comando.
+            console.log(`   ⚠️  Ripulitura licenze in cache saltata: ${err.message}`);
+        }
+        return esito;
+    });
+}
+
+// Punto d'ingresso del comando manuale. Si attiva SOLO se questo file è stato
+// lanciato con `node`, mai quando qualcuno lo importa.
+const ESEGUITO_DA_RIGA_DI_COMANDO = !!process.argv[1]
+    && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (ESEGUITO_DA_RIGA_DI_COMANDO && process.argv.includes('--ripara-licenze')) {
+    const soloAnteprima = process.argv.includes('--anteprima');
+    riparaCacheLicenze({ soloAnteprima })
+        .then(esito => {
+            if (esito.scartateND === 0 && esito.marcateNC === 0) {
+                console.log('✅ Cache immagini: nessuna licenza ND o NC da sistemare, file non toccato.');
+                return;
+            }
+            if (soloAnteprima) {
+                console.log(`👀 Anteprima (niente scritto): ${esito.scartateND} immagini ND da rimuovere, ${esito.marcateNC} NC da segnalare, su ${esito.ricette} ricette.`);
+                console.log('   Per applicare davvero: node src/image-finder.js --ripara-licenze');
+                return;
+            }
+            console.log(`🧹 Cache immagini ripulita: ${esito.scartateND} ND rimosse, ${esito.marcateNC} NC segnalate (${esito.ricette} ricette).`);
+            console.log(`   💾 Copia di sicurezza prima della modifica: ${esito.backup}`);
+            console.log('      Cancellala quando hai verificato il risultato: sono altri 7 MB, e `deploy.bat` fa `git add -A`.');
+        })
+        .catch(err => {
+            console.error(`❌ Ripulitura licenze fallita: ${err.message}`);
+            process.exitCode = 1;
+        });
+}
+
+
+// ══════════════════════════════════════════════════════════
 //  PROVIDER 5: OPENVERSE
 // ══════════════════════════════════════════════════════════
+
+/**
+ * Etichetta della licenza di una foto Openverse, VERSIONE COMPRESA.
+ *
+ * Openverse la restituisce in tre pezzi — `license: "by-sa"`,
+ * `license_version: "4.0"`, `license_url` — e qui se ne teneva solo il primo:
+ * ne usciva "CC BY-SA", che non identifica nessun documento di licenza. È la
+ * causa a monte del punto 13 del checkup: le foto CC BY-SA già pubblicate non
+ * hanno l'URI della licenza, che è proprio quello che la CC BY-SA obbliga a
+ * citare.
+ *
+ * Con la versione dentro il testo, `urlLicenza()` del sito
+ * (`Ricettario/js/credito-foto.js`) ricava da sola
+ * `https://creativecommons.org/licenses/by-sa/4.0/` dal credito: la forma che
+ * quella funzione riconosce è esattamente `CC BY-SA 4.0`. Senza numero non
+ * collega niente — di proposito, perché un URI di licenza sbagliato dichiara
+ * condizioni d'uso che non sono quelle vere.
+ */
+function etichettaLicenzaOpenverse(photo) {
+    const sigla = String(photo?.license || '').trim().toUpperCase();
+    if (!sigla) return 'CC';
+    const versione = String(photo?.license_version || '').trim();
+    return versione ? `CC ${sigla} ${versione}` : `CC ${sigla}`;
+}
 
 async function searchOpenverse(query, limit = 20) {
     const params = new URLSearchParams({
@@ -199,19 +437,25 @@ async function searchOpenverse(query, limit = 20) {
         }
 
         const data = await response.json();
-        return (data.results || []).map(photo => ({
+        const immagini = (data.results || []).map(photo => ({
             title: photo.title || query,
             url: photo.url,
             thumbUrl: photo.url, // Usa l'URL diretto bypassando il proxy /thumb/ di Openverse che spesso da 403/404
             width: photo.width || 800,
             height: photo.height || 600,
-            license: photo.license ? `CC ${photo.license.toUpperCase()}` : 'CC',
+            license: etichettaLicenzaOpenverse(photo),
+            // L'URI della licenza e la pagina d'origine sono i due dati che la
+            // CC BY-SA obbliga a mostrare accanto alla foto: si conservano qui,
+            // non si ricostruiscono più a valle.
+            licenseUrl: photo.license_url || '',
+            sourceUrl: photo.foreign_landing_url || '',
             author: photo.creator || 'Openverse',
             authorUrl: photo.creator_url || '',
             description: photo.attribution || '',
             provider: 'Openverse',
             score: 0,
         }));
+        return filtraPerLicenza(immagini, 'Openverse');
     } catch (err) {
         console.log(`      ⚠️  Openverse errore: ${err.message}`);
         return [];
@@ -267,6 +511,12 @@ async function searchWikimedia(query, limit = 10) {
                 width: info.width,
                 height: info.height,
                 license: meta.LicenseShortName?.value || 'CC',
+                // Come per Openverse: Wikimedia dichiara l'URI della licenza
+                // (`LicenseUrl`) e la pagina di descrizione del file, che è la
+                // "fonte" che la CC chiede di collegare. Buttarli via costringeva
+                // a indovinarli dal testo della licenza.
+                licenseUrl: meta.LicenseUrl?.value || '',
+                sourceUrl: info.descriptionurl || '',
                 author: meta.Artist?.value?.replace(/<[^>]*>/g, '').trim() || 'Wikimedia',
                 authorUrl: '',
                 description: meta.ImageDescription?.value?.replace(/<[^>]*>/g, '').trim() || '',
@@ -274,7 +524,7 @@ async function searchWikimedia(query, limit = 10) {
                 score: 0,
             });
         }
-        return results;
+        return filtraPerLicenza(results, 'Wikimedia');
     } catch (err) {
         console.log(`      ⚠️  Wikimedia errore: ${err.message}`);
         return [];
@@ -475,6 +725,7 @@ export async function findRecipeImage(recipeName, category = '', aiKeywords = []
         console.log(`      📐 ${bestImage.width}x${bestImage.height} | 🏷️  ${bestImage.provider}`);
         console.log(`      � ${bestImage.author} | 📜 ${bestImage.license}`);
         console.log(`      � ${bestImage.url}`);
+        if (bestImage.nonCommerciale) console.log(`      ${bestImage.avvisoLicenza}`);
     } else {
         console.log('\n   ⚠️  Nessuna immagine trovata su nessun provider.');
     }
@@ -515,6 +766,9 @@ export async function searchAllProviders(recipeName, category = '', aiKeywords =
                 seen.add(img.url);
                 img.score = scoreImage(img, allKeywords);
                 img.provider = provider.name;
+                // Il selettore mostra il titolo: se la licenza è NC l'avviso si legge lì,
+                // prima del clic. (Marcato dopo lo scoring, per non alterare il punteggio.)
+                marcaTitoloNC(img);
                 if (img.score > -50) providerImages.push(img); // Solo food-related
             }
             await sleep(300);
@@ -532,6 +786,123 @@ export async function searchAllProviders(recipeName, category = '', aiKeywords =
     return grouped;
 }
 
+
+/**
+ * Nome del primo ELEMENTO di un documento testuale (XML/HTML), saltando
+ * dichiarazione XML, commenti, DOCTYPE e istruzioni di elaborazione.
+ *
+ * Serve a distinguere un SVG vero da una pagina che ne CONTIENE uno: la
+ * radice di una pagina di errore XHTML è `html`, anche quando ha un logo
+ * `<svg>` inline dieci righe più sotto.
+ *
+ * @param {string} testa - inizio del file decodificato come testo
+ * @returns {string|null} nome dell'elemento in minuscolo, o null se non si capisce
+ */
+function radiceDocumentoTesto(testa) {
+    // Il BOM, letto come latin1, sono i tre byte EF BB BF: vanno tolti a mano.
+    let resto = testa.replace(/^(﻿|ï»¿)/, '').trimStart();
+
+    // Il prologo è fatto di poche cose; il limite evita di girare a vuoto su
+    // un input costruito apposta (mille commenti vuoti).
+    for (let giro = 0; giro < 16; giro++) {
+        if (resto.startsWith('<?')) {                 // <?xml version="1.0"?>
+            const fine = resto.indexOf('?>');
+            if (fine === -1) return null;             // troncato: non si sa
+            resto = resto.slice(fine + 2).trimStart();
+            continue;
+        }
+        if (resto.startsWith('<!--')) {               // commento
+            const fine = resto.indexOf('-->');
+            if (fine === -1) return null;
+            resto = resto.slice(fine + 3).trimStart();
+            continue;
+        }
+        if (/^<!doctype/i.test(resto)) {              // DOCTYPE, con o senza subset [...]
+            let dentroSubset = false;
+            let i = 0;
+            for (; i < resto.length; i++) {
+                const c = resto[i];
+                if (c === '[') dentroSubset = true;
+                else if (c === ']') dentroSubset = false;
+                else if (c === '>' && !dentroSubset) break;
+            }
+            if (i >= resto.length) return null;
+            resto = resto.slice(i + 1).trimStart();
+            continue;
+        }
+        const elemento = /^<([a-z][a-z0-9:._-]*)/i.exec(resto);
+        return elemento ? elemento[1].toLowerCase() : null;
+    }
+    return null;
+}
+
+/**
+ * Riconosce il formato dai primi byte del file (i "magic bytes").
+ * L'estensione dell'URL e il Content-Type dichiarano, i byte dimostrano.
+ * @returns {string|null} nome del formato, o null se non è un'immagine
+ */
+function riconosciFormatoImmagine(buffer) {
+    if (!buffer || buffer.length < 12) return null;
+
+    const inizio = buffer.subarray(0, 4).toString('latin1');
+
+    if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) return 'JPEG';
+    if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) return 'PNG';
+    if (inizio === 'RIFF' && buffer.subarray(8, 12).toString('latin1') === 'WEBP') return 'WebP';
+    if (inizio.startsWith('GIF')) return 'GIF';
+    if (buffer.subarray(4, 8).toString('latin1') === 'ftyp') {
+        const brand = buffer.subarray(8, 12).toString('latin1').toLowerCase();
+        return ['avif', 'avis', 'heic', 'heix', 'hevc', 'mif1', 'msf1'].includes(brand) ? 'AVIF/HEIF' : null;
+    }
+    if (inizio.startsWith('BM')) return 'BMP';
+    if ((buffer[0] === 0x49 && buffer[1] === 0x49 && buffer[2] === 0x2A && buffer[3] === 0x00)
+        || (buffer[0] === 0x4D && buffer[1] === 0x4D && buffer[2] === 0x00 && buffer[3] === 0x2A)) return 'TIFF';
+
+    // SVG: è testo, quindi firma binaria non ne ha — ma sharp lo rasterizza
+    // senza problemi, e su Wikimedia/Openverse ci sono candidati SVG con
+    // licenza libera e punteggio alto. Scartarlo qui li perdeva tutti.
+    //
+    // Conta SOLO che la radice del documento sia `<svg`. Accettare "comincia
+    // con <?xml o con un commento E contiene <svg da qualche parte" faceva
+    // passare per SVG le pagine di errore XHTML con un logo inline: sharp le
+    // rifiutava comunque, ma l'errore diceva "forse troncato" e finiva sul
+    // ramo ritentabile, cioè la stessa pagina scaricata tre volte.
+    const testa = buffer.subarray(0, 4096).toString('latin1');
+    if (radiceDocumentoTesto(testa) === 'svg') return 'SVG';
+
+    return null;
+}
+
+/**
+ * Errore parlante per quando il server ha risposto qualcosa che immagine non è
+ * (tipicamente una pagina di errore o di login). Di regola non ritentabile:
+ * riprovare scaricherebbe la stessa pagina altre due volte.
+ * L'eccezione è il corpo vuoto — vedi sotto.
+ */
+function erroreNonImmagine(imageUrl, buffer, contentType) {
+    const anteprima = buffer.subarray(0, 160).toString('utf-8').replace(/\s+/g, ' ').trim().slice(0, 90);
+    const tipo = contentType ? `Content-Type "${contentType}"` : 'Content-Type assente';
+    const dichiarato = (String(contentType || '').split(';')[0] || '').trim().toLowerCase();
+    // Un `image/...` che i byte smentiscono è un'immagine rotta o troncata, non
+    // una pagina di login: annunciare "hotlink bloccato" manderebbe fuori strada
+    // (`image/svg+xml` faceva match su "xml" e si prendeva quella diagnosi).
+    const paginaWeb = !dichiarato.startsWith('image/')
+        && (/^<(!doctype|!--|html|\?xml)/i.test(anteprima) || /html|xml/i.test(dichiarato));
+    const indizio = paginaWeb
+        ? ' — è una pagina web (errore del server, login o hotlink bloccato), non una foto'
+        : (buffer.length === 0 ? ' — risposta vuota' : '');
+
+    const err = new Error(
+        `Il file scaricato non è un'immagine${indizio}. ${tipo}, ${buffer.length} byte` +
+        (anteprima ? `, inizia con «${anteprima}»` : '') + `. URL: ${imageUrl}`
+    );
+    // Una risposta VUOTA è l'errore transitorio per eccellenza (connessione
+    // chiusa a metà, singhiozzo del CDN): lì i tre tentativi servono davvero,
+    // ed erano già il comportamento di prima. Tutto il resto — una pagina di
+    // login, un JSON di errore — riprovando torna identico.
+    err.nonRitentabile = buffer.length > 0;
+    return err;
+}
 
 /**
  * Scarica un'immagine e la converte automaticamente in WebP + AVIF via sharp.
@@ -560,15 +931,51 @@ export async function downloadImage(imageUrl, destPath) {
 
             if (!response.ok) throw new Error(`Download fallito: HTTP ${response.status}`);
 
+            const contentType = response.headers.get('content-type') || '';
             const buffer = Buffer.from(await response.arrayBuffer());
             const sizeKB = Math.round(buffer.length / 1024);
 
-            // Converti con sharp in WebP + AVIF
-            try {
-                const sharp = (await import('sharp')).default;
-                const webpPath = destPath.replace(/\.[^.]+$/, '.webp');
-                const avifPath = destPath.replace(/\.[^.]+$/, '.avif');
+            // ── Il file scaricato deve essere davvero un'immagine ──
+            // Senza questo controllo una pagina di errore HTML finisce salvata
+            // come .webp (sharp fallisce, il fallback qui sotto scrive il buffer
+            // così com'è) e la funzione dichiara che è andato tutto bene.
+            //
+            // A decidere sono SOLO i byte. Il Content-Type non ha voto: parecchi
+            // CDN servono foto buone come text/plain o application/json, e
+            // scartarle per il tipo dichiarato — com'era prima — voleva dire
+            // perderle. L'HTML viene respinto lo stesso, perché firma di
+            // immagine non ne ha.
+            const tipoDichiarato = (contentType.split(';')[0] || '').trim().toLowerCase();
+            const formato = riconosciFormatoImmagine(buffer);
 
+            if (!formato) throw erroreNonImmagine(imageUrl, buffer, contentType);
+
+            // Un Content-Type in disaccordo con i byte va comunque detto, per
+            // distinguerlo a terminale dal caso "byte non riconosciuti".
+            // "octet-stream" no: lo usano parecchi CDN, non è un indizio.
+            if (tipoDichiarato && !tipoDichiarato.startsWith('image/') && !tipoDichiarato.endsWith('/octet-stream')) {
+                console.log(`   ⚠️  Content-Type inatteso ("${tipoDichiarato}") ma i byte sono ${formato}: procedo.`);
+            }
+
+            // Converti con sharp in WebP + AVIF.
+            // Il fallback vale solo se sharp MANCA: se invece sharp c'è e la
+            // conversione fallisce, i dati scaricati sono rotti e scriverli
+            // com'è riporterebbe il problema di prima (file .webp che immagine
+            // non è, con "tutto bene" a schermo).
+            let sharp;
+            try {
+                sharp = (await import('sharp')).default;
+            } catch (sharpErr) {
+                console.log(`   ⚠️ Sharp non disponibile (${sharpErr.message}), salvo originale`);
+                writeFileSync(destPath, buffer);
+                console.log(`   💾 Salvata: ${destPath} (${sizeKB} KB)`);
+                return destPath;
+            }
+
+            const webpPath = destPath.replace(/\.[^.]+$/, '.webp');
+            const avifPath = destPath.replace(/\.[^.]+$/, '.avif');
+
+            try {
                 await sharp(buffer)
                     .resize({ width: 1800, withoutEnlargement: true })
                     .webp({ quality: 82 })
@@ -578,21 +985,21 @@ export async function downloadImage(imageUrl, destPath) {
                     .resize({ width: 1800, withoutEnlargement: true })
                     .avif({ quality: 50 })
                     .toFile(avifPath);
-
-                const { statSync: fsStat } = await import('fs');
-                const webpSize = Math.round(fsStat(webpPath).size / 1024);
-                const avifSize = Math.round(fsStat(avifPath).size / 1024);
-                console.log(`   💾 Convertita: ${sizeKB}KB originale → ${webpSize}KB WebP + ${avifSize}KB AVIF`);
-                return webpPath;
-            } catch (sharpErr) {
-                // Fallback: se sharp non è disponibile, salva come ricevuto
-                console.log(`   ⚠️ Sharp non disponibile (${sharpErr.message}), salvo originale`);
-                writeFileSync(destPath, buffer);
-                console.log(`   💾 Salvata: ${destPath} (${sizeKB} KB)`);
-                return destPath;
+            } catch (convErr) {
+                throw new Error(
+                    `Conversione fallita: sharp non riesce a leggere i ${buffer.length} byte scaricati ` +
+                    `(riconosciuti come ${formato}, forse troncati) — ${convErr.message}. URL: ${imageUrl}`
+                );
             }
+
+            const { statSync: fsStat } = await import('fs');
+            const webpSize = Math.round(fsStat(webpPath).size / 1024);
+            const avifSize = Math.round(fsStat(avifPath).size / 1024);
+            console.log(`   💾 Convertita: ${sizeKB}KB originale → ${webpSize}KB WebP + ${avifSize}KB AVIF`);
+            return webpPath;
         } catch (err) {
-            if (attempt === 2) throw err;
+            // Una pagina HTML al posto di una foto non migliora riprovando
+            if (err.nonRitentabile || attempt === 2) throw err;
             await sleep(1000);
         }
     }
@@ -630,8 +1037,7 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
     }
 
     // ── Carica index persistente e mergia con usedUrls di sessione ──
-    const imageIndex = loadImageIndex();
-    const persistentUrls = new Set([...usedUrls, ...Object.keys(imageIndex)]);
+    const persistentUrls = new Set([...usedUrls, ...Object.keys(leggiIndiceImmagini())]);
 
     // Utilizziamo searchAllProviders per popolare il database di candidati
     const providerResults = await searchAllProviders(
@@ -672,12 +1078,21 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
 
     if (!image) return null;
 
+    if (image.nonCommerciale) {
+        console.log(`   ${image.avvisoLicenza} (${image.license}, ${image.provider})`);
+    }
+
     try {
         await downloadImage(image.url, localPath);
 
         // ── Salva nell'index persistente ──
-        imageIndex[image.url] = slug;
-        saveImageIndex(imageIndex);
+        // Rileggendolo sotto lock, non riscrivendo la copia caricata prima della
+        // ricerca: fra le due cose passano decine di secondi di chiamate ai
+        // provider, e quello che il server ha segnato nel frattempo andava perso.
+        const esitoIndice = await segnaUrlUsato(image.url, slug);
+        if (esitoIndice.precedente && esitoIndice.precedente !== slug) {
+            console.log(`   ⚠️  Questa foto risultava già usata da "${esitoIndice.precedente}": ora è attribuita a "${slug}".`);
+        }
 
         const relativePath = `../../images/ricette/${catFolder}/${slug}.${ext}`;
         const homeRelativePath = `images/ricette/${catFolder}/${slug}.${ext}`;
@@ -690,6 +1105,11 @@ export async function findAndDownloadImage(recipe, ricettarioPath, usedUrls = ne
             thumbUrl: image.thumbUrl,
             attribution: buildAttribution(image),
             license: image.license,
+            // Vuoti per i banchi immagini (Pexels & c.): là la licenza è una
+            // sola e il sito ne conosce già l'indirizzo. Valorizzati per le CC,
+            // che l'URI della licenza lo pretendono accanto alla foto.
+            licenseUrl: image.licenseUrl || '',
+            sourceUrl: image.sourceUrl || '',
             author: image.author,
             provider: image.provider,
             width: image.width,
