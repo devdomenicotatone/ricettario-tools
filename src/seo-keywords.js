@@ -12,8 +12,10 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { log } from './utils/logger.js';
+import { scriviJsonAtomico } from './server/routes/_helpers.js';
 
 // ============================================================================
 // SEED KEYWORDS PER CATEGORIA
@@ -85,7 +87,11 @@ const CATEGORY_SEEDS = {
 // ============================================================================
 
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 giorni
-const CACHE_DIR = resolve(process.cwd(), 'data');
+// Ancorata al MODULO, non alla cartella di lancio: con `process.cwd()` la cache
+// cambiava posizione a seconda di dove partivi, quindi una dashboard avviata da
+// un'altra cartella non trovava le parole chiave già pagate e le richiedeva di
+// nuovo a SerpAPI. Stesso difetto che aveva quality-index.json.
+const CACHE_DIR = resolve(dirname(dirname(fileURLToPath(import.meta.url))), 'data');
 const CACHE_FILE = resolve(CACHE_DIR, 'seo-cache.json');
 
 function loadCache() {
@@ -98,8 +104,10 @@ function loadCache() {
 }
 
 function saveCache(cache) {
-    if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
-    writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2), 'utf-8');
+    // tmp + rename. Questa cache costa soldi veri (query SerpAPI): una
+    // scrittura interrotta a metà la troncava e le parole chiave andavano
+    // ricomprate.
+    scriviJsonAtomico(CACHE_FILE, cache);
 }
 
 function getCachedResults(category) {

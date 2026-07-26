@@ -21,6 +21,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 
 import { resolve, dirname, basename, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
+import { scriviJsonAtomico } from './server/routes/_helpers.js';
 
 // ── Indice verifiche (evita ri-verifiche inutili) ──
 // `fileURLToPath` e non `new URL(...).pathname`: il pathname lascia gli spazi
@@ -39,9 +40,11 @@ function loadIndex() {
 }
 
 function saveIndex(index) {
-    if (!existsSync(INDEX_DIR)) mkdirSync(INDEX_DIR, { recursive: true });
     index.lastRun = new Date().toISOString();
-    writeFileSync(INDEX_PATH, JSON.stringify(index, null, 2), 'utf-8');
+    // tmp + rename: un'interruzione a metà tronca il temporaneo, non l'indice.
+    // Prima era una writeFileSync secca e il file troncato faceva ripartire da
+    // zero tutte le verifiche già pagate.
+    scriviJsonAtomico(INDEX_PATH, index);
 }
 
 function computeHash(filePath) {
