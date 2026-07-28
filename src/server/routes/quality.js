@@ -316,9 +316,13 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                         continue;
                     }
 
-                    // Assign back to recipe data
+                    // Assign back to recipe data. La nutrizione è calcolo
+                    // USDA e può mancare: in quel caso si toglie anche il
+                    // valore vecchio (era una stima, il disclaimer ora dice
+                    // un'altra cosa).
                     recipeData.sensoryProfile = analytics.sensory;
-                    recipeData.nutrition = analytics.nutrition;
+                    if (analytics.nutrition) recipeData.nutrition = analytics.nutrition;
+                    else delete recipeData.nutrition;
 
                     // Save — copia di sicurezza in una serie sua, così non cancella quella del fix
                     const copia = salvaCopiaSicurezza(jsonFile, recipeJson, 'sensoriale');

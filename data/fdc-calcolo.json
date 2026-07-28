@@ -1,0 +1,466 @@
+{
+  "nota": "Regole DICHIARATE del calcolo nutrizionale (v. USDA-TODO.md e src/nutrizione.js). La resa è peso finito / peso crudo. I default di famiglia esistono solo dove la fisica è omogenea (cottura al forno di impasti); tutto il resto va dichiarato per ricetta, con l'evidenza citata. Le liste fuoriProdotto/dentroProdotto classificano gli item excludeFromTotal ambigui. Niente qui dentro è una stima a runtime: è configurazione versionata, corretta a mano quando serve.",
+  "famiglie": {
+    "pane": {
+      "resa": 0.8,
+      "fonte": "calo di cottura al forno ~20% per pani a crosta (valore del piano USDA-TODO; letteratura di panificazione: 15-25% secondo pezzatura e crosta)"
+    },
+    "pizza": {
+      "resa": 0.85,
+      "fonte": "cottura rapida ad alta temperatura: calo 13-17%"
+    },
+    "focaccia": {
+      "resa": 0.85,
+      "fonte": "come pizza: teglia ad alta temperatura, l'olio in superficie contiene l'evaporazione"
+    },
+    "lievitati": {
+      "resa": 0.88,
+      "fonte": "grandi lievitati ricchi (panettone, brioche): cottura dolce, calo 10-14%"
+    }
+  },
+  "ricette": {
+    "condimenti/babaganoush-crema-melanzane": {
+      "resa": 0.62,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Melanzane 800g in forno 220°C 45-60 min + scolatura 15 min polpa; melanzane perdono ~50% acqua in cottura, poi ulteriore drenaggio.",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/bagna-cauda": {
+      "resa": 0.82,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna riduzione dichiarata esplicitamente; cottura dolcissima 10-15 min; evaporazione minima stimata ~18% su componente acquosa (latte/ammollo). Rivedere.",
+      "confidenza": "bassa",
+      "daRivedere": false
+    },
+    "condimenti/besciamella": {
+      "resa": 0.98,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna cottura prolungata; roux + latte amalgamati a fuoco medio-basso senza riduzione dichiarata; perdita evaporativa trascurabile.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/burro-composto-acciughe-tartufo": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna cottura; assemblaggio a crudo, lavorazione a pomata e modellatura a freddo.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/burro-maitre-d-hotel": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna cottura; lavorazione a crudo di burro a pomata con aromi e succo di limone.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/caesar-dressing": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna cottura; emulsione a crudo di tutti gli ingredienti, nessuno scartato o evaporato.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/chimichurri": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura: assemblaggio a freddo con riposo a temperatura ambiente",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/coulis-salsa-pomodoro-fresco": {
+      "resa": 0.55,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "semi e acqua di vegetazione rimossi, sobbollitura 30 min scoperta; pomodoro fresco perde ~50% in acqua+scarti; solidi passaverdure restano nel coulis",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/crema-al-parmigiano": {
+      "resa": 0.95,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "cottura breve 5 min a fuoco basso per addensare; evaporazione minima dal latte già caldo; tutti gli ingredienti restano nel prodotto",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/crema-di-peperoni": {
+      "resa": 0.75,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "stufatura 25 min coperta con possibile aggiunta acqua; semi e filamenti scartati; peperoni perdono circa 25% liquidi vegetazione per evaporazione",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/dressing-miele-senape": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura prevista, preparazione interamente a freddo",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/fumetto-di-crostacei": {
+      "resa": 0.45,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "sobbollitura 30 min semi-aperto; carapaci+verdure filtrati e scartati; liquido iniziale ~1350g su totale ~2578g, evaporazione stimata ~15%",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/guacamole": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; assemblaggio a crudo con schiacciatura manuale, nessuna evaporazione",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/maionese": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; emulsione a freddo, tutti gli ingredienti incorporati nella salsa finale",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/marinatura-menta-aceto-verdure-grigliate": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; emulsione a freddo versata sulle verdure, tutta la marinatura è prodotto finito",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/olio-aglio-nero-ossidiana": {
+      "resa": 0.88,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "filtraggio con colino a maglie medie trattiene residui fibrosi di aglio e rosmarino; aglio+rosmarino+origano+peperoncino = ~45g su ~545g totali; stimato ~8% perso nei solidi filtrati",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/olio-al-basilico-verde-smeraldo": {
+      "resa": 0.9,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "filtraggio con setaccio 325-400 mesh o filtro da caffè; basilico 50g su ~239g totali; perdita stimata ~10% tra solidi vegetali trattenuti e olio assorbito dal filtro",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/olio-carota-zenzero-arancio-fluo": {
+      "resa": 0.82,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "filtraggio con stamigna + decantazione 24h in frigo; acqua vegetale sul fondo scartata; carote+zenzero=170g su 520g totali; perdita stimata ~18% tra solidi filtrati, acqua vegetale scartata e olio residuo",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/olio-cavolo-viola-elettrico": {
+      "resa": 1,
+      "fonte": "corretta in revisione del 28/07/2026: solidi filtrati fuori prodotto; perdita proporzionale ⇒ resa 1.0",
+      "evidenza": "il cavolo si filtra via (fuoriProdotto); l'olio trattenuto dal filtro è perdita PROPORZIONALE: porta via i suoi nutrienti e non cambia i valori per 100 g",
+      "confidenza": "media",
+      "daRivedere": false,
+      "fuoriProdotto": [
+        "Cavolo Cappuccio Viola"
+      ]
+    },
+    "condimenti/olio-curcuma-zafferano-giallo-oro": {
+      "resa": 0.95,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Macerazione a freddo 7 giorni, poi filtraggio con colino/garza o filtro carta; residui spezie trattenuti dal filtro, quasi tutto l'olio passa.",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/olio-extravergine-aromatizzato-verde-dorato": {
+      "resa": 0.97,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Infusione a freddo 14 giorni, filtraggio finale con colino a maglie fini; aromi solidi rimossi, perdita minima per assorbimento e ritenzione nel filtro.",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/olio-peperone-crusco-rosso-rubino": {
+      "resa": 0.87,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Filtraggio per gravità su filtro carta senza pressare; residui peperoni/paprika trattenuti. Olio da frittura 50g non entra nel prodotto finale (usato solo per friggere i cruschi).",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/pesto-alla-genovese-tradizionale": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna cottura: preparazione interamente a freddo al mortaio, emulsione diretta senza perdita di massa.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pesto-alla-siciliana": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna cottura: assemblaggio e frullatura a crudo di tutti gli ingredienti, nessuna fase di filtro o scarico liquidi.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pesto-di-barbabietola": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura: tutti gli ingredienti vengono frullati a crudo e trasferiti nel barattolo",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pesto-di-fave-maro": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura: fave pelate a crudo, pesate e lavorate nel mortaio senza alcun apporto di calore",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pesto-di-pistacchi-artigianale": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura: la sbollentatura serve solo a rimuovere le bucce (non pesate), il prodotto finale è assemblato a freddo",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pesto-di-zucchine": {
+      "resa": 0.72,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "zucchine salate e strizzate perdono liquido per osmosi; stima ~30% di perdita sulle zucchine (250g→175g); resto degli ingredienti invariato",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/pesto-pomodori-secchi-mandorle-basilico": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura: tutti gli ingredienti frullati a freddo; i pomodori sono già sgocciolati prima della pesatura dichiarata",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pesto-rucola-artigianale": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura: lavorazione interamente a freddo con mixer; nessuna perdita di massa descritta",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/pure-di-patate": {
+      "resa": 0.83,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Buccia scartata (~12%), lieve perdita cottura, ma nessuna percentuale di riduzione dichiarata nei passaggi.",
+      "confidenza": "bassa",
+      "daRivedere": false
+    },
+    "condimenti/salmoriglio-siciliano-tradizionale": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/salsa-alle-noci": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Preparazione a freddo dopo sbollentatura; mollica non strizzata; nessuna riduzione dichiarata.",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "condimenti/salsa-allo-yogurt-ed-erba-cipollina": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/salsa-allo-yogurt": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/salsa-bbq-artigianale": {
+      "resa": 0.85,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "«sobbollire 15-20 minuti» senza percentuale dichiarata; aglio rimosso prima della riduzione.",
+      "confidenza": "bassa",
+      "daRivedere": false
+    },
+    "condimenti/salsa-bernese": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; tutti gli ingredienti (tuorli, burro chiarificato, riduzione, limone, dragoncello, cerfoglio, sale) finiscono nella salsa finita.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/salsa-cocktail-rosa-artigianale": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; assemblaggio a freddo, tutti gli ingredienti confluiscono nella salsa finale.",
+      "confidenza": "alta",
+      "dentroProdotto": [
+        "Tuorli d'uovo",
+        "Olio di semi di girasole",
+        "Succo di limone",
+        "Aceto di vino bianco",
+        "Sale fino"
+      ],
+      "daRivedere": false
+    },
+    "condimenti/salsa-teriyaki-originale": {
+      "resa": 0.47,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "evidenza": "«ridotta di circa la metà (da ~340ml iniziali a ~160–…)»: 160/338 ≈ 0.47 sul totale ingredienti (sake 100 + mirin 100 + soia 100 + zucchero 38 = 338g).",
+      "confidenza": "alta",
+      "daRivedere": false,
+      "nota": "l'alcol di sake e mirin evapora in riduzione ma resta contato: kcal sovrastimate di ~20-30/100g (correzione alcol prevista in v2)"
+    },
+    "condimenti/salsa-verde-tradizionale": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; assemblaggio a freddo con cutter/mortaio, tutti gli ingredienti pesati finiscono nella salsa.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "condimenti/vinaigrette-classica-e-citronette": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "nessuna cottura; «Resa finale: circa 160g di vinaigrette» e «circa 135g di citronette» confermano che tutti gli ingredienti pesati entrano nel prodotto.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "conserve/burro-chiarificato": {
+      "resa": 0.8,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Descrizione dichiara «Resa ~80%»; schiuma di caseina e deposito acquoso sul fondo sono scartati/filtrati via.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "conserve/dado-vegetale-fatto-in-casa": {
+      "resa": 0.72,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "cottura 7-10 min vivace + 15-25 min fuoco basso senza coperchio: verdure rilasciano acqua che evapora; sale 300g su ~960g verdure+olio trattiene umidità residua",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "conserve/dado-vegetale-granulare": {
+      "resa": 0.25,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "cottura casseruola 30 min + forno 110°C ventilato 240 min sportello socchiuso: essiccazione quasi totale; prodotto finale è polvere secca, perdita acqua di vegetazione massiccia",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "conserve/pomodorini-confit-sottolio": {
+      "resa": 0.63,
+      "fonte": "corretta in revisione del 28/07/2026 (la proposta citava questa aritmetica ma scriveva 1.18); prodotto = vasetto intero, olio d'invaso compreso",
+      "evidenza": "pomodorini -50% in forno (~500 g) + aromi e olio di cottura + olio d'invaso 400 g ≈ 950 g su 1504 crudi",
+      "confidenza": "alta",
+      "daRivedere": false,
+      "nota": "per 100 g di conserva com'è nel vasetto: metà del peso è olio EVO"
+    },
+    "dolci/cantuccini-di-prato": {
+      "resa": 0.9,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "doppia cottura forno: 180°C 20-22 min + 150°C 8+8 min; biscotti secchi perdono umidità ma non grassi; perdita stimata ~10% sul peso impasto crudo",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "dolci/cartocci-alla-crema-siciliani": {
+      "resa": 1.05,
+      "fonte": "proposta dall'evidenza testuale della ricetta",
+      "evidenza": "frittura 170-175°C 3-4 min: assorbimento olio parzialmente compensa perdita umidità; quantità olio assorbito non dichiarata; stima prudenziale lieve aumento peso",
+      "confidenza": "bassa",
+      "daRivedere": true,
+      "nota": "FRITTURA: l'olio assorbito non è tra gli ingredienti e non è ancora modellato — kcal sottostimate; resta daRivedere finché non c'è il modello (v2)"
+    },
+    "dolci/migliaccio-napoletano": {
+      "resa": 0.87,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "forno statico 200°C 60 minuti; dolce a base liquida (latte+acqua 1000g totali): evaporazione significativa stimata ~13% sul peso totale impasto",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "focaccia/focaccia-genovese-fugassa": {
+      "evidenza": "230°C 15 min statico: focaccia con salamoia in superficie, evaporazione stimata ~15% sul totale impasto+condimento.",
+      "confidenza": "media",
+      "daRivedere": false,
+      "dentroProdotto": [
+        "Olio Extravergine d'Oliva",
+        "Sale Fino",
+        "Acqua"
+      ],
+      "fonte": "classificazioni ESCL dichiarate a mano in revisione 28/07/2026; confermata in revisione del 28/07/2026"
+    },
+    "lievitati/pasta-madre-solida-creazione-rinfresco": {
+      "evidenza": "nessuna cottura; la ricetta descrive creazione e rinfresco a crudo senza perdita di massa nel prodotto finale.",
+      "confidenza": "alta",
+      "daRivedere": false,
+      "fuoriProdotto": [
+        "Uva Passa",
+        "Farina Manitoba",
+        "Farina Tipo 0",
+        "Acqua",
+        "Zucchero Semolato"
+      ],
+      "dentroProdotto": [
+        "Cuore di Pasta Madre"
+      ],
+      "fonte": "dichiarata: rinfresco a crudo, nessuna cottura (il default 0.88 dei lievitati non si applica); confermata in revisione del 28/07/2026",
+      "resa": 1
+    },
+    "pizza/pinsa-romana": {
+      "evidenza": "260°C 12-15 min statico su pietra: alta idratazione (~75%), evaporazione stimata ~12% sul peso totale impasto.",
+      "confidenza": "media",
+      "daRivedere": false,
+      "fuoriProdotto": [
+        "Semola di Grano Duro Rimacinata"
+      ],
+      "fonte": "classificazioni ESCL dichiarate a mano in revisione 28/07/2026; confermata in revisione del 28/07/2026"
+    },
+    "pizza/pizza-contemporanea-canotto": {
+      "evidenza": "470°C cielo / 350-400°C platea, 60-90 sec forno pro; alta idratazione, cottura rapida, evaporazione stimata ~12%.",
+      "confidenza": "media",
+      "daRivedere": false,
+      "dentroProdotto": [
+        "Criscito Caputo",
+        "Estratto di Malto",
+        "Sale Marino Fino"
+      ],
+      "fonte": "classificazioni ESCL dichiarate a mano in revisione 28/07/2026; confermata in revisione del 28/07/2026"
+    },
+    "primi/gnocchi-di-patate": {
+      "resa": 0.92,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Nessuna evidenza testuale di perdita: patate lessate già scolate, semola da spolverare è superficie. Stimato ~8% calo da sbucciatura residua e asciugatura.",
+      "confidenza": "bassa",
+      "daRivedere": false
+    },
+    "primi/polenta-concia-valdostana": {
+      "resa": 0.82,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Sobbollire 50 minuti scoperto con 1600g acqua e 400g farina: evaporazione acqua stimata ~35% dell'acqua totale (~560g persi su ~2507g totali).",
+      "confidenza": "media",
+      "daRivedere": false
+    },
+    "secondi-piatti/brisket-stile-toscano": {
+      "resa": 0.62,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "evidenza": "Brasatura 160°C 210-240 min; brisket perde ~35-40% in cottura lenta; nessuna dichiarazione esplicita di perdita percentuale.",
+      "confidenza": "media",
+      "daRivedere": false,
+      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+    },
+    "secondi-piatti/mayak-gyeran-uova-marinate-coreane": {
+      "resa": 1,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "evidenza": "Marinatura a freddo senza cottura delle uova sgusciate; nessuna evaporazione o perdita di massa nel prodotto finito.",
+      "confidenza": "alta",
+      "daRivedere": false
+    },
+    "secondi-piatti/pulled-pork-bbq": {
+      "resa": 0.6,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "evidenza": "Cottura indiretta 150°C per ~10 ore fino a 95°C interni; pulled pork perde tipicamente 35-40% del peso; nessuna percentuale dichiarata.",
+      "confidenza": "media",
+      "daRivedere": false,
+      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+    },
+    "secondi-piatti/spare-ribs-salsa-bbq": {
+      "resa": 0.65,
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "evidenza": "135°C 120 min scoperto + 90 min cartoccio + 20 min 180°C; costine perdono ~30-35% in cottura low&slow; nessuna percentuale dichiarata.",
+      "confidenza": "media",
+      "daRivedere": false,
+      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+    }
+  },
+  "aggiornato": "2026-07-28T14:40:42.422Z"
+}

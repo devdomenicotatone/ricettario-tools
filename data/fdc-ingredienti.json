@@ -1,0 +1,6355 @@
+{
+  "generato": "2026-07-28T13:39:58.695Z",
+  "fonte": "/Users/frodiola/github/ricettario/Ricettario/ricette",
+  "ricette": 84,
+  "itemTotali": 791,
+  "itemSenzaGrammi": 0,
+  "nomiUnici": 280,
+  "ingredienti": [
+    {
+      "chiave": "sale fino",
+      "nome": "Sale Fino",
+      "grafie": [
+        "Sale Fino",
+        "Sale fino"
+      ],
+      "ricette": 61,
+      "occorrenze": 66,
+      "grammiTotali": 840,
+      "esclusiDalTotale": 2,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "dolci",
+        "focaccia",
+        "lievitati",
+        "pane",
+        "pizza",
+        "primi",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(marino)",
+        "(marino integrale)",
+        "(dosaggio all'1% circa)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "condimenti/besciamella",
+        "condimenti/burro-composto-acciughe-tartufo",
+        "condimenti/caesar-dressing",
+        "condimenti/chimichurri",
+        "condimenti/coulis-salsa-pomodoro-fresco",
+        "condimenti/crema-di-peperoni",
+        "condimenti/dressing-miele-senape",
+        "condimenti/guacamole",
+        "condimenti/maionese",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/olio-peperone-crusco-rosso-rubino",
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/pesto-rucola-artigianale",
+        "condimenti/pure-di-patate",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-alle-noci",
+        "condimenti/salsa-allo-yogurt",
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina",
+        "condimenti/salsa-bbq-artigianale",
+        "condimenti/salsa-bernese",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "condimenti/salsa-verde-tradizionale",
+        "condimenti/vinaigrette-classica-e-citronette",
+        "conserve/dado-vegetale-granulare",
+        "conserve/pomodorini-confit-sottolio",
+        "dolci/cantuccini-di-prato",
+        "dolci/cartocci-alla-crema-siciliani",
+        "dolci/migliaccio-napoletano",
+        "focaccia/calzone-cipolla-barese-pugliese",
+        "focaccia/focaccia-barese",
+        "focaccia/focaccia-di-recco-igp",
+        "focaccia/focaccia-genovese-classica",
+        "focaccia/focaccia-genovese-fugassa",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "lievitati/panettone-pere-cioccolato",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica",
+        "pane/baguette-francese-tradizionale",
+        "pane/ciabatta-poolish-malto-criscito",
+        "pane/pane-ai-cereali-semi",
+        "pane/pane-alle-noci-con-poolish",
+        "pane/pane-di-altamura-dop",
+        "pane/pane-integrale-con-biga",
+        "pane/pane-pugliese-con-biga",
+        "pane/treccia-di-pane-olio",
+        "pizza/pinsa-romana",
+        "pizza/pizza-in-teglia-romana",
+        "pizza/pizza-marinara-verace-disciplinare-avpn",
+        "pizza/pizza-napoletana-verace-stg",
+        "pizza/pizza-romana-stesa-al-matterello",
+        "primi/gnocchi-di-patate",
+        "secondi-piatti/brisket-stile-toscano",
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane",
+        "secondi-piatti/pulled-pork-bbq",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "olio extravergine d'oliva",
+      "nome": "Olio Extravergine d'Oliva",
+      "grafie": [
+        "Olio Extravergine d'Oliva"
+      ],
+      "ricette": 38,
+      "occorrenze": 45,
+      "grammiTotali": 3984,
+      "esclusiDalTotale": 2,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "focaccia",
+        "lievitati",
+        "pane",
+        "pizza",
+        "primi"
+      ],
+      "note": [
+        "(fruttato delicato)",
+        "(per finitura)",
+        "(fruttato leggero, bassa piccantezza)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "condimenti/caesar-dressing",
+        "condimenti/chimichurri",
+        "condimenti/coulis-salsa-pomodoro-fresco",
+        "condimenti/crema-di-peperoni",
+        "condimenti/dressing-miele-senape",
+        "condimenti/fumetto-di-crostacei",
+        "condimenti/guacamole",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/olio-aglio-nero-ossidiana",
+        "condimenti/olio-cavolo-viola-elettrico",
+        "condimenti/olio-curcuma-zafferano-giallo-oro",
+        "condimenti/pesto-alla-genovese-tradizionale",
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/pesto-di-fave-maro",
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico",
+        "condimenti/pesto-rucola-artigianale",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-alle-noci",
+        "condimenti/salsa-allo-yogurt",
+        "condimenti/salsa-verde-tradizionale",
+        "condimenti/vinaigrette-classica-e-citronette",
+        "conserve/pomodorini-confit-sottolio",
+        "focaccia/calzone-cipolla-barese-pugliese",
+        "focaccia/focaccia-barese",
+        "focaccia/focaccia-genovese-classica",
+        "focaccia/focaccia-genovese-fugassa",
+        "lievitati/burger-buns-con-biga",
+        "pane/pane-ai-cereali-semi",
+        "pane/treccia-di-pane-olio",
+        "pizza/pinsa-romana",
+        "pizza/pizza-in-teglia-romana",
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn",
+        "pizza/pizza-napoletana-verace-stg",
+        "pizza/pizza-romana-stesa-al-matterello",
+        "primi/polenta-concia-valdostana"
+      ]
+    },
+    {
+      "chiave": "acqua",
+      "nome": "Acqua",
+      "grafie": [
+        "Acqua"
+      ],
+      "ricette": 35,
+      "occorrenze": 50,
+      "grammiTotali": 16874,
+      "esclusiDalTotale": 4,
+      "categorie": [
+        "condimenti",
+        "dolci",
+        "focaccia",
+        "lievitati",
+        "pane",
+        "pizza",
+        "primi",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(a temperatura ambiente, per regolare la fluidità)",
+        "(calda, per la stufatura)",
+        "(calda, ~40°C)"
+      ],
+      "usaRicette": [
+        "condimenti/chimichurri",
+        "condimenti/crema-di-peperoni",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-bbq-artigianale",
+        "dolci/cartocci-alla-crema-siciliani",
+        "dolci/migliaccio-napoletano",
+        "focaccia/focaccia-barese",
+        "focaccia/focaccia-di-recco-igp",
+        "focaccia/focaccia-genovese-classica",
+        "focaccia/focaccia-genovese-fugassa",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "lievitati/panettone-pere-cioccolato",
+        "lievitati/pasta-madre-solida-creazione-rinfresco",
+        "pane/baguette-francese-tradizionale",
+        "pane/ciabatta-poolish-malto-criscito",
+        "pane/pane-ai-cereali-semi",
+        "pane/pane-alle-noci-con-poolish",
+        "pane/pane-di-altamura-dop",
+        "pane/pane-integrale-con-biga",
+        "pane/pane-pugliese-con-biga",
+        "pane/treccia-di-pane-olio",
+        "pizza/pinsa-romana",
+        "pizza/pizza-in-teglia-romana",
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn",
+        "pizza/pizza-napoletana-biga-criscito",
+        "pizza/pizza-napoletana-verace-stg",
+        "pizza/pizza-romana-stesa-al-matterello",
+        "primi/polenta-concia-valdostana",
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "pepe nero",
+      "nome": "Pepe Nero",
+      "grafie": [
+        "Pepe Nero",
+        "Pepe nero"
+      ],
+      "ricette": 25,
+      "occorrenze": 26,
+      "grammiTotali": 44,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "focaccia",
+        "primi",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(macinato fresco al momento)",
+        "(macinato fresco)",
+        "(macinato fresco al momento — facoltativo)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "condimenti/burro-composto-acciughe-tartufo",
+        "condimenti/caesar-dressing",
+        "condimenti/chimichurri",
+        "condimenti/dressing-miele-senape",
+        "condimenti/guacamole",
+        "condimenti/maionese",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/olio-extravergine-aromatizzato-verde-dorato",
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-di-fave-maro",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-allo-yogurt",
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina",
+        "condimenti/salsa-bernese",
+        "condimenti/salsa-verde-tradizionale",
+        "condimenti/vinaigrette-classica-e-citronette",
+        "conserve/pomodorini-confit-sottolio",
+        "focaccia/calzone-cipolla-barese-pugliese",
+        "primi/polenta-concia-valdostana",
+        "secondi-piatti/brisket-stile-toscano",
+        "secondi-piatti/pulled-pork-bbq",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "aglio",
+      "nome": "Aglio",
+      "grafie": [
+        "Aglio"
+      ],
+      "ricette": 23,
+      "occorrenze": 24,
+      "grammiTotali": 522,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "pizza",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(spicchio privato dell'anima)",
+        "(spicchi freschi, possibilmente Aglio di Caraglio o Aglio Rosso di Sulmona)",
+        "(1 spicchio piccolo, spremuto)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "condimenti/bagna-cauda",
+        "condimenti/caesar-dressing",
+        "condimenti/coulis-salsa-pomodoro-fresco",
+        "condimenti/crema-di-peperoni",
+        "condimenti/fumetto-di-crostacei",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/pesto-alla-genovese-tradizionale",
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/pesto-di-fave-maro",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico",
+        "condimenti/pesto-rucola-artigianale",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-alle-noci",
+        "condimenti/salsa-verde-tradizionale",
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare",
+        "pizza/pizza-romana-stesa-al-matterello",
+        "secondi-piatti/brisket-stile-toscano",
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "lievito di birra fresco",
+      "nome": "Lievito di Birra Fresco",
+      "grafie": [
+        "Lievito di Birra Fresco"
+      ],
+      "ricette": 23,
+      "occorrenze": 29,
+      "grammiTotali": 156,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci",
+        "focaccia",
+        "lievitati",
+        "pane",
+        "pizza"
+      ],
+      "note": [
+        "(o 2g lievito secco, per lievitazione controllata)",
+        "(oppure 4g secco attivo)",
+        "(per biga)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani",
+        "focaccia/focaccia-barese",
+        "focaccia/focaccia-genovese-classica",
+        "focaccia/focaccia-genovese-fugassa",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica",
+        "pane/baguette-francese-tradizionale",
+        "pane/pane-ai-cereali-semi",
+        "pane/pane-alle-noci-con-poolish",
+        "pane/pane-di-altamura-dop",
+        "pane/pane-integrale-con-biga",
+        "pane/pane-pugliese-con-biga",
+        "pane/treccia-di-pane-olio",
+        "pizza/pinsa-romana",
+        "pizza/pizza-in-teglia-romana",
+        "pizza/pizza-in-teglia-romana-alta-idratazione",
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn",
+        "pizza/pizza-napoletana-verace-stg",
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "olio extravergine di oliva",
+      "nome": "Olio Extravergine di Oliva",
+      "grafie": [
+        "Olio Extravergine di Oliva"
+      ],
+      "ricette": 13,
+      "occorrenze": 16,
+      "grammiTotali": 2180,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "focaccia",
+        "pizza",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(fruttato leggero, preferibilmente ligure o del Garda — acidità ≤ 0.3%)",
+        "(Cultivar delicata o semi di vinacciolo. Resa netta finale: ~220-250g)",
+        "(fruttato delicato)"
+      ],
+      "usaRicette": [
+        "condimenti/bagna-cauda",
+        "condimenti/olio-carota-zenzero-arancio-fluo",
+        "condimenti/olio-extravergine-aromatizzato-verde-dorato",
+        "condimenti/olio-peperone-crusco-rosso-rubino",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina",
+        "condimenti/salsa-bbq-artigianale",
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare",
+        "focaccia/focaccia-di-recco-igp",
+        "pizza/pizza-in-teglia-romana-alta-idratazione",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "succo di limone",
+      "nome": "Succo di Limone",
+      "grafie": [
+        "Succo di Limone",
+        "Succo di limone"
+      ],
+      "ricette": 13,
+      "occorrenze": 13,
+      "grammiTotali": 290,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "condimenti",
+        "pizza",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(fresco e filtrato)",
+        "(spremuto fresco e filtrato)",
+        "(filtrato, appena spremuto)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "condimenti/burro-maitre-d-hotel",
+        "condimenti/caesar-dressing",
+        "condimenti/maionese",
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-allo-yogurt",
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina",
+        "condimenti/salsa-bernese",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "condimenti/vinaigrette-classica-e-citronette",
+        "pizza/pizza-romana-stesa-al-matterello",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "burro",
+      "nome": "Burro",
+      "grafie": [
+        "Burro"
+      ],
+      "ricette": 12,
+      "occorrenze": 15,
+      "grammiTotali": 2760,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(non salato, di alta qualità)",
+        "(di centrifuga)",
+        "(di qualità, a temperatura ambiente)"
+      ],
+      "usaRicette": [
+        "condimenti/besciamella",
+        "condimenti/crema-al-parmigiano",
+        "condimenti/pure-di-patate",
+        "conserve/burro-chiarificato",
+        "dolci/cantuccini-di-prato",
+        "dolci/migliaccio-napoletano",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "lievitati/panettone-pere-cioccolato",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "zucchero semolato",
+      "nome": "Zucchero Semolato",
+      "grafie": [
+        "Zucchero Semolato",
+        "Zucchero semolato"
+      ],
+      "ricette": 12,
+      "occorrenze": 15,
+      "grammiTotali": 1513,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "condimenti",
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(opzionale, per calibrare l'acidità)",
+        "(zucchero bianco fine, per dissoluzione uniforme)",
+        "(per dolcezza impasto)"
+      ],
+      "usaRicette": [
+        "condimenti/coulis-salsa-pomodoro-fresco",
+        "condimenti/salsa-teriyaki-originale",
+        "dolci/cantuccini-di-prato",
+        "dolci/cartocci-alla-crema-siciliani",
+        "dolci/migliaccio-napoletano",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica",
+        "lievitati/pasta-madre-solida-creazione-rinfresco"
+      ]
+    },
+    {
+      "chiave": "basilico fresco",
+      "nome": "Basilico Fresco",
+      "grafie": [
+        "Basilico Fresco"
+      ],
+      "ricette": 11,
+      "occorrenze": 11,
+      "grammiTotali": 98,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "pizza"
+      ],
+      "note": [
+        "(in foglie)",
+        "(spezzettato a mano)",
+        "(foglie pulite e asciutte)"
+      ],
+      "usaRicette": [
+        "condimenti/coulis-salsa-pomodoro-fresco",
+        "condimenti/crema-di-peperoni",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico",
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn",
+        "pizza/pizza-napoletana-verace-stg"
+      ]
+    },
+    {
+      "chiave": "latte intero",
+      "nome": "Latte Intero",
+      "grafie": [
+        "Latte Intero",
+        "Latte intero"
+      ],
+      "ricette": 8,
+      "occorrenze": 9,
+      "grammiTotali": 2380,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "dolci",
+        "lievitati",
+        "pane"
+      ],
+      "note": [
+        "(fresco, intero — per dolcificare l'aglio)",
+        "(fresco)",
+        "(per crema pasticcera opzione 1)"
+      ],
+      "usaRicette": [
+        "condimenti/bagna-cauda",
+        "condimenti/salsa-alle-noci",
+        "dolci/cartocci-alla-crema-siciliani",
+        "dolci/migliaccio-napoletano",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/pasta-brioche-artigianale",
+        "pane/treccia-di-pane-olio"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0",
+      "nome": "Farina Tipo 0",
+      "grafie": [
+        "Farina Tipo 0"
+      ],
+      "ricette": 8,
+      "occorrenze": 10,
+      "grammiTotali": 2380,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "focaccia",
+        "lievitati",
+        "pane"
+      ],
+      "note": [
+        "(W 200-220, debole/media)",
+        "(W 260-280, prelevata dal totale)",
+        "(W 260-280)"
+      ],
+      "usaRicette": [
+        "focaccia/calzone-cipolla-barese-pugliese",
+        "focaccia/focaccia-barese",
+        "lievitati/pasta-madre-solida-creazione-rinfresco",
+        "pane/baguette-francese-tradizionale",
+        "pane/ciabatta-poolish-malto-criscito",
+        "pane/pane-alle-noci-con-poolish",
+        "pane/pane-pugliese-con-biga",
+        "pane/treccia-di-pane-olio"
+      ]
+    },
+    {
+      "chiave": "parmigiano reggiano dop",
+      "nome": "Parmigiano Reggiano DOP",
+      "grafie": [
+        "Parmigiano Reggiano DOP"
+      ],
+      "ricette": 8,
+      "occorrenze": 8,
+      "grammiTotali": 545,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(stagionatura 24 mesi, grattugiato finissimo)",
+        "(stagionatura 24-30 mesi, finemente grattugiato)",
+        "(stagionato 24-30 mesi)"
+      ],
+      "usaRicette": [
+        "condimenti/caesar-dressing",
+        "condimenti/crema-al-parmigiano",
+        "condimenti/pesto-alla-genovese-tradizionale",
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/pesto-rucola-artigianale"
+      ]
+    },
+    {
+      "chiave": "farina manitoba",
+      "nome": "Farina Manitoba",
+      "grafie": [
+        "Farina Manitoba"
+      ],
+      "ricette": 7,
+      "occorrenze": 10,
+      "grammiTotali": 2290,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "focaccia",
+        "lievitati",
+        "pane"
+      ],
+      "note": [
+        "(W 360-380, proteine 13-14%)",
+        "(W 340-380)",
+        "(W 350-380, forza elevata)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-di-recco-igp",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/pasta-brioche-classica",
+        "lievitati/pasta-madre-solida-creazione-rinfresco",
+        "pane/pane-alle-noci-con-poolish"
+      ]
+    },
+    {
+      "chiave": "tuorli d'uovo",
+      "nome": "Tuorli d'Uovo",
+      "grafie": [
+        "Tuorli d'Uovo",
+        "Tuorli d'uovo"
+      ],
+      "ricette": 7,
+      "occorrenze": 9,
+      "grammiTotali": 1275,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "condimenti",
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(freschissimi, a temperatura ambiente, ~20g cad.)",
+        "(freschissimi, grandi, ~20g cad.)",
+        "(freschissimi, a temperatura ambiente)"
+      ],
+      "usaRicette": [
+        "condimenti/maionese",
+        "condimenti/salsa-bernese",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "condimenti/salsa-verde-tradizionale",
+        "dolci/cartocci-alla-crema-siciliani",
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "prezzemolo fresco",
+      "nome": "Prezzemolo Fresco",
+      "grafie": [
+        "Prezzemolo Fresco",
+        "Prezzemolo fresco"
+      ],
+      "ricette": 7,
+      "occorrenze": 7,
+      "grammiTotali": 255,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "pizza",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(solo foglie, tritate finemente)",
+        "(solo foglie, lavato e asciugato)",
+        "(tritato finemente)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-maitre-d-hotel",
+        "condimenti/chimichurri",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "condimenti/salsa-verde-tradizionale",
+        "conserve/dado-vegetale-fatto-in-casa",
+        "pizza/pizza-romana-stesa-al-matterello",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "aceto di vino bianco",
+      "nome": "Aceto di Vino Bianco",
+      "grafie": [
+        "Aceto di Vino Bianco",
+        "Aceto di vino bianco"
+      ],
+      "ricette": 7,
+      "occorrenze": 7,
+      "grammiTotali": 185,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(acidità 6%)",
+        "(acidità 6%, a temperatura ambiente)",
+        "(facoltativo, ~1 cucchiaino e mezzo)"
+      ],
+      "usaRicette": [
+        "condimenti/caesar-dressing",
+        "condimenti/chimichurri",
+        "condimenti/maionese",
+        "condimenti/salsa-bernese",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "condimenti/salsa-verde-tradizionale",
+        "condimenti/vinaigrette-classica-e-citronette"
+      ]
+    },
+    {
+      "chiave": "tuorlo d'uovo",
+      "nome": "Tuorlo d'Uovo",
+      "grafie": [
+        "Tuorlo d'Uovo",
+        "Tuorlo d'uovo"
+      ],
+      "ricette": 7,
+      "occorrenze": 7,
+      "grammiTotali": 134,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(pastorizzato o freschissimo, a temperatura ambiente)",
+        "(per spennellare)",
+        "(per doratura)"
+      ],
+      "usaRicette": [
+        "condimenti/caesar-dressing",
+        "dolci/cantuccini-di-prato",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/impasto-rosticceria-siciliana",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "aglio fresco",
+      "nome": "Aglio Fresco",
+      "grafie": [
+        "Aglio Fresco",
+        "Aglio fresco"
+      ],
+      "ricette": 7,
+      "occorrenze": 7,
+      "grammiTotali": 61,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve",
+        "pizza"
+      ],
+      "note": [
+        "(ridotto in purea, opzionale per sprint aromatico)",
+        "(3 spicchi medi, circa 12g)",
+        "(sbucciato e privato dell'anima)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-maitre-d-hotel",
+        "condimenti/chimichurri",
+        "condimenti/olio-extravergine-aromatizzato-verde-dorato",
+        "condimenti/salsa-allo-yogurt",
+        "condimenti/salsa-bbq-artigianale",
+        "conserve/pomodorini-confit-sottolio",
+        "pizza/pizza-marinara-verace-disciplinare-avpn"
+      ]
+    },
+    {
+      "chiave": "scorza di limone",
+      "nome": "Scorza di Limone",
+      "grafie": [
+        "Scorza di Limone",
+        "Scorza di limone"
+      ],
+      "ricette": 7,
+      "occorrenze": 7,
+      "grammiTotali": 32,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "dolci",
+        "lievitati",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(non trattata, grattugiata)",
+        "(non trattato, solo parte gialla)",
+        "(Non trattato, solo la parte gialla)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-composto-acciughe-tartufo",
+        "condimenti/olio-extravergine-aromatizzato-verde-dorato",
+        "condimenti/salsa-allo-yogurt",
+        "dolci/cantuccini-di-prato",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "farina tipo 00",
+      "nome": "Farina Tipo 00",
+      "grafie": [
+        "Farina Tipo 00"
+      ],
+      "ricette": 6,
+      "occorrenze": 6,
+      "grammiTotali": 4730,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "lievitati",
+        "pizza",
+        "primi"
+      ],
+      "note": [
+        "(debole, W 150-170)",
+        "(W 250-270)",
+        "(W 250-320, P/L 0.50-0.70 ideale 0.6, Proteine 11.5-13.5%, Glutine secco 9.5-11.5%, Assorbimento 55-62%, Ceneri <0.55)"
+      ],
+      "usaRicette": [
+        "condimenti/crema-al-parmigiano",
+        "lievitati/burger-buns-con-biga",
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn",
+        "pizza/pizza-napoletana-verace-stg",
+        "primi/gnocchi-di-patate"
+      ]
+    },
+    {
+      "chiave": "cipolla dorata",
+      "nome": "Cipolla Dorata",
+      "grafie": [
+        "Cipolla Dorata"
+      ],
+      "ricette": 5,
+      "occorrenze": 5,
+      "grammiTotali": 360,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(tritata finemente)",
+        "(mondata)",
+        "(media, circa 100g)"
+      ],
+      "usaRicette": [
+        "condimenti/coulis-salsa-pomodoro-fresco",
+        "condimenti/crema-di-peperoni",
+        "condimenti/fumetto-di-crostacei",
+        "condimenti/salsa-bbq-artigianale",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "aceto di mele",
+      "nome": "Aceto di Mele",
+      "grafie": [
+        "Aceto di Mele"
+      ],
+      "ricette": 5,
+      "occorrenze": 5,
+      "grammiTotali": 175,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(acidità 5%)",
+        "(o aceto di vino bianco delicato)",
+        "(non filtrato)"
+      ],
+      "usaRicette": [
+        "condimenti/dressing-miele-senape",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/salsa-bbq-artigianale",
+        "secondi-piatti/pulled-pork-bbq",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "miele di acacia",
+      "nome": "Miele di Acacia",
+      "grafie": [
+        "Miele di Acacia"
+      ],
+      "ricette": 5,
+      "occorrenze": 5,
+      "grammiTotali": 125,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "lievitati",
+        "pane"
+      ],
+      "note": [
+        "(liquido e fluido)",
+        "(dolcificante naturale e umettante)",
+        "(o malto diastatico)"
+      ],
+      "usaRicette": [
+        "condimenti/dressing-miele-senape",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "pane/pane-di-altamura-dop",
+        "pane/treccia-di-pane-olio"
+      ]
+    },
+    {
+      "chiave": "sale grosso",
+      "nome": "Sale Grosso",
+      "grafie": [
+        "Sale Grosso"
+      ],
+      "ricette": 5,
+      "occorrenze": 5,
+      "grammiTotali": 38,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "focaccia",
+        "primi"
+      ],
+      "note": [
+        "(marino integrale)",
+        "(per l'acqua di cottura)",
+        "(per pomodorini e superficie)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/pure-di-patate",
+        "focaccia/focaccia-barese",
+        "focaccia/focaccia-di-recco-igp",
+        "primi/polenta-concia-valdostana"
+      ]
+    },
+    {
+      "chiave": "origano secco",
+      "nome": "Origano Secco",
+      "grafie": [
+        "Origano Secco"
+      ],
+      "ricette": 5,
+      "occorrenze": 5,
+      "grammiTotali": 22,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "focaccia",
+        "lievitati",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(di buona qualità, preferibilmente siciliano o greco)",
+        "(preferibilmente siciliano o di Pantelleria)",
+        "(q.b.)"
+      ],
+      "usaRicette": [
+        "condimenti/chimichurri",
+        "condimenti/salmoriglio-siciliano-tradizionale",
+        "focaccia/focaccia-barese",
+        "lievitati/impasto-rosticceria-siciliana",
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "latte intero fresco",
+      "nome": "Latte Intero Fresco",
+      "grafie": [
+        "Latte Intero Fresco"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 1810,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "lievitati"
+      ],
+      "note": [
+        "(a temperatura ambiente o appena tiepido)",
+        "(ideale alta qualità)",
+        "(da scaldare prima dell'uso, non bollente)"
+      ],
+      "usaRicette": [
+        "condimenti/besciamella",
+        "condimenti/crema-al-parmigiano",
+        "condimenti/pure-di-patate",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0 o manitoba",
+      "nome": "Farina Tipo 0 o Manitoba",
+      "grafie": [
+        "Farina Tipo 0 o Manitoba"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 1150,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati",
+        "pane"
+      ],
+      "note": [
+        "(W 320-350)",
+        "(W 300-350)",
+        "(W 330-350)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-brioche-artigianale",
+        "pane/baguette-francese-tradizionale",
+        "pane/pane-integrale-con-biga",
+        "pane/treccia-di-pane-olio"
+      ]
+    },
+    {
+      "chiave": "ketchup",
+      "nome": "Ketchup",
+      "grafie": [
+        "Ketchup"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 825,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(di alta qualità, senza addensanti artificiali)",
+        "(di alta qualità, bilanciato tra dolce e agro)",
+        "(qualità, preferibilmente senza sciroppo di mais ad alto fruttosio)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bbq-artigianale",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "secondi-piatti/pulled-pork-bbq",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "uova intere",
+      "nome": "Uova Intere",
+      "grafie": [
+        "Uova Intere",
+        "Uova intere"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 520,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(circa 2 medie, a temperatura ambiente)",
+        "(a temperatura ambiente, circa 2 medie)",
+        "(circa 2 uova e mezzo, fredde)"
+      ],
+      "usaRicette": [
+        "dolci/cantuccini-di-prato",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "acqua per bassinage",
+      "nome": "Acqua per Bassinage",
+      "grafie": [
+        "Acqua per Bassinage",
+        "Acqua per bassinage"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 190,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(Da aggiungere alla fine)",
+        "(Fredda, 10-12°C)",
+        "(fredda di frigo, da aggiungere alla fine)"
+      ],
+      "usaRicette": [
+        "pane/baguette-francese-tradizionale",
+        "pane/pane-ai-cereali-semi",
+        "pane/pane-alle-noci-con-poolish",
+        "pane/pane-pugliese-con-biga"
+      ]
+    },
+    {
+      "chiave": "sale marino fino",
+      "nome": "Sale Marino Fino",
+      "grafie": [
+        "Sale Marino Fino"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 189,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(2.3% su farina totale, massima estensibilità)",
+        "(2,5% su farina totale)",
+        "(2.5% su farina totale)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto",
+        "pizza/pizza-in-teglia-romana-alta-idratazione",
+        "pizza/pizza-napoletana-biga-criscito",
+        "pizza/pizza-napoletana-verace-stg"
+      ]
+    },
+    {
+      "chiave": "pecorino romano dop",
+      "nome": "Pecorino Romano DOP",
+      "grafie": [
+        "Pecorino Romano DOP"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(grattugiato finemente)",
+        "(grattugiato fino)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico",
+        "condimenti/pesto-rucola-artigianale"
+      ]
+    },
+    {
+      "chiave": "senape di digione",
+      "nome": "Senape di Digione",
+      "grafie": [
+        "Senape di Digione"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 95,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(tipo Maille o equivalente, grana fine)",
+        "(liscia o all'antica)",
+        "(liscia e delicata)"
+      ],
+      "usaRicette": [
+        "condimenti/caesar-dressing",
+        "condimenti/dressing-miele-senape",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "panna fresca liquida",
+      "nome": "Panna fresca liquida",
+      "grafie": [
+        "Panna Fresca Liquida",
+        "Panna fresca liquida"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 85,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "lievitati"
+      ],
+      "note": [
+        "(35% grassi)",
+        "(o latte intero)",
+        "(o latte)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "semi di sesamo",
+      "nome": "Semi di Sesamo",
+      "grafie": [
+        "Semi di Sesamo"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 65,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "lievitati",
+        "pane"
+      ],
+      "note": [
+        "(tostati in padella)",
+        "(bianchi, o misti bianchi e neri)",
+        "(tostati, per decorazione)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "lievitati/burger-buns-con-biga",
+        "lievitati/impasto-rosticceria-siciliana",
+        "pane/treccia-di-pane-olio"
+      ]
+    },
+    {
+      "chiave": "salsa worcestershire",
+      "nome": "Salsa Worcestershire",
+      "grafie": [
+        "Salsa Worcestershire"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 41,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(Lea & Perrins o equivalente)",
+        "(originale)",
+        "(fondamentale per l'umami)"
+      ],
+      "usaRicette": [
+        "condimenti/caesar-dressing",
+        "condimenti/salsa-bbq-artigianale",
+        "condimenti/salsa-cocktail-rosa-artigianale",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "sale grosso marino",
+      "nome": "Sale Grosso Marino",
+      "grafie": [
+        "Sale Grosso Marino"
+      ],
+      "ricette": 4,
+      "occorrenze": 4,
+      "grammiTotali": 19,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "focaccia"
+      ],
+      "note": [
+        "(q.b. — circa 5-8g)",
+        "(funge da abrasivo meccanico)",
+        "(per la pestatura)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei",
+        "condimenti/pesto-alla-genovese-tradizionale",
+        "condimenti/pesto-di-fave-maro",
+        "focaccia/focaccia-genovese-classica"
+      ]
+    },
+    {
+      "chiave": "semola di grano duro rimacinata",
+      "nome": "Semola di Grano Duro Rimacinata",
+      "grafie": [
+        "Semola di Grano Duro Rimacinata"
+      ],
+      "ricette": 3,
+      "occorrenze": 4,
+      "grammiTotali": 950,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pane",
+        "pizza",
+        "primi"
+      ],
+      "note": [
+        "(W 200-250)",
+        "(per spolverare il piano e i panielli)",
+        "(per spolverare piano di lavoro e vassoi)"
+      ],
+      "usaRicette": [
+        "pane/pane-di-altamura-dop",
+        "pizza/pinsa-romana",
+        "primi/gnocchi-di-patate"
+      ]
+    },
+    {
+      "chiave": "burro di centrifuga",
+      "nome": "Burro di centrifuga",
+      "grafie": [
+        "Burro di Centrifuga",
+        "Burro di centrifuga"
+      ],
+      "ricette": 3,
+      "occorrenze": 4,
+      "grammiTotali": 720,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "primi"
+      ],
+      "note": [
+        "(min. 82% m.g., a pomata)",
+        "(82% grassi, consistenza a pomata)",
+        "(82% grassi)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-composto-acciughe-tartufo",
+        "condimenti/burro-maitre-d-hotel",
+        "primi/polenta-concia-valdostana"
+      ]
+    },
+    {
+      "chiave": "semola rimacinata di grano duro",
+      "nome": "Semola Rimacinata di Grano Duro",
+      "grafie": [
+        "Semola Rimacinata di Grano Duro"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 690,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia",
+        "pane",
+        "pizza"
+      ],
+      "note": [
+        "(tipo Senatore Cappelli o Saragolla)",
+        "(Proteine min. 13%)",
+        "(fine, non semola grossa)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-barese",
+        "pane/pane-pugliese-con-biga",
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "zucchine",
+      "nome": "Zucchine",
+      "grafie": [
+        "Zucchine"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve"
+      ],
+      "note": [
+        "(varietà scura o romanesca, sode e senza semi centrali)",
+        "(fresche, tagliate a rondelle)",
+        "(spuntate)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-zucchine",
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare"
+      ]
+    },
+    {
+      "chiave": "sedano",
+      "nome": "Sedano",
+      "grafie": [
+        "Sedano"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 460,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve"
+      ],
+      "note": [
+        "(gambo con foglie)",
+        "(pulito, privo delle parti fibrose, tagliate a pezzi)",
+        "(privato dei filamenti)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei",
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare"
+      ]
+    },
+    {
+      "chiave": "patate",
+      "nome": "Patate",
+      "grafie": [
+        "Patate"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 450,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve",
+        "focaccia"
+      ],
+      "note": [
+        "(pelate, tagliate a pezzi — aiutano la consistenza finale del dado)",
+        "(sbucciate)",
+        "(peso da crude, da lessare e schiacciare)"
+      ],
+      "usaRicette": [
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare",
+        "focaccia/focaccia-barese"
+      ]
+    },
+    {
+      "chiave": "vino bianco secco",
+      "nome": "Vino Bianco Secco",
+      "grafie": [
+        "Vino Bianco Secco"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 360,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "focaccia"
+      ],
+      "note": [
+        "(Vermentino, Falanghina o simile — non aromatico)",
+        "(non aromatico)",
+        "(temperatura ambiente)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei",
+        "condimenti/salsa-bernese",
+        "focaccia/calzone-cipolla-barese-pugliese"
+      ]
+    },
+    {
+      "chiave": "pomodorini",
+      "nome": "Pomodorini",
+      "grafie": [
+        "Pomodorini"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 330,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve"
+      ],
+      "note": [
+        "(o 1 cucchiaio di concentrato di pomodoro)",
+        "(maturi, privati del picciolo)",
+        "(lavati e asciugati)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei",
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare"
+      ]
+    },
+    {
+      "chiave": "pinoli",
+      "nome": "Pinoli",
+      "grafie": [
+        "Pinoli"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 110,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(da tostare in padella)",
+        "(di prima scelta, crudi o leggermente tostati a freddo)",
+        "(leggermente tostati e raffreddati)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-barbabietola",
+        "condimenti/pesto-di-zucchine",
+        "condimenti/pesto-rucola-artigianale"
+      ]
+    },
+    {
+      "chiave": "parmigiano reggiano",
+      "nome": "Parmigiano Reggiano",
+      "grafie": [
+        "Parmigiano Reggiano"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 95,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(24 mesi, grattugiato fine)",
+        "(grattugiato fine, 24+ mesi — facoltativo)",
+        "(stagionatura 24 mesi, grattugiato)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-fave-maro",
+        "condimenti/pure-di-patate",
+        "condimenti/salsa-alle-noci"
+      ]
+    },
+    {
+      "chiave": "miele d'acacia",
+      "nome": "Miele d'Acacia",
+      "grafie": [
+        "Miele d'Acacia"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 72,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(per emulsione aromatica)",
+        "(per morbidezza e profumo)",
+        "(millefiori o acacia, liquido)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-pere-cioccolato",
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "menta fresca",
+      "nome": "Menta Fresca",
+      "grafie": [
+        "Menta Fresca"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 14,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(foglie intere o spezzate a mano)",
+        "(foglie intere o spezzettate a mano)",
+        "(foglie intere, circa 8 foglie medie)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "condimenti/pesto-di-fave-maro"
+      ]
+    },
+    {
+      "chiave": "noce moscata",
+      "nome": "Noce Moscata",
+      "grafie": [
+        "Noce Moscata"
+      ],
+      "ricette": 3,
+      "occorrenze": 3,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "primi"
+      ],
+      "note": [
+        "(da grattugiare al momento)",
+        "(grattugiata fresca al momento)",
+        "(facoltativa — grattugiata fresca al momento)"
+      ],
+      "usaRicette": [
+        "condimenti/besciamella",
+        "condimenti/pure-di-patate",
+        "primi/gnocchi-di-patate"
+      ]
+    },
+    {
+      "chiave": "acqua fredda",
+      "nome": "Acqua Fredda",
+      "grafie": [
+        "Acqua Fredda"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 2050,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "pizza"
+      ],
+      "note": [
+        "(non clorata, possibilmente filtrata)",
+        "(da frigo, 4–6°C — bassinage: 680g base + 170g a filo)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei",
+        "pizza/pizza-in-teglia-romana-alta-idratazione"
+      ]
+    },
+    {
+      "chiave": "farina caputo nuvola super",
+      "nome": "Farina Caputo Nuvola Super",
+      "grafie": [
+        "Farina Caputo Nuvola Super"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 1960,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 260-280, protagonista per spinta e alveolatura)",
+        "(W 260-280, leggerezza e alveolatura)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto",
+        "pizza/pizza-napoletana-biga-criscito"
+      ]
+    },
+    {
+      "chiave": "farina manitoba forte",
+      "nome": "Farina Manitoba Forte",
+      "grafie": [
+        "Farina Manitoba Forte"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 950,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(W 350-380)",
+        "(W 380–420, proteine 13-14%)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-genovese-classica",
+        "focaccia/focaccia-genovese-fugassa"
+      ]
+    },
+    {
+      "chiave": "farina tipo 1",
+      "nome": "Farina Tipo 1",
+      "grafie": [
+        "Farina Tipo 1"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 640,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane",
+        "pizza"
+      ],
+      "note": [
+        "(W 280-300)",
+        "(W 200-220, semi-integrale)"
+      ],
+      "usaRicette": [
+        "pane/pane-ai-cereali-semi",
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0 media forza",
+      "nome": "Farina Tipo 0 Media Forza",
+      "grafie": [
+        "Farina Tipo 0 Media Forza"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 570,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(W 260-280)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-barese",
+        "focaccia/focaccia-genovese-classica"
+      ]
+    },
+    {
+      "chiave": "lievito madre solido",
+      "nome": "Lievito Madre Solido",
+      "grafie": [
+        "Lievito Madre Solido"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 550,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(rinfrescato 3 volte, al 50% di idratazione)",
+        "(a temperatura 28-30°C)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-fatto-in-casa-caputo",
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "olio di semi di girasole",
+      "nome": "Olio di Semi di Girasole",
+      "grafie": [
+        "Olio di Semi di Girasole",
+        "Olio di semi di girasole"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 500,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(sapore neutro, a temperatura ambiente)",
+        "(o di vinacciolo, dal sapore neutro)"
+      ],
+      "usaRicette": [
+        "condimenti/maionese",
+        "condimenti/salsa-cocktail-rosa-artigianale"
+      ]
+    },
+    {
+      "chiave": "ricotta vaccina",
+      "nome": "Ricotta Vaccina",
+      "grafie": [
+        "Ricotta Vaccina"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "dolci"
+      ],
+      "note": [
+        "(ben scolata dal siero)",
+        "(fresca, da setacciare)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-alla-siciliana",
+        "dolci/migliaccio-napoletano"
+      ]
+    },
+    {
+      "chiave": "carote",
+      "nome": "Carote",
+      "grafie": [
+        "Carote"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 400,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve"
+      ],
+      "note": [
+        "(pulite e pelate, tagliate a pezzi)",
+        "(pulite e sbucciate)"
+      ],
+      "usaRicette": [
+        "conserve/dado-vegetale-fatto-in-casa",
+        "conserve/dado-vegetale-granulare"
+      ]
+    },
+    {
+      "chiave": "farina 00",
+      "nome": "Farina 00",
+      "grafie": [
+        "Farina 00"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 360,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "lievitati"
+      ],
+      "note": [
+        "(debole, W 150–180 — da pasticceria)",
+        "(W 260-280)"
+      ],
+      "usaRicette": [
+        "condimenti/besciamella",
+        "lievitati/cornetti-sfogliati-classici"
+      ]
+    },
+    {
+      "chiave": "criscito caputo",
+      "nome": "Criscito Caputo",
+      "grafie": [
+        "Criscito Caputo"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 203,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(lievito madre essiccato, 30g/kg come da indicazioni)",
+        "(lievito madre secco attivo, 40g/kg farina)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto",
+        "pizza/pizza-napoletana-biga-criscito"
+      ]
+    },
+    {
+      "chiave": "carota",
+      "nome": "Carota",
+      "grafie": [
+        "Carota"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(media)",
+        "(media, tagliata a rondelle)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "zucchero a velo",
+      "nome": "Zucchero a Velo",
+      "grafie": [
+        "Zucchero a Velo"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 180,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(per crema ricotta opzione 2 e finitura)",
+        "(per spolverizzare a fine cottura)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani",
+        "dolci/migliaccio-napoletano"
+      ]
+    },
+    {
+      "chiave": "strutto",
+      "nome": "Strutto",
+      "grafie": [
+        "Strutto"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 170,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(o burro morbido, per friabilità e sapore)",
+        "(morbido a temperatura ambiente, sostituibile con burro)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani",
+        "lievitati/impasto-rosticceria-siciliana"
+      ]
+    },
+    {
+      "chiave": "pomodoro pelato san marzano dop",
+      "nome": "Pomodoro Pelato San Marzano DOP",
+      "grafie": [
+        "Pomodoro Pelato San Marzano DOP"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 155,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(dell'Agro Sarnese-Nocerino, frantumato rigorosamente a mano)",
+        "(frantumato rigorosamente a mano)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn"
+      ]
+    },
+    {
+      "chiave": "acqua (bassinage)",
+      "nome": "Acqua (Bassinage)",
+      "grafie": [
+        "Acqua (Bassinage)"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 130,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(aggiunta a filo a fine impasto)",
+        "(aggiunta finale a filo)"
+      ],
+      "usaRicette": [
+        "pane/ciabatta-poolish-malto-criscito",
+        "pane/pane-di-altamura-dop"
+      ]
+    },
+    {
+      "chiave": "uovo intero",
+      "nome": "Uovo Intero",
+      "grafie": [
+        "Uovo Intero"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 110,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati",
+        "primi"
+      ],
+      "note": [
+        "(circa 1 medio, a temperatura ambiente)",
+        "(medio, ~55g — a temperatura ambiente)"
+      ],
+      "usaRicette": [
+        "lievitati/burger-buns-con-biga",
+        "primi/gnocchi-di-patate"
+      ]
+    },
+    {
+      "chiave": "sale marino grosso",
+      "nome": "Sale Marino Grosso",
+      "grafie": [
+        "Sale Marino Grosso"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(sale da cucina, preferibilmente marino)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-margherita-verace-disciplinare-avpn",
+        "pizza/pizza-marinara-verace-disciplinare-avpn"
+      ]
+    },
+    {
+      "chiave": "mandorle pelate",
+      "nome": "Mandorle Pelate",
+      "grafie": [
+        "Mandorle Pelate"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 95,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(in alternativa pinoli)",
+        "(non tostate, meglio se siciliane di Avola)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-alla-siciliana",
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico"
+      ]
+    },
+    {
+      "chiave": "olio extravergine d'oliva ligure dop",
+      "nome": "Olio Extravergine d'Oliva Ligure DOP",
+      "grafie": [
+        "Olio Extravergine d'Oliva Ligure DOP"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 80,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(nell'impasto)",
+        "(nell'impasto, preferire taggiasco o riviera)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-genovese-classica",
+        "focaccia/focaccia-genovese-fugassa"
+      ]
+    },
+    {
+      "chiave": "miele",
+      "nome": "Miele",
+      "grafie": [
+        "Miele"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 65,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(millefiori o acacia, per morbidezza e aroma)",
+        "(o sciroppo di riso/sciroppo di mais)"
+      ],
+      "usaRicette": [
+        "lievitati/impasto-rosticceria-siciliana",
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "paprika affumicata",
+      "nome": "Paprika Affumicata",
+      "grafie": [
+        "Paprika Affumicata"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 58,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(Pimentón de la Vera dolce)",
+        "(in polvere, qualità spagnola o ungherese)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bbq-artigianale",
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "filetti di acciuga",
+      "nome": "Filetti di acciuga",
+      "grafie": [
+        "Filetti di Acciuga",
+        "Filetti di acciuga"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 45,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(sott'olio, ben scolati)",
+        "(sott'olio sgocciolati o sotto sale ben puliti)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-composto-acciughe-tartufo",
+        "condimenti/salsa-verde-tradizionale"
+      ]
+    },
+    {
+      "chiave": "paprika dolce",
+      "nome": "Paprika Dolce",
+      "grafie": [
+        "Paprika Dolce"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 43,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(o affumicata, in polvere)",
+        "(in polvere)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane",
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "rum",
+      "nome": "Rum",
+      "grafie": [
+        "Rum"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 33,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(esalta i sapori, evapora in cottura)",
+        "(rum scuro o rum aromatico, facoltativamente sostituibile con acqua di fiori d'arancio)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "capperi sotto sale",
+      "nome": "Capperi Sotto Sale",
+      "grafie": [
+        "Capperi Sotto Sale",
+        "Capperi sotto Sale"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(ben dissalati)",
+        "(dissalati e tritati)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-verde-tradizionale",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "zucchero di canna",
+      "nome": "Zucchero di Canna",
+      "grafie": [
+        "Zucchero di Canna"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(o zucchero a velo)",
+        "(per favorire la caramellizzazione)"
+      ],
+      "usaRicette": [
+        "conserve/pomodorini-confit-sottolio",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "aglio in polvere",
+      "nome": "Aglio in Polvere",
+      "grafie": [
+        "Aglio in Polvere"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 27,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(non aglio granulare)",
+        "(essiccato fine)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "erbe aromatiche fresche",
+      "nome": "Erbe Aromatiche Fresche",
+      "grafie": [
+        "Erbe Aromatiche Fresche"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 25,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "conserve"
+      ],
+      "note": [
+        "(Mix di menta, erba cipollina o aneto)",
+        "(prezzemolo, basilico, rosmarino)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-allo-yogurt",
+        "conserve/dado-vegetale-granulare"
+      ]
+    },
+    {
+      "chiave": "estratto di malto",
+      "nome": "Estratto di Malto",
+      "grafie": [
+        "Estratto di Malto"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 24,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(per attività enzimatica e colorazione)",
+        "(diastasico, favorisce lievitazione e colorazione)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto",
+        "pizza/pizza-napoletana-biga-criscito"
+      ]
+    },
+    {
+      "chiave": "paprika dolce in polvere",
+      "nome": "Paprika Dolce in polvere",
+      "grafie": [
+        "Paprika Dolce in Polvere",
+        "Paprika Dolce in polvere"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 23,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(di alta qualità, non affumicata se si vuole replicare il crusco dolce)",
+        "(affumicata o dolce, a piacere)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-peperone-crusco-rosso-rubino",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "sale fino marino",
+      "nome": "Sale fino marino",
+      "grafie": [
+        "Sale Fino Marino",
+        "Sale fino marino"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 21,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "focaccia"
+      ],
+      "note": [
+        "(da aggiungere dopo incordatura)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-maitre-d-hotel",
+        "focaccia/focaccia-genovese-classica"
+      ]
+    },
+    {
+      "chiave": "rosmarino",
+      "nome": "Rosmarino",
+      "grafie": [
+        "Rosmarino"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(fresco, solo aghi)",
+        "(rametti freschi)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-aglio-nero-ossidiana",
+        "condimenti/olio-extravergine-aromatizzato-verde-dorato"
+      ]
+    },
+    {
+      "chiave": "malto diastasico",
+      "nome": "Malto Diastasico",
+      "grafie": [
+        "Malto Diastasico"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 13,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia",
+        "pane"
+      ],
+      "note": [
+        "(o 1 cucchiaino miele se non disponibile)",
+        "(per spinta enzimatica e colore)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-genovese-fugassa",
+        "pane/ciabatta-poolish-malto-criscito"
+      ]
+    },
+    {
+      "chiave": "pepe bianco",
+      "nome": "Pepe bianco",
+      "grafie": [
+        "Pepe Bianco",
+        "Pepe bianco"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 11,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(macinato al momento)",
+        "(macinato finemente)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-maitre-d-hotel",
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "scorza di arancia",
+      "nome": "Scorza di Arancia",
+      "grafie": [
+        "Scorza di Arancia"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(grattugiata, agrume non trattato)",
+        "(1 arancia bio non trattata, pelata a strisce larghe con pelapatate)"
+      ],
+      "usaRicette": [
+        "dolci/cantuccini-di-prato",
+        "dolci/migliaccio-napoletano"
+      ]
+    },
+    {
+      "chiave": "scorza d'arancia",
+      "nome": "Scorza d'Arancia",
+      "grafie": [
+        "Scorza d'Arancia"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(grattugiata fine, non trattata)",
+        "(biologica, solo la parte arancione, grattugiata fine)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-brioche-artigianale",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "zucchero",
+      "nome": "Zucchero",
+      "grafie": [
+        "Zucchero"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 7,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "focaccia"
+      ],
+      "note": [
+        "(un pizzico per bilanciare l'acidità)",
+        "(o miele millefiori)"
+      ],
+      "usaRicette": [
+        "condimenti/marinatura-menta-aceto-verdure-grigliate",
+        "focaccia/focaccia-barese"
+      ]
+    },
+    {
+      "chiave": "origano essiccato",
+      "nome": "Origano Essiccato",
+      "grafie": [
+        "Origano Essiccato"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 7,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(di alta qualità)",
+        "(mediterraneo)"
+      ],
+      "usaRicette": [
+        "conserve/pomodorini-confit-sottolio",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "estratto di vaniglia",
+      "nome": "Estratto di Vaniglia",
+      "grafie": [
+        "Estratto di Vaniglia"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 7,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(pura, ~2ml)",
+        "(oppure semi di 1 bacca di vaniglia Bourbon)"
+      ],
+      "usaRicette": [
+        "lievitati/cornetti-sfogliati-classici",
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "scorza di limone bio",
+      "nome": "Scorza di Limone Bio",
+      "grafie": [
+        "Scorza di Limone Bio"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(solo la parte gialla)",
+        "(grattugiata finemente, solo la parte gialla)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-pistacchi-artigianale",
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina"
+      ]
+    },
+    {
+      "chiave": "baccello di vaniglia",
+      "nome": "Baccello di Vaniglia",
+      "grafie": [
+        "Baccello di Vaniglia"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci",
+        "lievitati"
+      ],
+      "note": [
+        "(1 bacca, semi raschiati)",
+        "(i semi)"
+      ],
+      "usaRicette": [
+        "dolci/migliaccio-napoletano",
+        "lievitati/panettone-fatto-in-casa-caputo"
+      ]
+    },
+    {
+      "chiave": "cumino in polvere",
+      "nome": "Cumino in Polvere",
+      "grafie": [
+        "Cumino in Polvere"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 4,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(facoltativo, per la variante più speziata)",
+        "(tostato e macinato)"
+      ],
+      "usaRicette": [
+        "condimenti/chimichurri",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "origano",
+      "nome": "Origano",
+      "grafie": [
+        "Origano"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 4,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "pizza"
+      ],
+      "note": [
+        "(secco)",
+        "(Origanum vulgare, un pizzico)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-aglio-nero-ossidiana",
+        "pizza/pizza-marinara-verace-disciplinare-avpn"
+      ]
+    },
+    {
+      "chiave": "peperoncino in polvere",
+      "nome": "Peperoncino in polvere",
+      "grafie": [
+        "Peperoncino in Polvere",
+        "Peperoncino in polvere"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 4,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(o Cayenna)",
+        "(cayenna, regolabile a piacere)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bbq-artigianale",
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "sale e pepe",
+      "nome": "Sale e Pepe",
+      "grafie": [
+        "Sale e Pepe"
+      ],
+      "ricette": 2,
+      "occorrenze": 2,
+      "grammiTotali": 4,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza",
+        "secondi-piatti"
+      ],
+      "note": [
+        "(a piacere)",
+        "(q.b. per aggiustare)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-romana-stesa-al-matterello",
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "spalla di maiale",
+      "nome": "Spalla di Maiale",
+      "grafie": [
+        "Spalla di Maiale"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(Boston Butt con osso, con cotenna e strato di grasso intatto)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "farina caputo saccorosso",
+      "nome": "Farina Caputo Saccorosso",
+      "grafie": [
+        "Farina Caputo Saccorosso"
+      ],
+      "ricette": 1,
+      "occorrenze": 2,
+      "grammiTotali": 2700,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 330-350, per biga)",
+        "(W 330-350, struttura)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-napoletana-biga-criscito"
+      ]
+    },
+    {
+      "chiave": "punta di petto di manzo",
+      "nome": "Punta di Petto di Manzo",
+      "grafie": [
+        "Punta di Petto di Manzo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(brisket flat, intero con cappello di grasso)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "cipolle sponsali",
+      "nome": "Cipolle Sponsali",
+      "grafie": [
+        "Cipolle Sponsali"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(in alternativa cipolle dorate)"
+      ],
+      "usaRicette": [
+        "focaccia/calzone-cipolla-barese-pugliese"
+      ]
+    },
+    {
+      "chiave": "costine di maiale",
+      "nome": "Costine di Maiale",
+      "grafie": [
+        "Costine di Maiale"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(baffa intera tipo Spare Ribs o St. Louis)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "biga di saccorosso",
+      "nome": "Biga di Saccorosso",
+      "grafie": [
+        "Biga di Saccorosso"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(tutta la biga preparata)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-napoletana-biga-criscito"
+      ]
+    },
+    {
+      "chiave": "farina panettone forte",
+      "nome": "Farina Panettone Forte",
+      "grafie": [
+        "Farina Panettone Forte"
+      ],
+      "ricette": 1,
+      "occorrenze": 2,
+      "grammiTotali": 1250,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(temperatura ambiente 20°C)",
+        "(per secondo impasto, W 380-420)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "biga matura",
+      "nome": "Biga matura",
+      "grafie": [
+        "Biga matura"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1205,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(tutto l'impasto precedente, ~1205g)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "pomodori freschi",
+      "nome": "Pomodori Freschi",
+      "grafie": [
+        "Pomodori Freschi"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(San Marzano o Ramati, ben maturi)"
+      ],
+      "usaRicette": [
+        "condimenti/coulis-salsa-pomodoro-fresco"
+      ]
+    },
+    {
+      "chiave": "carapaci e teste di crostacei",
+      "nome": "Carapaci e Teste di Crostacei",
+      "grafie": [
+        "Carapaci e Teste di Crostacei"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(gamberi, mazzancolle, scampi — lavati e sgocciolati)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei"
+      ]
+    },
+    {
+      "chiave": "patate farinose",
+      "nome": "Patate Farinose",
+      "grafie": [
+        "Patate Farinose"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(a pasta gialla, vecchie e di media pezzatura)"
+      ],
+      "usaRicette": [
+        "condimenti/pure-di-patate"
+      ]
+    },
+    {
+      "chiave": "pomodorini datterini o ciliegini",
+      "nome": "Pomodorini Datterini o Ciliegini",
+      "grafie": [
+        "Pomodorini Datterini o Ciliegini"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve"
+      ],
+      "note": [
+        "(sodi e ben maturi)"
+      ],
+      "usaRicette": [
+        "conserve/pomodorini-confit-sottolio"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0 o 00 forte",
+      "nome": "Farina Tipo 0 o 00 Forte",
+      "grafie": [
+        "Farina Tipo 0 o 00 Forte"
+      ],
+      "ricette": 1,
+      "occorrenze": 2,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(W 370-400, es. Manitoba Oro)",
+        "(W 370-400)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-fatto-in-casa-caputo"
+      ]
+    },
+    {
+      "chiave": "farina per pinsa",
+      "nome": "Farina per Pinsa",
+      "grafie": [
+        "Farina per Pinsa"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(mix certificato farina di frumento, riso e soia — es. Di Marco, Molino Pordenone, GZ Pinsa)"
+      ],
+      "usaRicette": [
+        "pizza/pinsa-romana"
+      ]
+    },
+    {
+      "chiave": "patate rosse",
+      "nome": "Patate Rosse",
+      "grafie": [
+        "Patate Rosse"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1000,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "primi"
+      ],
+      "note": [
+        "(vecchie, a pasta farinosa — tipo Rosse di Colfiorito o Kennebec)"
+      ],
+      "usaRicette": [
+        "primi/gnocchi-di-patate"
+      ]
+    },
+    {
+      "chiave": "acqua rinfresco",
+      "nome": "Acqua rinfresco",
+      "grafie": [
+        "Acqua rinfresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 970,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(da inserire in più riprese come da procedimento)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "farina caputo saccorosso (per biga)",
+      "nome": "Farina Caputo Saccorosso (per biga)",
+      "grafie": [
+        "Farina Caputo Saccorosso (per biga)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 830,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 330-350, Manitoba rossa per struttura)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "melanzane",
+      "nome": "Melanzane",
+      "grafie": [
+        "Melanzane"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 800,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(varietà lunga o ovale scura)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane"
+      ]
+    },
+    {
+      "chiave": "stracchino o crescenza",
+      "nome": "Stracchino o Crescenza",
+      "grafie": [
+        "Stracchino o Crescenza"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 800,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(freschissimo, temperatura frigo, 100% su farina)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-di-recco-igp"
+      ]
+    },
+    {
+      "chiave": "farina costiera oro (tipo 0, germe di grano vitale pressato a freddo)",
+      "nome": "Farina Costiera ORO (Tipo 0, germe di grano vitale pressato a freddo)",
+      "grafie": [
+        "Farina Costiera ORO (Tipo 0, germe di grano vitale pressato a freddo)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 800,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 260–280, macinata a pietra)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-in-teglia-romana-alta-idratazione"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0 o 00",
+      "nome": "Farina Tipo 0 o 00",
+      "grafie": [
+        "Farina Tipo 0 o 00"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 750,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(W 240-280, media forza)"
+      ],
+      "usaRicette": [
+        "lievitati/impasto-rosticceria-siciliana"
+      ]
+    },
+    {
+      "chiave": "farina integrale",
+      "nome": "Farina Integrale",
+      "grafie": [
+        "Farina Integrale"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 700,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(W 280-300)"
+      ],
+      "usaRicette": [
+        "pane/pane-integrale-con-biga"
+      ]
+    },
+    {
+      "chiave": "acqua bassinage",
+      "nome": "Acqua bassinage",
+      "grafie": [
+        "Acqua bassinage"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 645,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(da inserire a goccia)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "peperoni rossi e gialli",
+      "nome": "Peperoni Rossi e Gialli",
+      "grafie": [
+        "Peperoni Rossi e Gialli"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 600,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(freschi, a polpa carnosa)"
+      ],
+      "usaRicette": [
+        "condimenti/crema-di-peperoni"
+      ]
+    },
+    {
+      "chiave": "zucchero semolato fine",
+      "nome": "Zucchero Semolato Fine",
+      "grafie": [
+        "Zucchero Semolato Fine"
+      ],
+      "ricette": 1,
+      "occorrenze": 2,
+      "grammiTotali": 585,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(per primo impasto)",
+        "(per secondo impasto)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "farina tipo 00 media forza",
+      "nome": "Farina Tipo 00 Media Forza",
+      "grafie": [
+        "Farina Tipo 00 Media Forza"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 550,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(W 260-280, per struttura morbida e friabilità)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani"
+      ]
+    },
+    {
+      "chiave": "ricotta fresca",
+      "nome": "Ricotta Fresca",
+      "grafie": [
+        "Ricotta Fresca"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(vaccina o di pecora per crema opzione 2)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0 alta forza",
+      "nome": "Farina Tipo 0 Alta Forza",
+      "grafie": [
+        "Farina Tipo 0 Alta Forza"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 300–330, es. Caputo Nuvola Super, Molino Dalla Giovanna Uniqua Blu)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-in-teglia-romana"
+      ]
+    },
+    {
+      "chiave": "brodo di manzo",
+      "nome": "Brodo di Manzo",
+      "grafie": [
+        "Brodo di Manzo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 500,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(caldo e non salato: il fondo si riduce e il sale si concentra)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "avocado hass",
+      "nome": "Avocado Hass",
+      "grafie": [
+        "Avocado Hass"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 450,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(maturo al tatto — cedevole sotto pressione, polpa cremosa verde-gialla, senza macchie nere interne)"
+      ],
+      "usaRicette": [
+        "condimenti/guacamole"
+      ]
+    },
+    {
+      "chiave": "pomodorini ciliegino",
+      "nome": "Pomodorini Ciliegino",
+      "grafie": [
+        "Pomodorini Ciliegino"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 450,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(o datterini, tagliati a metà)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-barese"
+      ]
+    },
+    {
+      "chiave": "acqua (1ª parte per autolisi)",
+      "nome": "Acqua (1ª parte per autolisi)",
+      "grafie": [
+        "Acqua (1ª parte per autolisi)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 450,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(fredda per spirale, fresca a mano)"
+      ],
+      "usaRicette": [
+        "pane/pane-di-altamura-dop"
+      ]
+    },
+    {
+      "chiave": "pomodori ramati",
+      "nome": "Pomodori Ramati",
+      "grafie": [
+        "Pomodori Ramati"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 400,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(maturi e sodi)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-alla-siciliana"
+      ]
+    },
+    {
+      "chiave": "farina 00 media forza",
+      "nome": "Farina 00 Media Forza",
+      "grafie": [
+        "Farina 00 Media Forza"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 400,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(W 260–280, proteine 11-12%)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-genovese-fugassa"
+      ]
+    },
+    {
+      "chiave": "pomodori pelati san marzano dop",
+      "nome": "Pomodori Pelati San Marzano DOP",
+      "grafie": [
+        "Pomodori Pelati San Marzano DOP"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 400,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(sgocciolati dal succo in eccesso)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-napoletana-verace-stg"
+      ]
+    },
+    {
+      "chiave": "fiordilatte",
+      "nome": "Fiordilatte",
+      "grafie": [
+        "Fiordilatte"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 400,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(scolato dal siero)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-napoletana-verace-stg"
+      ]
+    },
+    {
+      "chiave": "farina di mais bramata",
+      "nome": "Farina di Mais Bramata",
+      "grafie": [
+        "Farina di Mais Bramata"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 400,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "primi"
+      ],
+      "note": [
+        "(macinata a pietra, grana grossa)"
+      ],
+      "usaRicette": [
+        "primi/polenta-concia-valdostana"
+      ]
+    },
+    {
+      "chiave": "acqua per biga",
+      "nome": "Acqua per biga",
+      "grafie": [
+        "Acqua per biga"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 375,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(fredda da frigo 8-10°C)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "uova",
+      "nome": "Uova",
+      "grafie": [
+        "Uova"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 360,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(medie, circa 60g l'una, a temperatura ambiente)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "barbabietole precotte",
+      "nome": "Barbabietole Precotte",
+      "grafie": [
+        "Barbabietole Precotte"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 350,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(rosse, sottovuoto o fresche cotte)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-barbabietola"
+      ]
+    },
+    {
+      "chiave": "acciughe rosse di spagna sotto sale",
+      "nome": "Acciughe Rosse di Spagna sotto Sale",
+      "grafie": [
+        "Acciughe Rosse di Spagna sotto Sale"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(intere, da pulire — qualità Cantabrico o Mar Adriatico)"
+      ],
+      "usaRicette": [
+        "condimenti/bagna-cauda"
+      ]
+    },
+    {
+      "chiave": "sale fino integrale",
+      "nome": "Sale Fino Integrale",
+      "grafie": [
+        "Sale Fino Integrale"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve"
+      ],
+      "note": [
+        "(marino o rosa himalayano — NO sale iodato che può alterare il colore)"
+      ],
+      "usaRicette": [
+        "conserve/dado-vegetale-fatto-in-casa"
+      ]
+    },
+    {
+      "chiave": "mozzarella",
+      "nome": "Mozzarella",
+      "grafie": [
+        "Mozzarella"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(ben strizzata, per tutte le preparazioni)"
+      ],
+      "usaRicette": [
+        "lievitati/impasto-rosticceria-siciliana"
+      ]
+    },
+    {
+      "chiave": "farina tipo 0 media-alta forza",
+      "nome": "Farina Tipo 0 Media-Alta Forza",
+      "grafie": [
+        "Farina Tipo 0 Media-Alta Forza"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(W 280–300, es. Caputo Classica, Lo Conte Le Farine dei Sogni)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-brioche-classica"
+      ]
+    },
+    {
+      "chiave": "farina integrale di grano tenero",
+      "nome": "Farina Integrale di Grano Tenero",
+      "grafie": [
+        "Farina Integrale di Grano Tenero"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(Forte, W >280)"
+      ],
+      "usaRicette": [
+        "pane/pane-ai-cereali-semi"
+      ]
+    },
+    {
+      "chiave": "riso cotto",
+      "nome": "Riso Cotto",
+      "grafie": [
+        "Riso Cotto"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 300,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(riso per sushi o basmati, come accompagnamento)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "farina tipo 00 debole",
+      "nome": "Farina Tipo 00 Debole",
+      "grafie": [
+        "Farina Tipo 00 Debole"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 280,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(W 120-150, per dolci)"
+      ],
+      "usaRicette": [
+        "dolci/cantuccini-di-prato"
+      ]
+    },
+    {
+      "chiave": "farina caputo saccorosso (rinfresco)",
+      "nome": "Farina Caputo Saccorosso (rinfresco)",
+      "grafie": [
+        "Farina Caputo Saccorosso (rinfresco)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 275,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 330-350, rinforzo finale)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "yogurt greco",
+      "nome": "Yogurt Greco",
+      "grafie": [
+        "Yogurt Greco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 250,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Intero, 5% grassi o superiore, compatto)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-allo-yogurt"
+      ]
+    },
+    {
+      "chiave": "maionese di base",
+      "nome": "Maionese di base",
+      "grafie": [
+        "Maionese di base"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 250,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(preparazione precedente)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-cocktail-rosa-artigianale"
+      ]
+    },
+    {
+      "chiave": "burro chiarificato",
+      "nome": "Burro Chiarificato",
+      "grafie": [
+        "Burro Chiarificato"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 240,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(oppure burro fuso e schiumato)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bernese"
+      ]
+    },
+    {
+      "chiave": "uova medie",
+      "nome": "Uova Medie",
+      "grafie": [
+        "Uova Medie"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 220,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(4 uova, ~55g l'una)"
+      ],
+      "usaRicette": [
+        "dolci/migliaccio-napoletano"
+      ]
+    },
+    {
+      "chiave": "cavolo cappuccio viola",
+      "nome": "Cavolo Cappuccio Viola",
+      "grafie": [
+        "Cavolo Cappuccio Viola"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(fresco, da mondare e disidratare)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-cavolo-viola-elettrico"
+      ]
+    },
+    {
+      "chiave": "fave fresche sgranate e pelate",
+      "nome": "Fave Fresche Sgranate e Pelate",
+      "grafie": [
+        "Fave Fresche Sgranate e Pelate"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(private del tegumento — circa 800g di baccelli interi)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-fave-maro"
+      ]
+    },
+    {
+      "chiave": "pistacchi sgusciati",
+      "nome": "Pistacchi Sgusciati",
+      "grafie": [
+        "Pistacchi Sgusciati"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(non salati e non tostati)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-pistacchi-artigianale"
+      ]
+    },
+    {
+      "chiave": "noci sgusciate",
+      "nome": "Noci Sgusciate",
+      "grafie": [
+        "Noci Sgusciate"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(gherigli, varietà Lara o Sorrento consigliate)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-alle-noci"
+      ]
+    },
+    {
+      "chiave": "yogurt greco intero",
+      "nome": "Yogurt Greco Intero",
+      "grafie": [
+        "Yogurt Greco Intero"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(al naturale, senza zuccheri aggiunti, preferibilmente 10% grassi)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina"
+      ]
+    },
+    {
+      "chiave": "cipolle dorate",
+      "nome": "Cipolle Dorate",
+      "grafie": [
+        "Cipolle Dorate"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve"
+      ],
+      "note": [
+        "(mondate)"
+      ],
+      "usaRicette": [
+        "conserve/dado-vegetale-granulare"
+      ]
+    },
+    {
+      "chiave": "semolino di grano duro",
+      "nome": "Semolino di Grano Duro",
+      "grafie": [
+        "Semolino di Grano Duro"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(granulometria fine, tipo gnocchi alla romana)"
+      ],
+      "usaRicette": [
+        "dolci/migliaccio-napoletano"
+      ]
+    },
+    {
+      "chiave": "prosciutto cotto",
+      "nome": "Prosciutto Cotto",
+      "grafie": [
+        "Prosciutto Cotto"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(a fette, per rollò)"
+      ],
+      "usaRicette": [
+        "lievitati/impasto-rosticceria-siciliana"
+      ]
+    },
+    {
+      "chiave": "passata di pomodoro",
+      "nome": "Passata di Pomodoro",
+      "grafie": [
+        "Passata di Pomodoro"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(per calzoncini e pizzette)"
+      ],
+      "usaRicette": [
+        "lievitati/impasto-rosticceria-siciliana"
+      ]
+    },
+    {
+      "chiave": "farina oro fibra 2 (tipo 2, germe di grano vitale pressato a freddo)",
+      "nome": "Farina ORO Fibra 2 (Tipo 2, germe di grano vitale pressato a freddo)",
+      "grafie": [
+        "Farina ORO Fibra 2 (Tipo 2, germe di grano vitale pressato a freddo)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 240–260, macinata a pietra)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-in-teglia-romana-alta-idratazione"
+      ]
+    },
+    {
+      "chiave": "farina di forza",
+      "nome": "Farina di Forza",
+      "grafie": [
+        "Farina di Forza"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 350, tipo 0 o 00)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "farina debole",
+      "nome": "Farina Debole",
+      "grafie": [
+        "Farina Debole"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(W 180, tipo 00)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "vino rosso toscano secco",
+      "nome": "Vino Rosso Toscano Secco",
+      "grafie": [
+        "Vino Rosso Toscano Secco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 200,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(Chianti, Morellino o Sangiovese)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "olio evo delicato",
+      "nome": "Olio EVO delicato",
+      "grafie": [
+        "Olio EVO delicato"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 184,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(varietà Ligure o del Garda — fruttato leggero, bassa percezione amara/piccante per non coprire il basilico)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-al-basilico-verde-smeraldo"
+      ]
+    },
+    {
+      "chiave": "acqua (base)",
+      "nome": "Acqua (Base)",
+      "grafie": [
+        "Acqua (Base)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 180,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(10-12°C per spirale, 18-20°C a mano)"
+      ],
+      "usaRicette": [
+        "pane/ciabatta-poolish-malto-criscito"
+      ]
+    },
+    {
+      "chiave": "fontina dop valdostana",
+      "nome": "Fontina DOP Valdostana",
+      "grafie": [
+        "Fontina DOP Valdostana"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 180,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "primi"
+      ],
+      "note": [
+        "(privata della crosta)"
+      ],
+      "usaRicette": [
+        "primi/polenta-concia-valdostana"
+      ]
+    },
+    {
+      "chiave": "toma piemontese",
+      "nome": "Toma Piemontese",
+      "grafie": [
+        "Toma Piemontese"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 180,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "primi"
+      ],
+      "note": [
+        "(semistagionata, privata della crosta)"
+      ],
+      "usaRicette": [
+        "primi/polenta-concia-valdostana"
+      ]
+    },
+    {
+      "chiave": "salsa di soia light",
+      "nome": "Salsa di Soia Light",
+      "grafie": [
+        "Salsa di Soia Light"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 180,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(chiara, non scura — es. Kikkoman Light o Sempio; per la versione senza glutine usa tamari certificato: la soia normale contiene grano)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "vino rosso barbera",
+      "nome": "Vino Rosso Barbera",
+      "grafie": [
+        "Vino Rosso Barbera"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 150,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(o Dolcetto d'Asti — per risciacquo acciughe)"
+      ],
+      "usaRicette": [
+        "condimenti/bagna-cauda"
+      ]
+    },
+    {
+      "chiave": "carote fresche",
+      "nome": "Carote fresche",
+      "grafie": [
+        "Carote fresche"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 150,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Pulite e sbucciate)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-carota-zenzero-arancio-fluo"
+      ]
+    },
+    {
+      "chiave": "pomodori secchi sott'olio",
+      "nome": "Pomodori Secchi Sott'Olio",
+      "grafie": [
+        "Pomodori Secchi Sott'Olio"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 150,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(ben sgocciolati, di qualità — preferire calabresi o siciliani)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-pomodori-secchi-mandorle-basilico"
+      ]
+    },
+    {
+      "chiave": "cipolla",
+      "nome": "Cipolla",
+      "grafie": [
+        "Cipolla"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 150,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve"
+      ],
+      "note": [
+        "(dorata, pulita e sbucciata)"
+      ],
+      "usaRicette": [
+        "conserve/dado-vegetale-fatto-in-casa"
+      ]
+    },
+    {
+      "chiave": "pomodorini pelati",
+      "nome": "Pomodorini Pelati",
+      "grafie": [
+        "Pomodorini Pelati"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 150,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(schiacciati)"
+      ],
+      "usaRicette": [
+        "focaccia/calzone-cipolla-barese-pugliese"
+      ]
+    },
+    {
+      "chiave": "cuore di pasta madre",
+      "nome": "Cuore di Pasta Madre",
+      "grafie": [
+        "Cuore di Pasta Madre"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 150,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(lievito maturo senza crosta)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-madre-solida-creazione-rinfresco"
+      ]
+    },
+    {
+      "chiave": "mandorle con pellicina",
+      "nome": "Mandorle con Pellicina",
+      "grafie": [
+        "Mandorle con Pellicina"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 130,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(intere, non pelate)"
+      ],
+      "usaRicette": [
+        "dolci/cantuccini-di-prato"
+      ]
+    },
+    {
+      "chiave": "olive baresane",
+      "nome": "Olive Baresane",
+      "grafie": [
+        "Olive Baresane"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 120,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(in salamoia, con nocciolo — circa 20 pz)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-barese"
+      ]
+    },
+    {
+      "chiave": "mix di semi per l'impasto",
+      "nome": "Mix di semi per l'impasto",
+      "grafie": [
+        "Mix di semi per l'impasto"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 120,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(Girasole, lino, zucca, sesamo)"
+      ],
+      "usaRicette": [
+        "pane/pane-ai-cereali-semi"
+      ]
+    },
+    {
+      "chiave": "rucola fresca",
+      "nome": "Rucola Fresca",
+      "grafie": [
+        "Rucola Fresca"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(lavata e asciugata in centrifuga)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-rucola-artigianale"
+      ]
+    },
+    {
+      "chiave": "salsa di soia",
+      "nome": "Salsa di Soia",
+      "grafie": [
+        "Salsa di Soia"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(shoyu giapponese, non cinese — preferibilmente Kikkoman o tamari)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-teriyaki-originale"
+      ]
+    },
+    {
+      "chiave": "sake",
+      "nome": "Sake",
+      "grafie": [
+        "Sake"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(sake da cucina, futsushu — evitare sake dolce o aromatizzato)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-teriyaki-originale"
+      ]
+    },
+    {
+      "chiave": "mirin",
+      "nome": "Mirin",
+      "grafie": [
+        "Mirin"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(hon mirin autentico, non mirin-fu condimento — almeno 14% vol)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-teriyaki-originale"
+      ]
+    },
+    {
+      "chiave": "farina di farro o segale",
+      "nome": "Farina di Farro o Segale",
+      "grafie": [
+        "Farina di Farro o Segale"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 100,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(Integrale o semintegrale)"
+      ],
+      "usaRicette": [
+        "pane/pane-ai-cereali-semi"
+      ]
+    },
+    {
+      "chiave": "maizena",
+      "nome": "Maizena",
+      "grafie": [
+        "Maizena"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 90,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(amido di mais per crema pasticcera opzione 1)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani"
+      ]
+    },
+    {
+      "chiave": "mozzarella di bufala campana dop",
+      "nome": "Mozzarella di Bufala Campana DOP",
+      "grafie": [
+        "Mozzarella di Bufala Campana DOP"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 90,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(o Fiordilatte tradizionale conforme Albo Fornitori AVPN)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-margherita-verace-disciplinare-avpn"
+      ]
+    },
+    {
+      "chiave": "pomodoro ramato",
+      "nome": "Pomodoro Ramato",
+      "grafie": [
+        "Pomodoro Ramato"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 80,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(privato di semi e acqua di vegetazione — cubetti da 5 mm)"
+      ],
+      "usaRicette": [
+        "condimenti/guacamole"
+      ]
+    },
+    {
+      "chiave": "gocce di cioccolato fondente",
+      "nome": "Gocce di Cioccolato Fondente",
+      "grafie": [
+        "Gocce di Cioccolato Fondente"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 80,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(facoltativo per crema ricotta opzione 2)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani"
+      ]
+    },
+    {
+      "chiave": "olive nere",
+      "nome": "Olive Nere",
+      "grafie": [
+        "Olive Nere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 80,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(baresane o leccino, denocciolate)"
+      ],
+      "usaRicette": [
+        "focaccia/calzone-cipolla-barese-pugliese"
+      ]
+    },
+    {
+      "chiave": "cipollotti",
+      "nome": "Cipollotti",
+      "grafie": [
+        "Cipollotti"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 80,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(interi, affettati sottili in rondelle)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "melassa scura",
+      "nome": "Melassa Scura",
+      "grafie": [
+        "Melassa Scura"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 60,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(sostituibile con miele di castagno)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bbq-artigianale"
+      ]
+    },
+    {
+      "chiave": "zucchero di canna grezzo",
+      "nome": "Zucchero di Canna Grezzo",
+      "grafie": [
+        "Zucchero di Canna Grezzo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 60,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(tipo Muscovado o Demerara)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bbq-artigianale"
+      ]
+    },
+    {
+      "chiave": "acqua tiepida",
+      "nome": "Acqua Tiepida",
+      "grafie": [
+        "Acqua Tiepida"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 60,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(30-32°C)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-barese"
+      ]
+    },
+    {
+      "chiave": "tahina",
+      "nome": "Tahina",
+      "grafie": [
+        "Tahina"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(crema 100% semi di sesamo)"
+      ],
+      "usaRicette": [
+        "condimenti/babaganoush-crema-melanzane"
+      ]
+    },
+    {
+      "chiave": "foglie di basilico genovese",
+      "nome": "Foglie di Basilico Genovese",
+      "grafie": [
+        "Foglie di Basilico Genovese"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(solo foglie, no gambi — varietà Genovese DOP per il verde più brillante, o mix 80% Genovese + 20% Basilico Viola per tono più profondo)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-al-basilico-verde-smeraldo"
+      ]
+    },
+    {
+      "chiave": "olio evo o olio di semi",
+      "nome": "Olio EVO o Olio di Semi",
+      "grafie": [
+        "Olio EVO o Olio di Semi"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(una piccola quantità per la frittura flash)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-peperone-crusco-rosso-rubino"
+      ]
+    },
+    {
+      "chiave": "basilico genovese dop",
+      "nome": "Basilico Genovese DOP",
+      "grafie": [
+        "Basilico Genovese DOP"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(solo foglie piccole, integre e asciutte)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-alla-genovese-tradizionale"
+      ]
+    },
+    {
+      "chiave": "uovo intero medio",
+      "nome": "Uovo Intero Medio",
+      "grafie": [
+        "Uovo Intero Medio"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(a temperatura ambiente, per colore e struttura)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani"
+      ]
+    },
+    {
+      "chiave": "uva passa",
+      "nome": "Uva Passa",
+      "grafie": [
+        "Uva Passa"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(non trattata)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-madre-solida-creazione-rinfresco"
+      ]
+    },
+    {
+      "chiave": "zucchero muscovado",
+      "nome": "Zucchero Muscovado",
+      "grafie": [
+        "Zucchero Muscovado"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 50,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(grezzo di canna, non raffinato)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "tartufo nero fresco",
+      "nome": "Tartufo nero fresco",
+      "grafie": [
+        "Tartufo nero fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 40,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Tuber aestivum o melanosporum)"
+      ],
+      "usaRicette": [
+        "condimenti/burro-composto-acciughe-tartufo"
+      ]
+    },
+    {
+      "chiave": "cipolla bianca",
+      "nome": "Cipolla Bianca",
+      "grafie": [
+        "Cipolla Bianca"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 40,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(o scalogno per una nota più delicata — tritata finissima)"
+      ],
+      "usaRicette": [
+        "condimenti/guacamole"
+      ]
+    },
+    {
+      "chiave": "mollica di pane bianco",
+      "nome": "Mollica di Pane Bianco",
+      "grafie": [
+        "Mollica di Pane Bianco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 40,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(raffermo di 1-2 giorni)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-alle-noci"
+      ]
+    },
+    {
+      "chiave": "mollica di pane raffermo",
+      "nome": "Mollica di Pane Raffermo",
+      "grafie": [
+        "Mollica di Pane Raffermo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 40,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(tipo casereccio o pancarré senza crosta)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-verde-tradizionale"
+      ]
+    },
+    {
+      "chiave": "uva sultanina",
+      "nome": "Uva Sultanina",
+      "grafie": [
+        "Uva Sultanina"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 40,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(ammollata e ben strizzata)"
+      ],
+      "usaRicette": [
+        "focaccia/calzone-cipolla-barese-pugliese"
+      ]
+    },
+    {
+      "chiave": "succo di lime fresco",
+      "nome": "Succo di Lime Fresco",
+      "grafie": [
+        "Succo di Lime Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(spremuto al momento, non in bottiglia — acidità brillante fondamentale per anti-ossidazione)"
+      ],
+      "usaRicette": [
+        "condimenti/guacamole"
+      ]
+    },
+    {
+      "chiave": "spicchi di aglio nero",
+      "nome": "Spicchi di Aglio Nero",
+      "grafie": [
+        "Spicchi di Aglio Nero"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(fermentato, morbido)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-aglio-nero-ossidiana"
+      ]
+    },
+    {
+      "chiave": "curcuma in polvere",
+      "nome": "Curcuma in Polvere",
+      "grafie": [
+        "Curcuma in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Biologica, macinata finemente)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-curcuma-zafferano-giallo-oro"
+      ]
+    },
+    {
+      "chiave": "peperoni secchi di senise igp",
+      "nome": "Peperoni Secchi di Senise IGP",
+      "grafie": [
+        "Peperoni Secchi di Senise IGP"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(circa 4-5 interi)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-peperone-crusco-rosso-rubino"
+      ]
+    },
+    {
+      "chiave": "pecorino romano",
+      "nome": "Pecorino Romano",
+      "grafie": [
+        "Pecorino Romano"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(stagionatura media, grattugiato fine)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-di-fave-maro"
+      ]
+    },
+    {
+      "chiave": "scalogno",
+      "nome": "Scalogno",
+      "grafie": [
+        "Scalogno"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(fresco, tritato finissimo)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bernese"
+      ]
+    },
+    {
+      "chiave": "olio extravergine",
+      "nome": "Olio Extravergine",
+      "grafie": [
+        "Olio Extravergine"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(per condire la passata)"
+      ],
+      "usaRicette": [
+        "lievitati/impasto-rosticceria-siciliana"
+      ]
+    },
+    {
+      "chiave": "pasta d'arancia candita",
+      "nome": "Pasta d'Arancia Candita",
+      "grafie": [
+        "Pasta d'Arancia Candita"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(mix di aromi)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-fatto-in-casa-caputo"
+      ]
+    },
+    {
+      "chiave": "mix di semi per la copertura",
+      "nome": "Mix di semi per la copertura",
+      "grafie": [
+        "Mix di semi per la copertura"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(Per la crosta)"
+      ],
+      "usaRicette": [
+        "pane/pane-ai-cereali-semi"
+      ]
+    },
+    {
+      "chiave": "concentrato di pomodoro",
+      "nome": "Concentrato di Pomodoro",
+      "grafie": [
+        "Concentrato di Pomodoro"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(doppio concentrato)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "senape gialla",
+      "nome": "Senape Gialla",
+      "grafie": [
+        "Senape Gialla"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(classica, usata come binder/legante)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "miele di millefiori",
+      "nome": "Miele di Millefiori",
+      "grafie": [
+        "Miele di Millefiori"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 30,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(fluido)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "pasta d'arancia",
+      "nome": "Pasta d'Arancia",
+      "grafie": [
+        "Pasta d'Arancia"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 25,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(scorza d'arancia candita tritata o pasta concentrata)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "zenzero fresco",
+      "nome": "Zenzero fresco",
+      "grafie": [
+        "Zenzero fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Radice sbucciata)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-carota-zenzero-arancio-fluo"
+      ]
+    },
+    {
+      "chiave": "pecorino sardo dop",
+      "nome": "Pecorino Sardo DOP",
+      "grafie": [
+        "Pecorino Sardo DOP"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Fiore Sardo)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-alla-genovese-tradizionale"
+      ]
+    },
+    {
+      "chiave": "senape",
+      "nome": "Senape",
+      "grafie": [
+        "Senape"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(in pasta tipo Digione o in polvere)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bbq-artigianale"
+      ]
+    },
+    {
+      "chiave": "filetti di acciughe",
+      "nome": "Filetti di Acciughe",
+      "grafie": [
+        "Filetti di Acciughe"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(sott'olio, sgocciolati)"
+      ],
+      "usaRicette": [
+        "focaccia/calzone-cipolla-barese-pugliese"
+      ]
+    },
+    {
+      "chiave": "aceto balsamico di modena",
+      "nome": "Aceto Balsamico di Modena",
+      "grafie": [
+        "Aceto Balsamico di Modena"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(IGP, per profondità di sapore)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "aceto di riso (per marinata)",
+      "nome": "Aceto di Riso (per marinata)",
+      "grafie": [
+        "Aceto di Riso (per marinata)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(dose a parte rispetto a quello della bollitura)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "zucchero di canna moscovado",
+      "nome": "Zucchero di Canna Moscovado",
+      "grafie": [
+        "Zucchero di Canna Moscovado"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 20,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(umido e scuro)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "peperoncino jalapeño fresco",
+      "nome": "Peperoncino Jalapeño Fresco",
+      "grafie": [
+        "Peperoncino Jalapeño Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(verde o rosso — privato dei semi per una piccantezza moderata, o sostituibile con 1 peperoncino dolce)"
+      ],
+      "usaRicette": [
+        "condimenti/guacamole"
+      ]
+    },
+    {
+      "chiave": "pinoli italiani",
+      "nome": "Pinoli Italiani",
+      "grafie": [
+        "Pinoli Italiani"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(prima scelta)"
+      ],
+      "usaRicette": [
+        "condimenti/pesto-alla-genovese-tradizionale"
+      ]
+    },
+    {
+      "chiave": "cognac",
+      "nome": "Cognac",
+      "grafie": [
+        "Cognac"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(o Brandy invecchiato)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-cocktail-rosa-artigianale"
+      ]
+    },
+    {
+      "chiave": "criscito (lievito madre ess.)",
+      "nome": "Criscito (Lievito Madre Ess.)",
+      "grafie": [
+        "Criscito (Lievito Madre Ess.)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(per aroma e digeribilità)"
+      ],
+      "usaRicette": [
+        "pane/ciabatta-poolish-malto-criscito"
+      ]
+    },
+    {
+      "chiave": "rosmarino fresco",
+      "nome": "Rosmarino Fresco",
+      "grafie": [
+        "Rosmarino Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(foglie tritate finemente)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "aceto di riso (per cottura)",
+      "nome": "Aceto di Riso (per cottura)",
+      "grafie": [
+        "Aceto di Riso (per cottura)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(o aceto bianco — solo per l'acqua di bollitura)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "peperoncino rosso fresco",
+      "nome": "Peperoncino Rosso Fresco",
+      "grafie": [
+        "Peperoncino Rosso Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(affettato in rondelle, semi facoltativi)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "peperoncino verde fresco",
+      "nome": "Peperoncino Verde Fresco",
+      "grafie": [
+        "Peperoncino Verde Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(affettato in rondelle, semi facoltativi)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "salsa di pesce",
+      "nome": "Salsa di Pesce",
+      "grafie": [
+        "Salsa di Pesce"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(facoltativa — es. Tiparos o Nam Pla)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "paprika dolce affumicata",
+      "nome": "Paprika Dolce Affumicata",
+      "grafie": [
+        "Paprika Dolce Affumicata"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 15,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(pimenton)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "dragoncello fresco",
+      "nome": "Dragoncello Fresco",
+      "grafie": [
+        "Dragoncello Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 2,
+      "grammiTotali": 13,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(gambi e foglie, per infusione)",
+        "(solo foglie, tritato finissimo)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bernese"
+      ]
+    },
+    {
+      "chiave": "acciughe sott'olio",
+      "nome": "Acciughe Sott'Olio",
+      "grafie": [
+        "Acciughe Sott'Olio"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(filetti sgocciolati, qualità premium)"
+      ],
+      "usaRicette": [
+        "condimenti/caesar-dressing"
+      ]
+    },
+    {
+      "chiave": "prezzemolo",
+      "nome": "Prezzemolo",
+      "grafie": [
+        "Prezzemolo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(gambi e ciuffo)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei"
+      ]
+    },
+    {
+      "chiave": "erba cipollina fresca",
+      "nome": "Erba Cipollina Fresca",
+      "grafie": [
+        "Erba Cipollina Fresca"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(tagliata finemente con forbici o mezzaluna)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-allo-yogurt-ed-erba-cipollina"
+      ]
+    },
+    {
+      "chiave": "marsala o vin santo",
+      "nome": "Marsala o Vin Santo",
+      "grafie": [
+        "Marsala o Vin Santo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(opzionale, per profumare)"
+      ],
+      "usaRicette": [
+        "dolci/cantuccini-di-prato"
+      ]
+    },
+    {
+      "chiave": "miele o zucchero",
+      "nome": "Miele o Zucchero",
+      "grafie": [
+        "Miele o Zucchero"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "focaccia"
+      ],
+      "note": [
+        "(attivatore lievitazione)"
+      ],
+      "usaRicette": [
+        "focaccia/focaccia-genovese-classica"
+      ]
+    },
+    {
+      "chiave": "miele millefiori",
+      "nome": "Miele Millefiori",
+      "grafie": [
+        "Miele Millefiori"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(o malto)"
+      ],
+      "usaRicette": [
+        "lievitati/cornetti-sfogliati-classici"
+      ]
+    },
+    {
+      "chiave": "malto d'orzo",
+      "nome": "Malto d'Orzo",
+      "grafie": [
+        "Malto d'Orzo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(In sciroppo o pasta)"
+      ],
+      "usaRicette": [
+        "pane/pane-ai-cereali-semi"
+      ]
+    },
+    {
+      "chiave": "filetti di acciuga sott'olio",
+      "nome": "Filetti di Acciuga Sott'olio",
+      "grafie": [
+        "Filetti di Acciuga Sott'olio"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(2-3 filetti)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "capperi dissalati",
+      "nome": "Capperi Dissalati",
+      "grafie": [
+        "Capperi Dissalati"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(1 cucchiaio)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "olio di sesamo",
+      "nome": "Olio di Sesamo",
+      "grafie": [
+        "Olio di Sesamo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 10,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(tostato, per il servizio finale)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "malto d'orzo in polvere",
+      "nome": "Malto d'Orzo in Polvere",
+      "grafie": [
+        "Malto d'Orzo in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 8,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(diastatico, attivo)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-romana-stesa-al-matterello"
+      ]
+    },
+    {
+      "chiave": "zucchero di canna scuro",
+      "nome": "Zucchero di Canna Scuro",
+      "grafie": [
+        "Zucchero di Canna Scuro"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 8,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(cassonade, per il bark caramellato)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "semi di sesamo tostati",
+      "nome": "Semi di Sesamo Tostati",
+      "grafie": [
+        "Semi di Sesamo Tostati"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 8,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(bianchi, già tostati)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/mayak-gyeran-uova-marinate-coreane"
+      ]
+    },
+    {
+      "chiave": "formaggio a pasta dura da grattugia",
+      "nome": "Formaggio a Pasta Dura da Grattugia",
+      "grafie": [
+        "Formaggio a Pasta Dura da Grattugia"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 6,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(facoltativo)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-margherita-verace-disciplinare-avpn"
+      ]
+    },
+    {
+      "chiave": "coriandolo fresco",
+      "nome": "Coriandolo Fresco",
+      "grafie": [
+        "Coriandolo Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(solo foglie, tritate grossolanamente — facoltativo, sostituibile con prezzemolo piatto)"
+      ],
+      "usaRicette": [
+        "condimenti/guacamole"
+      ]
+    },
+    {
+      "chiave": "carbone vegetale in polvere",
+      "nome": "Carbone Vegetale in Polvere",
+      "grafie": [
+        "Carbone Vegetale in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(E153)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-aglio-nero-ossidiana"
+      ]
+    },
+    {
+      "chiave": "rametto di basilico viola fresco",
+      "nome": "Rametto di Basilico Viola fresco",
+      "grafie": [
+        "Rametto di Basilico Viola fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(lavato e asciugato perfettamente — solo per effetto estetico visivo nell'oliera trasparente)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-al-basilico-verde-smeraldo"
+      ]
+    },
+    {
+      "chiave": "timo fresco",
+      "nome": "Timo Fresco",
+      "grafie": [
+        "Timo Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "conserve"
+      ],
+      "note": [
+        "(foglioline e rametti)"
+      ],
+      "usaRicette": [
+        "conserve/pomodorini-confit-sottolio"
+      ]
+    },
+    {
+      "chiave": "scorza di limone grattugiata",
+      "nome": "Scorza di Limone Grattugiata",
+      "grafie": [
+        "Scorza di Limone Grattugiata"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(per crema pasticcera opzione 1)"
+      ],
+      "usaRicette": [
+        "dolci/cartocci-alla-crema-siciliani"
+      ]
+    },
+    {
+      "chiave": "malto d'orzo o miele",
+      "nome": "Malto d'orzo o Miele",
+      "grafie": [
+        "Malto d'orzo o Miele"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(per colore e nutrimento lieviti)"
+      ],
+      "usaRicette": [
+        "pane/pane-integrale-con-biga"
+      ]
+    },
+    {
+      "chiave": "malto diastatico in polvere",
+      "nome": "Malto Diastatico in polvere",
+      "grafie": [
+        "Malto Diastatico in polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(aiuta la colorazione della crosta)"
+      ],
+      "usaRicette": [
+        "pane/pane-pugliese-con-biga"
+      ]
+    },
+    {
+      "chiave": "malto d'orzo diastasico",
+      "nome": "Malto d'Orzo Diastasico",
+      "grafie": [
+        "Malto d'Orzo Diastasico"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(opzionale, favorisce colorazione e lievitazione)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-in-teglia-romana"
+      ]
+    },
+    {
+      "chiave": "timo essiccato",
+      "nome": "Timo Essiccato",
+      "grafie": [
+        "Timo Essiccato"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(in polvere o sfogliato)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "pepe di cayenna",
+      "nome": "Pepe di Cayenna",
+      "grafie": [
+        "Pepe di Cayenna"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 5,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(in polvere, calibrare in base alla tolleranza al piccante)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "malto d'orzo in sciroppo",
+      "nome": "Malto d'orzo in sciroppo",
+      "grafie": [
+        "Malto d'orzo in sciroppo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 4,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(Opzionale, aiuta la doratura della crosta)"
+      ],
+      "usaRicette": [
+        "pane/baguette-francese-tradizionale"
+      ]
+    },
+    {
+      "chiave": "timo secco",
+      "nome": "Timo Secco",
+      "grafie": [
+        "Timo Secco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(facoltativo ma tradizionale)"
+      ],
+      "usaRicette": [
+        "condimenti/chimichurri"
+      ]
+    },
+    {
+      "chiave": "peperoncino secco",
+      "nome": "Peperoncino Secco",
+      "grafie": [
+        "Peperoncino Secco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(piccante, 2 piccoli o 1 medio, sbriciolato)"
+      ],
+      "usaRicette": [
+        "condimenti/chimichurri"
+      ]
+    },
+    {
+      "chiave": "ammoniaca per dolci",
+      "nome": "Ammoniaca per Dolci",
+      "grafie": [
+        "Ammoniaca per Dolci"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "dolci"
+      ],
+      "note": [
+        "(bicarbonato d'ammonio, E503ii)"
+      ],
+      "usaRicette": [
+        "dolci/cantuccini-di-prato"
+      ]
+    },
+    {
+      "chiave": "malto diastasico in pasta",
+      "nome": "Malto Diastasico in Pasta",
+      "grafie": [
+        "Malto Diastasico in Pasta"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(per maggiore alveolatura e doratura)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "lievito secco caputo",
+      "nome": "Lievito Secco Caputo",
+      "grafie": [
+        "Lievito Secco Caputo"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 1,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(per biga)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-napoletana-biga-criscito"
+      ]
+    },
+    {
+      "chiave": "coriandolo in polvere",
+      "nome": "Coriandolo in Polvere",
+      "grafie": [
+        "Coriandolo in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(macinato fresco se possibile)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "cipolla in polvere",
+      "nome": "Cipolla in Polvere",
+      "grafie": [
+        "Cipolla in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 3,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(disidratata)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/spare-ribs-salsa-bbq"
+      ]
+    },
+    {
+      "chiave": "pepe nero in grani",
+      "nome": "Pepe Nero in Grani",
+      "grafie": [
+        "Pepe Nero in Grani"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(5-6 grani, leggermente schiacciati)"
+      ],
+      "usaRicette": [
+        "condimenti/fumetto-di-crostacei"
+      ]
+    },
+    {
+      "chiave": "peperoncino",
+      "nome": "Peperoncino",
+      "grafie": [
+        "Peperoncino"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(secco in fiocchi, opzionale)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-aglio-nero-ossidiana"
+      ]
+    },
+    {
+      "chiave": "zafferano in pistilli",
+      "nome": "Zafferano in Pistilli",
+      "grafie": [
+        "Zafferano in Pistilli"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(Puro, 1° Categoria, in sostituzione alla curcuma)"
+      ],
+      "usaRicette": [
+        "condimenti/olio-curcuma-zafferano-giallo-oro"
+      ]
+    },
+    {
+      "chiave": "maggiorana fresca",
+      "nome": "Maggiorana Fresca",
+      "grafie": [
+        "Maggiorana Fresca"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(solo le foglioline)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-alle-noci"
+      ]
+    },
+    {
+      "chiave": "cerfoglio fresco",
+      "nome": "Cerfoglio Fresco",
+      "grafie": [
+        "Cerfoglio Fresco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(facoltativo, tritato finissimo)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-bernese"
+      ]
+    },
+    {
+      "chiave": "vaniglia bourbon",
+      "nome": "Vaniglia Bourbon",
+      "grafie": [
+        "Vaniglia Bourbon"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(1 bacca, semini estratti)"
+      ],
+      "usaRicette": [
+        "lievitati/panettone-pere-cioccolato"
+      ]
+    },
+    {
+      "chiave": "semi di vaniglia",
+      "nome": "Semi di Vaniglia",
+      "grafie": [
+        "Semi di Vaniglia"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "lievitati"
+      ],
+      "note": [
+        "(da un baccello o estratto puro)"
+      ],
+      "usaRicette": [
+        "lievitati/pasta-brioche-artigianale"
+      ]
+    },
+    {
+      "chiave": "lievito secco caputo (per biga)",
+      "nome": "Lievito Secco Caputo (per biga)",
+      "grafie": [
+        "Lievito Secco Caputo (per biga)"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "(0.22% su farina biga)"
+      ],
+      "usaRicette": [
+        "pizza/pizza-contemporanea-canotto"
+      ]
+    },
+    {
+      "chiave": "foglia di alloro",
+      "nome": "Foglia di Alloro",
+      "grafie": [
+        "Foglia di Alloro"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(fresca o essiccata)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/brisket-stile-toscano"
+      ]
+    },
+    {
+      "chiave": "anice in polvere",
+      "nome": "Anice in Polvere",
+      "grafie": [
+        "Anice in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(anice verde macinato)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "zenzero in polvere",
+      "nome": "Zenzero in Polvere",
+      "grafie": [
+        "Zenzero in Polvere"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 2,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "secondi-piatti"
+      ],
+      "note": [
+        "(essiccato e macinato)"
+      ],
+      "usaRicette": [
+        "secondi-piatti/pulled-pork-bbq"
+      ]
+    },
+    {
+      "chiave": "tabasco",
+      "nome": "Tabasco",
+      "grafie": [
+        "Tabasco"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 1,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "condimenti"
+      ],
+      "note": [
+        "(circa 3-4 gocce)"
+      ],
+      "usaRicette": [
+        "condimenti/salsa-cocktail-rosa-artigianale"
+      ]
+    },
+    {
+      "chiave": "lievito di birra secco",
+      "nome": "Lievito di Birra Secco",
+      "grafie": [
+        "Lievito di Birra Secco"
+      ],
+      "ricette": 1,
+      "occorrenze": 2,
+      "grammiTotali": 1,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pane"
+      ],
+      "note": [
+        "(dosaggio lento per maturazione perfetta)",
+        "(piccola spinta finale)"
+      ],
+      "usaRicette": [
+        "pane/ciabatta-poolish-malto-criscito"
+      ]
+    },
+    {
+      "chiave": "semola rimacinata o farina per lo spolvero",
+      "nome": "Semola rimacinata o farina per lo spolvero",
+      "grafie": [
+        "Semola rimacinata o farina per lo spolvero"
+      ],
+      "ricette": 1,
+      "occorrenze": 1,
+      "grammiTotali": 0,
+      "esclusiDalTotale": 0,
+      "categorie": [
+        "pizza"
+      ],
+      "note": [
+        "q.b."
+      ],
+      "usaRicette": [
+        "pizza/pizza-napoletana-verace-stg"
+      ]
+    }
+  ]
+}

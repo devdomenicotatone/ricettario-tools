@@ -65,6 +65,7 @@ quello è il riferimento, questa tabella è un riassunto.
 | `PIXABAY_API_KEY` | Immagini Pixabay | ❌ |
 | `OCR_PAGINE_PER_BLOCCO` | Pagine per blocco nell'OCR locale (default 10) | ❌ |
 | `OCR_TIMEOUT_BLOCCO_MS` | Timeout fisso per blocco OCR in ms; 0 = dinamico (default) | ❌ |
+| `FDC_API_KEY` | USDA FoodData Central: nutrizionali veri (vedi `USDA-TODO.md`) | ❌ |
 
 `npm run check:env` rilegge le `process.env.*` scritte nel codice e fallisce
 se una non compare sia in `.env.example` sia in questa tabella. Serve a non

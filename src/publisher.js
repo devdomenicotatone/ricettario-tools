@@ -606,9 +606,14 @@ export async function publishRecipe(recipe, args, options = {}) {
             const analytics = await generateAnalyticsProfile(recipe);
             if (analytics) {
                 recipe.sensoryProfile = analytics.sensory;
-                recipe.nutrition = analytics.nutrition;
+                // La nutrizione arriva dal calcolo USDA e può legittimamente
+                // mancare (dizionario o resa non pronti): in quel caso nel
+                // JSON non deve restare NIENTE — un vecchio numero stimato
+                // sotto il disclaimer «USDA» sarebbe una bugia.
+                if (analytics.nutrition) recipe.nutrition = analytics.nutrition;
+                else delete recipe.nutrition;
                 writeFileSync(jsonFile, JSON.stringify(senzaCampiEffimeri(recipe), null, 2), 'utf-8');
-                log.success('🧪 Profilo sensoriale e valori nutrizionali aggiunti alla ricetta.');
+                log.success(`🧪 Profilo sensoriale aggiunto${analytics.nutrition ? ' con nutrizione USDA' : ' (nutrizione assente: v. warning sopra)'}.`);
             }
         } catch (err) {
             log.warn(`⚠️  Profilo analitico non generato (${err.message}). La ricetta è salva comunque: generalo dalla dashboard (Qualità → Sensory).`);

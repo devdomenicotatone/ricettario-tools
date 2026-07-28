@@ -1,0 +1,5617 @@
+{
+  "fonteNumeri": "USDA FoodData Central (https://fdc.nal.usda.gov/)",
+  "voci": {
+    "sale fino": {
+      "nome": "Sale Fino",
+      "grafie": [
+        "Sale Fino",
+        "Sale fino"
+      ],
+      "ricette": 61,
+      "grammiTotali": 840,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Sale da tavola, macros corretti (tutti zero), SR Legacy completo.",
+      "daRivedere": false
+    },
+    "olio extravergine d'oliva": {
+      "nome": "Olio Extravergine d'Oliva",
+      "grafie": [
+        "Olio Extravergine d'Oliva"
+      ],
+      "ricette": 38,
+      "grammiTotali": 3984,
+      "fdcId": 171413,
+      "fdc": "Oil, olive, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Olio d'oliva con 4 macro completi; extra virgin Foundation manca kcal.",
+      "daRivedere": false
+    },
+    "acqua": {
+      "nome": "Acqua",
+      "grafie": [
+        "Acqua"
+      ],
+      "ricette": 35,
+      "grammiTotali": 16874,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua potabile, tutti i macro a zero, voce più generica.",
+      "daRivedere": false
+    },
+    "pepe nero": {
+      "nome": "Pepe Nero",
+      "grafie": [
+        "Pepe Nero",
+        "Pepe nero"
+      ],
+      "ricette": 25,
+      "grammiTotali": 44,
+      "fdcId": 170931,
+      "fdc": "Spices, pepper, black",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 251,
+        "carbs": 64,
+        "protein": 10.4,
+        "fat": 3.26
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: spezia pepe nero, macro completi.",
+      "daRivedere": false
+    },
+    "aglio": {
+      "nome": "Aglio",
+      "grafie": [
+        "Aglio"
+      ],
+      "ricette": 23,
+      "grammiTotali": 522,
+      "fdcId": 1104647,
+      "fdc": "Garlic, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 143,
+        "carbs": 28.2,
+        "protein": 6.62,
+        "fat": 0.38
+      },
+      "confidenza": "alta",
+      "motivo": "Aglio crudo Foundation con 4 macro completi, perfetta corrispondenza.",
+      "daRivedere": false
+    },
+    "lievito di birra fresco": {
+      "nome": "Lievito di Birra Fresco",
+      "grafie": [
+        "Lievito di Birra Fresco"
+      ],
+      "ricette": 23,
+      "grammiTotali": 156,
+      "fdcId": 175042,
+      "fdc": "Leavening agents, yeast, baker's, compressed",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 105,
+        "carbs": 18.1,
+        "protein": 8.4,
+        "fat": 1.9
+      },
+      "confidenza": "alta",
+      "motivo": "Lievito compresso (fresco) corrisponde al lievito di birra fresco.",
+      "daRivedere": false
+    },
+    "olio extravergine di oliva": {
+      "nome": "Olio Extravergine di Oliva",
+      "grafie": [
+        "Olio Extravergine di Oliva"
+      ],
+      "ricette": 13,
+      "grammiTotali": 2180,
+      "fdcId": 171413,
+      "fdc": "Oil, olive, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Olio d'oliva con 4 macro completi; stessa logica della chiave gemella.",
+      "daRivedere": false
+    },
+    "succo di limone": {
+      "nome": "Succo di Limone",
+      "grafie": [
+        "Succo di Limone",
+        "Succo di limone"
+      ],
+      "ricette": 13,
+      "grammiTotali": 290,
+      "fdcId": 167747,
+      "fdc": "Lemon juice, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 22,
+        "carbs": 6.9,
+        "protein": 0.35,
+        "fat": 0.24
+      },
+      "confidenza": "alta",
+      "motivo": "Succo di limone crudo, corrispondenza esatta con 4 macro completi.",
+      "daRivedere": false
+    },
+    "zucchero semolato": {
+      "nome": "Zucchero Semolato",
+      "grafie": [
+        "Zucchero Semolato",
+        "Zucchero semolato"
+      ],
+      "ricette": 12,
+      "grammiTotali": 1513,
+      "fdcId": 169655,
+      "fdc": "Sugars, granulated",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 387,
+        "carbs": 100,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Zucchero granulato SR Legacy con 4 macro completi, corrispondenza perfetta.",
+      "daRivedere": false
+    },
+    "basilico fresco": {
+      "nome": "Basilico Fresco",
+      "grafie": [
+        "Basilico Fresco"
+      ],
+      "ricette": 11,
+      "grammiTotali": 98,
+      "fdcId": 172232,
+      "fdc": "Basil, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 2.65,
+        "protein": 3.15,
+        "fat": 0.64
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: basilico fresco, macro completi.",
+      "daRivedere": false
+    },
+    "latte intero": {
+      "nome": "Latte Intero",
+      "grafie": [
+        "Latte Intero",
+        "Latte intero"
+      ],
+      "ricette": 8,
+      "grammiTotali": 2380,
+      "fdcId": 746782,
+      "fdc": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 60,
+        "carbs": 4.63,
+        "protein": 3.27,
+        "fat": 3.2
+      },
+      "confidenza": "alta",
+      "motivo": "curato a mano: latte intero 3.25% Foundation (la ricerca lo annegava tra i derivati)",
+      "daRivedere": false
+    },
+    "farina tipo 0": {
+      "nome": "Farina Tipo 0",
+      "grafie": [
+        "Farina Tipo 0"
+      ],
+      "ricette": 8,
+      "grammiTotali": 2380,
+      "fdcId": 789890,
+      "fdc": "Flour, wheat, all-purpose, enriched, bleached",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 366,
+        "carbs": 77.3,
+        "protein": 10.9,
+        "fat": 1.48
+      },
+      "confidenza": "alta",
+      "motivo": "Farina bianca all-purpose Foundation, macro completi, corrispondenza ottima.",
+      "daRivedere": false
+    },
+    "parmigiano reggiano dop": {
+      "nome": "Parmigiano Reggiano DOP",
+      "grafie": [
+        "Parmigiano Reggiano DOP"
+      ],
+      "ricette": 8,
+      "grammiTotali": 545,
+      "fdcId": 170848,
+      "fdc": "Cheese, parmesan, hard",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 392,
+        "carbs": 3.22,
+        "protein": 35.8,
+        "fat": 25
+      },
+      "confidenza": "alta",
+      "motivo": "Parmesan hard è la forma base più vicina al Parmigiano Reggiano.",
+      "daRivedere": false
+    },
+    "farina manitoba": {
+      "nome": "Farina Manitoba",
+      "grafie": [
+        "Farina Manitoba"
+      ],
+      "ricette": 7,
+      "grammiTotali": 2290,
+      "fdcId": 168896,
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "alta",
+      "motivo": "Bread flour arricchita è la più simile alla Manitoba ad alto W.",
+      "daRivedere": false
+    },
+    "tuorli d'uovo": {
+      "nome": "Tuorli d'Uovo",
+      "grafie": [
+        "Tuorli d'Uovo",
+        "Tuorli d'uovo"
+      ],
+      "ricette": 7,
+      "grammiTotali": 1275,
+      "fdcId": 748236,
+      "fdc": "Eggs, Grade A, Large, egg yolk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 334,
+        "carbs": 1.02,
+        "protein": 16.2,
+        "fat": 28.8
+      },
+      "confidenza": "alta",
+      "motivo": "Foundation Grade A Large yolk, fresco, macro completi e specifici.",
+      "daRivedere": false
+    },
+    "prezzemolo fresco": {
+      "nome": "Prezzemolo Fresco",
+      "grafie": [
+        "Prezzemolo Fresco",
+        "Prezzemolo fresco"
+      ],
+      "ricette": 7,
+      "grammiTotali": 255,
+      "fdcId": 170416,
+      "fdc": "Parsley, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 36,
+        "carbs": 6.33,
+        "protein": 2.97,
+        "fat": 0.79
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: prezzemolo fresco, macro completi.",
+      "daRivedere": false
+    },
+    "aceto di vino bianco": {
+      "nome": "Aceto di Vino Bianco",
+      "grafie": [
+        "Aceto di Vino Bianco",
+        "Aceto di vino bianco"
+      ],
+      "ricette": 7,
+      "grammiTotali": 185,
+      "fdcId": 172240,
+      "fdc": "Vinegar, red wine",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 19,
+        "carbs": 0.27,
+        "protein": 0.04,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Aceto di vino rosso è sostituto nutrizionalmente onesto; nessun aceto bianco disponibile.",
+      "daRivedere": false
+    },
+    "tuorlo d'uovo": {
+      "nome": "Tuorlo d'Uovo",
+      "grafie": [
+        "Tuorlo d'Uovo",
+        "Tuorlo d'uovo"
+      ],
+      "ricette": 7,
+      "grammiTotali": 134,
+      "fdcId": 748236,
+      "fdc": "Eggs, Grade A, Large, egg yolk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 334,
+        "carbs": 1.02,
+        "protein": 16.2,
+        "fat": 28.8
+      },
+      "confidenza": "alta",
+      "motivo": "Foundation Grade A Large yolk, fresco, macro completi e specifici.",
+      "daRivedere": false
+    },
+    "aglio fresco": {
+      "nome": "Aglio Fresco",
+      "grafie": [
+        "Aglio Fresco",
+        "Aglio fresco"
+      ],
+      "ricette": 7,
+      "grammiTotali": 61,
+      "fdcId": 1104647,
+      "fdc": "Garlic, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 143,
+        "carbs": 28.2,
+        "protein": 6.62,
+        "fat": 0.38
+      },
+      "confidenza": "alta",
+      "motivo": "Foundation garlic raw, macro completi, corrispondenza perfetta.",
+      "daRivedere": false
+    },
+    "scorza di limone": {
+      "nome": "Scorza di Limone",
+      "grafie": [
+        "Scorza di Limone",
+        "Scorza di limone"
+      ],
+      "ricette": 7,
+      "grammiTotali": 32,
+      "fdcId": 167749,
+      "fdc": "Lemon peel, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 47,
+        "carbs": 16,
+        "protein": 1.5,
+        "fat": 0.3
+      },
+      "confidenza": "alta",
+      "motivo": "Lemon peel raw corrisponde esattamente alla scorza di limone.",
+      "daRivedere": false
+    },
+    "farina tipo 00": {
+      "nome": "Farina Tipo 00",
+      "grafie": [
+        "Farina Tipo 00"
+      ],
+      "ricette": 6,
+      "grammiTotali": 4730,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Flour 00 Foundation è la corrispondenza diretta e precisa.",
+      "daRivedere": false
+    },
+    "cipolla dorata": {
+      "nome": "Cipolla Dorata",
+      "grafie": [
+        "Cipolla Dorata"
+      ],
+      "ricette": 5,
+      "grammiTotali": 360,
+      "fdcId": 790646,
+      "fdc": "Onions, yellow, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 38,
+        "carbs": 8.61,
+        "protein": 0.83,
+        "fat": 0.05
+      },
+      "confidenza": "alta",
+      "motivo": "Onions yellow raw Foundation corrisponde perfettamente alla cipolla dorata cruda.",
+      "daRivedere": false
+    },
+    "aceto di mele": {
+      "nome": "Aceto di Mele",
+      "grafie": [
+        "Aceto di Mele"
+      ],
+      "ricette": 5,
+      "grammiTotali": 175,
+      "fdcId": 173469,
+      "fdc": "Vinegar, cider",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 21,
+        "carbs": 0.93,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Vinegar cider è l'aceto di mele, corrispondenza diretta e completa.",
+      "daRivedere": false
+    },
+    "miele di acacia": {
+      "nome": "Miele di Acacia",
+      "grafie": [
+        "Miele di Acacia"
+      ],
+      "ricette": 5,
+      "grammiTotali": 125,
+      "fdcId": 169640,
+      "fdc": "Honey",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 304,
+        "carbs": 82.4,
+        "protein": 0.3,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Honey SR Legacy è la voce generica di miele, macro completi e corretti.",
+      "daRivedere": false
+    },
+    "sale grosso": {
+      "nome": "Sale Grosso",
+      "grafie": [
+        "Sale Grosso"
+      ],
+      "ricette": 5,
+      "grammiTotali": 38,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Salt table è il sale da cucina; macro azzerati corretti per NaCl puro.",
+      "daRivedere": false
+    },
+    "origano secco": {
+      "nome": "Origano Secco",
+      "grafie": [
+        "Origano Secco"
+      ],
+      "ricette": 5,
+      "grammiTotali": 22,
+      "fdcId": 171328,
+      "fdc": "Spices, oregano, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 265,
+        "carbs": 68.9,
+        "protein": 9,
+        "fat": 4.28
+      },
+      "confidenza": "alta",
+      "motivo": "Spices oregano dried è la corrispondenza diretta e precisa.",
+      "daRivedere": false
+    },
+    "latte intero fresco": {
+      "nome": "Latte Intero Fresco",
+      "grafie": [
+        "Latte Intero Fresco"
+      ],
+      "ricette": 4,
+      "grammiTotali": 1810,
+      "fdcId": 746782,
+      "fdc": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 60,
+        "carbs": 4.63,
+        "protein": 3.27,
+        "fat": 3.2
+      },
+      "confidenza": "alta",
+      "motivo": "curato a mano: latte intero 3.25% Foundation (la ricerca lo annegava tra i derivati)",
+      "daRivedere": false
+    },
+    "farina tipo 0 o manitoba": {
+      "nome": "Farina Tipo 0 o Manitoba",
+      "grafie": [
+        "Farina Tipo 0 o Manitoba"
+      ],
+      "ricette": 4,
+      "grammiTotali": 1150,
+      "fdcId": 790146,
+      "fdc": "Flour, bread, white, enriched, unbleached",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 363,
+        "carbs": 72.8,
+        "protein": 14.3,
+        "fat": 1.65
+      },
+      "confidenza": "alta",
+      "motivo": "Flour bread white enriched unbleached Foundation ha alto contenuto proteico simile alla Manitoba.",
+      "daRivedere": false
+    },
+    "ketchup": {
+      "nome": "Ketchup",
+      "grafie": [
+        "Ketchup"
+      ],
+      "ricette": 4,
+      "grammiTotali": 825,
+      "fdcId": 747693,
+      "fdc": "Ketchup, restaurant",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 117,
+        "carbs": 26.8,
+        "protein": 1.11,
+        "fat": 0.55
+      },
+      "confidenza": "alta",
+      "motivo": "Ketchup restaurant Foundation è la corrispondenza diretta con macro completi.",
+      "daRivedere": false
+    },
+    "uova intere": {
+      "nome": "Uova Intere",
+      "grafie": [
+        "Uova Intere",
+        "Uova intere"
+      ],
+      "ricette": 4,
+      "grammiTotali": 520,
+      "fdcId": 748967,
+      "fdc": "Eggs, Grade A, Large, egg whole",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 148,
+        "carbs": 0.96,
+        "protein": 12.4,
+        "fat": 9.96
+      },
+      "confidenza": "alta",
+      "motivo": "Eggs Grade A Large whole Foundation corrisponde esattamente alle uova intere medie.",
+      "daRivedere": false
+    },
+    "acqua per bassinage": {
+      "nome": "Acqua per Bassinage",
+      "grafie": [
+        "Acqua per Bassinage",
+        "Acqua per bassinage"
+      ],
+      "ricette": 4,
+      "grammiTotali": 190,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Beverages water tap drinking è acqua pura, macro tutti zero, corretti.",
+      "daRivedere": false
+    },
+    "sale marino fino": {
+      "nome": "Sale Marino Fino",
+      "grafie": [
+        "Sale Marino Fino"
+      ],
+      "ricette": 4,
+      "grammiTotali": 189,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Salt table è il sale da cucina; macro azzerati corretti per NaCl puro.",
+      "daRivedere": false
+    },
+    "pecorino romano dop": {
+      "nome": "Pecorino Romano DOP",
+      "grafie": [
+        "Pecorino Romano DOP"
+      ],
+      "ricette": 4,
+      "grammiTotali": 100,
+      "fdcId": 171249,
+      "fdc": "Cheese, romano",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 387,
+        "carbs": 3.63,
+        "protein": 31.8,
+        "fat": 26.9
+      },
+      "confidenza": "alta",
+      "motivo": "Cheese romano SR Legacy corrisponde direttamente al pecorino romano con macro completi.",
+      "daRivedere": false
+    },
+    "senape di digione": {
+      "nome": "Senape di Digione",
+      "grafie": [
+        "Senape di Digione"
+      ],
+      "ricette": 4,
+      "grammiTotali": 95,
+      "fdcId": 326698,
+      "fdc": "Mustard, prepared, yellow",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 61,
+        "carbs": 5.3,
+        "protein": 4.25,
+        "fat": 3.38
+      },
+      "confidenza": "media",
+      "motivo": "Mustard prepared yellow Foundation è senape pronta; Dijon non disponibile ma categoria corretta.",
+      "daRivedere": false
+    },
+    "panna fresca liquida": {
+      "nome": "Panna fresca liquida",
+      "grafie": [
+        "Panna Fresca Liquida",
+        "Panna fresca liquida"
+      ],
+      "ricette": 4,
+      "grammiTotali": 85,
+      "fdcId": 2346386,
+      "fdc": "Cream, heavy",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 343,
+        "carbs": 3.8,
+        "protein": 2.02,
+        "fat": 35.6
+      },
+      "confidenza": "alta",
+      "motivo": "Cream heavy Foundation con 35.6% grassi corrisponde perfettamente alla panna fresca 35%.",
+      "daRivedere": false
+    },
+    "semi di sesamo": {
+      "nome": "Semi di Sesamo",
+      "grafie": [
+        "Semi di Sesamo"
+      ],
+      "ricette": 4,
+      "grammiTotali": 65,
+      "fdcId": 170151,
+      "fdc": "Seeds, sesame seeds, whole, roasted and toasted",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 565,
+        "carbs": 25.7,
+        "protein": 17,
+        "fat": 48
+      },
+      "confidenza": "alta",
+      "motivo": "Sesame seeds whole roasted and toasted corrisponde ai semi tostati richiesti.",
+      "daRivedere": false
+    },
+    "salsa worcestershire": {
+      "nome": "Salsa Worcestershire",
+      "grafie": [
+        "Salsa Worcestershire"
+      ],
+      "ricette": 4,
+      "grammiTotali": 41,
+      "fdcId": 171610,
+      "fdc": "Sauce, worcestershire",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 77,
+        "carbs": 19.2,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Sauce worcestershire SR Legacy è la corrispondenza diretta e precisa.",
+      "daRivedere": false
+    },
+    "sale grosso marino": {
+      "nome": "Sale Grosso Marino",
+      "grafie": [
+        "Sale Grosso Marino"
+      ],
+      "ricette": 4,
+      "grammiTotali": 19,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Salt table è il sale; macro azzerati corretti per NaCl puro.",
+      "daRivedere": false
+    },
+    "semola di grano duro rimacinata": {
+      "nome": "Semola di Grano Duro Rimacinata",
+      "grafie": [
+        "Semola di Grano Duro Rimacinata"
+      ],
+      "ricette": 3,
+      "grammiTotali": 950,
+      "fdcId": 2003589,
+      "fdc": "Flour, semolina, fine",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 358,
+        "carbs": 72,
+        "protein": 13.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Flour semolina fine Foundation corrisponde alla semola rimacinata fine, macro completi.",
+      "daRivedere": false
+    },
+    "semola rimacinata di grano duro": {
+      "nome": "Semola Rimacinata di Grano Duro",
+      "grafie": [
+        "Semola Rimacinata di Grano Duro"
+      ],
+      "ricette": 3,
+      "grammiTotali": 690,
+      "fdcId": 2003589,
+      "fdc": "Flour, semolina, fine",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 358,
+        "carbs": 72,
+        "protein": 13.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Farina di semola fine Foundation, macro completi, corrisponde alla rimacinata.",
+      "daRivedere": false
+    },
+    "zucchine": {
+      "nome": "Zucchine",
+      "grafie": [
+        "Zucchine"
+      ],
+      "ricette": 3,
+      "grammiTotali": 500,
+      "fdcId": 2685568,
+      "fdc": "Squash, summer, green, zucchini, includes skin, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 19,
+        "carbs": 3.27,
+        "protein": 0.984,
+        "fat": 0.205
+      },
+      "confidenza": "alta",
+      "motivo": "Zucchina verde cruda con buccia Foundation, macro completi, varietà corretta.",
+      "daRivedere": false
+    },
+    "sedano": {
+      "nome": "Sedano",
+      "grafie": [
+        "Sedano"
+      ],
+      "ricette": 3,
+      "grammiTotali": 460,
+      "fdcId": 2346405,
+      "fdc": "Celery, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 16.7,
+        "carbs": 3.32,
+        "protein": 0.492,
+        "fat": 0.162
+      },
+      "confidenza": "alta",
+      "motivo": "Sedano crudo Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "patate": {
+      "nome": "Patate",
+      "grafie": [
+        "Patate"
+      ],
+      "ricette": 3,
+      "grammiTotali": 450,
+      "fdcId": 2346403,
+      "fdc": "Potatoes, gold, without skin, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 73.5,
+        "carbs": 16,
+        "protein": 1.81,
+        "fat": 0.264
+      },
+      "confidenza": "alta",
+      "motivo": "Patata gialla senza buccia cruda Foundation, corrisponde a patata pelata.",
+      "daRivedere": false
+    },
+    "vino bianco secco": {
+      "nome": "Vino Bianco Secco",
+      "grafie": [
+        "Vino Bianco Secco"
+      ],
+      "ricette": 3,
+      "grammiTotali": 360,
+      "fdcId": 174837,
+      "fdc": "Alcoholic beverage, wine, table, white",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 82,
+        "carbs": 2.6,
+        "protein": 0.07,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Vino bianco da tavola generico, corrisponde perfettamente all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "pomodorini": {
+      "nome": "Pomodorini",
+      "grafie": [
+        "Pomodorini"
+      ],
+      "ricette": 3,
+      "grammiTotali": 330,
+      "fdcId": 321360,
+      "fdc": "Tomatoes, grape, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 27,
+        "carbs": 5.51,
+        "protein": 0.83,
+        "fat": 0.63
+      },
+      "confidenza": "alta",
+      "motivo": "Pomodori grape crudi Foundation, macro completi, formato piccolo ideale.",
+      "daRivedere": false
+    },
+    "pinoli": {
+      "nome": "Pinoli",
+      "grafie": [
+        "Pinoli"
+      ],
+      "ricette": 3,
+      "grammiTotali": 110,
+      "fdcId": 2346392,
+      "fdc": "Nuts, pine nuts, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 689,
+        "carbs": 18.6,
+        "protein": 15.7,
+        "fat": 61.3
+      },
+      "confidenza": "alta",
+      "motivo": "Pinoli crudi Foundation, macro completi, corrispondenza diretta e precisa.",
+      "daRivedere": false
+    },
+    "parmigiano reggiano": {
+      "nome": "Parmigiano Reggiano",
+      "grafie": [
+        "Parmigiano Reggiano"
+      ],
+      "ricette": 3,
+      "grammiTotali": 95,
+      "fdcId": 325036,
+      "fdc": "Cheese, parmesan, grated",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 421,
+        "carbs": 12.4,
+        "protein": 29.6,
+        "fat": 28
+      },
+      "confidenza": "alta",
+      "motivo": "Parmigiano grattugiato Foundation, macro completi, corrisponde all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "miele d'acacia": {
+      "nome": "Miele d'Acacia",
+      "grafie": [
+        "Miele d'Acacia"
+      ],
+      "ricette": 3,
+      "grammiTotali": 72,
+      "fdcId": 169640,
+      "fdc": "Honey",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 304,
+        "carbs": 82.4,
+        "protein": 0.3,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Miele generico SR Legacy, macro completi; acacia non disponibile ma valori simili.",
+      "daRivedere": false
+    },
+    "menta fresca": {
+      "nome": "Menta Fresca",
+      "grafie": [
+        "Menta Fresca"
+      ],
+      "ricette": 3,
+      "grammiTotali": 14,
+      "fdcId": 173475,
+      "fdc": "Spearmint, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 44,
+        "carbs": 8.41,
+        "protein": 3.29,
+        "fat": 0.73
+      },
+      "confidenza": "media",
+      "motivo": "Spearmint fresca SR Legacy, erba aromatica analoga, macro completi.",
+      "daRivedere": false
+    },
+    "noce moscata": {
+      "nome": "Noce Moscata",
+      "grafie": [
+        "Noce Moscata"
+      ],
+      "ricette": 3,
+      "grammiTotali": 3,
+      "fdcId": 171326,
+      "fdc": "Spices, nutmeg, ground",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 525,
+        "carbs": 49.3,
+        "protein": 5.84,
+        "fat": 36.3
+      },
+      "confidenza": "alta",
+      "motivo": "Noce moscata macinata SR Legacy, corrispondenza diretta e macro completi.",
+      "daRivedere": false
+    },
+    "acqua fredda": {
+      "nome": "Acqua Fredda",
+      "grafie": [
+        "Acqua Fredda"
+      ],
+      "ricette": 2,
+      "grammiTotali": 2050,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua potabile dal rubinetto SR Legacy, zero kcal, corrispondenza perfetta.",
+      "daRivedere": false
+    },
+    "farina caputo nuvola super": {
+      "nome": "Farina Caputo Nuvola Super",
+      "grafie": [
+        "Farina Caputo Nuvola Super"
+      ],
+      "ricette": 2,
+      "grammiTotali": 1960,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "media",
+      "motivo": "Farina 00 Foundation è la più vicina alla Nuvola Super per tipo macinazione.",
+      "daRivedere": false
+    },
+    "farina manitoba forte": {
+      "nome": "Farina Manitoba Forte",
+      "grafie": [
+        "Farina Manitoba Forte"
+      ],
+      "ricette": 2,
+      "grammiTotali": 950,
+      "fdcId": 168896,
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "media",
+      "motivo": "Farina da pane arricchita SR Legacy, proteina ~12% vicina alla Manitoba.",
+      "daRivedere": false
+    },
+    "farina tipo 1": {
+      "nome": "Farina Tipo 1",
+      "grafie": [
+        "Farina Tipo 1"
+      ],
+      "ricette": 2,
+      "grammiTotali": 640,
+      "fdcId": 168893,
+      "fdc": "Wheat flour, whole-grain (Includes foods for USDA's Food Distribution Program)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 340,
+        "carbs": 72,
+        "protein": 13.2,
+        "fat": 2.5
+      },
+      "confidenza": "media",
+      "motivo": "Farina integrale SR Legacy, semi-integrale simile al tipo 1 italiano.",
+      "daRivedere": false
+    },
+    "farina tipo 0 media forza": {
+      "nome": "Farina Tipo 0 Media Forza",
+      "grafie": [
+        "Farina Tipo 0 Media Forza"
+      ],
+      "ricette": 2,
+      "grammiTotali": 570,
+      "fdcId": 790018,
+      "fdc": "Flour, wheat, all-purpose, unenriched, unbleached",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 362,
+        "carbs": 74.6,
+        "protein": 12,
+        "fat": 1.7
+      },
+      "confidenza": "media",
+      "motivo": "Farina all-purpose non arricchita unbleached Foundation, proteina media adatta.",
+      "daRivedere": false
+    },
+    "lievito madre solido": {
+      "nome": "Lievito Madre Solido",
+      "grafie": [
+        "Lievito Madre Solido"
+      ],
+      "ricette": 2,
+      "grammiTotali": 550,
+      "fdcId": null,
+      "daRivedere": false,
+      "confidenza": "media",
+      "derivataDa": [
+        {
+          "chiave": "farina manitoba",
+          "quota": 0.6666666666666666
+        },
+        {
+          "chiave": "acqua",
+          "quota": 0.3333333333333333
+        }
+      ],
+      "motivo": "curato in revisione del 28/07/2026: pasta madre solida = 2 parti farina + 1 acqua (rinfresco standard della ricetta pasta-madre del sito); numeri = media pesata delle voci USDA",
+      "per100g": {
+        "kcal": 240.67,
+        "carbs": 48.33,
+        "protein": 8,
+        "fat": 1.11
+      },
+      "fdc": "derivata: 67% Wheat flour, white, bread, enriched + 33% Beverages, water, tap, drinking"
+    },
+    "olio di semi di girasole": {
+      "nome": "Olio di Semi di Girasole",
+      "grafie": [
+        "Olio di Semi di Girasole",
+        "Olio di semi di girasole"
+      ],
+      "ricette": 2,
+      "grammiTotali": 500,
+      "fdcId": 171025,
+      "fdc": "Oil, sunflower, linoleic, (approx. 65%)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Olio di girasole linoleico SR Legacy, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "ricotta vaccina": {
+      "nome": "Ricotta Vaccina",
+      "grafie": [
+        "Ricotta Vaccina"
+      ],
+      "ricette": 2,
+      "grammiTotali": 500,
+      "fdcId": 746766,
+      "fdc": "Cheese, ricotta, whole milk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 157,
+        "carbs": 6.86,
+        "protein": 7.81,
+        "fat": 11
+      },
+      "confidenza": "alta",
+      "motivo": "Ricotta intero latte Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "carote": {
+      "nome": "Carote",
+      "grafie": [
+        "Carote"
+      ],
+      "ricette": 2,
+      "grammiTotali": 400,
+      "fdcId": 2258586,
+      "fdc": "Carrots, mature, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 48,
+        "carbs": 10.3,
+        "protein": 0.941,
+        "fat": 0.351
+      },
+      "confidenza": "alta",
+      "motivo": "Carote mature crude Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "farina 00": {
+      "nome": "Farina 00",
+      "grafie": [
+        "Farina 00"
+      ],
+      "ricette": 2,
+      "grammiTotali": 360,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Farina 00 Foundation, voce specifica e dedicata, macro completi.",
+      "daRivedere": false
+    },
+    "criscito caputo": {
+      "nome": "Criscito Caputo",
+      "grafie": [
+        "Criscito Caputo"
+      ],
+      "ricette": 2,
+      "grammiTotali": 203,
+      "fdcId": 175043,
+      "fdc": "Leavening agents, yeast, baker's, active dry",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 325,
+        "carbs": 41.2,
+        "protein": 40.4,
+        "fat": 7.61
+      },
+      "confidenza": "media",
+      "motivo": "Lievito di birra secco attivo SR Legacy, il più vicino al lievito madre essiccato.",
+      "daRivedere": false
+    },
+    "carota": {
+      "nome": "Carota",
+      "grafie": [
+        "Carota"
+      ],
+      "ricette": 2,
+      "grammiTotali": 200,
+      "fdcId": 2258586,
+      "fdc": "Carrots, mature, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 48,
+        "carbs": 10.3,
+        "protein": 0.941,
+        "fat": 0.351
+      },
+      "confidenza": "alta",
+      "motivo": "Carote mature crude Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "zucchero a velo": {
+      "nome": "Zucchero a Velo",
+      "grafie": [
+        "Zucchero a Velo"
+      ],
+      "ricette": 2,
+      "grammiTotali": 180,
+      "fdcId": 169656,
+      "fdc": "Sugars, powdered",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 389,
+        "carbs": 99.8,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Zucchero a velo SR Legacy, corrispondenza diretta e macro completi.",
+      "daRivedere": false
+    },
+    "strutto": {
+      "nome": "Strutto",
+      "grafie": [
+        "Strutto"
+      ],
+      "ricette": 2,
+      "grammiTotali": 170,
+      "fdcId": 171401,
+      "fdc": "Lard",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 902,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Lard è esattamente lo strutto, macro completi e perfetti.",
+      "daRivedere": false
+    },
+    "pomodoro pelato san marzano dop": {
+      "nome": "Pomodoro Pelato San Marzano DOP",
+      "grafie": [
+        "Pomodoro Pelato San Marzano DOP"
+      ],
+      "ricette": 2,
+      "grammiTotali": 155,
+      "fdcId": 170501,
+      "fdc": "Tomatoes, crushed, canned",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 32,
+        "carbs": 7.29,
+        "protein": 1.64,
+        "fat": 0.28
+      },
+      "confidenza": "media",
+      "motivo": "Pomodori schiacciati in scatola, forma più vicina al pelato frantumato a mano.",
+      "daRivedere": false
+    },
+    "acqua (bassinage)": {
+      "nome": "Acqua (Bassinage)",
+      "grafie": [
+        "Acqua (Bassinage)"
+      ],
+      "ricette": 2,
+      "grammiTotali": 130,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua potabile, macro tutti zero, corrispondenza esatta.",
+      "daRivedere": false
+    },
+    "uovo intero": {
+      "nome": "Uovo Intero",
+      "grafie": [
+        "Uovo Intero"
+      ],
+      "ricette": 2,
+      "grammiTotali": 110,
+      "fdcId": 748967,
+      "fdc": "Eggs, Grade A, Large, egg whole",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 148,
+        "carbs": 0.96,
+        "protein": 12.4,
+        "fat": 9.96
+      },
+      "confidenza": "alta",
+      "motivo": "Uovo intero crudo grande, Foundation con macro completi e precisi.",
+      "daRivedere": false
+    },
+    "sale marino grosso": {
+      "nome": "Sale Marino Grosso",
+      "grafie": [
+        "Sale Marino Grosso"
+      ],
+      "ricette": 2,
+      "grammiTotali": 100,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Salt table è sale da cucina, unico candidato corretto tra i proposti.",
+      "daRivedere": false
+    },
+    "mandorle pelate": {
+      "nome": "Mandorle Pelate",
+      "grafie": [
+        "Mandorle Pelate"
+      ],
+      "ricette": 2,
+      "grammiTotali": 95,
+      "fdcId": 170568,
+      "fdc": "Nuts, almonds, blanched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 590,
+        "carbs": 18.7,
+        "protein": 21.4,
+        "fat": 52.5
+      },
+      "confidenza": "alta",
+      "motivo": "Almonds blanched corrisponde esattamente a mandorle pelate (spellate).",
+      "daRivedere": false
+    },
+    "olio extravergine d'oliva ligure dop": {
+      "nome": "Olio Extravergine d'Oliva Ligure DOP",
+      "grafie": [
+        "Olio Extravergine d'Oliva Ligure DOP"
+      ],
+      "ricette": 2,
+      "grammiTotali": 80,
+      "fdcId": 171413,
+      "fdc": "Oil, olive, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Oil olive SR Legacy ha macro completi; extra virgin Foundation manca kcal.",
+      "daRivedere": false
+    },
+    "miele": {
+      "nome": "Miele",
+      "grafie": [
+        "Miele"
+      ],
+      "ricette": 2,
+      "grammiTotali": 65,
+      "fdcId": 169640,
+      "fdc": "Honey",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 304,
+        "carbs": 82.4,
+        "protein": 0.3,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Honey SR Legacy, macro completi, corrispondenza diretta e univoca.",
+      "daRivedere": false
+    },
+    "paprika affumicata": {
+      "nome": "Paprika Affumicata",
+      "grafie": [
+        "Paprika Affumicata"
+      ],
+      "ricette": 2,
+      "grammiTotali": 58,
+      "fdcId": 171329,
+      "fdc": "Spices, paprika",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 282,
+        "carbs": 54,
+        "protein": 14.1,
+        "fat": 12.9
+      },
+      "confidenza": "media",
+      "motivo": "Spices paprika è la voce più vicina; versione affumicata non presente nei candidati.",
+      "daRivedere": false
+    },
+    "filetti di acciuga": {
+      "nome": "Filetti di acciuga",
+      "grafie": [
+        "Filetti di Acciuga",
+        "Filetti di acciuga"
+      ],
+      "ricette": 2,
+      "grammiTotali": 45,
+      "fdcId": 2747652,
+      "fdc": "Anchovies, canned in olive oil, with salt, drained",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 206,
+        "carbs": 2.41,
+        "protein": 26.9,
+        "fat": 9.85
+      },
+      "confidenza": "alta",
+      "motivo": "Anchovies canned in olive oil drained, Foundation, corrisponde perfettamente all'uso.",
+      "daRivedere": false
+    },
+    "paprika dolce": {
+      "nome": "Paprika Dolce",
+      "grafie": [
+        "Paprika Dolce"
+      ],
+      "ricette": 2,
+      "grammiTotali": 43,
+      "fdcId": 171329,
+      "fdc": "Spices, paprika",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 282,
+        "carbs": 54,
+        "protein": 14.1,
+        "fat": 12.9
+      },
+      "confidenza": "alta",
+      "motivo": "Spices paprika è l'unica voce paprika disponibile con macro completi.",
+      "daRivedere": false
+    },
+    "rum": {
+      "nome": "Rum",
+      "grafie": [
+        "Rum"
+      ],
+      "ricette": 2,
+      "grammiTotali": 33,
+      "fdcId": 174817,
+      "fdc": "Alcoholic beverage, distilled, rum, 80 proof",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 231,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Rum 80 proof è la voce più specifica e corretta tra i candidati.",
+      "daRivedere": false
+    },
+    "capperi sotto sale": {
+      "nome": "Capperi Sotto Sale",
+      "grafie": [
+        "Capperi Sotto Sale",
+        "Capperi sotto Sale"
+      ],
+      "ricette": 2,
+      "grammiTotali": 30,
+      "fdcId": 172238,
+      "fdc": "Capers, canned",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 4.89,
+        "protein": 2.36,
+        "fat": 0.86
+      },
+      "confidenza": "media",
+      "motivo": "Capers canned è l'unica voce capperi; sotto sale dissalati sono molto simili.",
+      "daRivedere": false
+    },
+    "zucchero di canna": {
+      "nome": "Zucchero di Canna",
+      "grafie": [
+        "Zucchero di Canna"
+      ],
+      "ricette": 2,
+      "grammiTotali": 30,
+      "fdcId": 168833,
+      "fdc": "Sugars, brown",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 380,
+        "carbs": 98.1,
+        "protein": 0.12,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Sugars brown corrisponde allo zucchero di canna grezzo, macro completi.",
+      "daRivedere": false
+    },
+    "aglio in polvere": {
+      "nome": "Aglio in Polvere",
+      "grafie": [
+        "Aglio in Polvere"
+      ],
+      "ricette": 2,
+      "grammiTotali": 27,
+      "fdcId": 171325,
+      "fdc": "Spices, garlic powder",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 331,
+        "carbs": 72.7,
+        "protein": 16.6,
+        "fat": 0.73
+      },
+      "confidenza": "alta",
+      "motivo": "Spices garlic powder, corrispondenza diretta ed esatta con macro completi.",
+      "daRivedere": false
+    },
+    "erbe aromatiche fresche": {
+      "nome": "Erbe Aromatiche Fresche",
+      "grafie": [
+        "Erbe Aromatiche Fresche"
+      ],
+      "ricette": 2,
+      "grammiTotali": 25,
+      "fdcId": 170416,
+      "fdc": "Parsley, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 36,
+        "carbs": 6.33,
+        "protein": 2.97,
+        "fat": 0.79
+      },
+      "confidenza": "bassa",
+      "motivo": "Mix generico non presente; prezzemolo fresco usato come proxy medio. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "estratto di malto": {
+      "nome": "Estratto di Malto",
+      "grafie": [
+        "Estratto di Malto"
+      ],
+      "ricette": 2,
+      "grammiTotali": 24,
+      "fdcId": 169660,
+      "fdc": "Syrups, malt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 71.3,
+        "protein": 6.2,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Syrups malt è estratto di malto liquido, forma più vicina all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "paprika dolce in polvere": {
+      "nome": "Paprika Dolce in polvere",
+      "grafie": [
+        "Paprika Dolce in Polvere",
+        "Paprika Dolce in polvere"
+      ],
+      "ricette": 2,
+      "grammiTotali": 23,
+      "fdcId": 171329,
+      "fdc": "Spices, paprika",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 282,
+        "carbs": 54,
+        "protein": 14.1,
+        "fat": 12.9
+      },
+      "confidenza": "alta",
+      "motivo": "Spices paprika unica voce paprika disponibile con macro completi.",
+      "daRivedere": false
+    },
+    "sale fino marino": {
+      "nome": "Sale fino marino",
+      "grafie": [
+        "Sale Fino Marino",
+        "Sale fino marino"
+      ],
+      "ricette": 2,
+      "grammiTotali": 21,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Salt table è sale da cucina, unico candidato corretto tra i proposti.",
+      "daRivedere": false
+    },
+    "rosmarino": {
+      "nome": "Rosmarino",
+      "grafie": [
+        "Rosmarino"
+      ],
+      "ricette": 2,
+      "grammiTotali": 15,
+      "fdcId": 173473,
+      "fdc": "Rosemary, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 131,
+        "carbs": 20.7,
+        "protein": 3.31,
+        "fat": 5.86
+      },
+      "confidenza": "alta",
+      "motivo": "Rosemary fresh corrisponde esattamente a rosmarino fresco richiesto.",
+      "daRivedere": false
+    },
+    "malto diastasico": {
+      "nome": "Malto Diastasico",
+      "grafie": [
+        "Malto Diastasico"
+      ],
+      "ricette": 2,
+      "grammiTotali": 13,
+      "fdcId": 169660,
+      "fdc": "Syrups, malt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 71.3,
+        "protein": 6.2,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Syrups malt è il più vicino al malto diastasico liquido; nessun candidato specifico.",
+      "daRivedere": false
+    },
+    "pepe bianco": {
+      "nome": "Pepe bianco",
+      "grafie": [
+        "Pepe Bianco",
+        "Pepe bianco"
+      ],
+      "ricette": 2,
+      "grammiTotali": 11,
+      "fdcId": 170933,
+      "fdc": "Spices, pepper, white",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 296,
+        "carbs": 68.6,
+        "protein": 10.4,
+        "fat": 2.12
+      },
+      "confidenza": "alta",
+      "motivo": "Spices pepper white, corrispondenza diretta ed esatta con macro completi.",
+      "daRivedere": false
+    },
+    "scorza di arancia": {
+      "nome": "Scorza di Arancia",
+      "grafie": [
+        "Scorza di Arancia"
+      ],
+      "ricette": 2,
+      "grammiTotali": 10,
+      "fdcId": 169103,
+      "fdc": "Orange peel, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 97,
+        "carbs": 25,
+        "protein": 1.5,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Orange peel raw corrisponde esattamente alla scorza d'arancia grattugiata.",
+      "daRivedere": false
+    },
+    "scorza d'arancia": {
+      "nome": "Scorza d'Arancia",
+      "grafie": [
+        "Scorza d'Arancia"
+      ],
+      "ricette": 2,
+      "grammiTotali": 10,
+      "fdcId": 169103,
+      "fdc": "Orange peel, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 97,
+        "carbs": 25,
+        "protein": 1.5,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Orange peel raw corrisponde esattamente alla scorza d'arancia grattugiata.",
+      "daRivedere": false
+    },
+    "zucchero": {
+      "nome": "Zucchero",
+      "grafie": [
+        "Zucchero"
+      ],
+      "ricette": 2,
+      "grammiTotali": 7,
+      "fdcId": 169655,
+      "fdc": "Sugars, granulated",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 387,
+        "carbs": 100,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Zucchero granulare SR Legacy, macro completi e perfettamente corrispondenti.",
+      "daRivedere": false
+    },
+    "origano essiccato": {
+      "nome": "Origano Essiccato",
+      "grafie": [
+        "Origano Essiccato"
+      ],
+      "ricette": 2,
+      "grammiTotali": 7,
+      "fdcId": 171328,
+      "fdc": "Spices, oregano, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 265,
+        "carbs": 68.9,
+        "protein": 9,
+        "fat": 4.28
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: origano essiccato, macro completi.",
+      "daRivedere": false
+    },
+    "estratto di vaniglia": {
+      "nome": "Estratto di Vaniglia",
+      "grafie": [
+        "Estratto di Vaniglia"
+      ],
+      "ricette": 2,
+      "grammiTotali": 7,
+      "fdcId": 173471,
+      "fdc": "Vanilla extract",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 288,
+        "carbs": 12.6,
+        "protein": 0.06,
+        "fat": 0.06
+      },
+      "confidenza": "alta",
+      "motivo": "Vanilla extract puro, corrispondenza esatta all'ingrediente.",
+      "daRivedere": false
+    },
+    "scorza di limone bio": {
+      "nome": "Scorza di Limone Bio",
+      "grafie": [
+        "Scorza di Limone Bio"
+      ],
+      "ricette": 2,
+      "grammiTotali": 5,
+      "fdcId": 167749,
+      "fdc": "Lemon peel, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 47,
+        "carbs": 16,
+        "protein": 1.5,
+        "fat": 0.3
+      },
+      "confidenza": "alta",
+      "motivo": "Lemon peel raw corrisponde esattamente alla scorza di limone.",
+      "daRivedere": false
+    },
+    "baccello di vaniglia": {
+      "nome": "Baccello di Vaniglia",
+      "grafie": [
+        "Baccello di Vaniglia"
+      ],
+      "ricette": 2,
+      "grammiTotali": 5,
+      "fdcId": 173471,
+      "fdc": "Vanilla extract",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 288,
+        "carbs": 12.6,
+        "protein": 0.06,
+        "fat": 0.06
+      },
+      "confidenza": "bassa",
+      "motivo": "Nessun baccello intero disponibile; estratto di vaniglia è il proxy più vicino. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "cumino in polvere": {
+      "nome": "Cumino in Polvere",
+      "grafie": [
+        "Cumino in Polvere"
+      ],
+      "ricette": 2,
+      "grammiTotali": 4,
+      "fdcId": 170923,
+      "fdc": "Spices, cumin seed",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 375,
+        "carbs": 44.2,
+        "protein": 17.8,
+        "fat": 22.3
+      },
+      "confidenza": "alta",
+      "motivo": "Spices, cumin seed: unico candidato corretto, macro completi.",
+      "daRivedere": false
+    },
+    "origano": {
+      "nome": "Origano",
+      "grafie": [
+        "Origano"
+      ],
+      "ricette": 2,
+      "grammiTotali": 4,
+      "fdcId": 171328,
+      "fdc": "Spices, oregano, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 265,
+        "carbs": 68.9,
+        "protein": 9,
+        "fat": 4.28
+      },
+      "confidenza": "alta",
+      "motivo": "Stesso ingrediente: origano essiccato, macro completi.",
+      "daRivedere": false
+    },
+    "peperoncino in polvere": {
+      "nome": "Peperoncino in polvere",
+      "grafie": [
+        "Peperoncino in Polvere",
+        "Peperoncino in polvere"
+      ],
+      "ricette": 2,
+      "grammiTotali": 4,
+      "fdcId": 170932,
+      "fdc": "Spices, pepper, red or cayenne",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 56.6,
+        "protein": 12,
+        "fat": 17.3
+      },
+      "confidenza": "alta",
+      "motivo": "Pepper red/cayenne corrisponde perfettamente al peperoncino in polvere.",
+      "daRivedere": false
+    },
+    "sale e pepe": {
+      "nome": "Sale e Pepe",
+      "grafie": [
+        "Sale e Pepe"
+      ],
+      "ricette": 2,
+      "grammiTotali": 4,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Sale come voce primaria; pepe nero come ripiego; ingrediente doppio non separabile.",
+      "daRivedere": false
+    },
+    "spalla di maiale": {
+      "nome": "Spalla di Maiale",
+      "grafie": [
+        "Spalla di Maiale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5000,
+      "fdcId": 167843,
+      "fdc": "Pork, fresh, shoulder, whole, separable lean and fat, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 236,
+        "carbs": 0,
+        "protein": 17.2,
+        "fat": 18
+      },
+      "confidenza": "alta",
+      "motivo": "Pork shoulder whole lean+fat raw: corrisponde alla spalla intera con grasso.",
+      "daRivedere": false
+    },
+    "farina caputo saccorosso": {
+      "nome": "Farina Caputo Saccorosso",
+      "grafie": [
+        "Farina Caputo Saccorosso"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2700,
+      "fdcId": 168896,
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "media",
+      "motivo": "Farina bianca pane arricchita è la più vicina a farina forte tipo 0 W330.",
+      "daRivedere": false
+    },
+    "punta di petto di manzo": {
+      "nome": "Punta di Petto di Manzo",
+      "grafie": [
+        "Punta di Petto di Manzo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2000,
+      "fdcId": 173128,
+      "fdc": "Beef, brisket, flat half, separable lean and fat, trimmed to 1/8\" fat, choice, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 278,
+        "carbs": 0.12,
+        "protein": 18.1,
+        "fat": 22.2
+      },
+      "confidenza": "alta",
+      "motivo": "Brisket flat lean+fat trimmed 1/8\" fat raw: con cappello di grasso, molto aderente.",
+      "daRivedere": false
+    },
+    "cipolle sponsali": {
+      "nome": "Cipolle Sponsali",
+      "grafie": [
+        "Cipolle Sponsali"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1500,
+      "fdcId": 170000,
+      "fdc": "Onions, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 40,
+        "carbs": 9.34,
+        "protein": 1.1,
+        "fat": 0.1
+      },
+      "confidenza": "media",
+      "motivo": "Cipolla raw generica, la più vicina alle sponsali (cipolla dorata alternativa).",
+      "daRivedere": false
+    },
+    "costine di maiale": {
+      "nome": "Costine di Maiale",
+      "grafie": [
+        "Costine di Maiale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1500,
+      "fdcId": 167853,
+      "fdc": "Pork, fresh, spareribs, separable lean and fat, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 277,
+        "carbs": 0,
+        "protein": 15.5,
+        "fat": 23.4
+      },
+      "confidenza": "alta",
+      "motivo": "Pork spareribs lean+fat raw corrisponde esattamente alle costine crude.",
+      "daRivedere": false
+    },
+    "biga di saccorosso": {
+      "nome": "Biga di Saccorosso",
+      "grafie": [
+        "Biga di Saccorosso"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1300,
+      "fdcId": null,
+      "nonMappabile": "voce composta — da espandere nei componenti",
+      "daRivedere": false
+    },
+    "farina panettone forte": {
+      "nome": "Farina Panettone Forte",
+      "grafie": [
+        "Farina Panettone Forte"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1250,
+      "fdcId": 168896,
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "media",
+      "motivo": "Farina pane bianca arricchita è il miglior surrogato per farina forte W380-420.",
+      "daRivedere": false
+    },
+    "biga matura": {
+      "nome": "Biga matura",
+      "grafie": [
+        "Biga matura"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1205,
+      "fdcId": null,
+      "nonMappabile": "voce composta — da espandere nei componenti",
+      "daRivedere": false
+    },
+    "pomodori freschi": {
+      "nome": "Pomodori Freschi",
+      "grafie": [
+        "Pomodori Freschi"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": 170457,
+      "fdc": "Tomatoes, red, ripe, raw, year round average",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 18,
+        "carbs": 3.89,
+        "protein": 0.88,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Tomatoes red ripe raw year round: corrisponde ai pomodori maturi freschi.",
+      "daRivedere": false
+    },
+    "carapaci e teste di crostacei": {
+      "nome": "Carapaci e Teste di Crostacei",
+      "grafie": [
+        "Carapaci e Teste di Crostacei"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": null,
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "revisione del 28/07/2026: nel fumetto i gusci si filtrano via; la frazione disciolta è sotto la precisione del calcolo — zeri dichiarati",
+      "daRivedere": false,
+      "numeriManuali": true
+    },
+    "patate farinose": {
+      "nome": "Patate Farinose",
+      "grafie": [
+        "Patate Farinose"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": 170026,
+      "fdc": "Potatoes, flesh and skin, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 77,
+        "carbs": 17.5,
+        "protein": 2.05,
+        "fat": 0.09
+      },
+      "confidenza": "alta",
+      "motivo": "Potatoes flesh and skin raw: rappresenta patate crude generiche a pasta farinosa.",
+      "daRivedere": false
+    },
+    "pomodorini datterini o ciliegini": {
+      "nome": "Pomodorini Datterini o Ciliegini",
+      "grafie": [
+        "Pomodorini Datterini o Ciliegini"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": 321360,
+      "fdc": "Tomatoes, grape, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 27,
+        "carbs": 5.51,
+        "protein": 0.83,
+        "fat": 0.63
+      },
+      "confidenza": "alta",
+      "motivo": "Tomatoes grape raw Foundation: il più vicino a datterini/ciliegini, macro completi.",
+      "daRivedere": false
+    },
+    "farina tipo 0 o 00 forte": {
+      "nome": "Farina Tipo 0 o 00 Forte",
+      "grafie": [
+        "Farina Tipo 0 o 00 Forte"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": 789951,
+      "fdc": "Flour, wheat, all-purpose, enriched, unbleached",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 358,
+        "carbs": 73.2,
+        "protein": 13.1,
+        "fat": 1.48
+      },
+      "confidenza": "media",
+      "motivo": "Farina AP unbleached Foundation con proteina 13.1% più vicina a Manitoba forte W370.",
+      "daRivedere": false
+    },
+    "farina per pinsa": {
+      "nome": "Farina per Pinsa",
+      "grafie": [
+        "Farina per Pinsa"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": 789890,
+      "fdc": "Flour, wheat, all-purpose, enriched, bleached",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 366,
+        "carbs": 77.3,
+        "protein": 10.9,
+        "fat": 1.48
+      },
+      "confidenza": "bassa",
+      "motivo": "Mix frumento+riso+soia assente; farina di frumento è la componente principale. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "patate rosse": {
+      "nome": "Patate Rosse",
+      "grafie": [
+        "Patate Rosse"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1000,
+      "fdcId": 170029,
+      "fdc": "Potatoes, red, flesh and skin, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 70,
+        "carbs": 15.9,
+        "protein": 1.89,
+        "fat": 0.14
+      },
+      "confidenza": "alta",
+      "motivo": "Potatoes red flesh and skin raw corrisponde direttamente alle patate rosse crude.",
+      "daRivedere": false
+    },
+    "acqua rinfresco": {
+      "nome": "Acqua rinfresco",
+      "grafie": [
+        "Acqua rinfresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 970,
+      "fdcId": 173647,
+      "daRivedere": false,
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: è acqua: il (rinfresco) è contesto, non ingrediente",
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      }
+    },
+    "farina caputo saccorosso (per biga)": {
+      "nome": "Farina Caputo Saccorosso (per biga)",
+      "grafie": [
+        "Farina Caputo Saccorosso (per biga)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 830,
+      "fdcId": 168913,
+      "fdc": "Wheat flours, bread, unenriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "alta",
+      "motivo": "Farina di pane non arricchita, proteine 12% vicine al profilo Manitoba.",
+      "daRivedere": false
+    },
+    "melanzane": {
+      "nome": "Melanzane",
+      "grafie": [
+        "Melanzane"
+      ],
+      "ricette": 1,
+      "grammiTotali": 800,
+      "fdcId": 169228,
+      "fdc": "Eggplant, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 25,
+        "carbs": 5.88,
+        "protein": 0.98,
+        "fat": 0.18
+      },
+      "confidenza": "alta",
+      "motivo": "Melanzana cruda SR Legacy, macro completi e corretti per uso in ricetta.",
+      "daRivedere": false
+    },
+    "stracchino o crescenza": {
+      "nome": "Stracchino o Crescenza",
+      "grafie": [
+        "Stracchino o Crescenza"
+      ],
+      "ricette": 1,
+      "grammiTotali": 800,
+      "fdcId": 172178,
+      "fdc": "Cheese, camembert",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 300,
+        "carbs": 0.46,
+        "protein": 19.8,
+        "fat": 24.3
+      },
+      "confidenza": "bassa",
+      "motivo": "Stracchino assente; Camembert è il più simile per grassi e proteine tra i candidati. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "farina costiera oro (tipo 0, germe di grano vitale pressato a freddo)": {
+      "nome": "Farina Costiera ORO (Tipo 0, germe di grano vitale pressato a freddo)",
+      "grafie": [
+        "Farina Costiera ORO (Tipo 0, germe di grano vitale pressato a freddo)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 800,
+      "fdcId": 168913,
+      "fdc": "Wheat flours, bread, unenriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "media",
+      "motivo": "Farina pane unenriched, profilo proteico 12% accettabile per farina tipo 0 media-alta forza.",
+      "daRivedere": false
+    },
+    "farina tipo 0 o 00": {
+      "nome": "Farina Tipo 0 o 00",
+      "grafie": [
+        "Farina Tipo 0 o 00"
+      ],
+      "ricette": 1,
+      "grammiTotali": 750,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Voce 'Flour, 00' Foundation è corrispondenza diretta con macro completi.",
+      "daRivedere": false
+    },
+    "farina integrale": {
+      "nome": "Farina Integrale",
+      "grafie": [
+        "Farina Integrale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 700,
+      "fdcId": 168893,
+      "fdc": "Wheat flour, whole-grain (Includes foods for USDA's Food Distribution Program)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 340,
+        "carbs": 72,
+        "protein": 13.2,
+        "fat": 2.5
+      },
+      "confidenza": "alta",
+      "motivo": "Farina integrale di frumento SR Legacy, macro completi, corrisponde perfettamente.",
+      "daRivedere": false
+    },
+    "acqua bassinage": {
+      "nome": "Acqua bassinage",
+      "grafie": [
+        "Acqua bassinage"
+      ],
+      "ricette": 1,
+      "grammiTotali": 645,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua potabile, zero calorie, corrisponde esattamente all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "peperoni rossi e gialli": {
+      "nome": "Peperoni Rossi e Gialli",
+      "grafie": [
+        "Peperoni Rossi e Gialli"
+      ],
+      "ricette": 1,
+      "grammiTotali": 600,
+      "fdcId": 170108,
+      "fdc": "Peppers, sweet, red, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 26,
+        "carbs": 6.03,
+        "protein": 0.99,
+        "fat": 0.3
+      },
+      "confidenza": "alta",
+      "motivo": "Peperone rosso crudo e giallo crudo coprono entrambi i colori richiesti.",
+      "daRivedere": false
+    },
+    "zucchero semolato fine": {
+      "nome": "Zucchero Semolato Fine",
+      "grafie": [
+        "Zucchero Semolato Fine"
+      ],
+      "ricette": 1,
+      "grammiTotali": 585,
+      "fdcId": 169655,
+      "fdc": "Sugars, granulated",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 387,
+        "carbs": 100,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Zucchero granulare SR Legacy, 100g carbs, corrispondenza perfetta.",
+      "daRivedere": false
+    },
+    "farina tipo 00 media forza": {
+      "nome": "Farina Tipo 00 Media Forza",
+      "grafie": [
+        "Farina Tipo 00 Media Forza"
+      ],
+      "ricette": 1,
+      "grammiTotali": 550,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Voce 'Flour, 00' Foundation è corrispondenza diretta, proteine 11.4% in target.",
+      "daRivedere": false
+    },
+    "ricotta fresca": {
+      "nome": "Ricotta Fresca",
+      "grafie": [
+        "Ricotta Fresca"
+      ],
+      "ricette": 1,
+      "grammiTotali": 500,
+      "fdcId": 746766,
+      "fdc": "Cheese, ricotta, whole milk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 157,
+        "carbs": 6.86,
+        "protein": 7.81,
+        "fat": 11
+      },
+      "confidenza": "alta",
+      "motivo": "Ricotta intero latte Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "farina tipo 0 alta forza": {
+      "nome": "Farina Tipo 0 Alta Forza",
+      "grafie": [
+        "Farina Tipo 0 Alta Forza"
+      ],
+      "ricette": 1,
+      "grammiTotali": 500,
+      "fdcId": 168913,
+      "fdc": "Wheat flours, bread, unenriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "media",
+      "motivo": "Farina pane unenriched, proteine 12% più vicine a farina alta forza W300-330.",
+      "daRivedere": false
+    },
+    "brodo di manzo": {
+      "nome": "Brodo di Manzo",
+      "grafie": [
+        "Brodo di Manzo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 500,
+      "fdcId": 172883,
+      "fdc": "Soup, stock, beef, home-prepared",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 13,
+        "carbs": 1.2,
+        "protein": 1.97,
+        "fat": 0.09
+      },
+      "confidenza": "alta",
+      "motivo": "Brodo di manzo fatto in casa, liquido pronto, macro realistici per brodo non salato.",
+      "daRivedere": false
+    },
+    "avocado hass": {
+      "nome": "Avocado Hass",
+      "grafie": [
+        "Avocado Hass"
+      ],
+      "ricette": 1,
+      "grammiTotali": 450,
+      "fdcId": 2710824,
+      "fdc": "Avocado, Hass, peeled, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 223,
+        "carbs": 8.32,
+        "protein": 1.81,
+        "fat": 20.3
+      },
+      "confidenza": "alta",
+      "motivo": "Voce Foundation 'Avocado, Hass, peeled, raw' è corrispondenza diretta e precisa.",
+      "daRivedere": false
+    },
+    "pomodorini ciliegino": {
+      "nome": "Pomodorini Ciliegino",
+      "grafie": [
+        "Pomodorini Ciliegino"
+      ],
+      "ricette": 1,
+      "grammiTotali": 450,
+      "fdcId": 321360,
+      "fdc": "Tomatoes, grape, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 27,
+        "carbs": 5.51,
+        "protein": 0.83,
+        "fat": 0.63
+      },
+      "confidenza": "alta",
+      "motivo": "Pomodori grape raw Foundation, morfologia e macro identici ai ciliegino/datterini.",
+      "daRivedere": false
+    },
+    "acqua (1ª parte per autolisi)": {
+      "nome": "Acqua (1ª parte per autolisi)",
+      "grafie": [
+        "Acqua (1ª parte per autolisi)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 450,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua potabile, zero calorie, corrisponde esattamente all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "pomodori ramati": {
+      "nome": "Pomodori Ramati",
+      "grafie": [
+        "Pomodori Ramati"
+      ],
+      "ricette": 1,
+      "grammiTotali": 400,
+      "fdcId": 170457,
+      "fdc": "Tomatoes, red, ripe, raw, year round average",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 18,
+        "carbs": 3.89,
+        "protein": 0.88,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Pomodori rossi maturi crudi, anno rotondo, corrispondono ai ramati freschi.",
+      "daRivedere": false
+    },
+    "farina 00 media forza": {
+      "nome": "Farina 00 Media Forza",
+      "grafie": [
+        "Farina 00 Media Forza"
+      ],
+      "ricette": 1,
+      "grammiTotali": 400,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Voce 'Flour, 00' Foundation, proteine 11.4% in target W260-280.",
+      "daRivedere": false
+    },
+    "pomodori pelati san marzano dop": {
+      "nome": "Pomodori Pelati San Marzano DOP",
+      "grafie": [
+        "Pomodori Pelati San Marzano DOP"
+      ],
+      "ricette": 1,
+      "grammiTotali": 400,
+      "fdcId": 170051,
+      "fdc": "Tomatoes, red, ripe, canned, packed in tomato juice",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 16,
+        "carbs": 3.47,
+        "protein": 0.79,
+        "fat": 0.25
+      },
+      "confidenza": "alta",
+      "motivo": "Pomodori interi in succo di pomodoro, più simili ai pelati sgocciolati San Marzano.",
+      "daRivedere": false
+    },
+    "fiordilatte": {
+      "nome": "Fiordilatte",
+      "grafie": [
+        "Fiordilatte"
+      ],
+      "ricette": 1,
+      "grammiTotali": 400,
+      "fdcId": 170845,
+      "fdc": "Cheese, mozzarella, whole milk",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 299,
+        "carbs": 2.4,
+        "protein": 22.2,
+        "fat": 22.1
+      },
+      "confidenza": "alta",
+      "motivo": "Mozzarella intero latte corrisponde al fiordilatte fresco scolato dal siero.",
+      "daRivedere": false
+    },
+    "farina di mais bramata": {
+      "nome": "Farina di Mais Bramata",
+      "grafie": [
+        "Farina di Mais Bramata"
+      ],
+      "ricette": 1,
+      "grammiTotali": 400,
+      "fdcId": 169697,
+      "fdc": "Cornmeal, whole-grain, yellow",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 362,
+        "carbs": 76.9,
+        "protein": 8.12,
+        "fat": 3.59
+      },
+      "confidenza": "alta",
+      "motivo": "Farina di mais integrale gialla, grana grossa, corrisponde alla bramata macinata a pietra.",
+      "daRivedere": false
+    },
+    "acqua per biga": {
+      "nome": "Acqua per biga",
+      "grafie": [
+        "Acqua per biga"
+      ],
+      "ricette": 1,
+      "grammiTotali": 375,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua potabile, zero calorie, corrisponde esattamente all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "uova": {
+      "nome": "Uova",
+      "grafie": [
+        "Uova"
+      ],
+      "ricette": 1,
+      "grammiTotali": 360,
+      "fdcId": 748967,
+      "fdc": "Eggs, Grade A, Large, egg whole",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 148,
+        "carbs": 0.96,
+        "protein": 12.4,
+        "fat": 9.96
+      },
+      "confidenza": "alta",
+      "motivo": "Uova intere grandi Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "barbabietole precotte": {
+      "nome": "Barbabietole Precotte",
+      "grafie": [
+        "Barbabietole Precotte"
+      ],
+      "ricette": 1,
+      "grammiTotali": 350,
+      "fdcId": 169146,
+      "fdc": "Beets, cooked, boiled, drained",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 44,
+        "carbs": 9.96,
+        "protein": 1.68,
+        "fat": 0.18
+      },
+      "confidenza": "alta",
+      "motivo": "Barbabietole cotte senza sale, corrispondenza diretta e macro completi.",
+      "daRivedere": false
+    },
+    "acciughe rosse di spagna sotto sale": {
+      "nome": "Acciughe Rosse di Spagna sotto Sale",
+      "grafie": [
+        "Acciughe Rosse di Spagna sotto Sale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 300,
+      "fdcId": 174183,
+      "fdc": "Fish, anchovy, european, canned in oil, drained solids",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 210,
+        "carbs": 0,
+        "protein": 28.9,
+        "fat": 9.71
+      },
+      "confidenza": "media",
+      "motivo": "Acciughe europee in olio più simili al sotto sale; nessun candidato sotto sale puro.",
+      "daRivedere": false
+    },
+    "sale fino integrale": {
+      "nome": "Sale Fino Integrale",
+      "grafie": [
+        "Sale Fino Integrale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 300,
+      "fdcId": 173468,
+      "fdc": "Salt, table",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Salt, table è l'unico sale tra i candidati; macro corretti (0 kcal).",
+      "daRivedere": false
+    },
+    "mozzarella": {
+      "nome": "Mozzarella",
+      "grafie": [
+        "Mozzarella"
+      ],
+      "ricette": 1,
+      "grammiTotali": 300,
+      "fdcId": 170845,
+      "fdc": "Cheese, mozzarella, whole milk",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 299,
+        "carbs": 2.4,
+        "protein": 22.2,
+        "fat": 22.1
+      },
+      "confidenza": "alta",
+      "motivo": "Mozzarella whole milk, macro completi, forma base adatta alla ricetta.",
+      "daRivedere": false
+    },
+    "farina tipo 0 media-alta forza": {
+      "nome": "Farina Tipo 0 Media-Alta Forza",
+      "grafie": [
+        "Farina Tipo 0 Media-Alta Forza"
+      ],
+      "ricette": 1,
+      "grammiTotali": 300,
+      "fdcId": 168896,
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "alta",
+      "motivo": "Farina bianca da pane arricchita, proteina 12%, equivalente tipo 0 forza media.",
+      "daRivedere": false
+    },
+    "farina integrale di grano tenero": {
+      "nome": "Farina Integrale di Grano Tenero",
+      "grafie": [
+        "Farina Integrale di Grano Tenero"
+      ],
+      "ricette": 1,
+      "grammiTotali": 300,
+      "fdcId": 790085,
+      "fdc": "Flour, whole wheat, unenriched",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 370,
+        "carbs": 71.2,
+        "protein": 15.1,
+        "fat": 2.73
+      },
+      "confidenza": "alta",
+      "motivo": "Whole wheat flour Foundation, macro completi, corrisponde a farina integrale.",
+      "daRivedere": false
+    },
+    "riso cotto": {
+      "nome": "Riso Cotto",
+      "grafie": [
+        "Riso Cotto"
+      ],
+      "ricette": 1,
+      "grammiTotali": 300,
+      "fdcId": 168930,
+      "fdc": "Rice, white, medium-grain, cooked, unenriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 130,
+        "carbs": 28.6,
+        "protein": 2.38,
+        "fat": 0.21
+      },
+      "confidenza": "alta",
+      "motivo": "Riso bianco a grano medio cotto, simile a sushi rice, macro completi.",
+      "daRivedere": false
+    },
+    "farina tipo 00 debole": {
+      "nome": "Farina Tipo 00 Debole",
+      "grafie": [
+        "Farina Tipo 00 Debole"
+      ],
+      "ricette": 1,
+      "grammiTotali": 280,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Candidato esplicitamente 'Flour, 00', Foundation con macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "farina caputo saccorosso (rinfresco)": {
+      "nome": "Farina Caputo Saccorosso (rinfresco)",
+      "grafie": [
+        "Farina Caputo Saccorosso (rinfresco)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 275,
+      "fdcId": 168896,
+      "daRivedere": false,
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: è la stessa farina della voce principale",
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      }
+    },
+    "yogurt greco": {
+      "nome": "Yogurt Greco",
+      "grafie": [
+        "Yogurt Greco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 250,
+      "fdcId": 2259794,
+      "fdc": "Yogurt, Greek, plain, whole milk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 93.7,
+        "carbs": 4.75,
+        "protein": 8.78,
+        "fat": 4.39
+      },
+      "confidenza": "alta",
+      "motivo": "Yogurt greco intero Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "maionese di base": {
+      "nome": "Maionese di base",
+      "grafie": [
+        "Maionese di base"
+      ],
+      "ricette": 1,
+      "grammiTotali": 250,
+      "fdcId": null,
+      "nonMappabile": "voce composta — da espandere nei componenti",
+      "daRivedere": false
+    },
+    "burro chiarificato": {
+      "nome": "Burro Chiarificato",
+      "grafie": [
+        "Burro Chiarificato"
+      ],
+      "ricette": 1,
+      "grammiTotali": 240,
+      "fdcId": 171314,
+      "fdc": "Butter, Clarified butter (ghee)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 900,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Candidato esplicitamente 'Clarified butter (ghee)', macro completi e corretti.",
+      "daRivedere": false
+    },
+    "uova medie": {
+      "nome": "Uova Medie",
+      "grafie": [
+        "Uova Medie"
+      ],
+      "ricette": 1,
+      "grammiTotali": 220,
+      "fdcId": 171287,
+      "fdc": "Egg, whole, raw, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 143,
+        "carbs": 0.72,
+        "protein": 12.6,
+        "fat": 9.51
+      },
+      "confidenza": "alta",
+      "motivo": "Uovo intero crudo di gallina, SR Legacy, macro completi e forma base corretta.",
+      "daRivedere": false
+    },
+    "cavolo cappuccio viola": {
+      "nome": "Cavolo Cappuccio Viola",
+      "grafie": [
+        "Cavolo Cappuccio Viola"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2346408,
+      "fdc": "Cabbage, red, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 34.1,
+        "carbs": 6.79,
+        "protein": 1.24,
+        "fat": 0.214
+      },
+      "confidenza": "alta",
+      "motivo": "Cabbage red raw Foundation, corrisponde a cavolo cappuccio viola crudo.",
+      "daRivedere": false
+    },
+    "fave fresche sgranate e pelate": {
+      "nome": "Fave Fresche Sgranate e Pelate",
+      "grafie": [
+        "Fave Fresche Sgranate e Pelate"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 168574,
+      "fdc": "Beans, fava, in pod, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 88,
+        "carbs": 17.6,
+        "protein": 7.92,
+        "fat": 0.73
+      },
+      "confidenza": "media",
+      "motivo": "Fave in baccello crude sono più simili alle fave fresche pelate; semi maturi diversi.",
+      "daRivedere": false
+    },
+    "pistacchi sgusciati": {
+      "nome": "Pistacchi Sgusciati",
+      "grafie": [
+        "Pistacchi Sgusciati"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2515379,
+      "fdc": "Nuts, pistachio nuts, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 598,
+        "carbs": 27.7,
+        "protein": 20.5,
+        "fat": 45
+      },
+      "confidenza": "alta",
+      "motivo": "Pistacchi crudi Foundation, macro completi, corrispondenza diretta non salati.",
+      "daRivedere": false
+    },
+    "noci sgusciate": {
+      "nome": "Noci Sgusciate",
+      "grafie": [
+        "Noci Sgusciate"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2346394,
+      "fdc": "Nuts, walnuts, English, halves, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 730,
+        "carbs": 10.9,
+        "protein": 14.6,
+        "fat": 69.7
+      },
+      "confidenza": "alta",
+      "motivo": "Noci inglesi dimezzate crude Foundation, corrispondenza diretta a gherigli.",
+      "daRivedere": false
+    },
+    "yogurt greco intero": {
+      "nome": "Yogurt Greco Intero",
+      "grafie": [
+        "Yogurt Greco Intero"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2259794,
+      "fdc": "Yogurt, Greek, plain, whole milk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 93.7,
+        "carbs": 4.75,
+        "protein": 8.78,
+        "fat": 4.39
+      },
+      "confidenza": "alta",
+      "motivo": "Yogurt greco intero Foundation, macro completi, corrispondenza diretta.",
+      "daRivedere": false
+    },
+    "cipolle dorate": {
+      "nome": "Cipolle Dorate",
+      "grafie": [
+        "Cipolle Dorate"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 790646,
+      "fdc": "Onions, yellow, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 38,
+        "carbs": 8.61,
+        "protein": 0.83,
+        "fat": 0.05
+      },
+      "confidenza": "alta",
+      "motivo": "Onions yellow raw Foundation, corrisponde a cipolle dorate crude mondate.",
+      "daRivedere": false
+    },
+    "semolino di grano duro": {
+      "nome": "Semolino di Grano Duro",
+      "grafie": [
+        "Semolino di Grano Duro"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2003589,
+      "fdc": "Flour, semolina, fine",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 358,
+        "carbs": 72,
+        "protein": 13.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Semolina fine Foundation, corrispondenza diretta a semolino fine per gnocchi.",
+      "daRivedere": false
+    },
+    "prosciutto cotto": {
+      "nome": "Prosciutto Cotto",
+      "grafie": [
+        "Prosciutto Cotto"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 746952,
+      "fdc": "Ham, sliced, restaurant",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 121,
+        "carbs": 2.36,
+        "protein": 19.6,
+        "fat": 3.68
+      },
+      "confidenza": "media",
+      "motivo": "Ham sliced restaurant Foundation è il più vicino al prosciutto cotto a fette italiano.",
+      "daRivedere": false
+    },
+    "passata di pomodoro": {
+      "nome": "Passata di Pomodoro",
+      "grafie": [
+        "Passata di Pomodoro"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2685582,
+      "fdc": "Tomato, puree, canned",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 40.8,
+        "carbs": 8.04,
+        "protein": 1.58,
+        "fat": 0.265
+      },
+      "confidenza": "alta",
+      "motivo": "Tomato puree canned Foundation, corrispondenza diretta alla passata di pomodoro.",
+      "daRivedere": false
+    },
+    "farina oro fibra 2 (tipo 2, germe di grano vitale pressato a freddo)": {
+      "nome": "Farina ORO Fibra 2 (Tipo 2, germe di grano vitale pressato a freddo)",
+      "grafie": [
+        "Farina ORO Fibra 2 (Tipo 2, germe di grano vitale pressato a freddo)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 790085,
+      "fdc": "Flour, whole wheat, unenriched",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 370,
+        "carbs": 71.2,
+        "protein": 15.1,
+        "fat": 2.73
+      },
+      "confidenza": "media",
+      "motivo": "Whole wheat unenriched è l'approssimazione più vicina a farina tipo 2 semi-integrale.",
+      "daRivedere": false
+    },
+    "farina di forza": {
+      "nome": "Farina di Forza",
+      "grafie": [
+        "Farina di Forza"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 168896,
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      },
+      "confidenza": "alta",
+      "motivo": "Farina bianca da pane arricchita, alta proteina, equivalente farina di forza W350.",
+      "daRivedere": false
+    },
+    "farina debole": {
+      "nome": "Farina Debole",
+      "grafie": [
+        "Farina Debole"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 2003586,
+      "fdc": "Flour, 00",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 357,
+        "carbs": 74.4,
+        "protein": 11.4,
+        "fat": 1.52
+      },
+      "confidenza": "alta",
+      "motivo": "Voce Foundation 'Flour, 00' corrisponde esattamente alla farina tipo 00 italiana.",
+      "daRivedere": false
+    },
+    "vino rosso toscano secco": {
+      "nome": "Vino Rosso Toscano Secco",
+      "grafie": [
+        "Vino Rosso Toscano Secco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 200,
+      "fdcId": 173190,
+      "fdc": "Alcoholic beverage, wine, table, red",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 85,
+        "carbs": 2.61,
+        "protein": 0.07,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Vino rosso da tavola generico, ottima corrispondenza per Chianti/Sangiovese.",
+      "daRivedere": false
+    },
+    "olio evo delicato": {
+      "nome": "Olio EVO delicato",
+      "grafie": [
+        "Olio EVO delicato"
+      ],
+      "ricette": 1,
+      "grammiTotali": 184,
+      "fdcId": 171413,
+      "fdc": "Oil, olive, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "SR Legacy olio oliva ha 4 macro completi; voce EV ha solo fat, insufficiente per calcolo.",
+      "daRivedere": false
+    },
+    "acqua (base)": {
+      "nome": "Acqua (Base)",
+      "grafie": [
+        "Acqua (Base)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 180,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua di rubinetto corrisponde perfettamente all'acqua da impasto.",
+      "daRivedere": false
+    },
+    "fontina dop valdostana": {
+      "nome": "Fontina DOP Valdostana",
+      "grafie": [
+        "Fontina DOP Valdostana"
+      ],
+      "ricette": 1,
+      "grammiTotali": 180,
+      "fdcId": 170843,
+      "fdc": "Cheese, fontina",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 389,
+        "carbs": 1.55,
+        "protein": 25.6,
+        "fat": 31.1
+      },
+      "confidenza": "alta",
+      "motivo": "Cheese, fontina è corrispondenza diretta e unica con 4 macro completi.",
+      "daRivedere": false
+    },
+    "toma piemontese": {
+      "nome": "Toma Piemontese",
+      "grafie": [
+        "Toma Piemontese"
+      ],
+      "ricette": 1,
+      "grammiTotali": 180,
+      "fdcId": 172176,
+      "fdc": "Cheese, brick",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 371,
+        "carbs": 2.79,
+        "protein": 23.2,
+        "fat": 29.7
+      },
+      "confidenza": "bassa",
+      "motivo": "Toma assente; Cheese brick ha profilo grasso/proteico simile a semistagionato. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "salsa di soia light": {
+      "nome": "Salsa di Soia Light",
+      "grafie": [
+        "Salsa di Soia Light"
+      ],
+      "ricette": 1,
+      "grammiTotali": 180,
+      "fdcId": 174277,
+      "fdc": "Soy sauce made from soy and wheat (shoyu)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 53,
+        "carbs": 4.93,
+        "protein": 8.14,
+        "fat": 0.57
+      },
+      "confidenza": "media",
+      "motivo": "Shoyu (soia+grano) è la versione chiara standard; tamari è alternativa senza glutine.",
+      "daRivedere": false
+    },
+    "vino rosso barbera": {
+      "nome": "Vino Rosso Barbera",
+      "grafie": [
+        "Vino Rosso Barbera"
+      ],
+      "ricette": 1,
+      "grammiTotali": 150,
+      "fdcId": 173191,
+      "fdc": "Alcoholic Beverage, wine, table, red, Barbera",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 85,
+        "carbs": 2.79,
+        "protein": 0.07,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Voce Barbera presente ed è esattamente il vitigno richiesto.",
+      "daRivedere": false
+    },
+    "carote fresche": {
+      "nome": "Carote fresche",
+      "grafie": [
+        "Carote fresche"
+      ],
+      "ricette": 1,
+      "grammiTotali": 150,
+      "fdcId": 2258586,
+      "fdc": "Carrots, mature, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 48,
+        "carbs": 10.3,
+        "protein": 0.941,
+        "fat": 0.351
+      },
+      "confidenza": "alta",
+      "motivo": "Foundation 'Carrots, mature, raw' rappresenta carote fresche sbucciate con 4 macro completi.",
+      "daRivedere": false
+    },
+    "pomodori secchi sott'olio": {
+      "nome": "Pomodori Secchi Sott'Olio",
+      "grafie": [
+        "Pomodori Secchi Sott'Olio"
+      ],
+      "ricette": 1,
+      "grammiTotali": 150,
+      "fdcId": 169384,
+      "fdc": "Tomatoes, sun-dried, packed in oil, drained",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 213,
+        "carbs": 23.3,
+        "protein": 5.06,
+        "fat": 14.1
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza diretta: pomodori secchi sott'olio sgocciolati, 4 macro completi.",
+      "daRivedere": false
+    },
+    "cipolla": {
+      "nome": "Cipolla",
+      "grafie": [
+        "Cipolla"
+      ],
+      "ricette": 1,
+      "grammiTotali": 150,
+      "fdcId": 790646,
+      "fdc": "Onions, yellow, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 38,
+        "carbs": 8.61,
+        "protein": 0.83,
+        "fat": 0.05
+      },
+      "confidenza": "alta",
+      "motivo": "Foundation 'Onions, yellow, raw' corrisponde alla cipolla dorata cruda sbucciata.",
+      "daRivedere": false
+    },
+    "pomodorini pelati": {
+      "nome": "Pomodorini Pelati",
+      "grafie": [
+        "Pomodorini Pelati"
+      ],
+      "ricette": 1,
+      "grammiTotali": 150,
+      "fdcId": 170501,
+      "fdc": "Tomatoes, crushed, canned",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 32,
+        "carbs": 7.29,
+        "protein": 1.64,
+        "fat": 0.28
+      },
+      "confidenza": "alta",
+      "motivo": "Pomodori schiacciati in scatola è la migliore approssimazione dei pomodorini pelati schiacciati.",
+      "daRivedere": false
+    },
+    "cuore di pasta madre": {
+      "nome": "Cuore di Pasta Madre",
+      "grafie": [
+        "Cuore di Pasta Madre"
+      ],
+      "ricette": 1,
+      "grammiTotali": 150,
+      "fdcId": null,
+      "daRivedere": false,
+      "confidenza": "media",
+      "derivataDa": [
+        {
+          "chiave": "farina manitoba",
+          "quota": 0.6666666666666666
+        },
+        {
+          "chiave": "acqua",
+          "quota": 0.3333333333333333
+        }
+      ],
+      "motivo": "curato in revisione del 28/07/2026: pasta madre solida = 2 parti farina + 1 acqua (rinfresco standard della ricetta pasta-madre del sito); numeri = media pesata delle voci USDA",
+      "per100g": {
+        "kcal": 240.67,
+        "carbs": 48.33,
+        "protein": 8,
+        "fat": 1.11
+      },
+      "fdc": "derivata: 67% Wheat flour, white, bread, enriched + 33% Beverages, water, tap, drinking"
+    },
+    "mandorle con pellicina": {
+      "nome": "Mandorle con Pellicina",
+      "grafie": [
+        "Mandorle con Pellicina"
+      ],
+      "ricette": 1,
+      "grammiTotali": 130,
+      "fdcId": 2346393,
+      "fdc": "Nuts, almonds, whole, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 626,
+        "carbs": 20,
+        "protein": 21.5,
+        "fat": 51.1
+      },
+      "confidenza": "alta",
+      "motivo": "Foundation 'Nuts, almonds, whole, raw' corrisponde esattamente a mandorle intere non pelate.",
+      "daRivedere": false
+    },
+    "olive baresane": {
+      "nome": "Olive Baresane",
+      "grafie": [
+        "Olive Baresane"
+      ],
+      "ricette": 1,
+      "grammiTotali": 120,
+      "fdcId": 169096,
+      "fdc": "Olives, pickled, canned or bottled, green",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 145,
+        "carbs": 3.84,
+        "protein": 1.03,
+        "fat": 15.3
+      },
+      "confidenza": "media",
+      "motivo": "Olive verdi in salamoia si avvicinano alle baresane; olive nere in scatola come seconda scelta.",
+      "daRivedere": false
+    },
+    "mix di semi per l'impasto": {
+      "nome": "Mix di semi per l'impasto",
+      "grafie": [
+        "Mix di semi per l'impasto"
+      ],
+      "ricette": 1,
+      "grammiTotali": 120,
+      "fdcId": 170562,
+      "fdc": "Seeds, sunflower seed kernels, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 584,
+        "carbs": 20,
+        "protein": 20.8,
+        "fat": 51.5
+      },
+      "confidenza": "bassa",
+      "motivo": "Mix non presente; semi di girasole essiccati usati come proxy rappresentativo. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "rucola fresca": {
+      "nome": "Rucola Fresca",
+      "grafie": [
+        "Rucola Fresca"
+      ],
+      "ricette": 1,
+      "grammiTotali": 100,
+      "fdcId": 169387,
+      "fdc": "Arugula, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 25,
+        "carbs": 3.65,
+        "protein": 2.58,
+        "fat": 0.66
+      },
+      "confidenza": "alta",
+      "motivo": "Arugula raw SR Legacy ha 4 macro completi e corrisponde direttamente alla rucola fresca.",
+      "daRivedere": false
+    },
+    "salsa di soia": {
+      "nome": "Salsa di Soia",
+      "grafie": [
+        "Salsa di Soia"
+      ],
+      "ricette": 1,
+      "grammiTotali": 100,
+      "fdcId": 174277,
+      "fdc": "Soy sauce made from soy and wheat (shoyu)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 53,
+        "carbs": 4.93,
+        "protein": 8.14,
+        "fat": 0.57
+      },
+      "confidenza": "alta",
+      "motivo": "Shoyu (soia+grano) è la salsa Kikkoman standard; tamari come alternativa senza glutine.",
+      "daRivedere": false
+    },
+    "sake": {
+      "nome": "Sake",
+      "grafie": [
+        "Sake"
+      ],
+      "ricette": 1,
+      "grammiTotali": 100,
+      "fdcId": 167723,
+      "fdc": "Alcoholic beverage, rice (sake)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 134,
+        "carbs": 5,
+        "protein": 0.5,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Voce sake (riso) presente, corrispondenza esatta.",
+      "daRivedere": false
+    },
+    "mirin": {
+      "nome": "Mirin",
+      "grafie": [
+        "Mirin"
+      ],
+      "ricette": 1,
+      "grammiTotali": 100,
+      "fdcId": 173176,
+      "fdc": "Alcoholic beverage, wine, dessert, sweet",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 160,
+        "carbs": 13.7,
+        "protein": 0.2,
+        "fat": 0
+      },
+      "confidenza": "bassa",
+      "motivo": "Mirin assente; vino da dessert dolce è il proxy più simile per zuccheri e alcol. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "farina di farro o segale": {
+      "nome": "Farina di Farro o Segale",
+      "grafie": [
+        "Farina di Farro o Segale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 100,
+      "fdcId": 2003587,
+      "fdc": "Flour, spelt, whole grain",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 364,
+        "carbs": 70.7,
+        "protein": 14.5,
+        "fat": 2.54
+      },
+      "confidenza": "media",
+      "motivo": "Farina farro integrale Foundation è prima scelta; farina segale Foundation come alternativa.",
+      "daRivedere": false
+    },
+    "maizena": {
+      "nome": "Maizena",
+      "grafie": [
+        "Maizena"
+      ],
+      "ricette": 1,
+      "grammiTotali": 90,
+      "fdcId": 169698,
+      "fdc": "Cornstarch",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 381,
+        "carbs": 91.3,
+        "protein": 0.26,
+        "fat": 0.05
+      },
+      "confidenza": "alta",
+      "motivo": "Cornstarch corrisponde esattamente alla maizena/amido di mais con 4 macro completi.",
+      "daRivedere": false
+    },
+    "mozzarella di bufala campana dop": {
+      "nome": "Mozzarella di Bufala Campana DOP",
+      "grafie": [
+        "Mozzarella di Bufala Campana DOP"
+      ],
+      "ricette": 1,
+      "grammiTotali": 90,
+      "fdcId": 170845,
+      "fdc": "Cheese, mozzarella, whole milk",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 299,
+        "carbs": 2.4,
+        "protein": 22.2,
+        "fat": 22.1
+      },
+      "confidenza": "media",
+      "motivo": "Mozzarella whole milk è la più vicina alla bufala fresca; parte skim come seconda scelta.",
+      "daRivedere": false
+    },
+    "pomodoro ramato": {
+      "nome": "Pomodoro Ramato",
+      "grafie": [
+        "Pomodoro Ramato"
+      ],
+      "ricette": 1,
+      "grammiTotali": 80,
+      "fdcId": 170457,
+      "fdc": "Tomatoes, red, ripe, raw, year round average",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 18,
+        "carbs": 3.89,
+        "protein": 0.88,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Pomodoro rosso maturo crudo è la migliore approssimazione del pomodoro ramato fresco.",
+      "daRivedere": false
+    },
+    "gocce di cioccolato fondente": {
+      "nome": "Gocce di Cioccolato Fondente",
+      "grafie": [
+        "Gocce di Cioccolato Fondente"
+      ],
+      "ricette": 1,
+      "grammiTotali": 80,
+      "fdcId": 167976,
+      "fdc": "Candies, semisweet chocolate",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 480,
+        "carbs": 63.9,
+        "protein": 4.2,
+        "fat": 30
+      },
+      "confidenza": "alta",
+      "motivo": "Semisweet chocolate corrisponde bene alle gocce fondenti standard per dolci.",
+      "daRivedere": false
+    },
+    "olive nere": {
+      "nome": "Olive Nere",
+      "grafie": [
+        "Olive Nere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 80,
+      "fdcId": 169094,
+      "fdc": "Olives, ripe, canned (small-extra large)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 116,
+        "carbs": 6.04,
+        "protein": 0.84,
+        "fat": 10.9
+      },
+      "confidenza": "alta",
+      "motivo": "Olive ripe in scatola sono la voce più vicina alle olive nere denocciolate.",
+      "daRivedere": false
+    },
+    "cipollotti": {
+      "nome": "Cipollotti",
+      "grafie": [
+        "Cipollotti"
+      ],
+      "ricette": 1,
+      "grammiTotali": 80,
+      "fdcId": 170005,
+      "fdc": "Onions, spring or scallions (includes tops and bulb), raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 32,
+        "carbs": 7.34,
+        "protein": 1.83,
+        "fat": 0.19
+      },
+      "confidenza": "alta",
+      "motivo": "Spring/scallions raw corrisponde esattamente ai cipollotti freschi affettati.",
+      "daRivedere": false
+    },
+    "melassa scura": {
+      "nome": "Melassa Scura",
+      "grafie": [
+        "Melassa Scura"
+      ],
+      "ricette": 1,
+      "grammiTotali": 60,
+      "fdcId": 168820,
+      "fdc": "Molasses",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 290,
+        "carbs": 74.7,
+        "protein": 0,
+        "fat": 0.1
+      },
+      "confidenza": "alta",
+      "motivo": "Molasses è la corrispondenza diretta e perfetta per melassa scura.",
+      "daRivedere": false
+    },
+    "zucchero di canna grezzo": {
+      "nome": "Zucchero di Canna Grezzo",
+      "grafie": [
+        "Zucchero di Canna Grezzo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 60,
+      "fdcId": 168833,
+      "fdc": "Sugars, brown",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 380,
+        "carbs": 98.1,
+        "protein": 0.12,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Brown sugar è la miglior approssimazione disponibile per Muscovado/Demerara.",
+      "daRivedere": false
+    },
+    "acqua tiepida": {
+      "nome": "Acqua Tiepida",
+      "grafie": [
+        "Acqua Tiepida"
+      ],
+      "ricette": 1,
+      "grammiTotali": 60,
+      "fdcId": 173647,
+      "fdc": "Beverages, water, tap, drinking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Acqua del rubinetto, zero calorie, corrispondenza esatta.",
+      "daRivedere": false
+    },
+    "tahina": {
+      "nome": "Tahina",
+      "grafie": [
+        "Tahina"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 170189,
+      "fdc": "Seeds, sesame butter, tahini, from roasted and toasted kernels (most common type)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 595,
+        "carbs": 21.2,
+        "protein": 17,
+        "fat": 53.8
+      },
+      "confidenza": "alta",
+      "motivo": "Tahini da semi tostati è il tipo più comune, macro completi e coerenti.",
+      "daRivedere": false
+    },
+    "foglie di basilico genovese": {
+      "nome": "Foglie di Basilico Genovese",
+      "grafie": [
+        "Foglie di Basilico Genovese"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 172232,
+      "fdc": "Basil, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 2.65,
+        "protein": 3.15,
+        "fat": 0.64
+      },
+      "confidenza": "alta",
+      "motivo": "Basil fresh è l'unico candidato pertinente tra quelli elencati.",
+      "daRivedere": false
+    },
+    "olio evo o olio di semi": {
+      "nome": "Olio EVO o Olio di Semi",
+      "grafie": [
+        "Olio EVO o Olio di Semi"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 171413,
+      "fdc": "Oil, olive, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Olio d'oliva puro corrisponde all'EVO; canola come ripiega per olio di semi.",
+      "daRivedere": false
+    },
+    "basilico genovese dop": {
+      "nome": "Basilico Genovese DOP",
+      "grafie": [
+        "Basilico Genovese DOP"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 172232,
+      "fdc": "Basil, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 2.65,
+        "protein": 3.15,
+        "fat": 0.64
+      },
+      "confidenza": "alta",
+      "motivo": "Basil fresh è l'unico candidato pertinente; DOP non cambia i macro.",
+      "daRivedere": false
+    },
+    "uovo intero medio": {
+      "nome": "Uovo Intero Medio",
+      "grafie": [
+        "Uovo Intero Medio"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 748967,
+      "fdc": "Eggs, Grade A, Large, egg whole",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 148,
+        "carbs": 0.96,
+        "protein": 12.4,
+        "fat": 9.96
+      },
+      "confidenza": "alta",
+      "motivo": "Eggs Grade A Large, Foundation, macro completi e specifici per uovo intero.",
+      "daRivedere": false
+    },
+    "uva passa": {
+      "nome": "Uva Passa",
+      "grafie": [
+        "Uva Passa"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 168165,
+      "fdc": "Raisins, dark, seedless (Includes foods for USDA's Food Distribution Program)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 299,
+        "carbs": 79.3,
+        "protein": 3.3,
+        "fat": 0.25
+      },
+      "confidenza": "alta",
+      "motivo": "Raisins dark seedless corrispondono all'uva passa non trattata standard.",
+      "daRivedere": false
+    },
+    "zucchero muscovado": {
+      "nome": "Zucchero Muscovado",
+      "grafie": [
+        "Zucchero Muscovado"
+      ],
+      "ricette": 1,
+      "grammiTotali": 50,
+      "fdcId": 168833,
+      "fdc": "Sugars, brown",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 380,
+        "carbs": 98.1,
+        "protein": 0.12,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Brown sugar è la miglior approssimazione disponibile per Muscovado non raffinato.",
+      "daRivedere": false
+    },
+    "tartufo nero fresco": {
+      "nome": "Tartufo nero fresco",
+      "grafie": [
+        "Tartufo nero fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 40,
+      "fdcId": 168423,
+      "daRivedere": false,
+      "motivo": "curato in revisione del 28/07/2026: fungo fresco pregiato (morel) come proxy onesto del tartufo",
+      "confidenza": "media",
+      "fdc": "Mushrooms, morel, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 31,
+        "carbs": 5.1,
+        "protein": 3.12,
+        "fat": 0.57
+      }
+    },
+    "cipolla bianca": {
+      "nome": "Cipolla Bianca",
+      "grafie": [
+        "Cipolla Bianca"
+      ],
+      "ricette": 1,
+      "grammiTotali": 40,
+      "fdcId": 1104962,
+      "fdc": "Onions, white, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 35,
+        "carbs": 7.68,
+        "protein": 0.89,
+        "fat": 0.13
+      },
+      "confidenza": "alta",
+      "motivo": "Onions white raw corrisponde esattamente alla cipolla bianca cruda.",
+      "daRivedere": false
+    },
+    "mollica di pane bianco": {
+      "nome": "Mollica di Pane Bianco",
+      "grafie": [
+        "Mollica di Pane Bianco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 40,
+      "fdcId": 174924,
+      "fdc": "Bread, white, commercially prepared (includes soft bread crumbs)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 266,
+        "carbs": 49.4,
+        "protein": 8.85,
+        "fat": 3.33
+      },
+      "confidenza": "alta",
+      "motivo": "Bread white commercially prepared include soft bread crumbs, voce ideale.",
+      "daRivedere": false
+    },
+    "mollica di pane raffermo": {
+      "nome": "Mollica di Pane Raffermo",
+      "grafie": [
+        "Mollica di Pane Raffermo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 40,
+      "fdcId": 174924,
+      "fdc": "Bread, white, commercially prepared (includes soft bread crumbs)",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 266,
+        "carbs": 49.4,
+        "protein": 8.85,
+        "fat": 3.33
+      },
+      "confidenza": "media",
+      "motivo": "Pane bianco molle è la miglior approssimazione; raffermo non ha voce dedicata.",
+      "daRivedere": false
+    },
+    "uva sultanina": {
+      "nome": "Uva Sultanina",
+      "grafie": [
+        "Uva Sultanina"
+      ],
+      "ricette": 1,
+      "grammiTotali": 40,
+      "fdcId": 168164,
+      "fdc": "Raisins, golden, seedless",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 301,
+        "carbs": 80,
+        "protein": 3.28,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Raisins golden seedless corrispondono bene all'uva sultanina (Thompson seedless).",
+      "daRivedere": false
+    },
+    "succo di lime fresco": {
+      "nome": "Succo di Lime Fresco",
+      "grafie": [
+        "Succo di Lime Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 168156,
+      "fdc": "Lime juice, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 25,
+        "carbs": 8.42,
+        "protein": 0.42,
+        "fat": 0.07
+      },
+      "confidenza": "alta",
+      "motivo": "Lime juice raw è la corrispondenza diretta e perfetta.",
+      "daRivedere": false
+    },
+    "spicchi di aglio nero": {
+      "nome": "Spicchi di Aglio Nero",
+      "grafie": [
+        "Spicchi di Aglio Nero"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 1104647,
+      "fdc": "Garlic, raw",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 143,
+        "carbs": 28.2,
+        "protein": 6.62,
+        "fat": 0.38
+      },
+      "confidenza": "bassa",
+      "motivo": "Aglio nero fermentato assente; aglio crudo è il proxy botanico più vicino. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "curcuma in polvere": {
+      "nome": "Curcuma in Polvere",
+      "grafie": [
+        "Curcuma in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 172231,
+      "fdc": "Spices, turmeric, ground",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 312,
+        "carbs": 67.1,
+        "protein": 9.68,
+        "fat": 3.25
+      },
+      "confidenza": "alta",
+      "motivo": "Spices turmeric ground è la corrispondenza diretta e perfetta.",
+      "daRivedere": false
+    },
+    "peperoni secchi di senise igp": {
+      "nome": "Peperoni Secchi di Senise IGP",
+      "grafie": [
+        "Peperoni Secchi di Senise IGP"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 169396,
+      "fdc": "Peppers, ancho, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 281,
+        "carbs": 51.4,
+        "protein": 11.9,
+        "fat": 8.2
+      },
+      "confidenza": "media",
+      "motivo": "Peperone ancho essiccato è la miglior approssimazione per peperone dolce essiccato.",
+      "daRivedere": false
+    },
+    "pecorino romano": {
+      "nome": "Pecorino Romano",
+      "grafie": [
+        "Pecorino Romano"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 171249,
+      "fdc": "Cheese, romano",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 387,
+        "carbs": 3.63,
+        "protein": 31.8,
+        "fat": 26.9
+      },
+      "confidenza": "alta",
+      "motivo": "Cheese romano corrisponde direttamente al Pecorino Romano grattugiato.",
+      "daRivedere": false
+    },
+    "scalogno": {
+      "nome": "Scalogno",
+      "grafie": [
+        "Scalogno"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 170499,
+      "fdc": "Shallots, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 72,
+        "carbs": 16.8,
+        "protein": 2.5,
+        "fat": 0.1
+      },
+      "confidenza": "alta",
+      "motivo": "Shallots raw è la corrispondenza diretta e perfetta per lo scalogno fresco.",
+      "daRivedere": false
+    },
+    "olio extravergine": {
+      "nome": "Olio Extravergine",
+      "grafie": [
+        "Olio Extravergine"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 171413,
+      "fdc": "Oil, olive, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Olio d'oliva puro con 4 macro completi; extra virgin monco.",
+      "daRivedere": false
+    },
+    "pasta d'arancia candita": {
+      "nome": "Pasta d'Arancia Candita",
+      "grafie": [
+        "Pasta d'Arancia Candita"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 167781,
+      "fdc": "Candied fruit",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 322,
+        "carbs": 82.7,
+        "protein": 0.34,
+        "fat": 0.07
+      },
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: candito vero (Candied fruit), non scorza cruda",
+      "daRivedere": false
+    },
+    "mix di semi per la copertura": {
+      "nome": "Mix di semi per la copertura",
+      "grafie": [
+        "Mix di semi per la copertura"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 170562,
+      "fdc": "Seeds, sunflower seed kernels, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 584,
+        "carbs": 20,
+        "protein": 20.8,
+        "fat": 51.5
+      },
+      "confidenza": "bassa",
+      "motivo": "Mix non presente; semi di girasole essiccati usati come proxy rappresentativo. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "concentrato di pomodoro": {
+      "nome": "Concentrato di Pomodoro",
+      "grafie": [
+        "Concentrato di Pomodoro"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 2685580,
+      "fdc": "Tomato, paste, canned, without salt added",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 104,
+        "carbs": 20.2,
+        "protein": 4.23,
+        "fat": 0.732
+      },
+      "confidenza": "alta",
+      "motivo": "Tomato paste Foundation con 4 macro completi, corrisponde al doppio concentrato.",
+      "daRivedere": false
+    },
+    "senape gialla": {
+      "nome": "Senape Gialla",
+      "grafie": [
+        "Senape Gialla"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 326698,
+      "fdc": "Mustard, prepared, yellow",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 61,
+        "carbs": 5.3,
+        "protein": 4.25,
+        "fat": 3.38
+      },
+      "confidenza": "alta",
+      "motivo": "Mustard prepared yellow Foundation, macro completi, corrisponde perfettamente.",
+      "daRivedere": false
+    },
+    "miele di millefiori": {
+      "nome": "Miele di Millefiori",
+      "grafie": [
+        "Miele di Millefiori"
+      ],
+      "ricette": 1,
+      "grammiTotali": 30,
+      "fdcId": 169640,
+      "fdc": "Honey",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 304,
+        "carbs": 82.4,
+        "protein": 0.3,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Honey SR Legacy, unico candidato corretto con macro completi.",
+      "daRivedere": false
+    },
+    "pasta d'arancia": {
+      "nome": "Pasta d'Arancia",
+      "grafie": [
+        "Pasta d'Arancia"
+      ],
+      "ricette": 1,
+      "grammiTotali": 25,
+      "fdcId": 167781,
+      "fdc": "Candied fruit",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 322,
+        "carbs": 82.7,
+        "protein": 0.34,
+        "fat": 0.07
+      },
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: candito vero (Candied fruit), non scorza cruda",
+      "daRivedere": false
+    },
+    "zenzero fresco": {
+      "nome": "Zenzero fresco",
+      "grafie": [
+        "Zenzero fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 169231,
+      "fdc": "Ginger root, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 80,
+        "carbs": 17.8,
+        "protein": 1.82,
+        "fat": 0.75
+      },
+      "confidenza": "alta",
+      "motivo": "Ginger root raw, corrispondenza esatta con 4 macro completi.",
+      "daRivedere": false
+    },
+    "pecorino sardo dop": {
+      "nome": "Pecorino Sardo DOP",
+      "grafie": [
+        "Pecorino Sardo DOP"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 170848,
+      "fdc": "Cheese, parmesan, hard",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 392,
+        "carbs": 3.22,
+        "protein": 35.8,
+        "fat": 25
+      },
+      "confidenza": "bassa",
+      "motivo": "Pecorino sardo assente; parmigiano duro è il proxy più simile per stagionatura e proteine. — confermato in revisione del 28/07/2026",
+      "daRivedere": false
+    },
+    "senape": {
+      "nome": "Senape",
+      "grafie": [
+        "Senape"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 326698,
+      "fdc": "Mustard, prepared, yellow",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 61,
+        "carbs": 5.3,
+        "protein": 4.25,
+        "fat": 3.38
+      },
+      "confidenza": "alta",
+      "motivo": "Mustard prepared yellow Foundation, macro completi, miglior corrispondenza disponibile.",
+      "daRivedere": false
+    },
+    "filetti di acciughe": {
+      "nome": "Filetti di Acciughe",
+      "grafie": [
+        "Filetti di Acciughe"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 2747652,
+      "fdc": "Anchovies, canned in olive oil, with salt, drained",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 206,
+        "carbs": 2.41,
+        "protein": 26.9,
+        "fat": 9.85
+      },
+      "confidenza": "alta",
+      "motivo": "Acciughe in olio d'oliva sgocciolate, Foundation con macro completi, corrispondenza perfetta.",
+      "daRivedere": false
+    },
+    "aceto balsamico di modena": {
+      "nome": "Aceto Balsamico di Modena",
+      "grafie": [
+        "Aceto Balsamico di Modena"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 172241,
+      "fdc": "Vinegar, balsamic",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 88,
+        "carbs": 17,
+        "protein": 0.49,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Vinegar balsamic, unico candidato corrispondente con macro completi.",
+      "daRivedere": false
+    },
+    "aceto di riso (per marinata)": {
+      "nome": "Aceto di Riso (per marinata)",
+      "grafie": [
+        "Aceto di Riso (per marinata)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 172237,
+      "fdc": "Vinegar, distilled",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 18,
+        "carbs": 0.04,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Aceto di riso assente; aceto distillato è il più neutro e simile per macro.",
+      "daRivedere": false
+    },
+    "zucchero di canna moscovado": {
+      "nome": "Zucchero di Canna Moscovado",
+      "grafie": [
+        "Zucchero di Canna Moscovado"
+      ],
+      "ricette": 1,
+      "grammiTotali": 20,
+      "fdcId": 168833,
+      "fdc": "Sugars, brown",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 380,
+        "carbs": 98.1,
+        "protein": 0.12,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Brown sugar è la corrispondenza più vicina al moscovado con macro completi.",
+      "daRivedere": false
+    },
+    "peperoncino jalapeño fresco": {
+      "nome": "Peperoncino Jalapeño Fresco",
+      "grafie": [
+        "Peperoncino Jalapeño Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 168576,
+      "fdc": "Peppers, jalapeno, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 29,
+        "carbs": 6.5,
+        "protein": 0.91,
+        "fat": 0.37
+      },
+      "confidenza": "alta",
+      "motivo": "Jalapeño raw SR Legacy, macro completi, corrispondenza esatta.",
+      "daRivedere": false
+    },
+    "pinoli italiani": {
+      "nome": "Pinoli Italiani",
+      "grafie": [
+        "Pinoli Italiani"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 170591,
+      "fdc": "Nuts, pine nuts, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 673,
+        "carbs": 13.1,
+        "protein": 13.7,
+        "fat": 68.4
+      },
+      "confidenza": "alta",
+      "motivo": "Pine nuts dried SR Legacy, macro completi, corrispondenza esatta.",
+      "daRivedere": false
+    },
+    "cognac": {
+      "nome": "Cognac",
+      "grafie": [
+        "Cognac"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 174819,
+      "fdc": "Alcoholic beverage, distilled, whiskey, 86 proof",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 250,
+        "carbs": 0.1,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Cognac assente; whiskey 86 proof ha gradazione e macro simili al brandy.",
+      "daRivedere": false
+    },
+    "criscito (lievito madre ess.)": {
+      "nome": "Criscito (Lievito Madre Ess.)",
+      "grafie": [
+        "Criscito (Lievito Madre Ess.)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 168896,
+      "daRivedere": false,
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: lievito madre essiccato: farina fermentata secca, proxy farina di forza",
+      "fdc": "Wheat flour, white, bread, enriched",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 72.5,
+        "protein": 12,
+        "fat": 1.66
+      }
+    },
+    "rosmarino fresco": {
+      "nome": "Rosmarino Fresco",
+      "grafie": [
+        "Rosmarino Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 173473,
+      "fdc": "Rosemary, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 131,
+        "carbs": 20.7,
+        "protein": 3.31,
+        "fat": 5.86
+      },
+      "confidenza": "alta",
+      "motivo": "Rosemary fresh, corrispondenza esatta con 4 macro completi.",
+      "daRivedere": false
+    },
+    "aceto di riso (per cottura)": {
+      "nome": "Aceto di Riso (per cottura)",
+      "grafie": [
+        "Aceto di Riso (per cottura)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 172237,
+      "fdc": "Vinegar, distilled",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 18,
+        "carbs": 0.04,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Aceto di riso assente; aceto distillato è il proxy più neutro e simile.",
+      "daRivedere": false
+    },
+    "peperoncino rosso fresco": {
+      "nome": "Peperoncino Rosso Fresco",
+      "grafie": [
+        "Peperoncino Rosso Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 170106,
+      "fdc": "Peppers, hot chili, red, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 40,
+        "carbs": 8.81,
+        "protein": 1.87,
+        "fat": 0.44
+      },
+      "confidenza": "alta",
+      "motivo": "Hot chili red raw, corrispondenza esatta con macro completi.",
+      "daRivedere": false
+    },
+    "peperoncino verde fresco": {
+      "nome": "Peperoncino Verde Fresco",
+      "grafie": [
+        "Peperoncino Verde Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 170497,
+      "fdc": "Peppers, hot chili, green, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 40,
+        "carbs": 9.46,
+        "protein": 2,
+        "fat": 0.2
+      },
+      "confidenza": "alta",
+      "motivo": "Hot chili green raw, corrispondenza esatta con macro completi.",
+      "daRivedere": false
+    },
+    "salsa di pesce": {
+      "nome": "Salsa di Pesce",
+      "grafie": [
+        "Salsa di Pesce"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 174531,
+      "fdc": "Sauce, fish, ready-to-serve",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 35,
+        "carbs": 3.64,
+        "protein": 5.06,
+        "fat": 0.01
+      },
+      "confidenza": "alta",
+      "motivo": "Fish sauce ready-to-serve, corrispondenza esatta con macro completi.",
+      "daRivedere": false
+    },
+    "paprika dolce affumicata": {
+      "nome": "Paprika Dolce Affumicata",
+      "grafie": [
+        "Paprika Dolce Affumicata"
+      ],
+      "ricette": 1,
+      "grammiTotali": 15,
+      "fdcId": 171329,
+      "fdc": "Spices, paprika",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 282,
+        "carbs": 54,
+        "protein": 14.1,
+        "fat": 12.9
+      },
+      "confidenza": "media",
+      "motivo": "Paprika generica, nessun candidato specifica affumicata; macro completi presenti.",
+      "daRivedere": false
+    },
+    "dragoncello fresco": {
+      "nome": "Dragoncello Fresco",
+      "grafie": [
+        "Dragoncello Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 13,
+      "fdcId": 170416,
+      "fdc": "Parsley, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 36,
+        "carbs": 6.33,
+        "protein": 2.97,
+        "fat": 0.79
+      },
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: erba fresca ↔ erba fresca: prezzemolo, non tarragon essiccato",
+      "daRivedere": false
+    },
+    "acciughe sott'olio": {
+      "nome": "Acciughe Sott'Olio",
+      "grafie": [
+        "Acciughe Sott'Olio"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 2747652,
+      "fdc": "Anchovies, canned in olive oil, with salt, drained",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 206,
+        "carbs": 2.41,
+        "protein": 26.9,
+        "fat": 9.85
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: acciughe in olio d'oliva sgocciolate, Foundation con macro completi.",
+      "daRivedere": false
+    },
+    "prezzemolo": {
+      "nome": "Prezzemolo",
+      "grafie": [
+        "Prezzemolo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 170416,
+      "fdc": "Parsley, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 36,
+        "carbs": 6.33,
+        "protein": 2.97,
+        "fat": 0.79
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: prezzemolo fresco, macro completi.",
+      "daRivedere": false
+    },
+    "erba cipollina fresca": {
+      "nome": "Erba Cipollina Fresca",
+      "grafie": [
+        "Erba Cipollina Fresca"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 169994,
+      "fdc": "Chives, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 30,
+        "carbs": 4.35,
+        "protein": 3.27,
+        "fat": 0.73
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: erba cipollina cruda, macro completi.",
+      "daRivedere": false
+    },
+    "marsala o vin santo": {
+      "nome": "Marsala o Vin Santo",
+      "grafie": [
+        "Marsala o Vin Santo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 173176,
+      "fdc": "Alcoholic beverage, wine, dessert, sweet",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 160,
+        "carbs": 13.7,
+        "protein": 0.2,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Vino da dessert dolce più vicino a Marsala/Vin Santo per kcal e zuccheri.",
+      "daRivedere": false
+    },
+    "miele o zucchero": {
+      "nome": "Miele o Zucchero",
+      "grafie": [
+        "Miele o Zucchero"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 169640,
+      "fdc": "Honey",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 304,
+        "carbs": 82.4,
+        "protein": 0.3,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Miele generico, unico candidato corretto tra i disponibili, macro completi.",
+      "daRivedere": false
+    },
+    "miele millefiori": {
+      "nome": "Miele Millefiori",
+      "grafie": [
+        "Miele Millefiori"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 169640,
+      "fdc": "Honey",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 304,
+        "carbs": 82.4,
+        "protein": 0.3,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Unico miele disponibile, profilo nutrizionale identico al millefiori.",
+      "daRivedere": false
+    },
+    "malto d'orzo": {
+      "nome": "Malto d'Orzo",
+      "grafie": [
+        "Malto d'Orzo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 169660,
+      "fdc": "Syrups, malt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 71.3,
+        "protein": 6.2,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Sciroppo di malto è la forma in sciroppo/pasta più corrispondente all'uso in ricetta.",
+      "daRivedere": false
+    },
+    "filetti di acciuga sott'olio": {
+      "nome": "Filetti di Acciuga Sott'olio",
+      "grafie": [
+        "Filetti di Acciuga Sott'olio"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 2747652,
+      "fdc": "Anchovies, canned in olive oil, with salt, drained",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 206,
+        "carbs": 2.41,
+        "protein": 26.9,
+        "fat": 9.85
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: acciughe in olio d'oliva sgocciolate, Foundation con macro completi.",
+      "daRivedere": false
+    },
+    "capperi dissalati": {
+      "nome": "Capperi Dissalati",
+      "grafie": [
+        "Capperi Dissalati"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 172238,
+      "fdc": "Capers, canned",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 4.89,
+        "protein": 2.36,
+        "fat": 0.86
+      },
+      "confidenza": "media",
+      "motivo": "Capperi in scatola: leggera differenza sodio vs dissalati, unico candidato corretto.",
+      "daRivedere": false
+    },
+    "olio di sesamo": {
+      "nome": "Olio di Sesamo",
+      "grafie": [
+        "Olio di Sesamo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 10,
+      "fdcId": 171016,
+      "fdc": "Oil, sesame, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: olio di sesamo puro, macro completi.",
+      "daRivedere": false
+    },
+    "malto d'orzo in polvere": {
+      "nome": "Malto d'Orzo in Polvere",
+      "grafie": [
+        "Malto d'Orzo in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 8,
+      "fdcId": 169740,
+      "fdc": "Barley malt flour",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 78.3,
+        "protein": 10.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Barley malt flour è la forma in polvere del malto d'orzo diastatico.",
+      "daRivedere": false
+    },
+    "zucchero di canna scuro": {
+      "nome": "Zucchero di Canna Scuro",
+      "grafie": [
+        "Zucchero di Canna Scuro"
+      ],
+      "ricette": 1,
+      "grammiTotali": 8,
+      "fdcId": 168833,
+      "fdc": "Sugars, brown",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 380,
+        "carbs": 98.1,
+        "protein": 0.12,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Zucchero di canna grezzo/scuro, corrispondenza diretta con macro completi.",
+      "daRivedere": false
+    },
+    "semi di sesamo tostati": {
+      "nome": "Semi di Sesamo Tostati",
+      "grafie": [
+        "Semi di Sesamo Tostati"
+      ],
+      "ricette": 1,
+      "grammiTotali": 8,
+      "fdcId": 170151,
+      "fdc": "Seeds, sesame seeds, whole, roasted and toasted",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 565,
+        "carbs": 25.7,
+        "protein": 17,
+        "fat": 48
+      },
+      "confidenza": "alta",
+      "motivo": "Semi di sesamo interi tostati, corrispondenza esatta con la nota 'già tostati'.",
+      "daRivedere": false
+    },
+    "formaggio a pasta dura da grattugia": {
+      "nome": "Formaggio a Pasta Dura da Grattugia",
+      "grafie": [
+        "Formaggio a Pasta Dura da Grattugia"
+      ],
+      "ricette": 1,
+      "grammiTotali": 6,
+      "fdcId": 2259795,
+      "fdc": "Cheese, parmesan, grated, refrigerated",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 403,
+        "carbs": 4.33,
+        "protein": 30.1,
+        "fat": 29.5
+      },
+      "confidenza": "alta",
+      "motivo": "Parmigiano grattugiato refrigerato Foundation, macro completi e più realistici.",
+      "daRivedere": false
+    },
+    "coriandolo fresco": {
+      "nome": "Coriandolo Fresco",
+      "grafie": [
+        "Coriandolo Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 169997,
+      "fdc": "Coriander (cilantro) leaves, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 3.67,
+        "protein": 2.13,
+        "fat": 0.52
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: foglie di coriandolo/cilantro fresche, macro completi.",
+      "daRivedere": false
+    },
+    "carbone vegetale in polvere": {
+      "nome": "Carbone Vegetale in Polvere",
+      "grafie": [
+        "Carbone Vegetale in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": null,
+      "daRivedere": false,
+      "motivo": "E153: carbonio inerte e non digeribile — zeri fissati a mano, nessuna voce FDC necessaria",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "numeriManuali": true,
+      "confidenza": "alta"
+    },
+    "rametto di basilico viola fresco": {
+      "nome": "Rametto di Basilico Viola fresco",
+      "grafie": [
+        "Rametto di Basilico Viola fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 172232,
+      "fdc": "Basil, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 23,
+        "carbs": 2.65,
+        "protein": 3.15,
+        "fat": 0.64
+      },
+      "confidenza": "media",
+      "motivo": "Basilico fresco generico, varietà viola assente ma profilo nutrizionale equivalente.",
+      "daRivedere": false
+    },
+    "timo fresco": {
+      "nome": "Timo Fresco",
+      "grafie": [
+        "Timo Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 173470,
+      "fdc": "Thyme, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 101,
+        "carbs": 24.4,
+        "protein": 5.56,
+        "fat": 1.68
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: timo fresco, macro completi.",
+      "daRivedere": false
+    },
+    "scorza di limone grattugiata": {
+      "nome": "Scorza di Limone Grattugiata",
+      "grafie": [
+        "Scorza di Limone Grattugiata"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 167749,
+      "fdc": "Lemon peel, raw",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 47,
+        "carbs": 16,
+        "protein": 1.5,
+        "fat": 0.3
+      },
+      "confidenza": "alta",
+      "motivo": "Buccia di limone cruda, corrispondenza diretta con la scorza grattugiata.",
+      "daRivedere": false
+    },
+    "malto d'orzo o miele": {
+      "nome": "Malto d'orzo o Miele",
+      "grafie": [
+        "Malto d'orzo o Miele"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 169660,
+      "fdc": "Syrups, malt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 71.3,
+        "protein": 6.2,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Sciroppo di malto è la forma liquida più usata in panificazione per colore e lieviti.",
+      "daRivedere": false
+    },
+    "malto diastatico in polvere": {
+      "nome": "Malto Diastatico in polvere",
+      "grafie": [
+        "Malto Diastatico in polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 169740,
+      "fdc": "Barley malt flour",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 78.3,
+        "protein": 10.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Barley malt flour è la forma in polvere più vicina al malto diastatico disponibile.",
+      "daRivedere": false
+    },
+    "malto d'orzo diastasico": {
+      "nome": "Malto d'Orzo Diastasico",
+      "grafie": [
+        "Malto d'Orzo Diastasico"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 169740,
+      "fdc": "Barley malt flour",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 78.3,
+        "protein": 10.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Barley malt flour è la migliore approssimazione del malto diastasico in polvere.",
+      "daRivedere": false
+    },
+    "timo essiccato": {
+      "nome": "Timo Essiccato",
+      "grafie": [
+        "Timo Essiccato"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 170938,
+      "fdc": "Spices, thyme, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 276,
+        "carbs": 63.9,
+        "protein": 9.11,
+        "fat": 7.43
+      },
+      "confidenza": "alta",
+      "motivo": "Corrispondenza esatta: timo essiccato in polvere/sfogliato, macro completi.",
+      "daRivedere": false
+    },
+    "pepe di cayenna": {
+      "nome": "Pepe di Cayenna",
+      "grafie": [
+        "Pepe di Cayenna"
+      ],
+      "ricette": 1,
+      "grammiTotali": 5,
+      "fdcId": 170932,
+      "fdc": "Spices, pepper, red or cayenne",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 56.6,
+        "protein": 12,
+        "fat": 17.3
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: pepe rosso/cayenna in polvere, macro completi.",
+      "daRivedere": false
+    },
+    "malto d'orzo in sciroppo": {
+      "nome": "Malto d'orzo in sciroppo",
+      "grafie": [
+        "Malto d'orzo in sciroppo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 4,
+      "fdcId": 169660,
+      "fdc": "Syrups, malt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 318,
+        "carbs": 71.3,
+        "protein": 6.2,
+        "fat": 0
+      },
+      "confidenza": "alta",
+      "motivo": "Syrups, malt è il corrispettivo diretto dello sciroppo di malto d'orzo.",
+      "daRivedere": false
+    },
+    "timo secco": {
+      "nome": "Timo Secco",
+      "grafie": [
+        "Timo Secco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 170938,
+      "fdc": "Spices, thyme, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 276,
+        "carbs": 63.9,
+        "protein": 9.11,
+        "fat": 7.43
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: timo essiccato, macro completi.",
+      "daRivedere": false
+    },
+    "peperoncino secco": {
+      "nome": "Peperoncino Secco",
+      "grafie": [
+        "Peperoncino Secco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 168570,
+      "fdc": "Peppers, hot chile, sun-dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 324,
+        "carbs": 69.9,
+        "protein": 10.6,
+        "fat": 5.81
+      },
+      "confidenza": "alta",
+      "motivo": "Peperoncino piccante essiccato al sole, macro completi, uso corretto.",
+      "daRivedere": false
+    },
+    "ammoniaca per dolci": {
+      "nome": "Ammoniaca per Dolci",
+      "grafie": [
+        "Ammoniaca per Dolci"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 175040,
+      "fdc": "Leavening agents, baking soda",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 0,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 0
+      },
+      "confidenza": "media",
+      "motivo": "Bicarbonato d'ammonio non presente; baking soda è agente lievitante simile, macro tutti zero.",
+      "daRivedere": false
+    },
+    "malto diastasico in pasta": {
+      "nome": "Malto Diastasico in Pasta",
+      "grafie": [
+        "Malto Diastasico in Pasta"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 169740,
+      "fdc": "Barley malt flour",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 361,
+        "carbs": 78.3,
+        "protein": 10.3,
+        "fat": 1.84
+      },
+      "confidenza": "media",
+      "motivo": "Barley malt flour è la farina di malto d'orzo, più vicina al malto diastasico.",
+      "daRivedere": false
+    },
+    "lievito secco caputo": {
+      "nome": "Lievito Secco Caputo",
+      "grafie": [
+        "Lievito Secco Caputo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 175043,
+      "fdc": "Leavening agents, yeast, baker's, active dry",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 325,
+        "carbs": 41.2,
+        "protein": 40.4,
+        "fat": 7.61
+      },
+      "confidenza": "alta",
+      "motivo": "Lievito di birra secco attivo, corrisponde al lievito secco Caputo per biga.",
+      "daRivedere": false
+    },
+    "coriandolo in polvere": {
+      "nome": "Coriandolo in Polvere",
+      "grafie": [
+        "Coriandolo in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 170922,
+      "fdc": "Spices, coriander seed",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 298,
+        "carbs": 55,
+        "protein": 12.4,
+        "fat": 17.8
+      },
+      "confidenza": "alta",
+      "motivo": "Semi di coriandolo macinati, corrisponde al coriandolo in polvere, macro completi.",
+      "daRivedere": false
+    },
+    "cipolla in polvere": {
+      "nome": "Cipolla in Polvere",
+      "grafie": [
+        "Cipolla in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 171327,
+      "fdc": "Spices, onion powder",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 341,
+        "carbs": 79.1,
+        "protein": 10.4,
+        "fat": 1.04
+      },
+      "confidenza": "alta",
+      "motivo": "Cipolla in polvere esatta, macro completi.",
+      "daRivedere": false
+    },
+    "pepe nero in grani": {
+      "nome": "Pepe Nero in Grani",
+      "grafie": [
+        "Pepe Nero in Grani"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 170931,
+      "fdc": "Spices, pepper, black",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 251,
+        "carbs": 64,
+        "protein": 10.4,
+        "fat": 3.26
+      },
+      "confidenza": "alta",
+      "motivo": "Pepe nero, unica voce corretta tra i candidati, macro completi.",
+      "daRivedere": false
+    },
+    "peperoncino": {
+      "nome": "Peperoncino",
+      "grafie": [
+        "Peperoncino"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 168570,
+      "fdc": "Peppers, hot chile, sun-dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 324,
+        "carbs": 69.9,
+        "protein": 10.6,
+        "fat": 5.81
+      },
+      "confidenza": "media",
+      "motivo": "Peperoncino secco essiccato; cayenne come secondo ripiego per fiocchi secchi.",
+      "daRivedere": false
+    },
+    "zafferano in pistilli": {
+      "nome": "Zafferano in Pistilli",
+      "grafie": [
+        "Zafferano in Pistilli"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 170934,
+      "fdc": "Spices, saffron",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 310,
+        "carbs": 65.4,
+        "protein": 11.4,
+        "fat": 5.85
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: zafferano, macro completi.",
+      "daRivedere": false
+    },
+    "maggiorana fresca": {
+      "nome": "Maggiorana Fresca",
+      "grafie": [
+        "Maggiorana Fresca"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 170928,
+      "fdc": "Spices, marjoram, dried",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 271,
+        "carbs": 60.6,
+        "protein": 12.7,
+        "fat": 7.04
+      },
+      "confidenza": "media",
+      "motivo": "Solo maggiorana essiccata disponibile; nessuna voce fresca tra i candidati.",
+      "daRivedere": false
+    },
+    "cerfoglio fresco": {
+      "nome": "Cerfoglio Fresco",
+      "grafie": [
+        "Cerfoglio Fresco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 170416,
+      "fdc": "Parsley, fresh",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 36,
+        "carbs": 6.33,
+        "protein": 2.97,
+        "fat": 0.79
+      },
+      "confidenza": "media",
+      "motivo": "curato in revisione del 28/07/2026: erba fresca ↔ erba fresca: prezzemolo, non chervil essiccato",
+      "daRivedere": false
+    },
+    "vaniglia bourbon": {
+      "nome": "Vaniglia Bourbon",
+      "grafie": [
+        "Vaniglia Bourbon"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 173471,
+      "fdc": "Vanilla extract",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 288,
+        "carbs": 12.6,
+        "protein": 0.06,
+        "fat": 0.06
+      },
+      "confidenza": "media",
+      "motivo": "Vanilla extract unico candidato pertinente; estratto vs baccello, quantità minima.",
+      "daRivedere": false
+    },
+    "semi di vaniglia": {
+      "nome": "Semi di Vaniglia",
+      "grafie": [
+        "Semi di Vaniglia"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 173471,
+      "fdc": "Vanilla extract",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 288,
+        "carbs": 12.6,
+        "protein": 0.06,
+        "fat": 0.06
+      },
+      "confidenza": "media",
+      "motivo": "Vanilla extract unico candidato pertinente; approssimazione accettabile per quantità trascurabili.",
+      "daRivedere": false
+    },
+    "lievito secco caputo (per biga)": {
+      "nome": "Lievito Secco Caputo (per biga)",
+      "grafie": [
+        "Lievito Secco Caputo (per biga)"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 175043,
+      "fdc": "Leavening agents, yeast, baker's, active dry",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 325,
+        "carbs": 41.2,
+        "protein": 40.4,
+        "fat": 7.61
+      },
+      "confidenza": "alta",
+      "motivo": "Lievito di birra secco attivo, corrisponde al lievito secco Caputo.",
+      "daRivedere": false
+    },
+    "foglia di alloro": {
+      "nome": "Foglia di Alloro",
+      "grafie": [
+        "Foglia di Alloro"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 170917,
+      "fdc": "Spices, bay leaf",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 313,
+        "carbs": 75,
+        "protein": 7.61,
+        "fat": 8.36
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: foglia di alloro/bay leaf, macro completi.",
+      "daRivedere": false
+    },
+    "anice in polvere": {
+      "nome": "Anice in Polvere",
+      "grafie": [
+        "Anice in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 171316,
+      "fdc": "Spices, anise seed",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 337,
+        "carbs": 50,
+        "protein": 17.6,
+        "fat": 15.9
+      },
+      "confidenza": "alta",
+      "motivo": "Semi di anice macinati, corrisponde all'anice in polvere, macro completi.",
+      "daRivedere": false
+    },
+    "zenzero in polvere": {
+      "nome": "Zenzero in Polvere",
+      "grafie": [
+        "Zenzero in Polvere"
+      ],
+      "ricette": 1,
+      "grammiTotali": 2,
+      "fdcId": 170926,
+      "fdc": "Spices, ginger, ground",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 335,
+        "carbs": 71.6,
+        "protein": 8.98,
+        "fat": 4.24
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: zenzero essiccato e macinato, macro completi.",
+      "daRivedere": false
+    },
+    "tabasco": {
+      "nome": "Tabasco",
+      "grafie": [
+        "Tabasco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1,
+      "fdcId": 174527,
+      "fdc": "Sauce, ready-to-serve, pepper or hot",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 11,
+        "carbs": 1.75,
+        "protein": 0.51,
+        "fat": 0.37
+      },
+      "confidenza": "alta",
+      "motivo": "Salsa piccante pronta è il corrispettivo diretto del Tabasco, macro completi.",
+      "daRivedere": false
+    },
+    "lievito di birra secco": {
+      "nome": "Lievito di Birra Secco",
+      "grafie": [
+        "Lievito di Birra Secco"
+      ],
+      "ricette": 1,
+      "grammiTotali": 1,
+      "fdcId": 175043,
+      "fdc": "Leavening agents, yeast, baker's, active dry",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 325,
+        "carbs": 41.2,
+        "protein": 40.4,
+        "fat": 7.61
+      },
+      "confidenza": "alta",
+      "motivo": "Corrisponde esattamente: lievito di birra secco attivo, macro completi.",
+      "daRivedere": false
+    },
+    "semola rimacinata o farina per lo spolvero": {
+      "nome": "Semola rimacinata o farina per lo spolvero",
+      "grafie": [
+        "Semola rimacinata o farina per lo spolvero"
+      ],
+      "ricette": 1,
+      "grammiTotali": 0,
+      "fdcId": 2003589,
+      "fdc": "Flour, semolina, fine",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 358,
+        "carbs": 72,
+        "protein": 13.3,
+        "fat": 1.84
+      },
+      "confidenza": "alta",
+      "motivo": "Semola fine Foundation, ottima corrispondenza per semola rimacinata da spolvero.",
+      "daRivedere": false
+    },
+    "burro": {
+      "nome": "Burro",
+      "grafie": [
+        "Burro"
+      ],
+      "ricette": 12,
+      "grammiTotali": 2760,
+      "fdcId": 173430,
+      "fdc": "Butter, without salt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 717,
+        "carbs": 0.06,
+        "protein": 0.85,
+        "fat": 81.1
+      },
+      "confidenza": "alta",
+      "motivo": "curato a mano: burro non salato SR Legacy, mai apparso tra i candidati di ricerca",
+      "daRivedere": false
+    },
+    "burro di centrifuga": {
+      "nome": "Burro di centrifuga",
+      "grafie": [
+        "Burro di Centrifuga",
+        "Burro di centrifuga"
+      ],
+      "ricette": 3,
+      "grammiTotali": 720,
+      "fdcId": 173430,
+      "fdc": "Butter, without salt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 717,
+        "carbs": 0.06,
+        "protein": 0.85,
+        "fat": 81.1
+      },
+      "confidenza": "alta",
+      "motivo": "curato a mano: burro non salato SR Legacy, mai apparso tra i candidati di ricerca",
+      "daRivedere": false
+    }
+  },
+  "aggiornato": "2026-07-28T14:33:17.061Z"
+}

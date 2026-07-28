@@ -162,15 +162,11 @@ ${esempi}
 4. Il profilo finale ha ESATTAMENTE 5 assi, valori da 0 a 10. Dichiara ogni sostituzione nel campo "deroghe".`;
     }
 
-    const systemPrompt = `Sei un esperto sommelier, tecnologo alimentare e nutrizionista di livello Masterclass.
-Il tuo compito è analizzare una ricetta fornita in formato JSON e determinare sia il profilo organolettico che i valori nutrizionali stimati per 100g.
+    const systemPrompt = `Sei un esperto sommelier e tecnologo alimentare di livello Masterclass.
+Il tuo compito è analizzare una ricetta fornita in formato JSON e determinare il profilo organolettico.
+(I valori nutrizionali NON li stimi tu: si calcolano da USDA FoodData Central, v. src/nutrizione.js.)
 
 ${regoleSensoriale}
-
-REGOLE TASSATIVE PER LA NUTRIZIONE:
-1. Calcola una STIMA ACCURATA dei valori nutrizionali per 100g di prodotto finale.
-2. Tieni conto del calo peso (es. nel pane l'acqua evapora al 20%, nell'olio infuso rimane quasi invariato).
-3. Restituisci Kcal (numero), Carboidrati (numero), Proteine (numero) e Grassi (numero) arrotondati.
 
 RISPONDI ESCLUSIVAMENTE CON UN JSON VALIDO avente questa esatta struttura:
 {
@@ -186,17 +182,33 @@ RISPONDI ESCLUSIVAMENTE CON UN JSON VALIDO avente questa esatta struttura:
   },
   "deroghe": [
     { "da": "Nome asse sostituito", "a": "Nome asse usato al suo posto", "perche": "Una riga: perché l'asse originale varrebbe 0-1 qui." }
-  ],
-  "nutrition": {
-    "kcal_per_100g": 250,
-    "macros": {
-      "carbs": 45,
-      "protein": 8,
-      "fat": 2
-    }
-  }
+  ]
 }
 Se non applichi deroghe, "deroghe" è un array vuoto.`;
+
+    // ── Nutrizione: calcolo su dati USDA, non più stima nel prompt ──
+    // (USDA-TODO.md, scogli 1-2: dizionario FDC + rese dichiarate.) Se il
+    // calcolo si rifiuta — ingrediente non a dizionario, resa non ancora
+    // confermata — la ricetta procede SENZA nutrizione: meglio un buco
+    // visibile che un numero inventato. Il filtro della dashboard la ripesca.
+    let nutrition = null;
+    try {
+        const { caricaDatiCalcolo, calcolaNutrizione } = await import('./nutrizione.js');
+        const cartella = CATEGORY_FOLDERS[recipeData.category];
+        const esito = calcolaNutrizione(recipeData, {
+            categoria: cartella,
+            slug: recipeData.slug,
+            ...caricaDatiCalcolo(),
+        });
+        if (esito.errori) {
+            for (const e of esito.errori) log.warn(`⚠️  Nutrizione non calcolabile: ${e}`);
+        } else {
+            nutrition = esito.nutrition;
+            log.info(`🥗 Nutrizione da USDA: ${nutrition.kcal_per_100g} kcal/100g (resa ${esito.dettaglio.resa}, ${esito.dettaglio.fonteResa})`);
+        }
+    } catch (err) {
+        log.warn(`⚠️  Nutrizione non calcolata (${err.message}): la ricetta procede senza.`);
+    }
 
     try {
         const text = await callClaude({
@@ -206,7 +218,7 @@ Se non applichi deroghe, "deroghe" è un array vuoto.`;
         });
 
         const profile = parseClaudeJson(text);
-        if (!profile || !profile.sensory || !profile.nutrition || !Array.isArray(profile.sensory.axes)) {
+        if (!profile || !profile.sensory || !Array.isArray(profile.sensory.axes)) {
             throw new Error("Formato JSON restituito non valido per il profilo analitico.");
         }
         if (profile.sensory.axes.length !== 5) {
@@ -229,8 +241,8 @@ Se non applichi deroghe, "deroghe" è un array vuoto.`;
             }
         }
 
-        log.success(`✅ Profilo Analitico (Sensoriale + Nutrizione) generato.`);
-        return profile;
+        log.success(`✅ Profilo Analitico generato (sensoriale AI${nutrition ? ' + nutrizione USDA' : ', nutrizione assente'}).`);
+        return { sensory: profile.sensory, nutrition };
     } catch (err) {
         log.error(`❌ Errore durante l'analisi: ${err.message}`);
         throw err;

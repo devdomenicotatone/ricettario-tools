@@ -74,7 +74,7 @@ export const MAX_COPIE_PER_OPERAZIONE = 5;
  * con una sua rotazione indipendente, e la copia "vecchia" non verrebbe mai
  * potata.
  */
-export const OPERAZIONI = Object.freeze(['fix-ai', 'sensoriale', 'pre-edit', 'pre-gen']);
+export const OPERAZIONI = Object.freeze(['fix-ai', 'sensoriale', 'nutrizione', 'pre-edit', 'pre-gen']);
 
 /** Nomi ammessi per l'operazione: entra nel nome del file e in una RegExp. */
 const OPERAZIONE_VALIDA = /^[a-z0-9]+(-[a-z0-9]+)*$/;
