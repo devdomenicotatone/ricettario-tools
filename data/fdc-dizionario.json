@@ -5611,7 +5611,27 @@
       "confidenza": "alta",
       "motivo": "curato a mano: burro non salato SR Legacy, mai apparso tra i candidati di ricerca",
       "daRivedere": false
+    },
+    "olio di semi di arachidi": {
+      "nome": "Olio di Semi di Arachidi",
+      "grafie": [
+        "Olio di Semi di Arachidi"
+      ],
+      "ricette": 0,
+      "grammiTotali": 0,
+      "fdcId": 171410,
+      "confidenza": "alta",
+      "daRivedere": false,
+      "motivo": "aggiunta a mano per il modello frittura (28/07/2026): è l'olio del bagno di frittura dei cartocci, mai tra gli ingredienti pesati — la SR Legacy completa, la Foundation 1750348 è monca",
+      "fdc": "Oil, peanut, salad or cooking",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 884,
+        "carbs": 0,
+        "protein": 0,
+        "fat": 100
+      }
     }
   },
-  "aggiornato": "2026-07-28T14:33:17.061Z"
+  "aggiornato": "2026-07-28T15:10:49.626Z"
 }

@@ -237,7 +237,37 @@ export function calcolaNutrizione(ricetta, { categoria, slug, dizionario, calcol
         };
     }
 
-    const pesoFinito = pesoCrudo * resa;
+    // ── 4b. Frittura: l'olio assorbito, dichiarato (modello v2) ──────
+    // L'olio del bagno di frittura non sta tra gli ingredienti pesati:
+    // entra nel prodotto DURANTE la cottura. Chi frigge lo dichiara in
+    // fdc-calcolo.json come { grammi, chiave }: i grammi si sommano al
+    // peso finito (arrivano dopo il calo del crudo, non lo subiscono) e
+    // i nutrienti alla somma — dalla voce di dizionario citata, come
+    // tutto il resto. La resa continua a modellare solo il crudo.
+    let olioAssorbito = null;
+    if (regole.olioAssorbito) {
+        const { grammi, chiave } = regole.olioAssorbito;
+        const voceOlio = dizionario.voci[chiaveDi(chiave || '')];
+        if (typeof grammi !== 'number' || grammi <= 0 || !voceOlio || !completo(voceOlio.per100g)) {
+            return {
+                errori: [
+                    `olioAssorbito di ${chiaveRicetta} non utilizzabile: servono grammi > 0 e una ` +
+                    `chiave di dizionario coi 4 macro (ricevuto: ${JSON.stringify(regole.olioAssorbito)})`,
+                ],
+                avvisi,
+            };
+        }
+        olioAssorbito = { grammi, voce: voceOlio };
+        for (const campo of Object.keys(totali)) totali[campo] += grammi * voceOlio.per100g[campo] / 100;
+        contributi.push({
+            nome: `${voceOlio.nome} — assorbito in frittura (dichiarato)`,
+            grammi,
+            kcal: Math.round(grammi * voceOlio.per100g.kcal / 100),
+            ruolo: 'olio di frittura',
+        });
+    }
+
+    const pesoFinito = pesoCrudo * resa + (olioAssorbito?.grammi || 0);
     const per = campo => totali[campo] / pesoFinito * 100;
 
     return {
@@ -253,6 +283,7 @@ export function calcolaNutrizione(ricetta, { categoria, slug, dizionario, calcol
             pesoCrudo: Math.round(pesoCrudo),
             resa,
             fonteResa,
+            ...(olioAssorbito ? { olioAssorbitoGrammi: olioAssorbito.grammi } : {}),
             pesoFinito: Math.round(pesoFinito),
             contributi: contributi.sort((a, b) => b.kcal - a.kcal),
             avvisi,

@@ -354,12 +354,16 @@
       "daRivedere": false
     },
     "dolci/cartocci-alla-crema-siciliani": {
-      "resa": 1.05,
-      "fonte": "proposta dall'evidenza testuale della ricetta",
-      "evidenza": "frittura 170-175°C 3-4 min: assorbimento olio parzialmente compensa perdita umidità; quantità olio assorbito non dichiarata; stima prudenziale lieve aumento peso",
-      "confidenza": "bassa",
-      "daRivedere": true,
-      "nota": "FRITTURA: l'olio assorbito non è tra gli ingredienti e non è ancora modellato — kcal sottostimate; resta daRivedere finché non c'è il modello (v2)"
+      "resa": 0.94,
+      "fonte": "modello frittura v2 (28/07/2026); confermata in revisione del 28/07/2026",
+      "evidenza": "frittura 3-4 min a 170-175°C e scolatura su carta (−10% sull'impasto da 985 g); crema pasticcera cotta (−5% sul litro di latte); crema di ricotta a crudo",
+      "olioAssorbito": {
+        "grammi": 100,
+        "chiave": "olio di semi di arachidi",
+        "fonte": "letteratura frittura di impasti lievitati: assorbimento 8-15% del peso del pezzo, ridotto dalla scolatura su carta — dichiarato il 10% dell'impasto crudo"
+      },
+      "confidenza": "media",
+      "daRivedere": false
     },
     "dolci/migliaccio-napoletano": {
       "resa": 0.87,

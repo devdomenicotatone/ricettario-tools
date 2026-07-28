@@ -96,13 +96,15 @@ Rispondi SOLO con un array JSON, un oggetto per ricetta:
   "confidenza": "alta" | "media" | "bassa",
   "evidenza": "<citazione testuale dai passaggi, o la regola fisica usata; max 25 parole>",
   "fuoriProdotto": ["nome item", ...],
-  "dentroProdotto": ["nome item", ...]
+  "dentroProdotto": ["nome item", ...],
+  "olioAssorbito": { "grammi": <numero>, "ingrediente": "<olio usato, preso dai passaggi>" }   // SOLO per fritture in olio profondo
 }
 
 Regole per la resa:
 - Preparazione a crudo / assemblaggio senza cottura (pesti, salse fredde, burri composti, marinature) → resa 1.0 ESATTO, evidenza "nessuna cottura". Confidenza alta.
 - Cottura con evidenza testuale ("fate ridurre della metà" → il liquido si dimezza; "sobbollire X minuti scoperto"; "in forno a Y° per Z minuti") → traduci l'evidenza in resa e CITALA. Ricorda che la riduzione dichiarata di solito riguarda la parte liquida, non il totale.
 - Fumetti/brodi: la resa è (acqua rimasta dopo riduzione ed evaporazione) / peso totale iniziale; i solidi filtrati via vanno in fuoriProdotto.
+- FRITTURA in olio profondo: l'olio del bagno non è tra gli ingredienti pesati ma entra nel prodotto — dichiara "olioAssorbito" con l'olio nominato nei passaggi. Letteratura: 8-15% del peso del pezzo fritto per impasti lievitati, verso il basso se si scola su carta. La resa resta il calo del solo crudo: i grammi d'olio si sommano dopo, non spalmarli nella resa.
 - Nessuna evidenza e nessuna fisica ovvia → resa più plausibile con confidenza "bassa" e di' nell'evidenza cosa manca. Verrà rivista da un umano.
 
 Regole per le classificazioni (gli itemAmbigui vanno classificati TUTTI; ma fuoriProdotto può citare QUALUNQUE ingrediente della lista, anche non ambiguo, se i passaggi dicono che si scarta):
@@ -142,6 +144,20 @@ for (let da = 0; da < coda.length; da += DIM_BATCH) {
         const fuori = (r.fuoriProdotto || []).filter(n => nomiVeri.has(chiaveDi(n)));
         const dentro = (r.dentroProdotto || []).filter(n => nomiVeri.has(chiaveDi(n)));
 
+        // Olio di frittura: si accetta solo se l'olio proposto è a
+        // dizionario — se manca, la voce va aggiunta a mano PRIMA (come
+        // per l'olio di arachidi dei cartocci) e la proposta rifatta.
+        let olioAssorbito = null;
+        if (r.olioAssorbito) {
+            const { grammi, ingrediente } = r.olioAssorbito;
+            const voce = dizionario.voci[chiaveDi(ingrediente || '')];
+            if (typeof grammi === 'number' && grammi > 0 && voce) {
+                olioAssorbito = { grammi, chiave: chiaveDi(ingrediente), fonte: 'proposto dai passaggi (frittura in olio profondo)' };
+            } else {
+                console.error(`  ✗ ${ricetta.chiave}: olioAssorbito proposto ma "${ingrediente}" non è a dizionario — aggiungere la voce e rilanciare`);
+            }
+        }
+
         calcolo.ricette[ricetta.chiave] = {
             // La resa per-ricetta solo dove manca davvero: dove il default
             // di famiglia basta, dichiararla la ombreggerebbe per sempre.
@@ -153,6 +169,7 @@ for (let da = 0; da < coda.length; da += DIM_BATCH) {
             confidenza: r.confidenza,
             ...(fuori.length ? { fuoriProdotto: fuori } : {}),
             ...(dentro.length ? { dentroProdotto: dentro } : {}),
+            ...(olioAssorbito ? { olioAssorbito } : {}),
             daRivedere: true,
         };
         proposte++;

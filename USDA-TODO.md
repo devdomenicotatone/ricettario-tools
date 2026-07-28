@@ -67,8 +67,18 @@ Fatta anche l'integrazione (28/07/2026, notte) — IL PIANO È COMPLETO:
   cancello del punto 9 rispettato. Aggiornato anche il punto 9 di
   `Ricettario/CHECKUP.md`.
 
-Restano per una v2, dichiarati e non nascosti: modello frittura (olio
-assorbito → sblocca i cartocci), correzione alcol nelle riduzioni
+V2 in corso (28/07/2026, notte):
+
+- FATTO il modello frittura: `olioAssorbito: { grammi, chiave }` in
+  fdc-calcolo.json — l'olio del bagno entra nel prodotto durante la
+  cottura, quindi i grammi si sommano al peso finito DOPO la resa (che
+  continua a modellare solo il crudo) e i nutrienti vengono dalla voce
+  di dizionario citata. I cartocci sono sbloccati: resa 0.94 + 100 g di
+  olio di arachidi (voce 171410 aggiunta a mano: l'olio di frittura non
+  è mai tra gli ingredienti pesati) → 254 kcal/100g, confermati in
+  revisione. proponi-rese sa proporre il modello per le fritture future.
+
+Restano, dichiarati e non nascosti: correzione alcol nelle riduzioni
 (teriyaki ~+25 kcal/100g, nota in fdc-calcolo.json), grasso colato
 delle carni (nota idem).
 
