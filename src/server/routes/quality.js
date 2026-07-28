@@ -3,7 +3,7 @@
  */
 
 import { resolve } from 'path';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, statSync } from 'fs';
 
 // ── Copie di sicurezza delle ricette ──
 //
@@ -159,6 +159,21 @@ export function setupQualityRoutes(app, { getRicettarioPath, nextJobId, createJo
                     const report = existsSync(reportPath) ? readFileSync(reportPath, 'utf-8') : null;
                     if (!report) {
                         ctx.log(`  ⚠️ ${s}: nessun report qualità — esegui prima l'analisi`);
+                        continue;
+                    }
+
+                    // ── Guardia: il report deve essere più recente della ricetta ──
+                    // Il fix applica i rilievi del report AL FILE ATTUALE: se la
+                    // ricetta è cambiata dopo l'analisi, quei rilievi descrivono
+                    // una versione che non esiste più, e applicarli può
+                    // sovrascrivere correzioni già fatte (successo davvero: il
+                    // report pre-correzioni del brisket chiedeva di alzare un
+                    // sale che nel frattempo era stato deciso diversamente).
+                    // Vale anche con `force`: quel flag scavalca la soglia di
+                    // punteggio, non la freschezza dei dati — la via d'uscita è
+                    // rianalizzare, che costa un giro di Gemini.
+                    if (statSync(jsonFile).mtimeMs > statSync(reportPath).mtimeMs) {
+                        ctx.log(`  ⏭️ ${s}: la ricetta è cambiata DOPO l'analisi — il report è stantio e applicarlo potrebbe disfare correzioni recenti. Rilancia l'analisi qualità, poi il fix.`);
                         continue;
                     }
 
