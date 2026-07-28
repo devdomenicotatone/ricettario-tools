@@ -11,11 +11,11 @@ import { cartellaCategoria, etichetteAmmesse } from './utils/percorsi-ricette.js
 
 /** Forma di un indice vuoto: serve sia quando il file manca sia quando è corrotto. */
 function indiceVuoto() {
-    return { generatedAt: '', totalRecipes: 0, categories: [], recipes: [] };
+    return { totalRecipes: 0, categories: [], recipes: [] };
 }
 
 /**
- * Riporta alla forma canonica `{generatedAt, totalRecipes, categories, recipes}`
+ * Riporta alla forma canonica `{totalRecipes, categories, recipes}`
  * qualunque cosa sia stata letta dal disco.
  *
  * Il caso che conta è la forma ARRAY: `server/routes/recipes.js` la dichiara
@@ -27,7 +27,7 @@ function indiceVuoto() {
  * Qui l'array diventa invece la lista delle ricette, e non si perde niente.
  *
  * @param {unknown} letto - il contenuto interpretato del file, o null
- * @returns {{generatedAt: string, totalRecipes: number, categories: object[], recipes: object[]}}
+ * @returns {{totalRecipes: number, categories: object[], recipes: object[]}}
  */
 function normalizzaIndice(letto) {
     if (Array.isArray(letto)) return { ...indiceVuoto(), recipes: letto };
@@ -36,6 +36,10 @@ function normalizzaIndice(letto) {
     // Un indice troncato o manomesso può avere `recipes` non array: senza
     // questo controllo il `.some` di `injectCard` esploderebbe dentro il lock.
     if (!Array.isArray(data.recipes)) data.recipes = [];
+    // Il timestamp è stato tolto dall'indice (era un diff perpetuo su git):
+    // un file vecchio che lo porta ancora va ripulito, o lo spread qui sopra
+    // se lo trascinerebbe dietro per sempre.
+    delete data.generatedAt;
     return data;
 }
 
@@ -150,7 +154,6 @@ export async function injectCard(recipe, ricettarioPath) {
 
         data.recipes.push(newEntry);
         data.totalRecipes = data.recipes.length;
-        data.generatedAt = new Date().toISOString();
 
         // Ricalcola categorie
         const stats = {};
