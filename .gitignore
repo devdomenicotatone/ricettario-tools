@@ -34,6 +34,10 @@ data/backup-ricette/
 # storia git e non ne esce più.
 data/_tmp_testo.txt
 
+# Contatore persistente degli id dei job (routes/_helpers.js): stato di
+# runtime che cambia a ogni job — tracciato sarebbe un diff perpetuo.
+data/job-counter.json
+
 # File di debug
 debug-*.txt
 debug-*.json

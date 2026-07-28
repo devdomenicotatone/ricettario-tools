@@ -7,7 +7,22 @@ import { existsSync, readdirSync, readFileSync, writeFileSync, renameSync, unlin
 import { AsyncLocalStorage } from 'async_hooks';
 import { log } from '../../utils/logger.js';
 
+// Il contatore dei job sopravvive ai riavvii. In memoria ripartiva da 1 a
+// ogni restart di nodemon — cioè a ogni modifica del codice — e nel log
+// giornaliero cumulativo due job diversi finivano con lo stesso id: è
+// successo davvero, un «gen-1» delle 09:33 e un «gen-1» delle 11:52
+// indistinguibili per chi legge e per qualunque script che aspetti la fine
+// di un job cercando il suo id. Il file sta in data/ ma FUORI da git
+// (.gitignore): è stato di runtime, non storia — e committarlo vorrebbe
+// dire un diff a ogni job. Limite accettato: se il file viene cancellato a
+// mano il conteggio riparte, ma il riavvio — che è il caso frequente — non
+// lo azzera più. Sincrono senza lock: il server è un processo solo e
+// nextJobId gira nel suo event loop.
+const FILE_CONTATORE = resolve(process.cwd(), 'data', 'job-counter.json');
 let jobCounter = 0;
+try {
+    jobCounter = Number(JSON.parse(readFileSync(FILE_CONTATORE, 'utf-8')).ultimo) || 0;
+} catch { /* primo avvio, o file assente: si parte da zero */ }
 
 /**
  * Genera un ID job univoco con prefisso
@@ -15,7 +30,11 @@ let jobCounter = 0;
  * @returns {string} ID univoco (es. 'gen-42')
  */
 export function nextJobId(prefix) {
-    return `${prefix}-${++jobCounter}`;
+    jobCounter += 1;
+    try {
+        writeFileSync(FILE_CONTATORE, JSON.stringify({ ultimo: jobCounter }), 'utf-8');
+    } catch { /* senza persistenza si torna agli id di sessione: meglio un job che parte di uno che muore qui */ }
+    return `${prefix}-${jobCounter}`;
 }
 
 /**
