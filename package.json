@@ -23,7 +23,7 @@
         "puppeteer": "^24.37.5",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
-        "sharp": "^0.34.5",
+        "sharp": "^0.35.3",
         "ws": "^8.20.0"
     },
     "devDependencies": {
