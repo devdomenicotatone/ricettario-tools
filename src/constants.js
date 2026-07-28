@@ -24,6 +24,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * più un ultimo tentativo relativo a questo file: così il modulo funziona anche se
  * il processo viene avviato da una cartella diversa da `tools/`.
  */
+let baseRicettario = null;
+
 function trovaRegistryCategorie() {
     const candidati = [
         process.env.RICETTARIO_PATH && resolve(process.cwd(), process.env.RICETTARIO_PATH),
@@ -33,7 +35,7 @@ function trovaRegistryCategorie() {
 
     for (const base of candidati) {
         const file = resolve(base, 'js', 'categories.js');
-        if (existsSync(file)) return file;
+        if (existsSync(file)) { baseRicettario = base; return file; }
     }
 
     throw new Error(
@@ -44,6 +46,11 @@ function trovaRegistryCategorie() {
 }
 
 const { CATEGORIES, CATEGORY_ORDER } = await import(pathToFileURL(trovaRegistryCategorie()).href);
+
+// La radice del repo del sito, trovata risalendo dal registry qui sopra: chi
+// deve leggere i JSON delle ricette (es. sensory.js per gli assi di famiglia)
+// la prende da qui invece di rifare la stessa ricerca per conto suo.
+export const RICETTARIO_DIR = baseRicettario;
 
 // Chiavi nell'ordine della homepage; eventuali categorie non elencate finiscono in coda.
 const CHIAVI = [

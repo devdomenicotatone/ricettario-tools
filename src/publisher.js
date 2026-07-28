@@ -387,6 +387,21 @@ export async function publishRecipe(recipe, args, options = {}) {
         skipJson = true;
     }
 
+    // I campi di lavoro (`_validation`, `_imageData`, ...) viaggiano dentro
+    // `recipe` lungo la pipeline ma non devono finire nel JSON pubblicato.
+    // La lista è UNA e sta qui: la usa il salvataggio (Step 3) e la riusa il
+    // profilo analitico (Step 3c) — due copie divergerebbero al primo campo
+    // effimero nuovo.
+    const senzaCampiEffimeri = (r) => {
+        const pulito = { ...r };
+        delete pulito._validation;
+        delete pulito._imageData;
+        delete pulito._sourcesUsed;
+        delete pulito._inputMode;
+        // NOTA: _generatedBy e _createdAt restano nel JSON per tracciabilità
+        return pulito;
+    };
+
     let { ricettarioPath, outputDir, outputFile, jsonFile, cartellaCreataOra } = resolveOutputPaths(recipe, args);
 
     // Cartelle di categoria nate in questa esecuzione: se la ricetta viene
@@ -537,12 +552,7 @@ export async function publishRecipe(recipe, args, options = {}) {
             }
         }
 
-        const persistentJson = { ...recipe };
-        delete persistentJson._validation;
-        delete persistentJson._imageData;
-        delete persistentJson._sourcesUsed;
-        delete persistentJson._inputMode;
-        // NOTA: _generatedBy e _createdAt vengono mantenuti nel JSON per tracciabilità
+        const persistentJson = senzaCampiEffimeri(recipe);
 
         writeFileSync(jsonFile, JSON.stringify(persistentJson, null, 2), 'utf-8');
         log.info(`💾 JSON salvato: ${jsonFile}`);
@@ -577,6 +587,32 @@ export async function publishRecipe(recipe, args, options = {}) {
             : 'Cross-check delle fonti (Step 1): già eseguito — dry-run non lo evita e costa chiamate a SerpAPI e Claude. Per saltarlo: --no-valida.');
         console.log(JSON.stringify(recipe, null, 2));
         return { outputFile: null, jsonFile: null };
+    }
+
+    // ── Step 3c: Profilo analitico (sensoriale + nutrizionale) ──
+    // Ultimo passaggio automatico della generazione: prima le ricette nuove
+    // nascevano senza radar e senza valori nutrizionali finché qualcuno non
+    // passava dalla dashboard — la pizza-napoletana-verace-stg è rimasta così
+    // per tre mesi senza che nessuno se ne accorgesse. Se l'AI fallisce, o la
+    // categoria non ha ancora una famiglia da cui prendere gli assi
+    // (generateAnalyticsProfile torna null), la ricetta resta valida: warning
+    // e avanti — il filtro «Senza Profilo/Nutrizione» della dashboard la
+    // ripesca. Sta PRIMA della preview di proposito: se la preview viene
+    // rifiutata, annullaScritturaJson ripristina i byte precedenti e si porta
+    // via anche questo.
+    if (!skipJson && !recipe.sensoryProfile) {
+        try {
+            const { generateAnalyticsProfile } = await import('./sensory.js');
+            const analytics = await generateAnalyticsProfile(recipe);
+            if (analytics) {
+                recipe.sensoryProfile = analytics.sensory;
+                recipe.nutrition = analytics.nutrition;
+                writeFileSync(jsonFile, JSON.stringify(senzaCampiEffimeri(recipe), null, 2), 'utf-8');
+                log.success('🧪 Profilo sensoriale e valori nutrizionali aggiunti alla ricetta.');
+            }
+        } catch (err) {
+            log.warn(`⚠️  Profilo analitico non generato (${err.message}). La ricetta è salva comunque: generalo dalla dashboard (Qualità → Sensory).`);
+        }
     }
 
     // ── Step 4: Salva report validazione ──

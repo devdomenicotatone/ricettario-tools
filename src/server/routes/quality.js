@@ -293,7 +293,14 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
 
                     // Call agent
                     const analytics = await generateAnalyticsProfile(recipeData);
-                    
+                    if (!analytics) {
+                        // Prima ricetta di una famiglia senza assi: la scelta
+                        // del set è umana (vedi log di sensory.js), non si
+                        // inventa qui.
+                        ctx.log(`⚠️ ${currentSlug} saltata: la sua famiglia non ha ancora un set d'assi da cui partire.`);
+                        continue;
+                    }
+
                     // Assign back to recipe data
                     recipeData.sensoryProfile = analytics.sensory;
                     recipeData.nutrition = analytics.nutrition;
