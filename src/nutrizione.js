@@ -194,6 +194,7 @@ export function calcolaNutrizione(ricetta, { categoria, slug, dizionario, calcol
 
     // ── 3. Somma pesata sul crudo ────────────────────────────────────
     let pesoCrudo = 0;
+    let alcolTotale = 0; // g di etanolo in ingresso (dal 221 USDA, via dizionario)
     const totali = { kcal: 0, carbs: 0, protein: 0, fat: 0 };
     const contributi = [];
     for (const item of tutti) {
@@ -205,6 +206,7 @@ export function calcolaNutrizione(ricetta, { categoria, slug, dizionario, calcol
         }
         const grammi = item.grams * item.scala;
         pesoCrudo += grammi;
+        alcolTotale += grammi * (item.voce.alcolPer100g || 0) / 100;
         for (const campo of Object.keys(totali)) totali[campo] += grammi * numeri[campo] / 100;
         contributi.push({ nome: item.nome, grammi, kcal: Math.round(grammi * numeri.kcal / 100), ruolo: item.ruolo });
     }
@@ -265,6 +267,45 @@ export function calcolaNutrizione(ricetta, { categoria, slug, dizionario, calcol
             kcal: Math.round(grammi * voceOlio.per100g.kcal / 100),
             ruolo: 'olio di frittura',
         });
+    }
+
+    // ── 4c. Alcol evaporato in cottura (modello v2) ──────────────────
+    // L'etanolo bolle a 78°C e in cottura se ne va quasi tutto — MA
+    // quanto, dipende dal tempo: la tabella USDA di ritenzione dice 85%
+    // residuo se aggiunto a fine cottura, ~40% dopo 15 min di sobbollore,
+    // ~25% dopo un'ora, ~5% dopo due ore e mezza. Quindi anche qui si
+    // DICHIARA per ricetta (alcolResiduo.frazione, con la tabella come
+    // fonte) e si scorporano le kcal dell'alcol evaporato: 6.93 kcal/g,
+    // il fattore Atwater che USDA stessa usa. Solo kcal: l'etanolo non è
+    // un macro, e la sua MASSA evaporata sta già dentro la resa.
+    const KCAL_PER_G_ALCOL = 6.93;
+    if (regole.alcolResiduo) {
+        const { frazione } = regole.alcolResiduo;
+        if (typeof frazione !== 'number' || frazione < 0 || frazione > 1) {
+            return {
+                errori: [`alcolResiduo di ${chiaveRicetta} non utilizzabile: frazione deve stare tra 0 e 1 (ricevuto: ${JSON.stringify(regole.alcolResiduo)})`],
+                avvisi,
+            };
+        }
+        if (alcolTotale === 0) {
+            avvisi.push('alcolResiduo dichiarato ma nessun ingrediente porta alcol: dichiarazione inutile');
+        } else {
+            const kcalPerse = alcolTotale * (1 - frazione) * KCAL_PER_G_ALCOL;
+            totali.kcal -= kcalPerse;
+            contributi.push({
+                nome: `Alcol evaporato in cottura (residuo ${Math.round(frazione * 100)}%, dichiarato)`,
+                grammi: -Math.round(alcolTotale * (1 - frazione) * 10) / 10,
+                kcal: -Math.round(kcalPerse),
+                ruolo: 'alcol evaporato',
+            });
+        }
+    } else if (alcolTotale >= 2 && resa < 1) {
+        // Niente blocco: i numeri restano interi (com'erano prima del
+        // modello), ma la cottura c'è e l'alcol pure — che si veda.
+        avvisi.push(
+            `la ricetta porta ${alcolTotale.toFixed(1)} g di alcol e cuoce (resa ${resa}): ` +
+            `valutare alcolResiduo in fdc-calcolo.json — senza, le sue kcal restano contate per intero`
+        );
     }
 
     const pesoFinito = pesoCrudo * resa + (olioAssorbito?.grammi || 0);

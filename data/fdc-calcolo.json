@@ -28,10 +28,14 @@
     },
     "condimenti/bagna-cauda": {
       "resa": 0.82,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026; alcolResiduo confermato in revisione del 28/07/2026",
       "evidenza": "Nessuna riduzione dichiarata esplicitamente; cottura dolcissima 10-15 min; evaporazione minima stimata ~18% su componente acquosa (latte/ammollo). Rivedere.",
       "confidenza": "bassa",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolResiduo": {
+        "frazione": 0.4,
+        "fonte": "cottura dolcissima 10-15 min: tabella USDA di ritenzione dell'alcol in cottura, 15 min ≈ 40%"
+      }
     },
     "condimenti/besciamella": {
       "resa": 0.98,
@@ -98,10 +102,14 @@
     },
     "condimenti/fumetto-di-crostacei": {
       "resa": 0.45,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026; alcolResiduo confermato in revisione del 28/07/2026",
       "evidenza": "sobbollitura 30 min semi-aperto; carapaci+verdure filtrati e scartati; liquido iniziale ~1350g su totale ~2578g, evaporazione stimata ~15%",
       "confidenza": "media",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolResiduo": {
+        "frazione": 0.35,
+        "fonte": "sfumatura del vino e sobbollore ~30 min: tabella USDA di ritenzione dell'alcol in cottura, 30 min ≈ 35%"
+      }
     },
     "condimenti/guacamole": {
       "resa": 1,
@@ -276,10 +284,14 @@
     },
     "condimenti/salsa-bernese": {
       "resa": 1,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026; alcolResiduo confermato in revisione del 28/07/2026",
       "evidenza": "nessuna cottura; tutti gli ingredienti (tuorli, burro chiarificato, riduzione, limone, dragoncello, cerfoglio, sale) finiscono nella salsa finita.",
       "confidenza": "alta",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolResiduo": {
+        "frazione": 0.15,
+        "fonte": "la riduzione di vino e scalogno va quasi a secco prima del bagnomaria: oltre le voci della tabella USDA di ritenzione dell'alcol in cottura, residuo minimo"
+      }
     },
     "condimenti/salsa-cocktail-rosa-artigianale": {
       "resa": 1,
@@ -297,11 +309,15 @@
     },
     "condimenti/salsa-teriyaki-originale": {
       "resa": 0.47,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata; alcolResiduo confermato in revisione del 28/07/2026",
       "evidenza": "«ridotta di circa la metà (da ~340ml iniziali a ~160–…)»: 160/338 ≈ 0.47 sul totale ingredienti (sake 100 + mirin 100 + soia 100 + zucchero 38 = 338g).",
       "confidenza": "alta",
       "daRivedere": false,
-      "nota": "l'alcol di sake e mirin evapora in riduzione ma resta contato: kcal sovrastimate di ~20-30/100g (correzione alcol prevista in v2)"
+      "nota": "alcol di sake e mirin scorporato col modello v2 (residuo 35%, tabella USDA di ritenzione)",
+      "alcolResiduo": {
+        "frazione": 0.35,
+        "fonte": "riduzione a fuoco medio fino a dimezzare (~20-30 min): tabella USDA di ritenzione dell'alcol in cottura, 30 min ≈ 35%"
+      }
     },
     "condimenti/salsa-verde-tradizionale": {
       "resa": 1,
@@ -436,11 +452,15 @@
     },
     "secondi-piatti/brisket-stile-toscano": {
       "resa": 0.62,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata; alcolResiduo confermato in revisione del 28/07/2026",
       "evidenza": "Brasatura 160°C 210-240 min; brisket perde ~35-40% in cottura lenta; nessuna dichiarazione esplicita di perdita percentuale.",
       "confidenza": "media",
       "daRivedere": false,
-      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)",
+      "alcolResiduo": {
+        "frazione": 0.05,
+        "fonte": "brasato in cocotte per ore: tabella USDA di ritenzione dell'alcol in cottura, ≥2.5 h ≈ 5%"
+      }
     },
     "secondi-piatti/mayak-gyeran-uova-marinate-coreane": {
       "resa": 1,
@@ -464,6 +484,30 @@
       "confidenza": "media",
       "daRivedere": false,
       "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+    },
+    "focaccia/calzone-cipolla-barese-pugliese": {
+      "alcolResiduo": {
+        "frazione": 0.25,
+        "fonte": "vino sfumato nel ripieno in padella, poi forno: ~1 h complessiva, tabella USDA di ritenzione dell'alcol in cottura ≈ 25%"
+      },
+      "daRivedere": false,
+      "fonte": "; alcolResiduo confermato in revisione del 28/07/2026"
+    },
+    "lievitati/pasta-brioche-artigianale": {
+      "alcolResiduo": {
+        "frazione": 0.45,
+        "fonte": "rum nell'impasto, forno ~25 min: tabella USDA di ritenzione dell'alcol in cottura, cottura al forno 25 min ≈ 45%"
+      },
+      "daRivedere": false,
+      "fonte": "; alcolResiduo confermato in revisione del 28/07/2026"
+    },
+    "lievitati/pasta-brioche-classica": {
+      "alcolResiduo": {
+        "frazione": 0.45,
+        "fonte": "rum nell'impasto, forno ~25 min: tabella USDA di ritenzione dell'alcol in cottura, cottura al forno 25 min ≈ 45%"
+      },
+      "daRivedere": false,
+      "fonte": "; alcolResiduo confermato in revisione del 28/07/2026"
     }
   },
   "aggiornato": "2026-07-28T14:40:42.422Z"

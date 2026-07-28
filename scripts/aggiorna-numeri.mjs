@@ -27,7 +27,7 @@ import 'dotenv/config';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getFood, nutrientiPer100g } from '../src/fdc.js';
+import { getFood, nutrientiPer100g, valoreNutriente } from '../src/fdc.js';
 
 const RADICE = dirname(dirname(fileURLToPath(import.meta.url)));
 const FILE_DIZIONARIO = join(RADICE, 'data', 'fdc-dizionario.json');
@@ -66,16 +66,22 @@ for (const [chiave, voce] of daFare) {
     }
 
     const numeri = nutrientiPer100g(cibo);
-    const prima = JSON.stringify({ d: voce.fdc, n: voce.per100g });
+    const prima = JSON.stringify({ d: voce.fdc, n: voce.per100g, a: voce.alcolPer100g });
     voce.fdc = cibo.description;
     voce.dataType = cibo.dataType;
     voce.per100g = numeri;
+    // Alcol etilico (nutriente 221): serve al modello v2 delle riduzioni —
+    // l'etanolo evapora in cottura e le sue kcal vanno scorporate. Si
+    // annota solo dove c'è: l'assenza del campo vuol dire zero.
+    const alcol = valoreNutriente(cibo, ['221']);
+    if (typeof alcol === 'number' && alcol > 0) voce.alcolPer100g = alcol;
+    else delete voce.alcolPer100g;
     if (!completo(numeri)) {
         voce.daRivedere = true;
         voce.allarme = 'al dettaglio mancano macro: voce monca, cambiare fdcId';
         monche++;
     }
-    if (JSON.stringify({ d: voce.fdc, n: voce.per100g }) !== prima) {
+    if (JSON.stringify({ d: voce.fdc, n: voce.per100g, a: voce.alcolPer100g }) !== prima) {
         cambiate++;
         console.log(`  ~ ${voce.nome} [${voce.fdcId}] → ${cibo.description}`);
     }
@@ -90,6 +96,7 @@ for (const [chiave, voce] of Object.entries(dizionario.voci)) {
     if (chiesteAMano.length > 0 && !chiesteAMano.includes(chiave)) continue;
     const per100g = { kcal: 0, carbs: 0, protein: 0, fat: 0 };
     const pezzi = [];
+    let alcolDerivato = 0;
     let rotta = false;
     for (const { chiave: rif, quota } of voce.derivataDa) {
         const base = dizionario.voci[rif];
@@ -100,11 +107,14 @@ for (const [chiave, voce] of Object.entries(dizionario.voci)) {
             break;
         }
         for (const campo of Object.keys(per100g)) per100g[campo] += quota * base.per100g[campo];
+        alcolDerivato += quota * (base.alcolPer100g || 0);
         pezzi.push(`${Math.round(quota * 100)}% ${base.fdc}`);
     }
     if (rotta) continue;
     for (const campo of Object.keys(per100g)) per100g[campo] = Math.round(per100g[campo] * 100) / 100;
     voce.per100g = per100g;
+    if (alcolDerivato > 0) voce.alcolPer100g = Math.round(alcolDerivato * 100) / 100;
+    else delete voce.alcolPer100g;
     voce.fdc = `derivata: ${pezzi.join(' + ')}`;
     derivate++;
 }

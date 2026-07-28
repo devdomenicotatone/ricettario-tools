@@ -78,9 +78,21 @@ V2 in corso (28/07/2026, notte):
   è mai tra gli ingredienti pesati) → 254 kcal/100g, confermati in
   revisione. proponi-rese sa proporre il modello per le fritture future.
 
-Restano, dichiarati e non nascosti: correzione alcol nelle riduzioni
-(teriyaki ~+25 kcal/100g, nota in fdc-calcolo.json), grasso colato
-delle carni (nota idem).
+- FATTO il modello alcol: il dizionario annota `alcolPer100g` (nutriente
+  USDA 221, aggiorna-numeri lo tiene fresco), e le ricette che cuociono
+  con alcol dichiarano `alcolResiduo: { frazione }` con le frazioni
+  della tabella USDA di ritenzione (85% a fine cottura, 40% a 15 min,
+  25% a 1 h, 5% oltre le 2.5 h) — si scorporano solo le kcal (6.93/g,
+  fattore Atwater USDA): l'etanolo non è un macro e la sua massa sta
+  già nella resa. Otto ricette dichiarate e confermate; la teriyaki,
+  che era il caso peggiore, è passata da 311 a 222 kcal/100g — a un
+  soffio dalla vecchia stima AI (218), che l'evaporazione la intuiva.
+  Ricette cotte con ≥2 g di alcol senza dichiarazione ricevono un
+  avviso, non un blocco.
+
+Resta, dichiarato e non nascosto: grasso colato delle carni (pulled
+pork, brisket, ribs — kcal prudenziali in eccesso, note in
+fdc-calcolo.json).
 
 ## Perché
 

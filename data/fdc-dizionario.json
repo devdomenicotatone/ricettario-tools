@@ -893,7 +893,8 @@
       },
       "confidenza": "alta",
       "motivo": "Vino bianco da tavola generico, corrisponde perfettamente all'uso in ricetta.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 10.3
     },
     "pomodorini": {
       "nome": "Pomodorini",
@@ -1524,7 +1525,8 @@
       },
       "confidenza": "alta",
       "motivo": "Rum 80 proof è la voce più specifica e corretta tra i candidati.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 33.4
     },
     "capperi sotto sale": {
       "nome": "Capperi Sotto Sale",
@@ -1828,7 +1830,8 @@
       },
       "confidenza": "alta",
       "motivo": "Vanilla extract puro, corrispondenza esatta all'ingrediente.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 34.4
     },
     "scorza di limone bio": {
       "nome": "Scorza di Limone Bio",
@@ -1868,7 +1871,8 @@
       },
       "confidenza": "bassa",
       "motivo": "Nessun baccello intero disponibile; estratto di vaniglia è il proxy più vicino. — confermato in revisione del 28/07/2026",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 34.4
     },
     "cumino in polvere": {
       "nome": "Cumino in Polvere",
@@ -3221,7 +3225,8 @@
       },
       "confidenza": "alta",
       "motivo": "Vino rosso da tavola generico, ottima corrispondenza per Chianti/Sangiovese.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 10.6
     },
     "olio evo delicato": {
       "nome": "Olio EVO delicato",
@@ -3341,7 +3346,8 @@
       },
       "confidenza": "alta",
       "motivo": "Voce Barbera presente ed è esattamente il vitigno richiesto.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 10.6
     },
     "carote fresche": {
       "nome": "Carote fresche",
@@ -3570,7 +3576,8 @@
       },
       "confidenza": "alta",
       "motivo": "Voce sake (riso) presente, corrispondenza esatta.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 16.1
     },
     "mirin": {
       "nome": "Mirin",
@@ -3590,7 +3597,8 @@
       },
       "confidenza": "bassa",
       "motivo": "Mirin assente; vino da dessert dolce è il proxy più simile per zuccheri e alcol. — confermato in revisione del 28/07/2026",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 15.3
     },
     "farina di farro o segale": {
       "nome": "Farina di Farro o Segale",
@@ -4490,7 +4498,8 @@
       },
       "confidenza": "media",
       "motivo": "Cognac assente; whiskey 86 proof ha gradazione e macro simili al brandy.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 36
     },
     "criscito (lievito madre ess.)": {
       "nome": "Criscito (Lievito Madre Ess.)",
@@ -4730,7 +4739,8 @@
       },
       "confidenza": "media",
       "motivo": "Vino da dessert dolce più vicino a Marsala/Vin Santo per kcal e zuccheri.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 15.3
     },
     "miele o zucchero": {
       "nome": "Miele o Zucchero",
@@ -5409,7 +5419,8 @@
       },
       "confidenza": "media",
       "motivo": "Vanilla extract unico candidato pertinente; estratto vs baccello, quantità minima.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 34.4
     },
     "semi di vaniglia": {
       "nome": "Semi di Vaniglia",
@@ -5429,7 +5440,8 @@
       },
       "confidenza": "media",
       "motivo": "Vanilla extract unico candidato pertinente; approssimazione accettabile per quantità trascurabili.",
-      "daRivedere": false
+      "daRivedere": false,
+      "alcolPer100g": 34.4
     },
     "lievito secco caputo (per biga)": {
       "nome": "Lievito Secco Caputo (per biga)",
@@ -5633,5 +5645,5 @@
       }
     }
   },
-  "aggiornato": "2026-07-28T15:10:49.626Z"
+  "aggiornato": "2026-07-28T15:31:21.617Z"
 }
