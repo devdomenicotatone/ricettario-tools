@@ -90,9 +90,18 @@ V2 in corso (28/07/2026, notte):
   Ricette cotte con ≥2 g di alcol senza dichiarazione ricevono un
   avviso, non un blocco.
 
-Resta, dichiarato e non nascosto: grasso colato delle carni (pulled
-pork, brisket, ribs — kcal prudenziali in eccesso, note in
-fdc-calcolo.json).
+- FATTO il modello grasso colato: `grassoColato: { frazione }` per le
+  carni su griglia con raccogligocce che si scarta — via i grammi di
+  grasso e le loro kcal (9/g, Atwater), la massa era già nella resa.
+  Pulled pork 381→319, ribs 393→326 kcal/100g (25% dichiarato con
+  l'evidenza del raccogligocce). Il brisket NON lo dichiara: è un
+  brasato, il grasso fuso resta nel fondo che si serve — la vecchia
+  nota diceva il contrario ed è stata corretta. proponi-rese conosce
+  la regola (e il suo contrario per i brasati).
+
+LA V2 È COMPLETA (28/07/2026, notte fonda): frittura, alcol, grasso
+colato. Ogni numero pubblicato è o misura USDA, o aritmetica dichiarata
+su misure USDA, o un buco visibile che dice cosa manca.
 
 ## Perché
 

@@ -308,6 +308,36 @@ export function calcolaNutrizione(ricetta, { categoria, slug, dizionario, calcol
         );
     }
 
+    // ── 4d. Grasso colato in cottura (modello v2) ────────────────────
+    // Nelle cotture su griglia con raccogligocce (pulled pork, ribs) una
+    // parte del grasso fonde, cola e SI SCARTA: porta via i suoi grammi
+    // di grassi e le sue kcal (9/g, fattore Atwater). Si dichiara per
+    // ricetta come frazione del grasso totale, con l'evidenza dei
+    // passaggi — e attenzione ai brasati: lì il grasso fuso finisce nel
+    // fondo che si serve, e NON va dichiarato (v. brisket).
+    // La massa colata, come per l'alcol, sta già dentro la resa.
+    const KCAL_PER_G_GRASSO = 9;
+    if (regole.grassoColato) {
+        const { frazione } = regole.grassoColato;
+        if (typeof frazione !== 'number' || frazione < 0 || frazione > 1) {
+            return {
+                errori: [`grassoColato di ${chiaveRicetta} non utilizzabile: frazione deve stare tra 0 e 1 (ricevuto: ${JSON.stringify(regole.grassoColato)})`],
+                avvisi,
+            };
+        }
+        const grassiPersi = totali.fat * frazione;
+        if (grassiPersi > 0) {
+            totali.fat -= grassiPersi;
+            totali.kcal -= grassiPersi * KCAL_PER_G_GRASSO;
+            contributi.push({
+                nome: `Grasso colato in cottura (${Math.round(frazione * 100)}% del grasso, dichiarato)`,
+                grammi: -Math.round(grassiPersi * 10) / 10,
+                kcal: -Math.round(grassiPersi * KCAL_PER_G_GRASSO),
+                ruolo: 'grasso colato',
+            });
+        }
+    }
+
     const pesoFinito = pesoCrudo * resa + (olioAssorbito?.grammi || 0);
     const per = campo => totali[campo] / pesoFinito * 100;
 

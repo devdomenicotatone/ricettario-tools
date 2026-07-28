@@ -456,7 +456,7 @@
       "evidenza": "Brasatura 160°C 210-240 min; brisket perde ~35-40% in cottura lenta; nessuna dichiarazione esplicita di perdita percentuale.",
       "confidenza": "media",
       "daRivedere": false,
-      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)",
+      "nota": "brasato in cocotte: il grasso fuso resta nel fondo di cottura che si serve — nessun grassoColato da dichiarare (verificato sui passaggi, 28/07/2026)",
       "alcolResiduo": {
         "frazione": 0.05,
         "fonte": "brasato in cocotte per ore: tabella USDA di ritenzione dell'alcol in cottura, ≥2.5 h ≈ 5%"
@@ -471,19 +471,27 @@
     },
     "secondi-piatti/pulled-pork-bbq": {
       "resa": 0.6,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata; grassoColato confermato in revisione del 28/07/2026",
       "evidenza": "Cottura indiretta 150°C per ~10 ore fino a 95°C interni; pulled pork perde tipicamente 35-40% del peso; nessuna percentuale dichiarata.",
       "confidenza": "media",
       "daRivedere": false,
-      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+      "nota": "grasso colato modellato (25% dichiarato, raccogligocce del kamado)",
+      "grassoColato": {
+        "frazione": 0.25,
+        "fonte": "cottura indiretta sopra la vaschetta: «il grasso fonderà e bagnerà continuamente la carne» e cola nel raccogligocce, che si scarta — 6-9 h a 150°C"
+      }
     },
     "secondi-piatti/spare-ribs-salsa-bbq": {
       "resa": 0.65,
-      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata",
+      "fonte": "proposta dall'evidenza testuale della ricetta; confermata in revisione del 28/07/2026 con nota dichiarata; grassoColato confermato in revisione del 28/07/2026",
       "evidenza": "135°C 120 min scoperto + 90 min cartoccio + 20 min 180°C; costine perdono ~30-35% in cottura low&slow; nessuna percentuale dichiarata.",
       "confidenza": "media",
       "daRivedere": false,
-      "nota": "grasso colato in cottura non modellato: kcal leggermente prudenziali (in eccesso)"
+      "nota": "grasso colato modellato (25% dichiarato, leccarda sotto la griglia)",
+      "grassoColato": {
+        "frazione": 0.25,
+        "fonte": "costine su griglia con leccarda d'acqua sul fondo che raccoglie il colato e si scarta; poi cartoccio e glassa"
+      }
     },
     "focaccia/calzone-cipolla-barese-pugliese": {
       "alcolResiduo": {
