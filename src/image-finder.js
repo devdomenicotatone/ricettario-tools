@@ -996,6 +996,22 @@ export async function downloadImage(imageUrl, destPath) {
             const webpSize = Math.round(fsStat(webpPath).size / 1024);
             const avifSize = Math.round(fsStat(avifPath).size / 1024);
             console.log(`   💾 Convertita: ${sizeKB}KB originale → ${webpSize}KB WebP + ${avifSize}KB AVIF`);
+
+            // ── Varianti responsive -640 + mappa dimensioni ──
+            // Il sito emette srcset a due larghezze solo per le foto presenti
+            // in js/dimensioni-foto.js (invariante voce ⇔ varianti su disco).
+            // Era un passo manuale e le prime due ricette nuove sono nate
+            // senza: adesso lo fa la pipeline, per ogni via (generazione e
+            // refresh). Se fallisce non è un errore della foto: la ricetta
+            // degrada al markup senza srcset, e lo si rifà a mano.
+            try {
+                const { aggiungiVariantiResponsive } = await import('./varianti-foto.js');
+                const dim = await aggiungiVariantiResponsive(webpPath);
+                console.log(`   📐 Varianti -640 generate e mappa dimensioni aggiornata (${dim.width}×${dim.height})`);
+            } catch (varErr) {
+                console.log(`   ⚠️ Varianti -640 non generate (${varErr.message}): la foto resta senza srcset — istruzioni manuali nel header di js/dimensioni-foto.js`);
+            }
+
             return webpPath;
         } catch (err) {
             // Una pagina HTML al posto di una foto non migliora riprovando
