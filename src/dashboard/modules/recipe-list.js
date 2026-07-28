@@ -217,7 +217,15 @@ function getFilteredRecipes() {
         filtered = filtered.filter(r => {
             if (recipeFilter.status === 'no-qa') return !qualityIndex[r.slug];
             if (recipeFilter.status === 'no-fix') return qualityIndex[r.slug]?.fixed !== true;
-            if (recipeFilter.status === 'no-tech') return !r.hasSensory && !r.hydration && !r.time && !r.temp;
+            // «Senza Profilo/Nutrizione»: la stessa domanda dei warning del
+            // sync (ogni mancanza conta, in OR). Prima era un AND di quattro
+            // assenze (sensory, hydration, time, temp): bastava l'idratazione
+            // per far sembrare completa una ricetta senza radar né valori —
+            // la pizza-napoletana-verace-stg non è comparsa qui per mesi. E
+            // hydration 0 è un valore DICHIARATO (convenzione non-impasto),
+            // non un dato mancante: i campi di cottura sono usciti dal
+            // criterio.
+            if (recipeFilter.status === 'no-tech') return !r.hasSensory || !r.hasNutrition;
             return true;
         });
     }
