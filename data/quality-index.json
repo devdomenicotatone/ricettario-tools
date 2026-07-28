@@ -539,5 +539,11 @@
     "verdict": "🟢 Buona",
     "issueCount": 1,
     "timestamp": "2026-07-28T11:20:20.094Z"
+  },
+  "pulled-pork-bbq": {
+    "score": 95,
+    "verdict": "🟢 Buona",
+    "issueCount": 2,
+    "timestamp": "2026-07-28T11:34:33.686Z"
   }
 }
