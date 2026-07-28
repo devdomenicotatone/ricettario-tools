@@ -210,6 +210,12 @@ COERENZA INGREDIENTI-PROCEDIMENTO (OBBLIGATORIO):
 - Se un ingrediente è nella lista ma non appare in nessuno step, è un ERRORE GRAVE. Verifica prima di rispondere.
 - Esempio: se l'olio EVO è tra gli ingredienti, DEVE comparire un passaggio tipo "Aggiungere l'olio a filo durante l'impastamento".
 
+COERENZA DEI NUMERI RIPETUTI (OBBLIGATORIO — errore reale trovato in produzione):
+- Ogni valore che compare in PIÙ PUNTI della ricetta (un tempo citato in uno step e ripetuto nel riassunto "baking", una temperatura, un totale) deve essere IDENTICO ovunque. Mai due numeri diversi per la stessa fase.
+- Un TOTALE dichiarato deve essere la SOMMA esatta delle sue fasi: se gli step dicono 60 min scoperto + 150–180 min coperto, il totale è 210–240, non 180–240.
+- Le istruzioni devono seguire un ordine FISICAMENTE ESEGUIBILE: mai "coprire con il coperchio" seguito da "cuocere senza coperchio" (pattern reale: la sequenza giusta era infornare scoperto, POI coprire).
+- Prima di rispondere, RILEGGI ogni numero che hai scritto due volte e verifica che combaci.
+
 FEDELTÀ ALLA FONTE:
 - Se stai trasformando una ricetta da URL/testo, le dosi, le temperature dell'acqua, i tempi e le tecniche della fonte hanno PRIORITÀ ASSOLUTA.
 - NON aggiungere ingredienti che la fonte non menziona.
