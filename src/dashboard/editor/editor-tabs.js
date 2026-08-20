@@ -63,7 +63,10 @@ function renderMetaTab(container, state) {
             </div>
             <div class="re-field">
                 <label class="re-label">Slug</label>
-                <input class="re-input re-input-sm re-input-mono" value="${escapeHtml(r.slug)}" data-path="slug">
+                <input class="re-input re-input-sm re-input-mono" value="${escapeHtml(r.slug)}" readonly tabindex="-1" style="opacity:.65;cursor:not-allowed">
+                <div style="font-size:10.5px;color:#64748b;margin-top:4px;line-height:1.45;max-width:260px">
+                    Lo slug è l'identità della ricetta — nome del file JSON, delle immagini e URL della pagina — e si cambia solo rinominando quei file, non da qui.
+                </div>
             </div>
         </div>
         <div class="re-row">

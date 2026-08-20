@@ -196,7 +196,14 @@ export class RecipeEditorState {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ recipe: inviata, autoRegen: true }),
             });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            if (!resp.ok) {
+                // Il corpo del rifiuto È il messaggio per l'utente («campo
+                // obbligatorio mancante», «slug diverso dal nome file», …):
+                // buttarlo e mostrare solo "HTTP 400" rende cieco ogni blocco
+                // del server.
+                const corpo = await resp.json().catch(() => null);
+                throw new Error(corpo?.error || `HTTP ${resp.status}`);
+            }
 
             // Da qui in poi il file È stato scritto: allineiamo subito ciò che
             // crediamo ci sia sul disco. Farlo dopo `resp.json()` significava che
