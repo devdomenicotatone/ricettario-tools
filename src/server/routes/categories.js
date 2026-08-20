@@ -624,13 +624,38 @@ REGOLE:
                             }
                         }
 
-                        // Sposta anche le immagini
+                        // Sposta anche le immagini — ma NON i file -640: quelli li
+                        // segue spostaVariantiResponsive insieme alla voce in
+                        // js/dimensioni-foto.js. Spostarli a mano lasciava la voce
+                        // sulla chiave vecchia: le pagine non emettevano più i
+                        // riferimenti -640 e i file spostati diventavano orfani che
+                        // verifica-build.js blocca al deploy (stesso difetto già
+                        // corretto in /api/cambia-categoria e /api/elimina).
                         if (existsSync(imagesDir)) {
+                            const { spostaVariantiResponsive } = await import('../../varianti-foto.js');
                             for (const imgFile of readdirSync(imagesDir)) {
+                                if (/-640\.(avif|webp)$/i.test(imgFile)) continue;
+                                const vecchio = resolve(imagesDir, imgFile);
+                                const nuovo = resolve(destImgDir, imgFile);
                                 try {
-                                    renameSync(resolve(imagesDir, imgFile), resolve(destImgDir, imgFile));
+                                    renameSync(vecchio, nuovo);
                                     ctx.log(`  🖼️ ${imgFile}`);
                                 } catch {}
+                                // Base .webp arrivata a destinazione: le varianti la
+                                // seguono. Se il rename è fallito il file resta qui e
+                                // ci pensa la pulizia prima della rmSync (── 3).
+                                if (!imgFile.endsWith('.webp') || !existsSync(nuovo)) continue;
+                                try {
+                                    const esito = await spostaVariantiResponsive(vecchio, nuovo);
+                                    if (esito) {
+                                        for (const f of esito.spostati) ctx.log(`  🖼️ ${f.split('/').pop()}`);
+                                        ctx.log(esito.rigenerate
+                                            ? `  ✅ varianti -640 rigenerate e voce '${esito.chiave}' riscritta in js/dimensioni-foto.js`
+                                            : `  ✅ voce '${esito.chiave}' aggiornata in js/dimensioni-foto.js`);
+                                    }
+                                } catch (e) {
+                                    ctx.log(`  ⚠️ varianti -640 di ${imgFile} non spostate: ${e.message} — rigenerale con un refresh della foto`);
+                                }
                             }
                         }
                     } else if (recipesCount > 0) {
@@ -664,6 +689,21 @@ REGOLE:
                     ctx.log(`🗂️ Rimossa cartella: ricette/${slug}/`);
                 }
                 if (existsSync(imagesDir)) {
+                    // Le voci in js/dimensioni-foto.js delle foto che stanno per
+                    // sparire vanno tolte PRIMA della rmSync: senza moveTo ci sono
+                    // tutte, con moveTo gli eventuali residui che il rename non ha
+                    // spostato. Una voce senza varianti produce srcset che fanno
+                    // 404. Il backup (── 2) ha già copiato anche i -640.
+                    const { rimuoviVariantiResponsive } = await import('../../varianti-foto.js');
+                    for (const f of readdirSync(imagesDir)) {
+                        if (!f.endsWith('.webp') || f.endsWith('-640.webp')) continue;
+                        try {
+                            const { chiave, voceRimossa } = rimuoviVariantiResponsive(resolve(imagesDir, f));
+                            if (voceRimossa) ctx.log(`  🧹 voce '${chiave}' tolta da js/dimensioni-foto.js`);
+                        } catch (e) {
+                            ctx.log(`  ⚠️ varianti -640 di ${f} non rimosse: ${e.message}`);
+                        }
+                    }
                     rmSync(imagesDir, { recursive: true, force: true });
                     ctx.log(`🗂️ Rimossa cartella: images/ricette/${slug}/`);
                 }
