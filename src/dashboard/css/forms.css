@@ -359,3 +359,31 @@
     color: var(--text-muted);
 }
 
+
+/* ── Select categoria + pulsante "Crea nuova categoria" (form Da Nome/URL/Testo) ── */
+.select-con-nuova-categoria {
+    display: flex;
+    gap: 8px;
+}
+.select-con-nuova-categoria .form-select {
+    flex: 1;
+    min-width: 0;
+}
+.btn-nuova-categoria {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    color: var(--accent);
+    cursor: pointer;
+    transition: all var(--transition);
+    flex-shrink: 0;
+}
+.btn-nuova-categoria:hover {
+    border-color: var(--accent);
+    background: var(--bg-hover);
+}
+.btn-nuova-categoria svg { width: 16px; height: 16px; }

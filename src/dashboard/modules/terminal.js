@@ -58,6 +58,10 @@ export function handleWsMessage(data) {
             if (data.success) {
                 window.imageCacheBuster = Date.now();
             }
+            // Rilanciato anche come evento DOM: chi aspetta UN job preciso
+            // (es. nuova-categoria.js) si mette in ascolto qui senza
+            // contendersi l'unico wsMessageHandler, che resta all'orchestratore.
+            document.dispatchEvent(new CustomEvent('ws:job-end', { detail: data }));
             if (wsMessageHandler) wsMessageHandler(data);
             break;
     }

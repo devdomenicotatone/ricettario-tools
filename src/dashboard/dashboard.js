@@ -5,6 +5,7 @@
  */
 
 import { initCategorieUI } from './modules/categorie-ui.js';
+import { initNuovaCategoriaButtons } from './modules/nuova-categoria.js';
 import { initNavigation, restorePanelFromHash } from './modules/navigation.js';
 import { connectWebSocket, setWsMessageHandler, restoreTerminalState, toggleTerminal, toggleTerminalPin, toggleExpandTerminal, clearTerminal } from './modules/terminal.js';
 import { fetchStatus, loadStats, switchGeminiKey, showUsedImagesMenu } from './modules/stats.js';
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Inizializza filtri e drag & drop ricette
     initRecipeFilters();
     initDragAndDrop();
+    initNuovaCategoriaButtons();
 
     // 3. Inizializza modali e pannelli
     initImageModal();

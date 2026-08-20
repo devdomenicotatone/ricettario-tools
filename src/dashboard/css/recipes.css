@@ -563,3 +563,13 @@
     font-size: 15px;
     margin-bottom: 16px;
 }
+
+/* ── Chip "+ Nuova" in coda ai filtri: crea una categoria senza spostare ricette ── */
+.recipe-cat-tab-add {
+    border-style: dashed;
+    color: var(--accent);
+}
+.recipe-cat-tab-add:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}

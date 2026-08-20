@@ -31,6 +31,7 @@ export const CATEGORY_COLORS = {
     'Dolci':     '#e91e63',
     'Condimenti':'#2ecc71',
     'Conserve':  '#9b59b6',
+    'Bevande':   '#1abc9c',
 };
 
 export const CATEGORY_ICONS = {
@@ -43,6 +44,7 @@ export const CATEGORY_ICONS = {
     'Condimenti': 'leaf',      // Fluent: herb ✅
     'Conserve': 'package',     // Fluent: canned-food
     'Secondi Piatti': 'utensils', // Fluent: fork-and-knife
+    'Bevande': 'cup-soda',     // Fluent: tropical-drink
 };
 
 // Nomi e cartelle invece arrivano dal registry del sito (js/categories.js, servito
@@ -59,6 +61,22 @@ export const CATEGORY_DIR_MAP = Object.fromEntries(
 );
 
 export const ALL_CATEGORIES = CHIAVI_CATEGORIE.map(k => CATEGORIES[k].name);
+
+/**
+ * Riallinea le mappe qui sopra al registry riletto da disco (lo passa
+ * refreshCategorieUI dopo una "nuova categoria" da punto d'ingresso neutro):
+ * l'import statico in testa al file resta congelato al boot, quindi senza
+ * questo aggancio la categoria nuova non avrebbe cartella in CATEGORY_DIR_MAP.
+ * Additivo: le rimozioni hanno già il loro flusso con gli splice.
+ */
+export function syncRegistroCategorie(registry) {
+    if (!registry?.CATEGORIES) return;
+    for (const k of Object.keys(registry.CATEGORIES)) {
+        const { name, dir } = registry.CATEGORIES[k];
+        if (!ALL_CATEGORIES.includes(name)) ALL_CATEGORIES.push(name);
+        CATEGORY_DIR_MAP[name] = dir;
+    }
+}
 
 window.imageCacheBuster = window.imageCacheBuster || Date.now();
 
@@ -145,16 +163,29 @@ function updateCategoryTabs() {
         </button>`;
     });
 
+    // Chip "+" in coda: crea una categoria e basta — al contrario della voce
+    // nel dropdown del badge card, nessuna ricetta viene spostata.
+    html += `<button class="recipe-cat-tab recipe-cat-tab-add" title="Crea una nuova categoria (non sposta nessuna ricetta)">
+        <i data-lucide="plus"></i> Nuova
+    </button>`;
+
     tabsEl.innerHTML = html;
     if (window.lucide) lucide.createIcons();
 
-    tabsEl.querySelectorAll('.recipe-cat-tab').forEach(tab => {
+    // Solo le chip con data-category filtrano: la chip "+" ha un altro mestiere.
+    tabsEl.querySelectorAll('.recipe-cat-tab[data-category]').forEach(tab => {
         tab.addEventListener('click', () => {
             recipeFilter.category = tab.dataset.category;
             tabsEl.querySelectorAll('.recipe-cat-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             renderRecipes();
         });
+    });
+
+    const chipNuova = tabsEl.querySelector('.recipe-cat-tab-add');
+    chipNuova?.addEventListener('click', async () => {
+        const { showNuovaCategoriaPopup } = await import('./nuova-categoria.js');
+        showNuovaCategoriaPopup(chipNuova);
     });
 }
 

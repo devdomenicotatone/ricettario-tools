@@ -11,15 +11,19 @@
 
 import { CATEGORIES, CATEGORY_ORDER } from '/shared/categories.js';
 
-const CHIAVI = [
-    ...CATEGORY_ORDER.filter(k => CATEGORIES[k]),
-    ...Object.keys(CATEGORIES).filter(k => !CATEGORY_ORDER.includes(k)),
-];
-
 // I tre form di creazione: "Da Nome", "Da URL", "Da Testo".
 const SELECT_CATEGORIA = ['gen-tipo', 'url-tipo', 'testo-tipo'];
 
-export function initCategorieUI() {
+function chiaviOrdinate(categorie, ordine) {
+    return [
+        ...ordine.filter(k => categorie[k]),
+        ...Object.keys(categorie).filter(k => !ordine.includes(k)),
+    ];
+}
+
+function applicaRegistry(categorie, ordine) {
+    const CHIAVI = chiaviOrdinate(categorie, ordine);
+
     for (const id of SELECT_CATEGORIA) {
         const select = document.getElementById(id);
         if (!select) continue;
@@ -33,7 +37,7 @@ export function initCategorieUI() {
         select.appendChild(auto);
 
         for (const chiave of CHIAVI) {
-            const cat = CATEGORIES[chiave];
+            const cat = categorie[chiave];
             const opt = document.createElement('option');
             opt.value = cat.name;
             opt.textContent = `${cat.unicode} ${cat.name}`;
@@ -46,14 +50,44 @@ export function initCategorieUI() {
 
     const tabs = document.getElementById('seoTabs');
     if (tabs) {
+        // In un refresh la tab attiva va conservata: azzerarla mentre l'utente
+        // guarda i suggerimenti di una categoria gli cambierebbe pagina da solo.
+        const attiva = tabs.querySelector('.seo-tab.active')?.dataset.category;
         tabs.replaceChildren();
         CHIAVI.forEach((chiave, i) => {
-            const cat = CATEGORIES[chiave];
+            const cat = categorie[chiave];
             const btn = document.createElement('button');
-            btn.className = i === 0 ? 'seo-tab active' : 'seo-tab';
+            const isActive = attiva ? cat.name === attiva : i === 0;
+            btn.className = isActive ? 'seo-tab active' : 'seo-tab';
             btn.dataset.category = cat.name;
             btn.textContent = `${cat.unicode} ${cat.name}`;
             tabs.appendChild(btn);
         });
+        if (!tabs.querySelector('.seo-tab.active') && tabs.firstElementChild) {
+            tabs.firstElementChild.classList.add('active');
+        }
+    }
+}
+
+export function initCategorieUI() {
+    applicaRegistry(CATEGORIES, CATEGORY_ORDER);
+}
+
+/**
+ * Rilegge il registry dal disco e riallinea tendine e tab SEO senza ricaricare
+ * la pagina. Serve dopo /api/aggiungi-categoria: l'import statico qui sopra
+ * resta congelato alla versione caricata al boot, il cache-buster nell'URL
+ * costringe il browser a richiedere il file appena riscritto dal server.
+ * Ritorna il modulo fresco (o null), così chi chiama può riallineare anche le
+ * proprie mappe (vedi syncRegistroCategorie in recipe-list.js).
+ */
+export async function refreshCategorieUI() {
+    try {
+        const mod = await import(`/shared/categories.js?v=${Date.now()}`);
+        applicaRegistry(mod.CATEGORIES, mod.CATEGORY_ORDER);
+        return mod;
+    } catch (err) {
+        console.warn('refreshCategorieUI: registry non ricaricabile:', err);
+        return null;
     }
 }
