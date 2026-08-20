@@ -225,6 +225,15 @@ REGOLE TASSATIVE — VIOLARNE ANCHE UNA SOLA INVALIDA IL FIX:
                         const fixed = parseClaudeJson(fixedText);
                         if (!fixed?.title) throw new Error('JSON corretto non valido');
 
+                        // «NON TOCCARE MAI slug» sta nel prompt, ma un prompt non
+                        // è un contratto: se il modello lo ha cambiato lo si
+                        // reimpone qui, perché slug === nome file è ciò che tiene
+                        // in piedi la build del sito (`scripts/build-recipes.js`).
+                        if (fixed.slug !== s) {
+                            ctx.log(`  🔒 ${s}: il fix aveva cambiato lo slug in "${fixed.slug}" — reimpostato al nome del file`);
+                            fixed.slug = s;
+                        }
+
                         // Validazione schema post-fix: verifica che il fix non abbia peggiorato la situazione
                         const postFixValidation = validateRecipeSchema(fixed);
                         if (postFixValidation.errors.length > 0) {

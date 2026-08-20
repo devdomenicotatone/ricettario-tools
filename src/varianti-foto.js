@@ -1,5 +1,6 @@
 /**
- * VARIANTI RESPONSIVE — genera i file -640 e aggiorna la mappa del sito
+ * VARIANTI RESPONSIVE — genera, sposta e rimuove i file -640 e la voce
+ * nella mappa del sito, SEMPRE insieme
  *
  * Il sito emette `srcset` a due larghezze per le foto che stanno nella mappa
  * `Ricettario/js/dimensioni-foto.js` (vedi il suo header): l'INVARIANTE è che
@@ -18,7 +19,7 @@
  * webp quality 75, larghezza 640.
  */
 
-import { readFileSync, writeFileSync, unlinkSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync, existsSync, renameSync } from 'fs';
 import { sep, posix } from 'path';
 
 /**
@@ -86,6 +87,13 @@ export function scriviVoceMappa(fileMappa, chiave, larghezza, altezza) {
  */
 export async function aggiungiVariantiResponsive(webpPath) {
     const sharp = (await import('sharp')).default;
+    // Questo è l'unico punto della pipeline dove sharp legge un FILE (ovunque
+    // altrove riceve buffer), e la cache di libvips tiene aperto l'handle dei
+    // file letti: su Windows il webp appena passato di qui non si può né
+    // cancellare (elimina) né rinominare (cambia categoria) — EBUSY finché il
+    // server non riavvia. Ogni foto si legge una volta sola: la cache non
+    // compra niente.
+    sharp.cache(false);
     const { chiave, fileMappa, base640 } = coordinate(webpPath);
     if (!existsSync(fileMappa)) throw new Error(`mappa non trovata: ${fileMappa}`);
 
@@ -106,4 +114,108 @@ export async function aggiungiVariantiResponsive(webpPath) {
         throw err;
     }
     return { width: meta.width, height: meta.height, chiave };
+}
+
+/** Legge `[larghezza, altezza]` di una voce, o null se la voce non c'è. */
+function leggiVoceMappa(fileMappa, chiave) {
+    if (!existsSync(fileMappa)) return null;
+    const riga = readFileSync(fileMappa, 'utf-8').split('\n')
+        .find(r => r.startsWith(`  '${chiave}':`));
+    const m = riga?.match(/\[(\d+), (\d+)\]/);
+    return m ? [Number(m[1]), Number(m[2])] : null;
+}
+
+/**
+ * Toglie una voce dalla mappa senza toccare il resto del file; false se la
+ * voce non c'era. Speculare a scriviVoceMappa (stesso riconoscimento della
+ * riga, nessuna sistemazione di virgole: ogni voce chiude con la sua).
+ */
+export function rimuoviVoceMappa(fileMappa, chiave) {
+    const righe = readFileSync(fileMappa, 'utf-8').split('\n');
+    const idx = righe.findIndex(r => r.startsWith(`  '${chiave}':`));
+    if (idx === -1) return false;
+    righe.splice(idx, 1);
+    writeFileSync(fileMappa, righe.join('\n'), 'utf-8');
+    return true;
+}
+
+/**
+ * Smonta quello che aggiungiVariantiResponsive ha montato: voce nella mappa
+ * e file -640. Per l'endpoint elimina della dashboard, che cancellava JSON,
+ * sidecar e immagini base ma lasciava questi due pezzi: il 20/08/2026 (due
+ * volte) i -640 orfani hanno bloccato il deploy al controllo «risorse che
+ * nessuna pagina referenzia» di scripts/verifica-build.js.
+ *
+ * PRIMA la voce, POI i file: se la riscrittura della mappa fallisse dopo gli
+ * unlink resterebbe una voce che punta a file assenti, cioè srcset che
+ * fanno 404. L'ordine inverso al peggio lascia orfani, che il cancello
+ * segnala. Idempotente: su una ricetta senza varianti non fa niente.
+ *
+ * @returns {{chiave:string, voceRimossa:boolean, rimossi:string[]}}
+ */
+export function rimuoviVariantiResponsive(webpPath) {
+    const { chiave, fileMappa, base640 } = coordinate(webpPath);
+    const voceRimossa = existsSync(fileMappa) && rimuoviVoceMappa(fileMappa, chiave);
+    const rimossi = [];
+    for (const est of ['.avif', '.webp']) {
+        const f = `${base640}${est}`;
+        if (existsSync(f)) {
+            unlinkSync(f);
+            rimossi.push(f);
+        }
+    }
+    return { chiave, voceRimossa, rimossi };
+}
+
+/**
+ * Segue l'originale quando cambia cartella: sposta i -640 e ricalca la voce
+ * sulla chiave nuova, con le stesse dimensioni (la foto non è cambiata).
+ * Per /api/cambia-categoria, che spostava solo .webp/.avif base: il
+ * 20/08/2026 un cambio categoria ha lasciato 4 file -640 orfani in conserve/.
+ *
+ * Se lo stato di partenza è zoppo — coppia -640 incompleta, o varianti senza
+ * voce (brisket e pulled pork sono nati così) — non si rattoppa: si rigenera
+ * tutto dall'originale appena spostato, che è la fonte. Ricetta mai entrata
+ * nella pipeline varianti (né voce né file): non fa niente e torna null.
+ *
+ * @returns {Promise<{chiave:string, spostati:string[], rigenerate:boolean}|null>}
+ */
+export async function spostaVariantiResponsive(vecchioWebp, nuovoWebp) {
+    const da = coordinate(vecchioWebp);
+    const a = coordinate(nuovoWebp);
+
+    // Voce vecchia via per prima, qualunque cosa succeda dopo: la sua chiave
+    // non corrisponde più a niente (l'originale è già stato spostato).
+    const dims = leggiVoceMappa(da.fileMappa, da.chiave);
+    if (dims) rimuoviVoceMappa(da.fileMappa, da.chiave);
+
+    const spostati = [];
+    for (const est of ['.avif', '.webp']) {
+        const sorgente = `${da.base640}${est}`;
+        if (existsSync(sorgente)) {
+            renameSync(sorgente, `${a.base640}${est}`);
+            spostati.push(`${a.base640}${est}`);
+        }
+    }
+
+    const coppia = ['.avif', '.webp'].every(est => existsSync(`${a.base640}${est}`));
+    if (coppia && dims) {
+        try {
+            scriviVoceMappa(a.fileMappa, a.chiave, dims[0], dims[1]);
+        } catch (err) {
+            // Stessa compensazione di aggiungiVariantiResponsive: mai lasciare
+            // file senza voce. I -640 si rifanno dall'originale, quindi
+            // toglierli non perde niente.
+            for (const est of ['.avif', '.webp']) {
+                try { unlinkSync(`${a.base640}${est}`); } catch { /* già assente */ }
+            }
+            throw err;
+        }
+        return { chiave: a.chiave, spostati, rigenerate: false };
+    }
+
+    if (!dims && spostati.length === 0) return null;
+
+    const dim = await aggiungiVariantiResponsive(nuovoWebp);
+    return { chiave: dim.chiave, spostati, rigenerate: true };
 }

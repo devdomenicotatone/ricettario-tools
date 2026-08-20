@@ -560,6 +560,21 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
                 });
             }
 
+            // Lo slug È il nome del file: `scripts/build-recipes.js` del sito si
+            // ferma se divergono, e questo PATCH scrive comunque in `<slug>.json`
+            // (il parametro dell'URL), quindi un valore diverso nel corpo non
+            // rinomina niente — lascia solo un repo che non builda più. Successo
+            // davvero (succo-di-more, 20/08/2026): l'auto-save dell'editor ha
+            // scritto uno stato intermedio del campo. L'editor ora mostra lo slug
+            // in sola lettura; questo rifiuto è il contratto per tutti gli altri
+            // client, e arriva PRIMA della copia di sicurezza e della scrittura.
+            if (updatedRecipe.slug !== slug) {
+                return res.status(400).json({
+                    error: `Lo slug deve coincidere con il nome del file: atteso "${slug}", ricevuto "${updatedRecipe.slug}". `
+                        + 'Rinominare una ricetta richiede una rinomina completa (JSON, sidecar, immagini, indici), non la modifica di questo campo.',
+                });
+            }
+
             const originalContent = readFileSync(jsonFile, 'utf-8');
             const versioneDisco = improntaVersione(originalContent);
 
@@ -884,6 +899,26 @@ export function setupRecipeRoutes(app, { getRicettarioPath, nextJobId, createJob
                             } catch (e) {
                                 ctx.log(`  ⚠️ ${f.split(/[/\\]/).pop()}: ${e.message}`);
                             }
+                        }
+
+                        // ── Varianti responsive -640 + voce in dimensioni-foto.js ──
+                        // Vivono nel repo del sito accanto all'immagine base ma non
+                        // stavano in filesToDelete: i -640 orfani bloccano il deploy
+                        // al controllo «risorse che nessuna pagina referenzia», e la
+                        // voce rimasta nella mappa viola l'invariante voce ⇔ varianti
+                        // (successo due volte il 20/08/2026).
+                        try {
+                            const { rimuoviVariantiResponsive } = await import('../../varianti-foto.js');
+                            const webpBase = percorsoImmagineRicetta(folder, slug, { ricettarioPath });
+                            const { chiave, voceRimossa, rimossi } = rimuoviVariantiResponsive(webpBase);
+                            for (const f of rimossi) {
+                                ctx.log(`  ✅ ${f.split('/').pop()}`);
+                            }
+                            if (voceRimossa) {
+                                ctx.log(`  ✅ voce '${chiave}' tolta da js/dimensioni-foto.js`);
+                            }
+                        } catch (e) {
+                            ctx.log(`  ⚠️ varianti -640 non rimosse: ${e.message}`);
                         }
 
                         deleted++;

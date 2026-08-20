@@ -17,7 +17,7 @@ const __dirname = dirname(__filename);
  */
 const BACKUP_DIR = resolve(__dirname, '..', '..', '..', 'data', 'backup-categorie');
 
-// ── Helper condivisi per riscrivere i registry (js/categories.js, js/emoji.js) ──
+// ── Helper condivisi per riscrivere i registry (js/categories.js, js/emoji-core.js) ──
 
 /**
  * Rende una stringa sicura dentro un literal JS con apici singoli.
@@ -36,9 +36,10 @@ export function escJs(str) {
 
 /**
  * Regex che riconosce la dichiarazione `const NOME`, con o senza `export`.
- * Non tutti i registry del sito esportano: `EMOJI_MAP` in js/emoji.js è un
- * `const` interno al modulo, e cercare solo `export const` significava non
- * trovarlo mai — e scrivere il file identico dichiarando "aggiornato".
+ * La forma non è garantita: `EMOJI_MAP` era un `const` interno quando viveva
+ * in js/emoji.js, oggi è un `export const` in js/emoji-core.js — e cercare
+ * solo `export const` significava non trovarlo mai, cioè scrivere il file
+ * identico dichiarando "aggiornato".
  */
 function reDichiarazione(constName) {
     return new RegExp(`(?:export\\s+)?const\\s+${constName}\\b`);
@@ -174,13 +175,13 @@ export async function leggiRegistry(contenuto) {
 }
 
 /**
- * Stessa rete di sicurezza per js/emoji.js, l'altro file del sito che queste
- * rotte riscrivono. Non si può valutare intero come fa `leggiRegistry`: importa
- * `./router.js`, `./icons.js` e `./categories.js`, specificatori relativi che da
- * un `data:` URL non si risolvono. Si estrae quindi il solo blocco
+ * Stessa rete di sicurezza per js/emoji-core.js, l'altro file del sito che
+ * queste rotte riscrivono. Non si può valutare intero come fa `leggiRegistry`:
+ * importa `./categories.js`, specificatore relativo che da un `data:` URL non
+ * si risolve. Si estrae quindi il solo blocco
  * `const EMOJI_MAP = { ... };` — un oggetto di sole stringhe — e si valuta quello.
  * Se la riscrittura ha prodotto JS non valido, l'import lancia PRIMA della
- * scrittura: senza, un emoji.js rotto manda giù la SPA del sito intera.
+ * scrittura: senza, un emoji-core.js rotto manda giù SPA e pre-rendering insieme.
  */
 export async function leggiEmojiMap(contenuto) {
     const decl = reDichiarazione('EMOJI_MAP').exec(contenuto);
@@ -268,6 +269,28 @@ export function setupCategoryRoutes(app, { getRicettarioPath, nextJobId, createJ
                 if (existsSync(oldImgAvif)) {
                     renameSync(oldImgAvif, newImgAvif);
                     ctx.log(`  ✅ ${slug}.avif`);
+                }
+
+                // 3.1 Varianti responsive -640 + voce in dimensioni-foto.js.
+                // Devono seguire l'originale: spostare solo .webp/.avif lasciava
+                // i -640 nella cartella vecchia (orfani che bloccano il deploy) e
+                // la voce nella mappa sulla chiave vecchia — il 20/08/2026 un
+                // cambio categoria ha lasciato così 4 file orfani in conserve/.
+                // Se fallisce la ricetta degrada al markup senza srcset: non è
+                // un motivo per annullare il cambio di categoria già fatto.
+                try {
+                    const { spostaVariantiResponsive } = await import('../../varianti-foto.js');
+                    const esito = await spostaVariantiResponsive(oldImgWebp, newImgWebp);
+                    if (esito) {
+                        for (const f of esito.spostati) {
+                            ctx.log(`  ✅ ${f.split('/').pop()}`);
+                        }
+                        ctx.log(esito.rigenerate
+                            ? `  ✅ varianti -640 rigenerate e voce '${esito.chiave}' riscritta in js/dimensioni-foto.js`
+                            : `  ✅ voce '${esito.chiave}' aggiornata in js/dimensioni-foto.js`);
+                    }
+                } catch (e) {
+                    ctx.log(`  ⚠️ varianti -640 non spostate: ${e.message} — rigenerale con un refresh della foto`);
                 }
 
                 // 3.5 Sposta altri file (html, md, backup)
@@ -474,18 +497,20 @@ REGOLE:
                 CATEGORY_FOLDERS[categoryName] = slug;
                 CATEGORIES_DATA[catKey] = { emoji: metadata.unicodeEmoji, label: categoryName, order: nextOrder };
 
-                // ── 5. Aggiorna emoji.js (frontend SPA) — EMOJI_MAP ──
+                // ── 5. Aggiorna emoji-core.js — EMOJI_MAP ──
                 // Passo secondario: se fallisce non annulliamo la categoria appena creata,
-                // ma lo diciamo. Prima l'errore era invisibile — EMOJI_MAP non è esportata,
-                // l'inserimento non avveniva mai e il file veniva riscritto identico con
-                // sopra scritto "💾 emoji.js aggiornato".
+                // ma lo diciamo (in passato l'errore era invisibile e il file veniva
+                // riscritto identico con sopra "💾 aggiornato"). La mappa vive in
+                // js/emoji-core.js, condivisa da SPA e pre-rendering: js/emoji.js è
+                // solo il wrapper SPA e non dichiara EMOJI_MAP, quindi puntare lì
+                // faceva fallire ogni inserimento con «dichiarazione non trovata».
                 if (emojiDownloaded) {
-                    const emojiJsPath = resolve(ricettarioPath, 'js', 'emoji.js');
+                    const emojiCorePath = resolve(ricettarioPath, 'js', 'emoji-core.js');
                     const emojiKey = escJs(metadata.fluentEmojiSlug);
                     try {
-                        const emojiPrima = readFileSync(emojiJsPath, 'utf-8');
+                        const emojiPrima = readFileSync(emojiCorePath, 'utf-8');
                         if (emojiPrima.includes(`'${emojiKey}':`)) {
-                            ctx.log(`ℹ️ emoji.js invariato: "${emojiKey}" è già in EMOJI_MAP`);
+                            ctx.log(`ℹ️ emoji-core.js invariato: "${emojiKey}" è già in EMOJI_MAP`);
                         } else {
                             const emojiDopo = insertBeforeBlockClose(emojiPrima, 'EMOJI_MAP',
                                 '\n};', `  '${emojiKey}': '${emojiKey}',`);
@@ -501,11 +526,11 @@ REGOLE:
                                     `${Object.keys(mapDopo).length} voci). Non ho scritto niente.`
                                 );
                             }
-                            writeFileSync(emojiJsPath, emojiDopo, 'utf-8');
-                            ctx.log(`💾 emoji.js aggiornato ('${emojiKey}' aggiunta a EMOJI_MAP)`);
+                            writeFileSync(emojiCorePath, emojiDopo, 'utf-8');
+                            ctx.log(`💾 emoji-core.js aggiornato ('${emojiKey}' aggiunta a EMOJI_MAP)`);
                         }
                     } catch (emojiErr) {
-                        ctx.log(`⚠️ emoji.js NON aggiornato: ${emojiErr.message}`);
+                        ctx.log(`⚠️ emoji-core.js NON aggiornato: ${emojiErr.message}`);
                     }
                 }
 
@@ -681,27 +706,27 @@ REGOLE:
                 writeFileSync(categoriesPath, catContent, 'utf-8');
                 ctx.log(`💾 js/categories.js del sito aggiornato (${Object.keys(regDopo.CATEGORIES).length} categorie rimaste)`);
 
-                // ── 6. Aggiorna emoji.js se l'emoji era stata aggiunta ──
+                // ── 6. Aggiorna emoji-core.js se l'emoji era stata aggiunta ──
                 // La chiave di EMOJI_MAP è lo slug Fluent ('baguette-bread'), non l'emoji
                 // unicode: CATEGORIES_DATA.emoji contiene l'unicode, quindi lo slug si legge
                 // dal registro del sito com'era PRIMA della rimozione.
-                const emojiJsPath = resolve(ricettarioPath, 'js', 'emoji.js');
+                const emojiCorePath = resolve(ricettarioPath, 'js', 'emoji-core.js');
                 const fluentSlug = regPrima.CATEGORIES[catKey]?.emoji;
-                if (existsSync(emojiJsPath) && fluentSlug) {
+                if (existsSync(emojiCorePath) && fluentSlug) {
                     // Nessun'altra categoria deve usare lo stesso slug Fluent. La
                     // domanda si fa al registry GIÀ RILETTO, non al testo del file:
                     // cercare la sottostringa `'baguette-bread'` in js/categories.js
                     // pescava anche il commento JSDoc di CATEGORY_EMOJI_MAP
                     // (`Es: { Pane: 'baguette-bread', Pizza: 'pizza', ... }`), quindi
                     // per `pane` e `pizza` il job dichiarava «è usata anche da
-                    // un'altra categoria» — falso — e non toccava emoji.js.
+                    // un'altra categoria» — falso — e non toccava la mappa.
                     const ancoraUsata = Object.values(regDopo.CATEGORIES)
                         .some(c => c.emoji === fluentSlug);
                     if (ancoraUsata) {
-                        ctx.log(`ℹ️ emoji.js invariato: "${fluentSlug}" è usata anche da un'altra categoria`);
+                        ctx.log(`ℹ️ emoji-core.js invariato: "${fluentSlug}" è usata anche da un'altra categoria`);
                     } else {
                         try {
-                            const emojiPrima = readFileSync(emojiJsPath, 'utf-8');
+                            const emojiPrima = readFileSync(emojiCorePath, 'utf-8');
                             const emojiDopo = removeLineFromBlock(emojiPrima, 'EMOJI_MAP', `'${fluentSlug}':`);
                             if (emojiDopo === emojiPrima) throw new Error('contenuto invariato');
                             // Rete di sicurezza, come per js/categories.js.
@@ -714,10 +739,10 @@ REGOLE:
                                     `${Object.keys(mapDopo).length} voci). Non ho scritto niente.`
                                 );
                             }
-                            writeFileSync(emojiJsPath, emojiDopo, 'utf-8');
-                            ctx.log(`💾 emoji.js aggiornato (emoji ${fluentSlug} rimossa)`);
+                            writeFileSync(emojiCorePath, emojiDopo, 'utf-8');
+                            ctx.log(`💾 emoji-core.js aggiornato (emoji ${fluentSlug} rimossa)`);
                         } catch (emojiErr) {
-                            ctx.log(`⚠️ emoji.js NON aggiornato: ${emojiErr.message}`);
+                            ctx.log(`⚠️ emoji-core.js NON aggiornato: ${emojiErr.message}`);
                         }
                     }
                 }
