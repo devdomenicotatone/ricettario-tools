@@ -60,6 +60,18 @@ const CATEGORY_AXES = {
         'Cremosità / Densità',
         'Dolcezza / Rotondità',
         'Intensità Aromatica'
+    ],
+    // Bevande (succhi, frullati, infusi e bevande calde): famiglia omogenea
+    // come i condimenti — cinque dimensioni che ogni bevanda può esprimere.
+    // 'Dolcezza Percepita' e 'Intensità Aromatica' riusano etichette già in
+    // uso nel sito; acidità-freschezza, corpo e persistenza sono il
+    // vocabolario standard di ogni degustazione di succhi e infusi.
+    'Bevande': [
+        'Dolcezza Percepita',
+        'Acidità / Freschezza',
+        'Intensità Aromatica',
+        'Corpo / Densità',
+        'Persistenza al Palato'
     ]
 };
 
