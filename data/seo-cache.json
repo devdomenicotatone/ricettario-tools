@@ -3398,5 +3398,262 @@
         "source": "dataforseo"
       }
     ]
+  },
+  "Bevande": {
+    "timestamp": 1787186818398,
+    "suggestions": [
+      {
+        "keyword": "ricetta bevande fermentate",
+        "popularity": {
+          "score": 100,
+          "label": "Top 1",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta bevande starbucks",
+        "popularity": {
+          "score": 94,
+          "label": "Top 3",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta bevanda fresca",
+        "popularity": {
+          "score": 91,
+          "label": "Top 4",
+          "emoji": "🔥"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "bevande fatte in casa per digerire",
+        "popularity": {
+          "score": 82,
+          "label": "Top 7",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "bevande fatte in casa che fanno dimagrire",
+        "popularity": {
+          "score": 76,
+          "label": "Top 9",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come preparare bevande fermentate",
+        "popularity": {
+          "score": 73,
+          "label": "Top 10",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come preparare bevande con semi di chia",
+        "popularity": {
+          "score": 70,
+          "label": "Top 11",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come preparare una bevanda dissetante",
+        "popularity": {
+          "score": 67,
+          "label": "Top 12",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come preparare bevanda energetica",
+        "popularity": {
+          "score": 64,
+          "label": "Top 13",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "preparare bevande",
+        "popularity": {
+          "score": 61,
+          "label": "Top 14",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come preparare bevanda alla menta",
+        "popularity": {
+          "score": 58,
+          "label": "Top 15",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "ricetta bevande",
+        "popularity": {
+          "score": 55,
+          "label": "Top 16",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "bevande fatti in casa",
+        "popularity": {
+          "score": 52,
+          "label": "Top 17",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "come preparare bevande",
+        "popularity": {
+          "score": 49,
+          "label": "Top 18",
+          "emoji": "📈"
+        },
+        "volume": null,
+        "competition": null,
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "autocomplete"
+      },
+      {
+        "keyword": "bevande fresche fatte in casa",
+        "popularity": {
+          "score": 0.7,
+          "label": "70/mese",
+          "emoji": "📊"
+        },
+        "volume": 70,
+        "competition": "LOW",
+        "cpc": 0.02,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "bevande fatte in casa",
+        "popularity": {
+          "score": 0.3,
+          "label": "30/mese",
+          "emoji": "📊"
+        },
+        "volume": 30,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "bevande fatte in casa per dimagrire",
+        "popularity": {
+          "score": 0.2,
+          "label": "20/mese",
+          "emoji": "📊"
+        },
+        "volume": 20,
+        "competition": "LOW",
+        "cpc": null,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      },
+      {
+        "keyword": "ricetta bevande estive",
+        "popularity": {
+          "score": 0.1,
+          "label": "10/mese",
+          "emoji": "📊"
+        },
+        "volume": 10,
+        "competition": "LOW",
+        "cpc": 0.52,
+        "category": "Bevande",
+        "alreadyCreated": false,
+        "source": "dataforseo"
+      }
+    ]
   }
 }
