@@ -560,12 +560,19 @@ function extractFromHtml(html) {
 export function compareRecipes(claudeRecipe, realSources) {
     const validSources = realSources.filter(Boolean);
     if (validSources.length === 0) {
+        // Stessa forma del ritorno normale: qui c'era `sources` al posto di
+        // `sourcesUsed`, e generateReport, che legge `sourcesUsed.length`, si
+        // rompeva. Senza fonti valide la validazione finiva in eccezione invece
+        // che in un report che lo dice (successo a ottobre 2026 con
+        // l'olio al peperone crusco: dieci risultati, nessuno una ricetta).
         return {
             confidence: 0,
             message: 'Nessuna fonte reale trovata per il confronto',
             matches: [],
             warnings: ['Impossibile validare — nessuna fonte disponibile'],
-            sources: [],
+            details: [],
+            ingredientAnalysis: [],
+            sourcesUsed: [],
         };
     }
 
