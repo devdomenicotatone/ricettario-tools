@@ -5643,7 +5643,68 @@
         "protein": 0,
         "fat": 100
       }
+    },
+    "tuorlo": {
+      "nome": "Tuorlo",
+      "grafie": [
+        "Tuorlo"
+      ],
+      "ricette": 1,
+      "grammiTotali": 40,
+      "fdcId": 748236,
+      "fdc": "Eggs, Grade A, Large, egg yolk",
+      "dataType": "Foundation",
+      "per100g": {
+        "kcal": 334,
+        "carbs": 1.02,
+        "protein": 16.2,
+        "fat": 28.8
+      },
+      "confidenza": "alta",
+      "motivo": "curato a mano il 04/10/2026: sinonimo di «tuorlo d'uovo», stessa voce USDA e stessi numeri",
+      "daRivedere": false
+    },
+    "burro di qualità superiore": {
+      "nome": "Burro di Qualità Superiore",
+      "grafie": [
+        "Burro di Qualità Superiore"
+      ],
+      "ricette": 1,
+      "grammiTotali": 250,
+      "fdcId": 173430,
+      "fdc": "Butter, without salt",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 717,
+        "carbs": 0.06,
+        "protein": 0.85,
+        "fat": 81.1
+      },
+      "confidenza": "media",
+      "motivo": "curato a mano il 04/10/2026: burro da sfogliatura (84% m.g.), stessa voce di «burro» (81% m.g.) e stessi numeri",
+      "daRivedere": false
+    },
+    "estratto di vaniglia naturale": {
+      "nome": "Estratto di Vaniglia Naturale",
+      "grafie": [
+        "Estratto di Vaniglia Naturale"
+      ],
+      "ricette": 1,
+      "grammiTotali": 3,
+      "fdcId": 173471,
+      "fdc": "Vanilla extract",
+      "dataType": "SR Legacy",
+      "per100g": {
+        "kcal": 288,
+        "carbs": 12.6,
+        "protein": 0.06,
+        "fat": 0.06
+      },
+      "confidenza": "alta",
+      "motivo": "curato a mano il 04/10/2026: sinonimo di «estratto di vaniglia», stessa voce USDA e stessi numeri",
+      "daRivedere": false,
+      "alcolPer100g": 34.4
     }
   },
-  "aggiornato": "2026-07-28T15:31:21.617Z"
+  "aggiornato": "2026-10-04T12:40:38.844Z"
 }
