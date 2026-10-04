@@ -12,7 +12,19 @@
 
 // ── Costanti ──
 
-import { ALL_CATEGORIES, CATEGORIES_DATA } from './constants.js';
+import { resolve } from 'path';
+import { pathToFileURL } from 'url';
+import { ALL_CATEGORIES, CATEGORIES_DATA, RICETTARIO_DIR } from './constants.js';
+
+// La grammatica dei token, e la regola su DOVE un token può stare, non si
+// riscrivono qui: vivono nel sito (`js/token-dosi.js`), che con la stessa
+// funzione boccia la build in `scripts/build-recipes.js`. È lo stesso
+// accoppiamento di constants.js con `js/categories.js`. Finché questo schema non
+// conosceva la regola, la generazione salvava come valida una ricetta che il
+// sito poi rifiutava, bloccando l'indice intero.
+const { graffeFuoriPosto, risolviTokenTesto } = await import(
+    pathToFileURL(resolve(RICETTARIO_DIR, 'js', 'token-dosi.js')).href
+);
 
 // ── Costanti ──
 
@@ -246,6 +258,14 @@ export function validateRecipeSchema(recipe) {
         }
     }
 
+    // Graffe che il sito non risolverebbe: stessa funzione del cancello della
+    // build, così la ricetta si ferma qui e non al sync, a JSON già scritto.
+    for (const { campo, rotto } of graffeFuoriPosto(recipe)) {
+        errors.push(rotto
+            ? `Token malformato in "${campo}": ${JSON.stringify(rotto)} — la grammatica è {id:numero} o {id:numero!}`
+            : `Graffe in "${campo}": il sito risolve i token solo nel testo degli step, qui arriverebbero al lettore come testo grezzo`);
+    }
+
     // Validazione idratazione vs ingredienti reali (Baker's Percentage)
     // L'idratazione si calcola su TUTTA la farina e TUTTA l'acqua del prodotto finale,
     // inclusi i pre-impasti (biga, poolish, ecc.). Gli ingredienti "assemblati"
@@ -413,6 +433,54 @@ export function validateRecipeSchema(recipe) {
         valid: errors.length === 0,
         score: errors.length === 0 ? (warnings.length === 0 ? 100 : Math.max(60, 100 - warnings.length * 5)) : 0,
     };
+}
+
+
+// ── Normalizzazione ──
+
+/**
+ * Riscrive come testo semplice i token che stanno FUORI dagli step.
+ *
+ * Il prompt chiede i token per le dosi del procedimento e il suffisso `!` per
+ * temperature e tempi, e il modello ogni tanto li usa anche altrove: i cornetti
+ * di ottobre 2026 avevano «{temp_rigenerazione:170!}°C» in `storage`. Lì il sito
+ * non li risolve (vedi `graffeFuoriPosto`) e il cancello della build boccia
+ * l'indice intero. Il valore sta dentro il token, quindi la riparazione è
+ * meccanica e senza perdite: resta il numero, formattato come lo mostrerebbe il
+ * sito. Le graffe che non sono token validi non si toccano: le segnala
+ * validateRecipeSchema.
+ *
+ * Modifica `recipe` sul posto, come il resto della pipeline. I campi `_…` sono
+ * metadati interni e non si toccano.
+ *
+ * @returns {string[]} i campi riscritti (es. "storage[2]"), da riportare nel log
+ */
+export function risolviTokenFuoriDaiStep(recipe) {
+    const testiStep = new Set(
+        [...(recipe.steps || []), ...(recipe.stepsCondiment || [])].map(s => s?.text)
+    );
+    const riscritti = [];
+    const visita = (contenitore, chiave, percorso) => {
+        const val = contenitore[chiave];
+        if (typeof val === 'string') {
+            if (testiStep.has(val)) return;
+            const testo = risolviTokenTesto(val);
+            if (testo !== val) {
+                contenitore[chiave] = testo;
+                riscritti.push(percorso);
+            }
+        } else if (Array.isArray(val)) {
+            val.forEach((_, i) => visita(val, i, `${percorso}[${i}]`));
+        } else if (val && typeof val === 'object') {
+            for (const k of Object.keys(val)) {
+                if (!k.startsWith('_')) visita(val, k, `${percorso}.${k}`);
+            }
+        }
+    };
+    for (const k of Object.keys(recipe)) {
+        if (!k.startsWith('_')) visita(recipe, k, k);
+    }
+    return riscritti;
 }
 
 

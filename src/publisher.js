@@ -472,6 +472,15 @@ export async function publishRecipe(recipe, args, options = {}) {
         ricalcolaPercorsi();
     }
 
+    // ── Token fuori dagli step: il sito non li risolve, diventano testo ──
+    // Prima di tutto il resto, così cross-check, salvataggio e dry-run vedono
+    // la stessa ricetta. Il perché sta in risolviTokenFuoriDaiStep.
+    const { risolviTokenFuoriDaiStep } = await import('./recipe-schema.js');
+    const tokenRiscritti = risolviTokenFuoriDaiStep(recipe);
+    if (tokenRiscritti.length > 0) {
+        log.warn(`Token fuori dagli step riscritti come testo (il sito li risolve solo nel procedimento): ${tokenRiscritti.join(', ')}`);
+    }
+
     // ── Step 1: Cross-check con fonti reali ──
     if (!skipValidation) {
         // --dry-run promette "nessun file scritto", non "nessuna spesa": il

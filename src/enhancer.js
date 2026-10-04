@@ -230,6 +230,7 @@ TOKEN DOSI NEL PROCEDIMENTO (OBBLIGATORIO):
 - Esempio CORRETTO: "Aggiungere {farina_biga:500}g farina e {acqua:350}g acqua fredda"
 - Esempio SBAGLIATO: "Aggiungere 500g farina e 350g acqua fredda"
 - Questo sistema permette al frontend di aggiornare automaticamente le dosi nel procedimento quando l'utente usa il calcolatore dosi.
+- I token esistono SOLO nel testo degli step. In ogni altro campo (storage, proTips, alert, baking, glossary, description, note degli ingredienti) scrivi il numero normale: "170°C", MAI "{temp_rigenerazione:170!}°C". Fuori dagli step il sito non li risolve e il lettore vedrebbe le graffe.
 
 ⚠️ REGOLA CRITICA TOKEN — MATCHING INGREDIENTE (VIOLAZIONE = ERRORE GRAVE):
 - Il nome del token DEVE corrispondere ALL'INGREDIENTE A CUI SI RIFERISCE, mai a un altro ingrediente con grammi simili.
@@ -258,7 +259,7 @@ TOKEN FISSI (NON SCALABILI E SINTASSI OBBLIGATORIA):
 - ⚠️ CRITICO: Anche i token fissi DEVONO ESSERE SEMPRE racchiusi nelle parentesi graffe. NON scrivere mai il numero testuale puro come "285!g".
 - ✅ CORRETTO: "{panetto_peso:285!}g" oppure "{temperatura:180!}°C"
 - ❌ SBAGLIATO: "285!g" oppure "180!°C" (il software si romperà in mancanza di parentesi)
-- Usa il suffisso ! per: peso singolo panetto/porzione, temperature in gradi, tempi in minuti, percentuali. MAI per gli ingredienti che compongono l'impasto.
+- Usa il suffisso ! per: peso singolo panetto/porzione, temperature in gradi, tempi in minuti, percentuali — sempre e solo dentro il testo degli step. MAI per gli ingredienti che compongono l'impasto.
 
 TERMINOLOGIA TECNICA (OBBLIGATORIO):
 - "Autolisi" = SOLO farina + acqua, SENZA lievito o pre-impasto. Se l'impasto contiene già poolish/biga/lievito, NON è autolisi. Usa "Riposo per idratazione" o "Fermentolisi".
