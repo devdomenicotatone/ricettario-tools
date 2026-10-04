@@ -492,11 +492,17 @@ export async function publishRecipe(recipe, args, options = {}) {
     // ── Token fuori dagli step: il sito non li risolve, diventano testo ──
     // Prima di tutto il resto, così cross-check, salvataggio e dry-run vedono
     // la stessa ricetta. Il perché sta in risolviTokenFuoriDaiStep.
-    const { risolviTokenFuoriDaiStep } = await import('./recipe-schema.js');
+    const { risolviTokenFuoriDaiStep, ricalcolaImpasto } = await import('./recipe-schema.js');
     const tokenRiscritti = risolviTokenFuoriDaiStep(recipe);
     if (tokenRiscritti.length > 0) {
         log.warn(`Token fuori dagli step riscritti come testo (il sito li risolve solo nel procedimento): ${tokenRiscritti.join(', ')}`);
     }
+
+    // ── Idratazione e farina totale: le scrive il calcolo, non il modello ──
+    // Anche questo prima del cross-check, che confronta l'idratazione con le
+    // fonti: col 68% dei cornetti aveva segnalato una differenza che era solo
+    // un errore di conto. Il perché sta in ricalcolaImpasto.
+    for (const { livello, testo } of ricalcolaImpasto(recipe)) log[livello](testo);
 
     // ── Step 1: Cross-check con fonti reali ──
     if (!skipValidation) {

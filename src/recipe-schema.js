@@ -379,6 +379,75 @@ export function risolviTokenFuoriDaiStep(recipe) {
     return riscritti;
 }
 
+/**
+ * Idratazione e farina totale le scrive la pipeline, non il modello.
+ *
+ * Il modello sbagliava questi due numeri senza che niente lo fermasse: i
+ * cornetti di ottobre 2026 sono usciti col 68% (dagli ingredienti 48%) e 500 g
+ * di farina (515), la genovese classica col 75% (72%). Lo schema se ne
+ * accorgeva, ma avvisava soltanto. Ora si ricalcolano con calcolaIdratazione,
+ * la stessa funzione del controllo.
+ *
+ * - La farina totale si scrive sempre, lievito madre compreso.
+ * - L'idratazione si scrive come acqua contenuta nei liquidi (decisione del
+ *   04/10/2026). Se il valore del modello torna con un'altra convenzione, è
+ *   solo questione di convenzione e si dice. Se non torna con nessuna si scrive
+ *   comunque il calcolo, ma con un avviso che riporta entrambi i numeri: se a
+ *   sbagliare fosse il calcolo, è lì che si vede.
+ * - Non si tocca niente quando il modello dichiara 0 (biscotti, creme: niente
+ *   idratazione) o quando dagli ingredienti non si ricava farina.
+ *
+ * Modifica `recipe` sul posto, come risolviTokenFuoriDaiStep.
+ *
+ * @returns {{ livello: 'info'|'warn', testo: string }[]} cosa è cambiato, per il log
+ */
+export function ricalcolaImpasto(recipe) {
+    const note = [];
+    if (!(recipe.hydration > 0)) return note;
+    const calcolo = calcolaIdratazione(recipe);
+    if (!calcolo) return note;
+
+    const farina = Math.round(calcolo.farina);
+    if (recipe.totalFlour !== farina) {
+        note.push({ livello: 'info', testo: `Farina totale: ${recipe.totalFlour ?? '—'} → ${farina} g, dalla somma delle farine (lievito madre compreso)` });
+        recipe.totalFlour = farina;
+    }
+
+    const { contenuta, pura, intera } = calcolo.idratazione;
+    const dichiarata = recipe.hydration;
+    if (contenuta === null) {
+        note.push({ livello: 'warn', testo: `Idratazione non ricalcolabile: fra gli ingredienti non c'è un liquido riconosciuto. Resta il ${dichiarata}% del modello.` });
+        return note;
+    }
+    // Il sito boccia la build per un'idratazione fuori da 30–120
+    // (scripts/build-recipes.js, funzione `hydration`): un calcolo che esce da lì
+    // è il calcolo a sbagliare — un gruppo che non è impasto e non viene
+    // riconosciuto come tale, per dire — e scriverlo fermerebbe l'indice.
+    if (contenuta < 30 || contenuta > 120) {
+        note.push({ livello: 'warn', testo: `Idratazione calcolata ${contenuta}%: fuori dal plausibile (30–120%), quindi a non tornare è il calcolo, non il modello. Resta il ${dichiarata}% del modello: controlla i gruppi di ingredienti.` });
+        return note;
+    }
+    if (dichiarata === contenuta) return note;
+
+    const vicina = convenzionePiuVicina(dichiarata, calcolo);
+    if (vicina.scarto <= 3 && vicina.convenzione === 'contenuta') {
+        note.push({ livello: 'info', testo: `Idratazione: ${dichiarata}% → ${contenuta}%, ricalcolata dagli ingredienti` });
+    } else if (vicina.scarto <= 3) {
+        const come = vicina.convenzione === 'pura' ? 'solo l\'acqua' : 'latte e uova per intero';
+        note.push({ livello: 'info', testo: `Idratazione: ${dichiarata}% → ${contenuta}%. Il modello aveva contato ${come}; si scrive l'acqua contenuta nei liquidi` });
+    } else {
+        const altre = [intera !== null && `${intera}% contando i liquidi interi`, pura !== null && `${pura}% la sola acqua`].filter(Boolean).join(', ');
+        note.push({
+            livello: 'warn',
+            testo: `Idratazione: il modello dichiarava ${dichiarata}%, che non torna con gli ingredienti in nessuna convenzione. `
+                + `Dal calcolo: ${contenuta}% di acqua contenuta (${Math.round(calcolo.acqua.contenuta)} g su ${farina} g di farina)`
+                + `${altre ? `; ${altre}` : ''}. Scritto ${contenuta}%: se il conto non ti torna, controlla gli ingredienti.`,
+        });
+    }
+    recipe.hydration = contenuta;
+    return note;
+}
+
 
 // ── Helper per schema summary (usabile nei prompt AI) ──
 
