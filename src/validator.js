@@ -574,10 +574,7 @@ export function compareRecipes(claudeRecipe, realSources) {
     const details = [];
 
     // ── Confronto ingredienti ──
-    const rawIngs = claudeRecipe.ingredients || [];
-    const claudeIngs = normalizeIngredients(
-        rawIngs.map(i => typeof i === 'string' ? i : (i?.name || i?.item || ''))
-    );
+    const claudeIngs = normalizeIngredients(nomiIngredienti(claudeRecipe));
 
     // Raccolta ingredienti da tutte le fonti
     const allSourceIngs = [];
@@ -784,28 +781,45 @@ export async function validateRecipe(recipe) {
 // disco è `parseRecipeJson`, qui sotto, e basta quella.
 
 /**
+ * I nomi degli ingredienti, in tutte e due le forme in cui una ricetta arriva
+ * al confronto: il JSON del sito (`ingredientGroups`, più il legacy
+ * `ingredients` e le `suspensions`) o quella già appiattita da
+ * parseRecipeJson (`ingredients` come stringhe).
+ *
+ * Il confronto leggeva solo `ingredients`, e la pipeline di generazione gli
+ * passa il JSON così com'è, dove quel campo è vuoto: nessun ingrediente
+ * confrontato e una confidenza senza i suoi 40 punti. I cornetti di ottobre
+ * 2026 hanno avuto un report senza tabella degli ingredienti, fermo al 55%.
+ */
+function nomiIngredienti(ricetta) {
+    const nomi = [];
+    for (const gruppo of ricetta.ingredientGroups || []) {
+        for (const item of gruppo.items || []) {
+            if (item?.name) nomi.push(item.name);
+        }
+    }
+    for (const item of ricetta.ingredients || []) {
+        if (typeof item === 'string') nomi.push(item);
+        else if (item?.name || item?.item) nomi.push(item.name || item.item);
+    }
+    for (const s of ricetta.suspensions || []) {
+        if (s?.name) nomi.push(s.name);
+    }
+    return nomi;
+}
+
+/**
  * Estrae i dati di una ricetta dal suo JSON (formato SPA).
  *
- * È l'unico modo di leggere una ricetta dal disco: il confronto con le fonti
- * riceve sempre questa forma, qualunque sia il chiamante.
+ * È il modo di leggere una ricetta dal disco per `--valida`. La pipeline di
+ * generazione invece passa al confronto il JSON in memoria: per questo gli
+ * ingredienti li legge nomiIngredienti, che riconosce entrambe le forme.
  */
 export function parseRecipeJson(filePath) {
     const data = JSON.parse(readFileSync(filePath, 'utf-8'));
 
     // ── Ingredienti: solo i nomi, il confronto lavora per parole chiave ──
-    const ingredients = [];
-    for (const gruppo of data.ingredientGroups || []) {
-        for (const item of gruppo.items || []) {
-            if (item?.name) ingredients.push(item.name);
-        }
-    }
-    for (const item of data.ingredients || []) {
-        if (typeof item === 'string') ingredients.push(item);
-        else if (item?.name) ingredients.push(item.name);
-    }
-    for (const s of data.suspensions || []) {
-        if (s?.name) ingredients.push(s.name);
-    }
+    const ingredients = nomiIngredienti(data);
 
     // Categoria: nel JSON, altrimenti dalla cartella che lo contiene
     const catDaCartella = filePath.replace(/\\/g, '/').split('/').slice(-2)[0] || '';
