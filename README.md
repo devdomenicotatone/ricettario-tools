@@ -114,10 +114,11 @@ node crea-ricetta.js --url "https://sito1.it/ricetta1,https://sito2.it/ricetta2"
 1. **Scraping** del sito (JSON-LD → selettori CSS → browser headless Puppeteer)
 2. **Ricerca fonti reali** via SerpAPI (query Google IT+EN) per cross-reference
 3. **Claude** riscrive la ricetta nel formato tecnico del Ricettario
-4. **Cross-check** ingredienti vs fonti web (punteggio di confidenza)
-5. **Immagine** cercata e scaricata (Pexels/Unsplash/Pixabay/Wikimedia)
-6. **JSON scritto** in `ricette/<categoria>/<slug>.json`
-7. **`public/recipes.json`** aggiornato (indice della homepage)
+4. **Idratazione e farina totale** ricalcolate dagli ingredienti (vedi sotto)
+5. **Cross-check** ingredienti vs fonti web (punteggio di confidenza)
+6. **Immagine** cercata e scaricata (Pexels/Unsplash/Pixabay/Wikimedia)
+7. **JSON scritto** in `ricette/<categoria>/<slug>.json`
+8. **`public/recipes.json`** aggiornato (indice della homepage)
 
 ### 🧠 `--nome` — Genera ricetta da zero
 
@@ -137,6 +138,18 @@ node crea-ricetta.js --nome "Pizza Napoletana" --note "con poolish al 30%"
 > `note` e `aiModel`, e `generateRecipe` in `src/enhancer.js` nel prompt usa
 > solo quei campi. Per chiedere un'idratazione precisa scrivila in `--note`,
 > che nel prompt ci finisce davvero.
+
+> **`hydration` e `totalFlour` non li decide il modello.** In tutti i modi di
+> generare (`--url`, `--nome`, `--testo`) la pipeline li ricalcola dagli
+> ingredienti prima di salvare (`ricalcolaImpasto` in `src/recipe-schema.js`),
+> con lo stesso calcolo usato da schema ed editor
+> (`src/dashboard/condivisi/idratazione.js`). L'idratazione è l'**acqua
+> contenuta** nei liquidi: latte 87%, uova 75%, tuorli 50% e così via
+> (decisione del 04/10/2026). Se il modello ha scritto un altro numero, nel log
+> trovi entrambi i valori; se il conto viene fuori dal 30–120% che il sito
+> accetta, resta il valore del modello, con un avviso. Le ricette pubblicate
+> prima di quella data possono usare la sola acqua o i liquidi interi: il
+> controllo le accetta, e la pipeline non le tocca finché non le rigeneri.
 
 ### 📝 `--testo` — Ricetta da testo libero
 
@@ -310,6 +323,7 @@ deploy.bat               ← Controlli → commit → push → deploy (vedi sott
 │
 ├── src/dashboard/       ← Dashboard lato browser (HTML/CSS/JS senza build)
 │   index.html · dashboard.js · modules/ · editor/
+│   condivisi/           ← Moduli puri usati anche dal server (idratazione.js)
 │
 ├── data/                ← Cache e indici locali
 │   image-cache.json · used-images.json · verify-index.json
