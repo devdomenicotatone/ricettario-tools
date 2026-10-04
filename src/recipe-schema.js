@@ -285,7 +285,11 @@ export function validateRecipeSchema(recipe) {
             { kw: 'tuorlo', coeff: 0.50 }, { kw: 'tuorli', coeff: 0.50 },
             { kw: 'albume', coeff: 0.90 }, { kw: 'albumi', coeff: 0.90 },
             { kw: 'uova', coeff: 0.75 }, { kw: 'uovo', coeff: 0.75 },
-            { kw: 'birra', coeff: 0.92 },
+            // «Lievito di birra» contiene «birra» ma è lievito: senza l'eccezione
+            // i suoi grammi entravano nell'idratazione come birra (+10 g di
+            // liquido sui cornetti di ottobre 2026, due punti di idratazione).
+            // `salvo` come nelle liste di scripts/build-recipes.js.
+            { kw: 'birra', coeff: 0.92, salvo: 'lievito di birra' },
             { kw: 'succo', coeff: 0.88 },
         ];
         // Ingredienti assemblati: prodotto finito di un pre-impasto, NON materie prime
@@ -313,7 +317,7 @@ export function validateRecipeSchema(recipe) {
                 const notFlourKeywords = ['zucchero', 'sale', 'lievito', 'malto', 'miele'];
                 const isExcluded = notFlourKeywords.some(kw => name.includes(kw));
                 const isFlour = !isExcluded && flourKeywords.some(kw => name.includes(kw));
-                const matchedLiquid = liquidKeywords.find(l => name.includes(l.kw));
+                const matchedLiquid = liquidKeywords.find(l => name.includes(l.kw) && !(l.salvo && name.includes(l.salvo)));
                 const isFlourOrLiquid = isFlour || !!matchedLiquid;
 
                 // Ingredienti assemblati (es. "Biga Matura", "Poolish Maturo", "Lievito Madre Solido")
