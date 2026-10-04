@@ -295,6 +295,16 @@ export function validateRecipeSchema(recipe) {
         ];
         // Ingredienti assemblati: prodotto finito di un pre-impasto, NON materie prime
         const assembledKeywords = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento', 'lievito madre', 'pasta madre'];
+        // La voce composta di un pre-impasto si riconosce dall'INIZIO del nome
+        // («Biga matura», «Biga di Saccorosso»), non dal contenerlo: «Acqua per
+        // biga» è materia prima. E vince sulle parole chiave delle farine:
+        // «Biga di Saccorosso» contiene «saccorosso», e veniva sommata come
+        // farina (1300 g in più sulla pizza-napoletana-biga-criscito).
+        const PREIMPASTI = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento'];
+        const preimpastoDi = nome => PREIMPASTI.find(p => nome.startsWith(p));
+        const preimpastiComposti = new Set(recipe.ingredientGroups
+            .flatMap(g => (g.items || []).map(i => preimpastoDi((i.name || '').toLowerCase())))
+            .filter(Boolean));
         let totalFlourGrams = 0;
         let totalWaterGrams = 0;
         let totalPureWaterGrams = 0;  // Solo acqua pura (coeff 1.0)
@@ -309,7 +319,12 @@ export function validateRecipeSchema(recipe) {
             // Skip fasi interamente ausiliarie (starter, bagnetto, ecc.)
             // Se TUTTI gli items hanno excludeFromTotal: true, la fase non è parte del prodotto finale
             const allItemsExcluded = (g.items || []).length > 0 && (g.items || []).every(item => item.excludeFromTotal === true);
-            if (allItemsExcluded) continue;
+            // ...tranne il gruppo che PRODUCE una voce composta: lì le materie
+            // prime sono escluse dal totale dosi proprio perché la biga ricompare
+            // intera nell'impasto finale, e saltarle toglieva dal conto farina e
+            // acqua della biga.
+            const produceComposta = [...preimpastiComposti].some(p => groupName.includes(p));
+            if (allItemsExcluded && !produceComposta) continue;
 
             for (const item of g.items || []) {
                 const name = (item.name || '').toLowerCase();
@@ -324,7 +339,8 @@ export function validateRecipeSchema(recipe) {
                 // Ingredienti assemblati (es. "Biga Matura", "Poolish Maturo", "Lievito Madre Solido")
                 // Le materie prime (farina+acqua) sono già nel gruppo pre-impasto.
                 // Eccezione: lievito madre/pasta madre → decomposizione in farina+acqua
-                const isAssembled = !isFlourOrLiquid && assembledKeywords.some(kw => name.includes(kw));
+                const isAssembled = Boolean(preimpastoDi(name))
+                    || (!isFlourOrLiquid && assembledKeywords.some(kw => name.includes(kw)));
                 if (isAssembled) {
                     // Se ha excludeFromTotal, è un ingrediente di input (non entra nel prodotto finale)
                     if (item.excludeFromTotal) continue;

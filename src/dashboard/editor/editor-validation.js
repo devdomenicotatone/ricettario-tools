@@ -95,16 +95,29 @@ export function installValidation(state) {
             const flourKw = ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'tipo 2', 'integrale', 'nuvola', 'saccorosso'];
             const liquidKw = [{ kw: 'acqua', c: 1 }, { kw: 'latte', c: 0.87 }, { kw: 'uova', c: 0.75 }, { kw: 'uovo', c: 0.75 }, { kw: 'tuorlo', c: 0.5 }, { kw: 'tuorli', c: 0.5 }, { kw: 'albume', c: 0.9 }, { kw: 'albumi', c: 0.9 }];
             const assembled = ['biga', 'poolish', 'lievitino', 'prefermento', 'lievito madre', 'pasta madre'];
+            // Stesse due regole dello schema dei tools (recipe-schema.js): la
+            // voce composta di un pre-impasto si riconosce dall'inizio del nome
+            // («Biga di Saccorosso») e non si somma mai, nemmeno se il nome
+            // contiene una farina; le materie prime del gruppo che la produce
+            // invece si contano, anche se escluse dal totale dosi. Senza, la
+            // pizza-napoletana-biga-criscito risultava al 49% invece che al 68%.
+            const PREIMPASTI = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento'];
+            const preimpastoDi = nome => PREIMPASTI.find(p => nome.startsWith(p));
+            const composti = new Set(r.ingredientGroups
+                .flatMap(g => (g.items || []).map(i => preimpastoDi((i.name || '').toLowerCase())))
+                .filter(Boolean));
             let flour = 0, water = 0, pureWater = 0, rawLiquid = 0;
             for (const g of r.ingredientGroups) {
                 const groupName = (g.group || '').toLowerCase();
                 const nonDoughGroups = ['doratura', 'decorazione', 'finitura', 'copertura', 'glassa', 'guarnizione', 'topping'];
                 if (nonDoughGroups.some(kw => groupName.includes(kw))) continue;
+                const produceComposta = [...composti].some(p => groupName.includes(p));
 
                 for (const it of (g.items || [])) {
-                    if (it.excludeFromTotal) continue;
+                    if (it.excludeFromTotal && !produceComposta) continue;
 
                     const n = (it.name || '').toLowerCase();
+                    if (preimpastoDi(n)) continue;
                     const isExcluded = ['zucchero', 'sale', 'lievito', 'malto', 'miele'].some(kw => n.includes(kw));
                     const isFL = !isExcluded && flourKw.some(k => n.includes(k));
                     const lq = liquidKw.find(l => n.includes(l.kw));
