@@ -27,6 +27,7 @@ import { searchRealSources, scrapeRecipePage } from './validator.js';
 
 // ── Schema centralizzato (Single Source of Truth) ──
 import { validateRecipeSchema, tokenDelTesto, CATEGORIES_NEEDING_BAKING } from './recipe-schema.js';
+import { descriviLiquidi, descriviFuoriImpasto } from './dashboard/condivisi/idratazione.js';
 
 
 
@@ -165,11 +166,14 @@ CRITERI DI VERIFICA:
    Il valore IDRATAZIONE DICHIARATA nella ricetta POTREBBE ESSERE SBAGLIATO. NON fidarti.
    DEVI SEMPRE ricalcolarlo da zero seguendo questi step:
 
-   a) Elenca TUTTE le farine/semole in TUTTI i gruppi (inclusi pre-impasti come biga, poolish):
+   a) Elenca TUTTE le farine/semole in TUTTI i gruppi (inclusi pre-impasti come biga, poolish),
+      più la farina contenuta nel lievito madre (solido: 2 parti di farina e 1 d'acqua):
       → es. Farina biga = 100g, Semola impasto = 500g
    b) FARINA TOTALE = somma di (a)
-   c) Elenca TUTTA l'acqua in TUTTI i gruppi (inclusi pre-impasti E il bassinage):
-      → es. Acqua biga = 45g, Acqua impasto = 310g, Bassinage = 50g
+   c) Elenca TUTTI i liquidi in TUTTI i gruppi (inclusi pre-impasti E il bassinage) e prendi l'acqua
+      che CONTENGONO: ${descriviLiquidi()}. Burro, zucchero, miele e olio non
+      sono liquidi; non contano i gruppi il cui nome contiene: ${descriviFuoriImpasto()}.
+      → es. Acqua biga = 45g, Acqua impasto = 310g, Bassinage = 50g, Latte 100g → 87g
       ⚠️ Il BASSINAGE è acqua aggiunta successivamente durante l'impastamento — CONTA come acqua totale.
    d) ACQUA TOTALE = somma di (c)
    e) IDRATAZIONE REALE = (ACQUA TOTALE / FARINA TOTALE) × 100
@@ -177,6 +181,8 @@ CRITERI DI VERIFICA:
 
    ⚠️ SELF-CHECK: Se il tuo calcolo conferma il valore dichiarato (scarto ≤ 3%), l'idratazione è CORRETTA.
    NON segnalare errore. SOLO se lo scarto è > 3%, segnala come ❌ errore critico.
+   Le ricette pubblicate prima di ottobre 2026 possono usare un'altra convenzione: la sola acqua, oppure
+   latte e uova contati per intero. Se il valore dichiarato torna con una delle tre entro 3 punti, è corretto.
    Nella issue MOSTRA LA FORMULA COMPLETA (es. "375g/600g = 62.5% ≠ 70% dichiarato").
    ATTENZIONE: NON contare l'ingrediente assemblato (es. "Biga Matura" 145g) come acqua o farina —
    è il prodotto finito del pre-impasto, le sue componenti sono già listate nel gruppo biga/poolish.

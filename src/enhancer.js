@@ -7,6 +7,7 @@ import { randomBytes } from 'crypto';
 import { callClaude, callGemini, parseClaudeJson } from './utils/api.js';
 import { log } from './utils/logger.js';
 import { CATEGORY_REGEX_PATTERN } from './constants.js';
+import { descriviLiquidi, descriviFuoriImpasto } from './dashboard/condivisi/idratazione.js';
 
 /**
  * Helper: chiama il modello AI selezionato (claude o gemini)
@@ -303,13 +304,14 @@ CHECKLIST PRE-OUTPUT (OBBLIGATORIA — esegui i calcoli prima di generare il JSO
 1. Per OGNI token nel testo, verifica: il nome del token descrive l'ingrediente menzionato subito dopo?
 2. La somma degli ingredienti corrisponde alla resa dichiarata nel procedimento?
 3. ⚠️ VERIFICA IDRATAZIONE (CRITICO — errore frequente):
-   a) Calcola FARINA TOTALE = somma di TUTTE le farine in TUTTI i gruppi (biga + impasto + poolish ecc.)
-   b) Calcola ACQUA TOTALE = somma di TUTTA l'acqua in TUTTI i gruppi (biga + impasto + bassinage ecc.)
+   a) Calcola FARINA TOTALE = somma di TUTTE le farine in TUTTI i gruppi (biga + impasto + poolish ecc.), più la farina contenuta nel lievito madre (solido: 2 parti di farina e 1 d'acqua)
+   b) Calcola ACQUA TOTALE = l'acqua CONTENUTA in tutti i liquidi di TUTTI i gruppi (biga + impasto + bassinage ecc.), con queste percentuali: ${descriviLiquidi()}. Burro, zucchero, miele e olio NON sono liquidi. Non contano i gruppi che non sono impasto, cioè quelli il cui nome contiene: ${descriviFuoriImpasto()}.
    c) IDRATAZIONE = (ACQUA TOTALE / FARINA TOTALE) × 100
    d) Il campo "hydration" nel JSON DEVE corrispondere ESATTAMENTE a questo calcolo (arrotondato all'intero).
    e) Il campo "totalFlour" DEVE essere uguale a FARINA TOTALE calcolata al punto (a).
    ❌ ERRORE TIPICO: dichiarare hydration: 70 ma generare ingredienti che danno 62.5% — questo succede quando si copia il valore "tipico" per quel tipo di pane senza calcolare.
    ✅ CORRETTO: prima genera gli ingredienti, POI calcola l'idratazione, POI scrivi il campo hydration.
+   La pipeline ricalcola "hydration" e "totalFlour" dagli ingredienti con queste stesse regole e, se i tuoi valori non tornano, scrive i suoi: un valore che non torna è il segno di una dose sbagliata.
 4. I tempi di lievitazione sono realistici per la quantità di lievito indicata?
 5. Il peso totale ÷ numero pezzi = peso singolo pezzo indicato?
 
