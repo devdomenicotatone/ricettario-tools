@@ -26,7 +26,7 @@ import { searchRealSources, scrapeRecipePage } from './validator.js';
 // ══════════════════════════════════════════════════════════════════════
 
 // ── Schema centralizzato (Single Source of Truth) ──
-import { validateRecipeSchema, TOKEN_REGEX, CATEGORIES_NEEDING_BAKING } from './recipe-schema.js';
+import { validateRecipeSchema, tokenDelTesto, CATEGORIES_NEEDING_BAKING } from './recipe-schema.js';
 
 
 
@@ -46,7 +46,10 @@ function validateSchema(recipe, filePath) {
     // Token dosi dinamiche: warning se nessuno step contiene token
     const allStepTexts = [...(recipe.steps || []), ...(recipe.stepsCondiment || [])]
         .map(s => s.text || '');
-    const hasTokens = allStepTexts.some(t => TOKEN_REGEX.test(t));
+    // Con la grammatica del sito. La regex che stava qui era globale e
+    // condivisa: `.test()` si portava dietro il `lastIndex` da una ricetta
+    // all'altra.
+    const hasTokens = allStepTexts.some(t => tokenDelTesto(t).length > 0);
     if (!hasTokens && allStepTexts.length > 0) {
         warnings.push('Nessun token {id:base} trovato negli step — le dosi nel procedimento non saranno dinamiche');
     }

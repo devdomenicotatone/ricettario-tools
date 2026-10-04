@@ -6,8 +6,11 @@
  */
 
 import { VALID_CATEGORY_NAMES as VALID_CATEGORIES } from '/shared/categories.js';
-
-const TOKEN_REGEX = /\{([a-z_]+):(\d+(?:\.\d+)?)(!)?}/g;
+// La grammatica dei token è quella del sito, servita sotto /shared come le
+// categorie. La copia che stava qui era ferma a `[a-z_]+` e non vedeva i token
+// con cifre o maiuscole ({farina_00:250}); e le graffe fuori dagli step, che
+// fermano la build del sito, l'editor non le segnalava affatto.
+import { tokenDelTesto, graffeFuoriPosto } from '/shared/token-dosi.js';
 
 /**
  * Installa la logica di validazione sullo state manager.
@@ -64,14 +67,16 @@ export function installValidation(state) {
         // Token validation in steps
         for (const step of allSteps) {
             if (!step.text) continue;
-            const tokenRegex = new RegExp(TOKEN_REGEX.source, 'g');
-            let m;
-            while ((m = tokenRegex.exec(step.text)) !== null) {
-                const num = parseFloat(m[2]);
-                if (isNaN(num) || num <= 0) {
-                    warnings.push(`Token {${m[1]}:${m[2]}} non valido in "${step.title}"`);
-                }
+            for (const { token, valore } of tokenDelTesto(step.text)) {
+                if (valore <= 0) warnings.push(`Token ${token} non valido in "${step.title}"`);
             }
+        }
+
+        // Graffe che il sito non risolverebbe (stessa regola del cancello della build)
+        for (const { campo, rotto } of graffeFuoriPosto(r)) {
+            errors.push(rotto
+                ? `Token malformato in "${campo}": ${JSON.stringify(rotto)}`
+                : `Graffe in "${campo}": fuori dagli step arrivano al lettore come testo grezzo`);
         }
 
         // Baking for categories that need it

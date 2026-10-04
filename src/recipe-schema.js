@@ -22,9 +22,13 @@ import { ALL_CATEGORIES, CATEGORIES_DATA, RICETTARIO_DIR } from './constants.js'
 // accoppiamento di constants.js con `js/categories.js`. Finché questo schema non
 // conosceva la regola, la generazione salvava come valida una ricetta che il
 // sito poi rifiutava, bloccando l'indice intero.
-const { graffeFuoriPosto, risolviTokenTesto } = await import(
+const { graffeFuoriPosto, risolviTokenTesto, tokenDelTesto } = await import(
     pathToFileURL(resolve(RICETTARIO_DIR, 'js', 'token-dosi.js')).href
 );
+
+// Riesportata per quality.js, così anche lui legge i token con la grammatica
+// del sito invece di tenerne una copia.
+export { tokenDelTesto };
 
 // ── Costanti ──
 
@@ -37,9 +41,6 @@ export const CATEGORIES_NEEDING_BAKING = ['Pane', 'Pizza', 'Focaccia', 'Lievitat
 export const CATEGORY_EMOJI = Object.fromEntries(
     Object.values(CATEGORIES_DATA).map(c => [c.label, c.emoji])
 );
-
-// Token regex: {nome:valore} con suffisso opzionale ! per fissi
-export const TOKEN_REGEX = /\{([a-z_]+):(\d+(?:\.\d+)?)(!)?\}/g;
 
 // ── Schema Definition ──
 
@@ -241,14 +242,14 @@ export function validateRecipeSchema(recipe) {
                 errors.push(`Token fisso malformato nello step "${step.title}": Trovato valore con "!" senza parentesi graffe. Usa il formato {nome:valore!}`);
             }
 
-            let match;
-            const tokenRegex = new RegExp(TOKEN_REGEX.source, 'g');
-            while ((match = tokenRegex.exec(step.text)) !== null) {
-                const [, name, value, fixed] = match;
-                const numVal = parseFloat(value);
-                if (isNaN(numVal) || numVal <= 0) {
-                    warnings.push(`Token {${name}:${value}} ha valore non valido nello step "${step.title}"`);
-                } else if (!fixed) {
+            // La grammatica è quella del sito: la copia che stava qui era ferma a
+            // `[a-z_]+` e non vedeva i token con cifre o maiuscole
+            // ({farina_00:250}), quindi per loro il confronto grammi ↔
+            // procedimento più sotto non scattava mai.
+            for (const { token, id: name, valore: numVal, fisso } of tokenDelTesto(step.text)) {
+                if (numVal <= 0) {
+                    warnings.push(`Token ${token} ha valore non valido nello step "${step.title}"`);
+                } else if (!fisso) {
                     if (tokenValuesInSteps[name] && tokenValuesInSteps[name] !== numVal) {
                         warnings.push(`Token {${name}} usato con valori multipli diversi negli step (${tokenValuesInSteps[name]} vs ${numVal})`);
                     }
