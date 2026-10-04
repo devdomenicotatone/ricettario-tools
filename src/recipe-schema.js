@@ -15,6 +15,7 @@
 import { resolve } from 'path';
 import { pathToFileURL } from 'url';
 import { ALL_CATEGORIES, CATEGORIES_DATA, RICETTARIO_DIR } from './constants.js';
+import { calcolaIdratazione, convenzionePiuVicina } from './dashboard/condivisi/idratazione.js';
 
 // La grammatica dei token, e la regola su DOVE un token può stare, non si
 // riscrivono qui: vivono nel sito (`js/token-dosi.js`), che con la stessa
@@ -267,155 +268,29 @@ export function validateRecipeSchema(recipe) {
             : `Graffe in "${campo}": il sito risolve i token solo nel testo degli step, qui arriverebbero al lettore come testo grezzo`);
     }
 
-    // Validazione idratazione vs ingredienti reali (Baker's Percentage)
-    // L'idratazione si calcola su TUTTA la farina e TUTTA l'acqua del prodotto finale,
-    // inclusi i pre-impasti (biga, poolish, ecc.). Gli ingredienti "assemblati"
-    // (es. "Biga Matura" nel gruppo impasto) vengono esclusi per evitare doppio conteggio:
-    // le loro materie prime (farina+acqua) sono già nel gruppo pre-impasto.
-    // NOTA: excludeFromTotal su singoli ingredienti è per il calcolatore dosi frontend.
-    // Per l'idratazione: se TUTTI gli items di un gruppo hanno excludeFromTotal,
-    // il gruppo è una fase separata (starter, bagnetto) e viene escluso dal calcolo.
+    // Idratazione e farina totale contro gli ingredienti. Il calcolo è quello
+    // che usa la pipeline per scriverle (dashboard/condivisi/idratazione.js);
+    // qui si accetta la convenzione più vicina al valore dichiarato, perché le
+    // ricette pubblicate prima del 04/10/2026 ne usano tre diverse.
     if (recipe.hydration && recipe.hydration > 0 && recipe.ingredientGroups?.length > 0) {
-        const flourKeywords = ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'tipo 2', 'integrale', 'nuvola', 'saccorosso'];
-        // Liquidi con coefficiente idratazione (% di acqua nel liquido)
-        // ORDINE IMPORTANTE: keyword più specifiche PRIMA per evitare match errati
-        // (es. "Tuorli d'uovo" deve matchare 'tuorli' coeff 0.50, NON 'uovo' coeff 0.75)
-        const liquidKeywords = [
-            { kw: 'acqua', coeff: 1.0 },
-            { kw: 'latte', coeff: 0.87 },
-            { kw: 'tuorlo', coeff: 0.50 }, { kw: 'tuorli', coeff: 0.50 },
-            { kw: 'albume', coeff: 0.90 }, { kw: 'albumi', coeff: 0.90 },
-            { kw: 'uova', coeff: 0.75 }, { kw: 'uovo', coeff: 0.75 },
-            // «Lievito di birra» contiene «birra» ma è lievito: senza l'eccezione
-            // i suoi grammi entravano nell'idratazione come birra (+10 g di
-            // liquido sui cornetti di ottobre 2026, due punti di idratazione).
-            // `salvo` come nelle liste di scripts/build-recipes.js.
-            { kw: 'birra', coeff: 0.92, salvo: 'lievito di birra' },
-            { kw: 'succo', coeff: 0.88 },
-        ];
-        // Ingredienti assemblati: prodotto finito di un pre-impasto, NON materie prime
-        const assembledKeywords = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento', 'lievito madre', 'pasta madre'];
-        // La voce composta di un pre-impasto si riconosce dall'INIZIO del nome
-        // («Biga matura», «Biga di Saccorosso»), non dal contenerlo: «Acqua per
-        // biga» è materia prima. E vince sulle parole chiave delle farine:
-        // «Biga di Saccorosso» contiene «saccorosso», e veniva sommata come
-        // farina (1300 g in più sulla pizza-napoletana-biga-criscito).
-        const PREIMPASTI = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento'];
-        const preimpastoDi = nome => PREIMPASTI.find(p => nome.startsWith(p));
-        const preimpastiComposti = new Set(recipe.ingredientGroups
-            .flatMap(g => (g.items || []).map(i => preimpastoDi((i.name || '').toLowerCase())))
-            .filter(Boolean));
-        let totalFlourGrams = 0;
-        let totalWaterGrams = 0;
-        let totalPureWaterGrams = 0;  // Solo acqua pura (coeff 1.0)
-        let totalRawLiquidGrams = 0;  // Peso crudo di tutti i liquidi (uova, latte, ecc), convenzione spesso usata in panificazione ricca
+        const calcolo = calcolaIdratazione(recipe);
 
-        for (const g of recipe.ingredientGroups) {
-            // Skip gruppi NON parte dell'impasto (doratura, decorazione, finitura, glassa)
-            const groupName = (g.group || '').toLowerCase();
-            const nonDoughGroups = ['doratura', 'decorazione', 'finitura', 'copertura', 'glassa', 'guarnizione', 'topping'];
-            if (nonDoughGroups.some(kw => groupName.includes(kw))) continue;
-
-            // Skip fasi interamente ausiliarie (starter, bagnetto, ecc.)
-            // Se TUTTI gli items hanno excludeFromTotal: true, la fase non è parte del prodotto finale
-            const allItemsExcluded = (g.items || []).length > 0 && (g.items || []).every(item => item.excludeFromTotal === true);
-            // ...tranne il gruppo che PRODUCE una voce composta: lì le materie
-            // prime sono escluse dal totale dosi proprio perché la biga ricompare
-            // intera nell'impasto finale, e saltarle toglieva dal conto farina e
-            // acqua della biga.
-            const produceComposta = [...preimpastiComposti].some(p => groupName.includes(p));
-            if (allItemsExcluded && !produceComposta) continue;
-
-            for (const item of g.items || []) {
-                const name = (item.name || '').toLowerCase();
-
-                // Escludi falsi positivi: "Zucchero Semolato" contiene "semola" ma NON è farina
-                const notFlourKeywords = ['zucchero', 'sale', 'lievito', 'malto', 'miele'];
-                const isExcluded = notFlourKeywords.some(kw => name.includes(kw));
-                const isFlour = !isExcluded && flourKeywords.some(kw => name.includes(kw));
-                const matchedLiquid = liquidKeywords.find(l => name.includes(l.kw) && !(l.salvo && name.includes(l.salvo)));
-                const isFlourOrLiquid = isFlour || !!matchedLiquid;
-
-                // Ingredienti assemblati (es. "Biga Matura", "Poolish Maturo", "Lievito Madre Solido")
-                // Le materie prime (farina+acqua) sono già nel gruppo pre-impasto.
-                // Eccezione: lievito madre/pasta madre → decomposizione in farina+acqua
-                const isAssembled = Boolean(preimpastoDi(name))
-                    || (!isFlourOrLiquid && assembledKeywords.some(kw => name.includes(kw)));
-                if (isAssembled) {
-                    // Se ha excludeFromTotal, è un ingrediente di input (non entra nel prodotto finale)
-                    if (item.excludeFromTotal) continue;
-                    // Decomposizione lievito madre/pasta madre (contiene farina+acqua intrappolati)
-                    const isSourdough = ['lievito madre', 'pasta madre'].some(kw => name.includes(kw));
-                    if (isSourdough && item.grams > 0) {
-                        const noteText = (item.note || '').toLowerCase();
-                        const hydMatch = noteText.match(/(\d+)\s*%\s*(?:di\s*)?idratazione/);
-                        const lmHydration = hydMatch ? parseInt(hydMatch[1]) / 100 : 0.5; // default 50%
-                        const lmFlour = item.grams / (1 + lmHydration);
-                        const lmWater = item.grams - lmFlour;
-                        totalFlourGrams += lmFlour;
-                        totalWaterGrams += lmWater;
-                        totalPureWaterGrams += lmWater;
-                    }
-                    continue;
-                }
-
-                // Conta materie prime per baker's percentage
-                if (isFlour) totalFlourGrams += item.grams || 0;
-                if (matchedLiquid) {
-                    const reqGrams = (item.grams || 0);
-                    const waterContrib = reqGrams * matchedLiquid.coeff;
-                    totalWaterGrams += waterContrib;
-                    totalRawLiquidGrams += reqGrams;
-                    if (matchedLiquid.coeff === 1.0) totalPureWaterGrams += waterContrib;
-                }
+        if (calcolo?.idratazione.contenuta != null) {
+            const { convenzione, valore, scarto } = convenzionePiuVicina(recipe.hydration, calcolo);
+            const etichetta = { contenuta: '', pura: ' (solo acqua)', intera: ' (liquidi non pesati, es. brioche)' }[convenzione];
+            if (scarto > 3) {
+                errors.push(`Idratazione dichiarata ${recipe.hydration}% ma calcolata ${valore}%${etichetta} (${Math.round(calcolo.acqua[convenzione])}g liquido / ${Math.round(calcolo.farina)}g farina). Scarto: ${scarto}%`);
+            } else if (scarto > 1) {
+                warnings.push(`Idratazione dichiarata ${recipe.hydration}% vs calcolata ${valore}%${etichetta} (scarto ${scarto}%)`);
             }
         }
 
-        // Validazione idratazione (baker's percentage con liquidi pesati)
-        // Triplo confronto: idratazione "totale" (calcolata), "pura" (solo acqua) o "cruda" (somma pesi liquidi, es. brioche).
-        if (totalFlourGrams > 0 && totalWaterGrams > 0) {
-            const computedTotal = Math.round((totalWaterGrams / totalFlourGrams) * 100);
-            const computedPure = totalPureWaterGrams > 0
-                ? Math.round((totalPureWaterGrams / totalFlourGrams) * 100) : null;
-            const computedRaw = totalRawLiquidGrams > 0
-                ? Math.round((totalRawLiquidGrams / totalFlourGrams) * 100) : null;
-            
-            const declared = recipe.hydration;
-            const diffTotal = Math.abs(computedTotal - declared);
-            const diffPure = computedPure !== null ? Math.abs(computedPure - declared) : Infinity;
-            const diffRaw = computedRaw !== null ? Math.abs(computedRaw - declared) : Infinity;
-
-            const bestDiff = Math.min(diffTotal, diffPure, diffRaw);
-            let bestComputed;
-            let bestLabel = '';
-            let bestWater;
-            
-            if (bestDiff === diffTotal) {
-                bestComputed = computedTotal;
-                bestWater = Math.round(totalWaterGrams);
-            } else if (bestDiff === diffPure) {
-                bestComputed = computedPure;
-                bestLabel = ' (solo acqua)';
-                bestWater = Math.round(totalPureWaterGrams);
-            } else {
-                bestComputed = computedRaw;
-                bestLabel = ' (liquidi non pesati, es. brioche)';
-                bestWater = Math.round(totalRawLiquidGrams);
-            }
-
-            if (bestDiff > 3) {
-                errors.push(`Idratazione dichiarata ${declared}% ma calcolata ${bestComputed}%${bestLabel} (${bestWater}g liquido / ${Math.round(totalFlourGrams)}g farina). Scarto: ${bestDiff}%`);
-            } else if (bestDiff > 1) {
-                warnings.push(`Idratazione dichiarata ${declared}% vs calcolata ${bestComputed}%${bestLabel} (scarto ${bestDiff}%)`);
-            }
-        }
-
-        // Validazione totalFlour (deve corrispondere alla somma di tutte le farine)
-        if (recipe.totalFlour && totalFlourGrams > 0) {
-            const roundedFlour = Math.round(totalFlourGrams);
-            const flourDiff = Math.abs(recipe.totalFlour - roundedFlour);
-            if (flourDiff > 5) {
-                errors.push(`totalFlour dichiarato ${recipe.totalFlour}g ma somma farine = ${roundedFlour}g (differenza: ${flourDiff}g)`);
+        // totalFlour deve corrispondere alla somma di tutte le farine
+        if (recipe.totalFlour && calcolo) {
+            const farina = Math.round(calcolo.farina);
+            const differenza = Math.abs(recipe.totalFlour - farina);
+            if (differenza > 5) {
+                errors.push(`totalFlour dichiarato ${recipe.totalFlour}g ma somma farine = ${farina}g (differenza: ${differenza}g)`);
             }
         }
     }

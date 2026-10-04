@@ -11,6 +11,7 @@ import { VALID_CATEGORY_NAMES as VALID_CATEGORIES } from '/shared/categories.js'
 // con cifre o maiuscole ({farina_00:250}); e le graffe fuori dagli step, che
 // fermano la build del sito, l'editor non le segnalava affatto.
 import { tokenDelTesto, graffeFuoriPosto } from '/shared/token-dosi.js';
+import { calcolaIdratazione, convenzionePiuVicina } from '../condivisi/idratazione.js';
 
 /**
  * Installa la logica di validazione sullo state manager.
@@ -90,64 +91,19 @@ export function installValidation(state) {
             errors.push('Slug deve essere kebab-case (solo a-z, 0-9, -)');
         }
 
-        // Hydration vs ingredients cross-validation
+        // Idratazione e farina totale contro gli ingredienti: lo stesso calcolo
+        // dello schema dei tools e della pipeline (../condivisi/idratazione.js).
+        // La copia che stava qui aveva regole sue (niente lievito madre scomposto,
+        // esclusioni voce per voce) e dava risultati diversi da quelli del server.
         if (r.hydration && r.hydration > 0 && r.ingredientGroups?.length) {
-            const flourKw = ['farina', 'semola', 'manitoba', 'tipo 0', 'tipo 00', 'tipo 1', 'tipo 2', 'integrale', 'nuvola', 'saccorosso'];
-            const liquidKw = [{ kw: 'acqua', c: 1 }, { kw: 'latte', c: 0.87 }, { kw: 'uova', c: 0.75 }, { kw: 'uovo', c: 0.75 }, { kw: 'tuorlo', c: 0.5 }, { kw: 'tuorli', c: 0.5 }, { kw: 'albume', c: 0.9 }, { kw: 'albumi', c: 0.9 }];
-            const assembled = ['biga', 'poolish', 'lievitino', 'prefermento', 'lievito madre', 'pasta madre'];
-            // Stesse due regole dello schema dei tools (recipe-schema.js): la
-            // voce composta di un pre-impasto si riconosce dall'inizio del nome
-            // («Biga di Saccorosso») e non si somma mai, nemmeno se il nome
-            // contiene una farina; le materie prime del gruppo che la produce
-            // invece si contano, anche se escluse dal totale dosi. Senza, la
-            // pizza-napoletana-biga-criscito risultava al 49% invece che al 68%.
-            const PREIMPASTI = ['biga', 'poolish', 'lievitino', 'prefermento', 'pre-fermento'];
-            const preimpastoDi = nome => PREIMPASTI.find(p => nome.startsWith(p));
-            const composti = new Set(r.ingredientGroups
-                .flatMap(g => (g.items || []).map(i => preimpastoDi((i.name || '').toLowerCase())))
-                .filter(Boolean));
-            let flour = 0, water = 0, pureWater = 0, rawLiquid = 0;
-            for (const g of r.ingredientGroups) {
-                const groupName = (g.group || '').toLowerCase();
-                const nonDoughGroups = ['doratura', 'decorazione', 'finitura', 'copertura', 'glassa', 'guarnizione', 'topping'];
-                if (nonDoughGroups.some(kw => groupName.includes(kw))) continue;
-                const produceComposta = [...composti].some(p => groupName.includes(p));
-
-                for (const it of (g.items || [])) {
-                    if (it.excludeFromTotal && !produceComposta) continue;
-
-                    const n = (it.name || '').toLowerCase();
-                    if (preimpastoDi(n)) continue;
-                    const isExcluded = ['zucchero', 'sale', 'lievito', 'malto', 'miele'].some(kw => n.includes(kw));
-                    const isFL = !isExcluded && flourKw.some(k => n.includes(k));
-                    const lq = liquidKw.find(l => n.includes(l.kw));
-                    const isA = !isFL && !lq && assembled.some(k => n.includes(k));
-                    if (isA) continue;
-                    
-                    if (isFL) flour += it.grams || 0;
-                    if (lq) {
-                        const amount = it.grams || 0;
-                        water += amount * lq.c;
-                        rawLiquid += amount;
-                        if (lq.c === 1) pureWater += amount;
-                    }
-                }
+            const calcolo = calcolaIdratazione(r);
+            if (calcolo?.idratazione.contenuta != null) {
+                const { valore, scarto } = convenzionePiuVicina(r.hydration, calcolo);
+                if (scarto > 3) errors.push(`Idratazione dichiarata ${r.hydration}% ma calcolata ${valore}%`);
+                else if (scarto > 1) warnings.push(`Idratazione: ${r.hydration}% vs calcolata ${valore}%`);
             }
-            if (flour > 0 && water > 0) {
-                const computedTotal = Math.round((water / flour) * 100);
-                const computedPure = pureWater > 0 ? Math.round((pureWater / flour) * 100) : null;
-                const computedRaw = rawLiquid > 0 ? Math.round((rawLiquid / flour) * 100) : null;
-                
-                const dec = r.hydration;
-                const diffTotal = Math.abs(computedTotal - dec);
-                const diffPure = computedPure !== null ? Math.abs(computedPure - dec) : Infinity;
-                const diffRaw = computedRaw !== null ? Math.abs(computedRaw - dec) : Infinity;
-                
-                const bestDiff = Math.min(diffTotal, diffPure, diffRaw);
-                const bestComputed = bestDiff === diffTotal ? computedTotal : (bestDiff === diffPure ? computedPure : computedRaw);
-                
-                if (bestDiff > 3) errors.push(`Idratazione dichiarata ${dec}% ma calcolata ${bestComputed}%`);
-                else if (bestDiff > 1) warnings.push(`Idratazione: ${dec}% vs calcolata ${bestComputed}%`);
+            if (r.totalFlour && calcolo && Math.abs(r.totalFlour - Math.round(calcolo.farina)) > 5) {
+                errors.push(`Farina totale ${r.totalFlour} g ma la somma delle farine è ${Math.round(calcolo.farina)} g`);
             }
         }
 
