@@ -306,6 +306,18 @@ function askConfirmation(question) {
 }
 
 /**
+ * Quanti ingredienti ha la ricetta. Stanno in `ingredientGroups`: `ingredients`
+ * è il formato legacy, che lo schema vuole vuoto, e contare solo quello faceva
+ * dire «Ingredienti: 0» a ogni ricetta nuova (i cornetti di ottobre 2026 ne
+ * avevano 18). Nel legacy le righe senza grammi sono intestazioni, non
+ * ingredienti.
+ */
+function contaIngredienti(recipe) {
+    return (recipe.ingredientGroups || []).reduce((n, g) => n + (g.items?.length || 0), 0)
+        + (recipe.ingredients || []).filter(i => i.grams != null).length;
+}
+
+/**
  * Mostra un riepilogo formattato della ricetta per preview CLI
  */
 function showPreviewSummary(recipe) {
@@ -319,7 +331,7 @@ function showPreviewSummary(recipe) {
     if (recipe.hydration) console.log(`  💧 Idratazione:  ${recipe.hydration}%`);
     if (recipe.targetTemp) console.log(`  🌡️  Temperatura:  ${recipe.targetTemp}`);
     if (recipe.fermentation) console.log(`  ⏱️  Lievitazione: ${recipe.fermentation}`);
-    console.log(`  🧂 Ingredienti:  ${recipe.ingredients?.length || 0}`);
+    console.log(`  🧂 Ingredienti:  ${contaIngredienti(recipe)}`);
     if (recipe.suspensions?.length) console.log(`  🥜 Sospensioni:  ${recipe.suspensions.length}`);
     if (recipe.steps) console.log(`  📝 Step:         ${recipe.steps.length}`);
     if (recipe.stepsCondiment?.length) console.log(`  🍅 Condimento:   ${recipe.stepsCondiment.length}`);
@@ -332,9 +344,14 @@ function showPreviewSummary(recipe) {
     }
     console.log(`  ${sep}`);
 
-    // Lista ingredienti compatta
+    // Lista ingredienti compatta: i gruppi (il nome del gruppo fa da
+    // intestazione), poi l'eventuale formato legacy
     console.log(`\n  🧾 Ingredienti:`);
-    for (const ing of recipe.ingredients || []) {
+    const righe = [
+        ...(recipe.ingredientGroups || []).flatMap(g => [{ name: g.group }, ...(g.items || [])]),
+        ...(recipe.ingredients || []),
+    ];
+    for (const ing of righe) {
         if (ing.grams != null) {
             console.log(`     ${ing.grams}g — ${ing.name}${ing.note ? ` ${ing.note}` : ''}`);
         } else {
@@ -650,7 +667,7 @@ export async function publishRecipe(recipe, args, options = {}) {
     log.info(`Categoria: ${recipe.category}`);
     if (recipe.hydration) log.info(`Idratazione: ${recipe.hydration}%`);
     if (recipe.targetTemp) log.info(`Temp target: ${recipe.targetTemp}`);
-    log.info(`Ingredienti: ${recipe.ingredients?.length || 0}`);
+    log.info(`Ingredienti: ${contaIngredienti(recipe)}`);
     if (recipe.steps) log.info(`Step: ${recipe.steps.length}`);
     if (recipe.stepsCondiment?.length) log.info(`Step condimento: ${recipe.stepsCondiment.length}`);
     if (recipe.image) log.info(`Immagine: ${recipe.image}`);
